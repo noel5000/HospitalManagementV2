@@ -1,0 +1,281 @@
+
+  
+        <form [formGroup]="itemForm" (ngSubmit)="save()">
+         
+            <div class="form-row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'customer_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.customerId.errors }"
+                    formControlName="customerId"
+                    required
+                    >
+                    <option *ngFor="let customer of customers"
+                     [value]="customer.id"
+                     >{{customer.name}} {{customer.code}}</option>
+                    </select>
+                    <div *ngIf="form.customerId.errors" class="invalid-feedback">
+                        <div *ngIf="form.customerId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'trnControl_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.trnType.errors }"
+                    formControlName="trnType"
+                    required
+                    >
+                    <option *ngFor="let trnControl of trnControls"
+                     [value]="trnControl.type"
+                     >{{trnControl.name}}</option>
+                    </select>
+                    <div *ngIf="form.trnType.errors" class="invalid-feedback">
+                        <div *ngIf="form.trnType.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'cardId_lbl' | translate}}</label>
+                    <input type="text" formControlName="nrc" [attr.disabled]="id>0" required class="form-control"/>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'seller_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.sellerId.errors }"
+                    formControlName="sellerId"
+                    
+                    >
+                    <option *ngFor="let seller of sellers"
+                     [value]="seller.id"
+                     >{{seller.name}}</option>
+                    </select>
+                    <div *ngIf="form.sellerId.errors" class="invalid-feedback">
+                        <div *ngIf="form.sellerId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'warehouse_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.warehouseId.errors }"
+                    formControlName="warehouseId"
+                    
+                    >
+                    <option *ngFor="let warehouse of warehouses"
+                     [value]="warehouse.id"
+                     >{{warehouse.name}}</option>
+                    </select>
+                    <div *ngIf="form.warehouseId.errors" class="invalid-feedback">
+                        <div *ngIf="form.warehouseId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'currency_lbl' | translate}}</label>
+                    <input type="text" formControlName="currencyName"  disabled class="form-control"/>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12 d-none">
+                    <label>{{'billInvoice_lbl' | translate}}</label>
+                    <div class="switch">
+                        <input type="checkbox"  formControlName="inventoryModified">
+                        <span class="slider"></span>
+                      </div>
+                  
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'discountRate_lbl' | translate}}</label>
+                    <input type="number" formControlName="discountRate" min="0" max="100" class="form-control"/>
+                </div>
+
+       
+            </div>
+            <hr><br>
+
+            <div class="form-row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'product_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.productId.errors }"
+                    formControlName="productId"
+                    required
+                    >
+                    <option *ngFor="let product of products"
+                     [value]="product.id"
+                     >{{product.name}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        <div *ngIf="form.productId.errors">{{'required_lbl' | translate}}</div>
+                    </div>
+                    <div class="my-1 " style="color:red;" *ngFor="let inventory of inventories">
+                        <div >{{inventory.warehouse.name}}: {{inventory.quantity}} {{inventory.unit.name}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2 col-xs-4">
+                    <label>{{'unit_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.unitId.errors }"
+                    formControlName="unitId"
+                    >
+                    <option *ngFor="let unit of productUnits"
+                     [value]="unit.unitId"
+                     >{{unit.unit.name}}</option>
+                    </select>
+                    <div *ngIf="form.unitId.errors" class="invalid-feedback">
+                        <div *ngIf="form.unitId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2 col-xs-4">
+                    <label>{{'price_lbl' | translate}}</label>
+                    <select class="form-control"
+                    formControlName="selectedPrice"
+                    >
+                    <option *ngFor="let price of productPrices"
+                     [value]="price.price"
+                     >{{price.price | currency:""}} {{price.currency}}</option>
+                    </select>
+                   
+                </div>
+
+                
+               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'quantity_lbl' | translate}}</label>
+                    <input type="number" formControlName="quantity" required class="form-control" min="1" [ngClass]="{ 'is-invalid':form.quantity && form.quantity.errors }" />
+                    <div *ngIf="form.quantity.errors" class="invalid-feedback">
+                        <div *ngIf="form.quantity.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                
+               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'unitPrice_lbl' | translate}}</label>
+                    <input type="number" formControlName="productPrice"class="form-control"   />
+                  
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'beforeTaxesAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="beforeTaxesAmount"class="form-control" disabled />
+                  
+                </div>
+                <div class="form-check form-group col-md-3  col-xs-4 mx-4 my-4">
+                    <input class="form-check-input" type="checkbox"  formControlName="noTaxes"    >
+                    <label class="form-check-label" for="defaultCheck2">
+                        {{'exo_lbl' | translate}}
+                    </label>
+                  </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'taxAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="taxesAmount"class="form-control" disabled  />
+                  
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'totalAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="totalAmount" disabled class="form-control" />
+                  
+                </div>
+                <div class="col-md-3 col-xs-12">
+                    <i class="btn btn-primary mr-1  my-4" (click)="addEntry()">{{'add_btn' | translate}}</i>
+                </div>
+            </div>
+
+            <hr><br>
+
+            <div class="form-row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'creditNote_lbl' | translate}}</label>
+                    <input type="text" formControlName="appliedCreditNote" maxlength="50" class="form-control"/>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'creditNoteAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="appliedCreditNoteAmount" class="form-control"/>
+                </div>
+            </div>
+            <hr><br>
+            <div class="scrollTableMobile">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{{'product_lbl' | translate}}</th>
+                            <th>{{'unit_lbl' | translate}}</th>
+                            <th>{{'quantity_lbl' | translate}}</th>
+                            <th>{{'discountRate_lbl' | translate}}</th>
+                            <th>{{'price_lbl' | translate}}</th>
+                            <th>{{'beforeTaxesAmount_lbl' | translate}}</th>
+                            <th>{{'discountAmount_lbl' | translate}}</th>
+                            <th>{{'taxAmount_lbl' | translate}}</th>
+                            <th>{{'totalAmount_lbl' | translate}}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let entry of entries;let i=index">
+                            <td>{{entry.product.name}}</td>
+                            <td>{{entry.unit?entry.unit.name:''}}</td>
+                            <td><input type="number"
+                                 [formControlName]="('unitQuantity_'+i)" 
+                                 required 
+                                 [disabled]="isEditing"
+                                 (change)="GetDetailProductTaxes(i)"
+                                 class="form-control"
+                                  min="1"
+                                   [ngClass]="{ 'is-invalid':form[('unitQuantity_'+i)] && form[('unitQuantity_'+i)].errors }" />
+                            </td>
+                            <td><input type="number"
+                                    [formControlName]="('unitDiscountRate_'+i)" 
+                                    required 
+                                    (change)="GetDetailProductTaxes(i)"
+                                    class="form-control"
+                                     min="1"
+                                     max="100"
+                                      [ngClass]="{ 'is-invalid':form[('unitDiscountRate_'+i)] && form[('unitDiscountRate_'+i)].errors }" />
+                            </td>
+                            <td>{{entry.amount | currency:""}}</td>
+                            <td>{{entry.beforeTaxesAmount | currency:""}}</td>
+                            <td>{{entry.discountAmount | currency:""}}</td>
+                            <td>{{entry.taxesAmount | currency:""}}</td>
+                            <td>{{entry.totalAmount | currency:""}}</td>
+                            <td><i class="btn btn-danger" (click)="deleteEntry(i)">{{'delete_btn' | translate}}</i></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br><br>
+                <table *ngIf="entries && entries.length>0" class="table table-bordered text-center">
+                    <thead>
+                      <tr >
+                        <th>{{'beforeTaxesAmount_lbl' | translate}}</th>
+                        <th>{{'discountAmount_lbl' | translate}}</th>
+                        <th>{{'taxAmount_lbl' | translate}}</th>
+                        <th>{{'creditNoteAmount_lbl' | translate}}</th>
+                        <th>{{'totalAmount_lbl' | translate}}</th>
+                        <th>{{'totalPaid_lbl' | translate}}</th>
+                        <th>{{'totalOwed_lbl' | translate}}</th>
+                        <th>{{'returnedAmount_lbl' | translate}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{formValues.beforeTaxesAmount | currency:""}}</td>
+                        <td>{{formValues.discountAmount | currency:""}}</td>
+                        <td>{{formValues.taxesAmount | currency:""}}</td>
+                        <td>{{formValues.appliedCreditNoteAmount | currency:""}}</td>
+                        <td>{{formValues.totalAmount | currency:""}}</td>
+                        <td>{{formValues.paidAmount | currency:""}}</td>
+                        <td>{{formValues.owedAmount | currency:""}}</td>
+                        <td>{{formValues.returnedAmount | currency:""}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
+                <button class="btn btn-secondary" type="reset" (click)="cancel()">{{'cancel_btn' | translate}}</button>
+            </div>
+        </form>
+

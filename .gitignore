@@ -1,0 +1,14 @@
+source/.vs/PointOfSalesV2/DesignTimeBuild/.dtbcache
+source/.vs/PointOfSalesV2/DesignTimeBuild/.dtbcache.v2
+source/PointOfSalesV2.Api/bin/
+source/PointOfSalesV2.Api/obj/
+source/PointOfSalesV2.Common/bin/
+source/PointOfSalesV2.Common/obj/
+source/PointOfSalesV2.Console/obj/
+source/PointOfSalesV2.Entities/bin/
+source/PointOfSalesV2.Entities/obj/
+source/PointOfSalesV2.EntityFramework/bin/
+source/PointOfSalesV2.EntityFramework/obj/
+source/PointOfSalesV2.Repository/bin/
+source/PointOfSalesV2.Repository/obj/
+source/PointOfSalesV2.Test/obj/
