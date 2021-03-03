@@ -123,6 +123,8 @@ export class PaginationCompoment{
       else{
         const properties = property.split('.');
         let temp=item;
+        if(!temp[properties[0]])
+        return "";
         properties.forEach(p=>{
           if(!temp[p])
           return '';

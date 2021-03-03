@@ -34,8 +34,22 @@ export class UserFormComponent extends BaseComponent implements OnInit {
     branchOffices:BranchOffice[]=[];
     warehouses:Warehouse[]=[];
     cashRegisters:any[]=[];
+    isDoctor:boolean=false;
+    medicalSpecialities:any[]=[];
+    types:any[]=[
+        {
+            id:'U',
+            name:this.lang.getValueByKey('user_lbl'),
+        },
+        
+        {
+            id:'D',
+            name:this.lang.getValueByKey('doctor_lbl'),
+        }
+    ]
     languages:any[]=[];
     languagesService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}language`);
+    medicalSpecService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     genders:any[]=[
         {
             name:this.lang.getValueByKey('male_lbl'),
@@ -76,6 +90,8 @@ export class UserFormComponent extends BaseComponent implements OnInit {
             cashRegisterId: [null],
             cashRegisterOpenningTimeHours:[0],
             warehouseId: [null],
+            medicalSpecialityId:[null],
+            type:['U'],
             languageCode: ['',[ Validators.required]],
             active:[false],
             birthDay:[''],
@@ -94,6 +110,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
      this.validateFormData();
      
         this.verifyUser();
+        this.getSpecialities();
         this.getBranchOffices();
         this.getLanguages();
     }
@@ -108,6 +125,10 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         this.getBranchOfficeWarehouses(id);
               }
           }
+        });
+        this.itemForm.get('type').valueChanges.subscribe(val => {
+           if(val=="D")
+           this.isDoctor=true;
         });
       }
 
@@ -170,6 +191,12 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         this.languagesService.getAll().subscribe(r=>{
             this.languages=[{id:null, name:''}];
             this.languages=this.languages.concat(r);
+        })
+    }
+
+    async getSpecialities (){
+        this.medicalSpecService.getAll().subscribe(r=>{
+            this.medicalSpecialities=r;
         })
     }
     get form() { return this.itemForm.controls; }

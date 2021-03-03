@@ -23,10 +23,10 @@ export class Customer extends BaseModel {
     creditAmountLimit:number;
     trnType:string;
     trnControl:TRNControl;
-    insuranceId:number;
-    insurancePlanId:number;
+    insuranceId?:number;
+    insurancePlanId?:number;
     insurance:any;
     insurancePlan:any;
-    InsuranceCardId:string;     
+    insuranceCardId:string;     
     bloodType:string;
 }

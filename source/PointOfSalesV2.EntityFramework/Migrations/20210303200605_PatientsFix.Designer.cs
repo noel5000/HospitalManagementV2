@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210303200605_PatientsFix")]
+    partial class PatientsFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -9073,44 +9075,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("LeadsDetails");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("LeadDetail");
-                });
-
-            modelBuilder.Entity("PointOfSalesV2.Entities.MedicalSpeciality", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TranslationData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MedicalSpecialities");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Menu", b =>
@@ -22701,9 +22665,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasMaxLength(30);
 
-                    b.Property<long?>("MedicalSpecialityId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Mobile")
                         .HasColumnType("nvarchar(15)")
                         .HasMaxLength(15);
@@ -22733,10 +22694,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<double?>("Size")
                         .HasColumnType("float");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1)");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)")
@@ -22755,8 +22712,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("CashRegisterId");
 
                     b.HasIndex("LanguageCode");
-
-                    b.HasIndex("MedicalSpecialityId");
 
                     b.HasIndex("WarehouseId");
 
@@ -22782,7 +22737,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Name = "admin",
                             Password = "yeLiBgtdL//mX+coUwD6bw==",
                             Phone = "8095555555",
-                            Type = "U",
                             UserName = "admin"
                         });
                 });
@@ -23985,11 +23939,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageCode");
-
-                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
-                        .WithMany("Doctors")
-                        .HasForeignKey("MedicalSpecialityId")
-                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("PointOfSalesV2.Entities.Warehouse", "Warehouse")
                         .WithMany()

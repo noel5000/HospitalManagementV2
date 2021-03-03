@@ -73,9 +73,9 @@ namespace PointOfSalesV2.Entities
         public TRNControl TRNControl { get; set; }
         [MaxLength(4)]
         public string BloodType { get; set; }
-        public long? InsurancId { get; set; }
+        public long? InsuranceId { get; set; }
 
-        public long? InsurancPlanId { get; set; }
+        public long? InsurancePlanId { get; set; }
 
         [MaxLength(50)]
         public string InsuranceCardId { get; set; }

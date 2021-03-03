@@ -42,6 +42,8 @@ namespace PointOfSalesV2.Api.Controllers
                 .Include(x => x.Currency)
                 .Include(x => x.TRNControl)
                 .Include(x=>x.Zone)
+                .Include(x=>x.Insurance)
+                .Include(x=>x.InsurancePlan)
                 .Where(y => y.Active == true));
                 return Ok(data);
             }

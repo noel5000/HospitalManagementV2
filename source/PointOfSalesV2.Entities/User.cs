@@ -39,6 +39,10 @@ namespace PointOfSalesV2.Entities
         [Required]
         public string Name { get; set; }
 
+        public char Type { get; set; } = 'U';
+
+        public long? MedicalSpecialityId { get; set; }
+
 
         [MaxLength(30)]
         [DataMember]
@@ -100,6 +104,8 @@ namespace PointOfSalesV2.Entities
 
         [ForeignKey("BranchOfficeId")]
         public virtual BranchOffice BranchOffice { get; set; }
+        [ForeignKey("MedicalSpecialityId")]
+        public virtual MedicalSpeciality MedicalSpeciality { get; set; }
         [ForeignKey("CashRegisterId")]
         public virtual CashRegister CashRegister { get; set; }
         [ForeignKey("WarehouseId")]

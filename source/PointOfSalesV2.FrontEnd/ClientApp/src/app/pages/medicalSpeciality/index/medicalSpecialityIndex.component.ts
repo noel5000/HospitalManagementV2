@@ -3,59 +3,48 @@ import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
-import { CustomerService } from '../../../@core/services/CustomerService';
 import { basename } from 'path';
 import {IPaginationModel, IActionButtonModel } from '../../../@theme/components/pagination/pagination.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
-import { Customer } from '../../../@core/data/customer';
+import { HttpClient } from '@angular/common/http';
+import { endpointUrl } from '../../../@core/common/constants';
+import { BaseService } from '../../../@core/services/baseService';
 
 
 declare const $: any;
 @Component({
-    selector: "customer-list",
-    templateUrl: "./customerIndex.component.html",
-    styleUrls: ["../customerStyles.component.scss"]
+    selector: "medicalSpeciality-list",
+    templateUrl: "./medicalSpecialityIndex.component.html",
 })
-export class CustomerIndexComponent extends BaseComponent implements OnInit {
+export class medicalSpecialityIndexComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.verifyUser();
         this.getPagedData(1);
     }
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
-    actions:IActionButtonModel[]=[];
+    actions:IActionButtonModel[]=[];    
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
-  filters: QueryFilter[] = [
-    {
-        property: "Insurance",
-        value: "Name",
-        type: ObjectTypes.ChildObject,
-        isTranslated:false
-    },
-    {
-        property: "InsurancePlan",
-        value: "Name",
-        type: ObjectTypes.ChildObject,
-        isTranslated:false
-    }
-    ];
+    filters: QueryFilter[] = [];
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
-    Customers:Customer[]=[];
+    medicalSpecialities:any[]=[];
 
 
     constructor(
         route: Router,
         langService: LanguageService,
-        private service: CustomerService,
         private modals:NgbModal,
+        private http:HttpClient,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Customers,modalService);
+        super(route, langService, AppSections.Users,modalService);
+        this.section=AppSections.Users;
         let scope = this;
        
         this.tableConfig=[
@@ -74,70 +63,13 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
     visible:true,
     id:'name',
     type:'text',
-    isTranslated:false,
+    isTranslated:true,
     name:this.lang.getValueByKey('name_lbl'),
     sorting:'desc',
     toSort:false,
     objectType:ObjectTypes.String,
     filterIsActive:true
-  },
- {
-      visible:true,
-      id:'cardId',
-      type:'text',
-      isTranslated:false,
-      name:this.lang.getValueByKey('cardId_lbl'),
-      sorting:'desc',
-      toSort:false,
-      objectType:ObjectTypes.String,
-      filterIsActive:true
- },
- {
-        visible:true,
-        id:'phoneNumber',
-        type:'text',
-        isTranslated:false,
-        name:this.lang.getValueByKey('phone_lbl'),
-        sorting:'desc',
-        toSort:false,
-        objectType:ObjectTypes.String,
-        filterIsActive:true
- },
- {
-          visible:true,
-          id:'code',
-          type:'text',
-          isTranslated:false,
-          name:this.lang.getValueByKey('code_lbl'),
-          sorting:'desc',
-          toSort:true,
-          objectType:ObjectTypes.String,
-          filterIsActive:true
- },
- {
-    visible:true,
-    id:'insuranceId',
-    fieldToShow:'insurance.name',
-    type:'text',
-    isTranslated:false,
-    name:scope.lang.getValueByKey('insurance_lbl'),
-    sorting:'desc',
-    toSort:true,
-    objectType:ObjectTypes.String,
-    filterIsActive:false
- },
- {
-    visible:true,
-    id:'insurancePlanId',
-    fieldToShow:'insurancePlan.name',
-    type:'text',
-    isTranslated:false,
-    name:scope.lang.getValueByKey('insurancePlan_lbl'),
-    sorting:'desc',
-    toSort:true,
-    objectType:ObjectTypes.String,
-    filterIsActive:false
-          },
+  }
         ];
 this.actions=[
     {
@@ -173,7 +105,7 @@ this.actions=[
         this.service.getFiltered(this.pageNumber, this.pageSize, this.filters, this.orderBy, this.orderDirection).subscribe(r => {
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
-            this.Customers=r['value'];
+            this.medicalSpecialities=r['value'];
           
         },
             error => {
@@ -196,25 +128,10 @@ else{
 
 }
     getPagedData(page:number) {
-        const expandFilters =[
-            
-        ];
-        expandFilters.forEach(expandFilter=>{
-            const expandIndex = this.filters.findIndex(x => x.property == expandFilter.property);
-            if (expandIndex >= 0) {
-                this.filters.splice(expandIndex, 1);
-                this.filters.push(expandFilter);
-            }
-            else {
-                this.filters.push(expandFilter);
-            }
-        });
-            
-    
-            this.pageNumber = page?page:1;
-            this.orderBy=this.tableConfig.find(x=>x.toSort).id;
-            this.orderDirection=this.tableConfig.find(x=>x.toSort).sorting;
-            this.getData();
+        this.pageNumber = page?page:1;
+        this.orderBy=this.tableConfig.find(x=>x.toSort).id;
+        this.orderDirection=this.tableConfig.find(x=>x.toSort).sorting;
+        this.getData();
     }
 
     onSort(e){
@@ -268,13 +185,13 @@ else{
     }
 
     addNew() {
-        this.router.navigateByUrl(`pages/customer/add`);
+        this.router.navigateByUrl(`pages/medicalSpeciality/add`);
     }
-    edit(e:Customer) {
-        this.router.navigateByUrl(`pages/customer/edit/${e.id}`);
+    edit(e:any) {
+        this.router.navigateByUrl(`pages/medicalSpeciality/edit/${e.id}`);
     }
     source:any={};
-    onDeleteConfirm(event:Customer): void {
+    onDeleteConfirm(event:any): void {
  var result =       this.modalService.confirmationModal({
             titleText:this.lang.getValueByKey('deleteConfirm_lbl'),
             bodyText:this.lang.getValueByKey('areYouSure_lbl'),

@@ -68,6 +68,8 @@ import { CustomerReturnIndexComponent } from './customerReturn/index/customerRet
 import { CustomerReturnFormComponent } from './customerReturn/form/customerReturnForm.component';
 import { InsuranceFormComponent } from './insurance/form/insuranceForm.component';
 import { InsuranceIndexComponent } from './insurance/index/insuranceIndex.component';
+import { medicalSpecialityIndexComponent } from './medicalSpeciality/index/medicalSpecialityIndex.component';
+import { medicalSpecialityFormComponent } from './medicalSpeciality/form/medicalSpecialityForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -446,6 +448,18 @@ component: AccountStateIndexComponent
     path: 'insurance/edit/:id',
     component: InsuranceFormComponent
   },
+  {
+   path: 'medicalSpeciality',
+   component: medicalSpecialityIndexComponent
+ },
+ {
+   path: 'medicalSpeciality/add',
+   component: medicalSpecialityFormComponent
+ },
+ {
+   path: 'medicalSpeciality/edit/:id',
+   component: medicalSpecialityFormComponent
+ },
   ],
 }];
 

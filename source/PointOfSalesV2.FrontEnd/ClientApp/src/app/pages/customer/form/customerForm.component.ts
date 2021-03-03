@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Customer } from '../../../@core/data/customer';
@@ -17,6 +17,8 @@ import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { Currency } from '../../../@core/data/currencyModel';
 import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
+import { HttpClient } from '@angular/common/http';
+import { endpointUrl } from '../../../@core/common/constants';
 
 
 declare const $: any;
@@ -33,6 +35,8 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     trnControls:TRNControl[]=[];
     currencies:Currency[]=[];
     bloodTypes:string[]=["A+","A-","B+","B-","O+","O-","AB+","AB-"];
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
 
     constructor(
         private formBuilder: FormBuilder,
@@ -42,6 +46,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         private service: CustomerService,
         private modals:NgbModal,
         private zoneService:ZoneService,
+        private  http: HttpClient,
         private trnService:TRNControlService,
         private currencyService:CurrencyService,
        modalService:ModalService
@@ -68,6 +73,8 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         });
     }
     ngOnInit(): void {
+        this.onChanges();
+        this.getInsurances();
      const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
      if(!isNaN(urlId)){
         this.id=urlId;
@@ -80,7 +87,14 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         this.getTrnControls();
         this.getCurrencies();
     }
-
+    onChanges(){
+        this.itemForm.get('insuranceId').valueChanges.subscribe(val => {
+            this.insurancePlans=[];
+            this.itemForm.patchValue({insurancePlanId:null});
+                this.getPlans(val);
+        });
+      
+    }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
@@ -97,7 +111,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
                 bloodType:this.item.bloodType,
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
-                InsuranceCardId:this.item.InsuranceCardId
+                insuranceCardId:this.item.insuranceCardId
             });
 
         }
@@ -116,6 +130,36 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         });
     }
 
+    getPlans(id:number){
+        if(id && id>0){
+            this.insurancePlanService.getAllFiltered([
+                {
+                    property: "InsuranceId",
+                    value: id.toString(),
+                    type: ObjectTypes.Number,
+                    comparer:ODataComparers.equals,
+                } as QueryFilter
+            ]).subscribe(r=>{
+                this.insurancePlans = r['value'];
+                
+            },error=>{
+    
+            })
+        }
+    }
+
+    getInsurances(){
+        
+            this.insuranceService.getAll().subscribe(r=>{
+                this.insurances = [{name:'', id:null}]
+               this.insurances=this.insurances.concat(r);
+                
+            },error=>{
+    
+            })
+        
+    }
+
    
     get form() { return this.itemForm.controls; }
     save(){
@@ -125,8 +169,11 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
        const formValue = this.itemForm.value as Customer;
       
            if(!this.item)
-           this.item = new Customer();
+           this.item = formValue;
            this.item=  this.updateModel<Customer>(formValue,this.item);
+          this.item.active=true;
+          this.item.insuranceId=formValue.insuranceId?parseInt(formValue.insuranceId.toString()):null;
+          this.item.insurancePlanId=formValue.insurancePlanId?parseInt(formValue.insurancePlanId.toString()):null;
            this.item.trnType= this.trnControls.find(x=>x.id==this.item.trnControlId).type;
            this.item.currencyId=parseInt(this.item.currencyId.toString());
            this.item.trnControlId=parseInt(this.item.trnControlId.toString());

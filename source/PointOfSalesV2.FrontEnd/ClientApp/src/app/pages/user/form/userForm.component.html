@@ -114,6 +114,36 @@
                 </div>
 
                 <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Type_lbl' | translate}}</label>
+                    <select class="form-control"
+                    required
+                    [ngClass]="{ 'is-invalid': form.gender.errors }"
+                    formControlName="type"
+                    >
+                    <option *ngFor="let typeOpt of types"
+                     [value]="typeOpt.id"
+                     >{{typeOpt.name}}</option>
+                    </select>
+                    <div *ngIf="form.type.errors" class="invalid-feedback">
+                        <div *ngIf="form.type.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12" *ngIf="isDoctor">
+                    <label>{{'medicalSpeciality_lbl' | translate}}</label>
+                    <select class="form-control"
+                    formControlName="medicalSpecialityId"
+                    >
+                    <option *ngFor="let speciality of medicalSpecialities"
+                     [value]="speciality.id"
+                     >{{speciality.name}}</option>
+                    </select>
+                    <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
+                        <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
                     <label>{{'language_lbl' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.languageCode.errors }"

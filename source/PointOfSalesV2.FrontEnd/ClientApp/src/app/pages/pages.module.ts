@@ -53,6 +53,7 @@ import { quotesModule } from './quotes/quote.module';
 import { CustomerReturnModule } from './customerReturn/customerReturn.module';
 import { httpInterceptorProviders } from '../@core/services/baseService';
 import { InsuranceModule } from './insurance/insurance.module';
+import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.module';
 
 @NgModule({
   imports: [
@@ -99,7 +100,8 @@ import { InsuranceModule } from './insurance/insurance.module';
     CompanyStateModule,
     TaxReportModule,
     CustomerReturnModule,
-    ComissionsReportModule
+    ComissionsReportModule,
+    medicalSpecialityModule
   ],
   declarations: [
     PagesComponent,

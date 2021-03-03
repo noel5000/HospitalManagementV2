@@ -75,6 +75,7 @@ public class MainDataContext : DbContext
     public virtual DbSet<Tax> Taxes { get; set; }
     public virtual DbSet<TRNControl> TRNsControl { get; set; }
     public virtual DbSet<Unit> Units { get; set; }
+    public virtual DbSet<MedicalSpeciality> MedicalSpecialities { get; set; }
     public virtual DbSet<UnitProductEquivalence> UnitProductsEquivalences { get; set; }
     public virtual DbSet<ProductSupplierCost> ProductSupplierCosts { get; set; }
     public virtual DbSet<Warehouse> Warehouses { get; set; }
@@ -225,6 +226,11 @@ public class MainDataContext : DbContext
      .HasMany(x => x.CashRegisterOpeningClosings)
      .WithOne(x => x.User)
      .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MedicalSpeciality>()
+ .HasMany(x => x.Doctors)
+ .WithOne(x => x.MedicalSpeciality)
+ .OnDelete(DeleteBehavior.SetNull);
 
 
         modelBuilder.Entity<CompositeProduct>()

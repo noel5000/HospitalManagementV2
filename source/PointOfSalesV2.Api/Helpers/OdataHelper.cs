@@ -64,6 +64,7 @@ namespace PointOfSalesV2.Api.Helpers
             builder.EntitySet<Tax>("Tax");
             builder.EntitySet<TRNControl>("TRNControl");
             builder.EntitySet<Unit>("Unit");
+            builder.EntitySet<MedicalSpeciality>("MedicalSpeciality");
             builder.EntitySet<UnitProductEquivalence>("UnitProductEquivalence");
             builder.EntitySet<Warehouse>("Warehouse").EntityType.HasKey(x => x.Id);
             builder.EntitySet<Warehouse>("Warehouse").HasOptionalBinding(x => x.BranchOffice, "BranchOffice");
