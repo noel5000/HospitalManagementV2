@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -428,6 +428,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     Sequence = table.Column<string>(maxLength: 50, nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
                     CurrencyId = table.Column<long>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
                     Applied = table.Column<bool>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false)
                 },
@@ -436,6 +437,40 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     table.PrimaryKey("PK_CreditNotes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CreditNotes_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Insurances",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    AccountNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    Code = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact1 = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact2 = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact3 = table.Column<string>(maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Insurances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Insurances_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currencies",
                         principalColumn: "Id",
@@ -712,49 +747,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    TranslationData = table.Column<string>(nullable: true),
-                    CardId = table.Column<string>(maxLength: 20, nullable: true),
-                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    TRNControlId = table.Column<long>(nullable: false),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    Code = table.Column<string>(maxLength: 50, nullable: true),
-                    InvoiceDueDays = table.Column<long>(nullable: false),
-                    BillingAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    CreditAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Name = table.Column<string>(maxLength: 100, nullable: true),
-                    TRNType = table.Column<string>(maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customers_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_TRNsControl_TRNControlId",
-                        column: x => x.TRNControlId,
-                        principalTable: "TRNsControl",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Sellers",
                 columns: table => new
                 {
@@ -847,6 +839,33 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         name: "FK_Users_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "Warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InsurancePlans",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    InsuranceId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InsurancePlans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InsurancePlans_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -1472,242 +1491,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomersBalance",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    CustomerId = table.Column<long>(nullable: false),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CustomersBalance", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CustomersBalance_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CustomersBalance_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Schools",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    TranslationData = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    CustomerId = table.Column<long>(nullable: false),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    Code = table.Column<string>(maxLength: 50, nullable: true),
-                    LeadDueDays = table.Column<long>(nullable: false),
-                    AssignedWarehouseId = table.Column<long>(nullable: true),
-                    BranchOfficeId = table.Column<long>(nullable: true),
-                    ZoneId = table.Column<long>(nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Schools", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Schools_Warehouses_AssignedWarehouseId",
-                        column: x => x.AssignedWarehouseId,
-                        principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Schools_BranchOffices_BranchOfficeId",
-                        column: x => x.BranchOfficeId,
-                        principalTable: "BranchOffices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Schools_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Schools_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Schools_Zones_ZoneId",
-                        column: x => x.ZoneId,
-                        principalTable: "Zones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Invoices",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    CustomerId = table.Column<long>(nullable: false),
-                    ExchangeRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    DocumentNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    DiscountRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    SellerId = table.Column<long>(nullable: true),
-                    SellerRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    PaidDate = table.Column<DateTime>(nullable: true),
-                    CashRegisterId = table.Column<long>(nullable: true),
-                    ReturnedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    ReceivedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Cost = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    DiscountAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Month = table.Column<int>(nullable: false),
-                    AppliedCreditNoteAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    NRC = table.Column<string>(maxLength: 100, nullable: true),
-                    BranchOfficeId = table.Column<long>(nullable: false),
-                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    TRN = table.Column<string>(maxLength: 50, nullable: true),
-                    TRNType = table.Column<string>(maxLength: 2, nullable: true),
-                    TRNControlId = table.Column<long>(nullable: false),
-                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    State = table.Column<string>(nullable: false),
-                    BillingDate = table.Column<DateTime>(nullable: true),
-                    TaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Details = table.Column<string>(maxLength: 200, nullable: true),
-                    BeforeTaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invoices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invoices_BranchOffices_BranchOfficeId",
-                        column: x => x.BranchOfficeId,
-                        principalTable: "BranchOffices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Invoices_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Invoices_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Invoices_Sellers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "Sellers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Invoices_TRNsControl_TRNControlId",
-                        column: x => x.TRNControlId,
-                        principalTable: "TRNsControl",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Payment",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    CustomerId = table.Column<long>(nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    SellerPercentage = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    InvoiceCurrencyId = table.Column<long>(nullable: false),
-                    PaymentTypeId = table.Column<long>(nullable: false),
-                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    ExchangeRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    Sequence = table.Column<string>(maxLength: 50, nullable: true),
-                    ReceiptNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    SellerId = table.Column<long>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Details = table.Column<string>(maxLength: 200, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payment_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payment_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payment_Currencies_InvoiceCurrencyId",
-                        column: x => x.InvoiceCurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payment_PaymentTypes_PaymentTypeId",
-                        column: x => x.PaymentTypeId,
-                        principalTable: "PaymentTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payment_Sellers_SellerId",
-                        column: x => x.SellerId,
-                        principalTable: "Sellers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CashRegisterOpenings",
                 columns: table => new
                 {
@@ -1817,6 +1600,75 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    CardId = table.Column<string>(maxLength: 20, nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TRNControlId = table.Column<long>(nullable: false),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    Code = table.Column<string>(maxLength: 50, nullable: true),
+                    InvoiceDueDays = table.Column<long>(nullable: false),
+                    BillingAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    CreditAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    ZoneId = table.Column<long>(nullable: true),
+                    WarehouseId = table.Column<long>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    TRNType = table.Column<string>(maxLength: 50, nullable: true),
+                    BloodType = table.Column<string>(maxLength: 4, nullable: true),
+                    InsurancId = table.Column<long>(nullable: true),
+                    InsurancPlanId = table.Column<long>(nullable: true),
+                    InsuranceCardId = table.Column<string>(maxLength: 50, nullable: true),
+                    InsuranceId = table.Column<long>(nullable: true),
+                    InsurancePlanId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_InsurancePlans_InsurancePlanId",
+                        column: x => x.InsurancePlanId,
+                        principalTable: "InsurancePlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_TRNsControl_TRNControlId",
+                        column: x => x.TRNControlId,
+                        principalTable: "TRNsControl",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Zones_ZoneId",
+                        column: x => x.ZoneId,
+                        principalTable: "Zones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompositeProducts",
                 columns: table => new
                 {
@@ -1867,7 +1719,272 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SchoolContacts",
+                name: "CashRegisterFlowDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    CashRegisterOpeningId = table.Column<long>(nullable: false),
+                    PaymentTypeId = table.Column<long>(nullable: false),
+                    MovementType = table.Column<string>(nullable: true),
+                    Reference = table.Column<string>(nullable: true),
+                    UserId = table.Column<Guid>(nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashRegisterFlowDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_CashRegisterOpenings_CashRegisterOpeningId",
+                        column: x => x.CashRegisterOpeningId,
+                        principalTable: "CashRegisterOpenings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_PaymentTypes_PaymentTypeId",
+                        column: x => x.PaymentTypeId,
+                        principalTable: "PaymentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CashRegisterOpeningDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    IsClosing = table.Column<bool>(nullable: false),
+                    CashRegisterOpeningId = table.Column<long>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Details = table.Column<string>(nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashRegisterOpeningDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterOpeningDetails_CashRegisterOpenings_CashRegisterOpeningId",
+                        column: x => x.CashRegisterOpeningId,
+                        principalTable: "CashRegisterOpenings",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomersBalance",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomersBalance", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomersBalance_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomersBalance_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    InsuranceCardId = table.Column<string>(nullable: true),
+                    InsuranceId = table.Column<long>(nullable: true),
+                    InsurancePlanId = table.Column<long>(nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
+                    ExchangeRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    WarehouseId = table.Column<long>(nullable: true),
+                    DocumentNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    DiscountRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    SellerId = table.Column<long>(nullable: true),
+                    SellerRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    InventoryModified = table.Column<bool>(nullable: false),
+                    PaidDate = table.Column<DateTime>(nullable: true),
+                    CashRegisterId = table.Column<long>(nullable: true),
+                    ReturnedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    ReceivedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    DiscountAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Month = table.Column<int>(nullable: false),
+                    AppliedCreditNoteAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    NRC = table.Column<string>(maxLength: 100, nullable: true),
+                    BranchOfficeId = table.Column<long>(nullable: false),
+                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    TRN = table.Column<string>(maxLength: 50, nullable: true),
+                    TRNType = table.Column<string>(maxLength: 2, nullable: true),
+                    TRNControlId = table.Column<long>(nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    State = table.Column<string>(nullable: false),
+                    BillingDate = table.Column<DateTime>(nullable: true),
+                    TaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Details = table.Column<string>(maxLength: 200, nullable: true),
+                    BeforeTaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_BranchOffices_BranchOfficeId",
+                        column: x => x.BranchOfficeId,
+                        principalTable: "BranchOffices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_InsurancePlans_InsurancePlanId",
+                        column: x => x.InsurancePlanId,
+                        principalTable: "InsurancePlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Sellers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "Sellers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invoices_TRNsControl_TRNControlId",
+                        column: x => x.TRNControlId,
+                        principalTable: "TRNsControl",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    SellerPercentage = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    InvoiceCurrencyId = table.Column<long>(nullable: false),
+                    PaymentTypeId = table.Column<long>(nullable: false),
+                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    ExchangeRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Sequence = table.Column<string>(maxLength: 50, nullable: true),
+                    ReceiptNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    SellerId = table.Column<long>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    Details = table.Column<string>(maxLength: 200, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payment_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payment_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payment_Currencies_InvoiceCurrencyId",
+                        column: x => x.InvoiceCurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payment_PaymentTypes_PaymentTypeId",
+                        column: x => x.PaymentTypeId,
+                        principalTable: "PaymentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payment_Sellers_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "Sellers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Schools",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -1881,18 +1998,47 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     Active = table.Column<bool>(nullable: false),
                     TranslationData = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    CustomerId = table.Column<long>(nullable: false),
                     Address = table.Column<string>(maxLength: 200, nullable: true),
-                    Position = table.Column<string>(maxLength: 50, nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: true),
-                    SchoolId = table.Column<long>(nullable: false)
+                    Code = table.Column<string>(maxLength: 50, nullable: true),
+                    LeadDueDays = table.Column<long>(nullable: false),
+                    AssignedWarehouseId = table.Column<long>(nullable: true),
+                    BranchOfficeId = table.Column<long>(nullable: true),
+                    ZoneId = table.Column<long>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SchoolContacts", x => x.Id);
+                    table.PrimaryKey("PK_Schools", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SchoolContacts_Schools_SchoolId",
-                        column: x => x.SchoolId,
-                        principalTable: "Schools",
+                        name: "FK_Schools_Warehouses_AssignedWarehouseId",
+                        column: x => x.AssignedWarehouseId,
+                        principalTable: "Warehouses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schools_BranchOffices_BranchOfficeId",
+                        column: x => x.BranchOfficeId,
+                        principalTable: "BranchOffices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schools_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schools_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Schools_Zones_ZoneId",
+                        column: x => x.ZoneId,
+                        principalTable: "Zones",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -1925,6 +2071,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     SellerId = table.Column<long>(nullable: true),
                     InvoiceId = table.Column<long>(nullable: true),
                     Details = table.Column<string>(maxLength: 200, nullable: true),
+                    State = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -1975,15 +2122,187 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     Active = table.Column<bool>(nullable: false),
-                    InvoiceId = table.Column<long>(nullable: true)
+                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    CustomerId = table.Column<long>(nullable: false),
+                    BranchOfficeId = table.Column<long>(nullable: false),
+                    InvoiceId = table.Column<long>(nullable: false),
+                    BeforeTaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    TaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    CreditNoteNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    CreditNoteId = table.Column<long>(nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustomersReturns", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_CustomersReturns_BranchOffices_BranchOfficeId",
+                        column: x => x.BranchOfficeId,
+                        principalTable: "BranchOffices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomersReturns_CreditNotes_CreditNoteId",
+                        column: x => x.CreditNoteId,
+                        principalTable: "CreditNotes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomersReturns_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomersReturns_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_CustomersReturns_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoiceDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    BranchOfficeId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    SellerRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    TaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Free = table.Column<bool>(nullable: false),
+                    Date = table.Column<DateTime>(nullable: false),
+                    InvoiceId = table.Column<long>(nullable: false),
+                    BeforeTaxesAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Comments = table.Column<string>(maxLength: 200, nullable: true),
+                    PrincipalCurrencyAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    DiscountRate = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    WarehouseId = table.Column<long>(nullable: true),
+                    DiscountAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    CreditNoteAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    ParentId = table.Column<long>(nullable: true),
+                    UnitId = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoiceDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InvoiceDetails_Units_UnitId",
+                        column: x => x.UnitId,
+                        principalTable: "Units",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InvoicesTaxes",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    InvoiceId = table.Column<long>(nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TaxId = table.Column<long>(nullable: false),
+                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    TRN = table.Column<string>(maxLength: 50, nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    TaxAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InvoicesTaxes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InvoicesTaxes_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InvoicesTaxes_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InvoicesTaxes_Taxes_TaxId",
+                        column: x => x.TaxId,
+                        principalTable: "Taxes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    PaymentId = table.Column<long>(nullable: false),
+                    InvoiceId = table.Column<long>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    BillingDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentDetails_Invoices_InvoiceId",
+                        column: x => x.InvoiceId,
+                        principalTable: "Invoices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PaymentDetails_Payment_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -2088,7 +2407,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InvoicesTaxes",
+                name: "SchoolContacts",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -2100,101 +2419,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     Active = table.Column<bool>(nullable: false),
-                    InvoiceId = table.Column<long>(nullable: false),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    TaxId = table.Column<long>(nullable: false),
-                    InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    TRN = table.Column<string>(maxLength: 50, nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    TaxAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                    TranslationData = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    Position = table.Column<string>(maxLength: 50, nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    SchoolId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InvoicesTaxes", x => x.Id);
+                    table.PrimaryKey("PK_SchoolContacts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvoicesTaxes_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
+                        name: "FK_SchoolContacts_Schools_SchoolId",
+                        column: x => x.SchoolId,
+                        principalTable: "Schools",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_InvoicesTaxes_Invoices_InvoiceId",
-                        column: x => x.InvoiceId,
-                        principalTable: "Invoices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_InvoicesTaxes_Taxes_TaxId",
-                        column: x => x.TaxId,
-                        principalTable: "Taxes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentDetails",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    PaymentId = table.Column<long>(nullable: false),
-                    InvoiceId = table.Column<long>(nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    PaidAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    OwedAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    BillingDate = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PaymentDetails_Invoices_InvoiceId",
-                        column: x => x.InvoiceId,
-                        principalTable: "Invoices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PaymentDetails_Payment_PaymentId",
-                        column: x => x.PaymentId,
-                        principalTable: "Payment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CashRegisterOpeningDetails",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    IsClosing = table.Column<bool>(nullable: false),
-                    CashRegisterOpeningId = table.Column<long>(nullable: false),
-                    Type = table.Column<string>(nullable: true),
-                    Details = table.Column<string>(nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CashRegisterOpeningDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CashRegisterOpeningDetails_CashRegisterOpenings_CashRegisterOpeningId",
-                        column: x => x.CashRegisterOpeningId,
-                        principalTable: "CashRegisterOpenings",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -2210,7 +2450,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     CreatedDate = table.Column<DateTime>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: true),
                     Active = table.Column<bool>(nullable: false),
-                    ProductoId = table.Column<long>(nullable: false),
+                    ProductId = table.Column<long>(nullable: false),
                     Quantity = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
                     Reference = table.Column<string>(maxLength: 50, nullable: true),
                     InvoiceNumber = table.Column<string>(maxLength: 50, nullable: true),
@@ -2240,8 +2480,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CustomersReturnDetails_Products_ProductoId",
-                        column: x => x.ProductoId,
+                        name: "FK_CustomersReturnDetails_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -2389,7 +2629,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "TranslationData" },
                 values: new object[,]
                 {
-                    { 22L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Conduces\"}]}" },
                     { 23L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Facturas\"}]}" },
                     { 24L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - pagos\"}]}" },
                     { 25L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Gastos - Registros\"}]}" },
@@ -2399,7 +2638,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 29L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Movimientos - Devoluciones suplidor\"}]}" },
                     { 30L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Ventas\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Ventas\"}]}" },
                     { 31L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Roles - Cuentas por cobrar\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Cuentas por cobrar\"}]}" },
-                    { 33L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reporte - Comisiones\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reporte - Comisiones\"}]}" },
+                    { 32L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Recibos ingreso\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Recibos ingreso\"}]}" },
                     { 34L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Inventario\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Inventario\"}]}" },
                     { 35L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Movimientos Productos\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Movimientos Productos\"}]}" },
                     { 36L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Cuentas por pagar\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Cuentas por pagar\"}]}" },
@@ -2407,21 +2646,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 38L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Listado clientes\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Listado clientes\"}]}" },
                     { 39L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Estado cuentas\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Estado cuentas\"}]}" },
                     { 40L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Estado resultado\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Estado resultado\"}]}" },
-                    { 32L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Recibos ingreso\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Recibos ingreso\"}]}" },
-                    { 21L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Gastos - Pagos admin\"}]}" },
                     { 41L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Impuestos\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reportes - Impuestos\"}]}" },
-                    { 19L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Pagos admin\"}]}" },
+                    { 33L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Reporte - Comisiones\"}],\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Reporte - Comisiones\"}]}" },
+                    { 22L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Conduces\"}]}" },
                     { 20L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Gastos - Registros admin\"}]}" },
+                    { 5L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Impuestos\"}]}" },
+                    { 21L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Gastos - Pagos admin\"}]}" },
                     { 1L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Sucursales\"}]}" },
                     { 2L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Almacenes\"}]}" },
                     { 3L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Monedas\"}]}" },
-                    { 5L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Impuestos\"}]}" },
+                    { 4L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - suplidores\"}]}" },
                     { 6L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Unidades\"}]}" },
                     { 7L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config- Control NCF\"}]}" },
-                    { 8L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Zonas\"}]}" },
                     { 9L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Vendedores\"}]}" },
-                    { 4L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - suplidores\"}]}" },
-                    { 11L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Productos\"}]}" },
+                    { 10L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Clientes\"}]}" },
+                    { 8L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Zonas\"}]}" },
                     { 12L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Escuelas\"}]}" },
                     { 13L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Escuelas\"}]}" },
                     { 14L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Menu escuelas\"}]}" },
@@ -2429,7 +2668,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 16L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Cajas Reg - Apert/Cierre\"}]}" },
                     { 17L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Conduces admin\"}]}" },
                     { 18L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Facturas admin\"}]}" },
-                    { 10L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Clientes\"}]}" }
+                    { 19L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Facturacion - Pagos admin\"}]}" },
+                    { 11L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Config - Productos\"}]}" }
                 });
 
             migrationBuilder.InsertData(
@@ -2437,29 +2677,31 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "Id", "Active", "Controllers", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "TranslationData" },
                 values: new object[,]
                 {
+                    { 34L, true, "Users,Role,UserRole", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles de usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""User Roles""}]}
+                " },
                     { 37L, true, "Invoice", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cuentas por cobrar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Accounts Receivable""}]}
                 " },
                     { 36L, true, "Invoice", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Reporte de ventas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sales Report""}]}
                 " },
                     { 35L, true, "", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pantalla principal""}],""EN"":[{""PropertyName"":""Name"",""Value"":""DashBoard""}]}
                 " },
-                    { 34L, true, "Users,Role,UserRole", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles de usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""User Roles""}]}
+                    { 33L, true, "Zone", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Zonas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Zones""}]}
                 " },
-                    { 29L, true, "Role", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Roles""}]}
-                " },
-                    { 32L, true, "Seller,Zone,BranchOffice", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Vendedores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sellers""}]}
+                    { 28L, true, "Product,Unit,ProductUnit", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades de productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Product Units""}]}
                 " },
                     { 31L, true, "Operation", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Operaciones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Operations""}]}
                 " },
                     { 30L, true, "Section", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Secciones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sections""}]}
                 " },
+                    { 29L, true, "Role", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Roles""}]}
+                " },
                     { 38L, true, "CustomerPayment", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Recibos de ingresos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Income Receipts""}]}
                 " },
-                    { 33L, true, "Zone", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Zonas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Zones""}]}
+                    { 32L, true, "Seller,Zone,BranchOffice", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Vendedores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sellers""}]}
                 " },
                     { 39L, true, "Invoice,CustomerPayment,Seller", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Comisiones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Commisions""}]}
                 " },
-                    { 49L, true, "", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Menu""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Menu""}]}
+                    { 50L, true, "School,BranchOffice,Zone,Customer", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Escuelas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""School""}]}
                 " },
                     { 41L, true, "Expense", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cuentas por pagar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Debst To Pay""}]}
                 " },
@@ -2477,9 +2719,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 " },
                     { 48L, true, "Expense,Payment", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos a suplidores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Company Payments""}]}
                 " },
-                    { 28L, true, "Product,Unit,ProductUnit", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades de productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Product Units""}]}
-                " },
-                    { 50L, true, "School,BranchOffice,Zone,Customer", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Escuelas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""School""}]}
+                    { 49L, true, "", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Menu""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Menu""}]}
                 " },
                     { 51L, true, "Product,Inventory,BranchOffice,Menu", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Menu escolar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""School Menu""}]}
                 " },
@@ -2489,19 +2729,17 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 " },
                     { 27L, true, "BranchOffice,Warehouse,User,Product,Unit,WarehouseTransfer", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Transferencias entre almacenes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Warehouse Transfers""}]}
                 " },
-                    { 24L, true, "Supplier,Product,Tax,User", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Movimientos de entrada""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Income Movements""}]}
+                    { 1L, true, "User,UserClaims,Role,RoleSection,Section,SectionOperation", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Permisos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Permissions""}]}
                 " },
                     { 25L, true, "Invoice,Product,InvoiceDetail,Customer", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Devolucion de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customers Returns""}]}
-                " },
-                    { 1L, true, "User,UserClaims,Role,RoleSection,Section,SectionOperation", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Permisos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Permissions""}]}
                 " },
                     { 2L, true, "Customer,CustomerRate", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Tarifas de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customer Rates""}]}
                 " },
                     { 3L, true, "Product,ProductTax,ProductUnit,CompositeProduct,ProductCost", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Products""}]}
                 " },
-                    { 26L, true, "Supplier,Expense,Tax,Currency,SupplierReturn", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Devoluciones a suplidor""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Suppliers Returns""}]}
+                    { 4L, true, "Customer,CustomerPayment", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customer Payments""}]}
                 " },
-                    { 5L, true, "Currency", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Monedas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Currencies""}]}
+                    { 26L, true, "Supplier,Expense,Tax,Currency,SupplierReturn", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Devoluciones a suplidor""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Suppliers Returns""}]}
                 " },
                     { 6L, true, "Tax", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Impuestos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Taxes""}]}
                 " },
@@ -2515,21 +2753,25 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 " },
                     { 11L, true, "*", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Todos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""All""}]}
                 " },
-                    { 4L, true, "Customer,CustomerPayment", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customer Payments""}]}
+                    { 12L, true, "Inventory,Product,BranchOffice,Warehouse,Supplier", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Inventarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Inventories""}]}
+                " },
+                    { 5L, true, "Currency", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Monedas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Currencies""}]}
+                " },
+                    { 14L, true, "Supplier,Expense,Tax,ExpenseTax,Currency", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Gastos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Expenses""}]}
                 " },
                     { 13L, true, "TRNControl", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Control NCF""}],""EN"":[{""PropertyName"":""Name"",""Value"":""TRN Control""}]}
                 " },
-                    { 12L, true, "Inventory,Product,BranchOffice,Warehouse,Supplier", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Inventarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Inventories""}]}
+                    { 24L, true, "Supplier,Product,Tax,User", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Movimientos de entrada""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Income Movements""}]}
                 " },
-                    { 23L, true, "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Montos de aperturas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings Amounts""}]}
+                    { 22L, true, "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Aperturas / cierre de cajas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings""}]}
                 " },
                     { 21L, true, "CashRegister,BranchOffice", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cajas registradoras""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Registers""}]}
                 " },
                     { 20L, true, "PaymentType", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Tipos de pagos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Payment Types""}]}
                 " },
-                    { 19L, true, "User,BranchOffice,Warehouse,CashRegister", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Users""}]}
+                    { 23L, true, "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Montos de aperturas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings Amounts""}]}
                 " },
-                    { 22L, true, "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Aperturas / cierre de cajas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings""}]}
+                    { 18L, true, "Unit", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Units""}]}
                 " },
                     { 17L, true, "Supplier", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Suplidores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Suppliers""}]}
                 " },
@@ -2537,9 +2779,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 " },
                     { 15L, true, "BranchOffice,Warehouse", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Oficinas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""BranchOffices""}]}
                 " },
-                    { 14L, true, "Supplier,Expense,Tax,ExpenseTax,Currency", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Gastos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Expenses""}]}
-                " },
-                    { 18L, true, "Unit", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Units""}]}
+                    { 19L, true, "User,BranchOffice,Warehouse,CashRegister", new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Users""}]}
                 " }
                 });
 
@@ -2548,22 +2788,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "Id", "Active", "Code", "CodeName", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Name", "NumericControl", "TranslationData" },
                 values: new object[,]
                 {
-                    { 9L, true, (short)9, "DEVS", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "SupplierReturns", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}]}" },
+                    { 10L, true, (short)10, "R", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "CustomerPayments", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}]}" },
+                    { 15L, true, (short)15, "PRO", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Products", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}]}" },
                     { 14L, true, (short)14, "PG", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "ExpensePayments", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensePayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensePayments\"}]}" },
                     { 13L, true, (short)13, "ESC", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Schools", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Schools\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Schools\"}]}" },
                     { 12L, true, (short)12, "CONDUCE", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Leads", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Leads\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Leads\"}]}" },
                     { 11L, true, (short)11, "P", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "CompanyPayments", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}]}" },
-                    { 10L, true, (short)10, "R", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "CustomerPayments", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}]}" },
-                    { 8L, true, (short)8, "DEV", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "CustomersReturns", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}]}" },
-                    { 2L, true, (short)2, "VEND", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Sellers", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}]}" },
+                    { 9L, true, (short)9, "DEVS", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "SupplierReturns", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}]}" },
+                    { 3L, true, (short)3, "CLI", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Customers", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}]}" },
+                    { 7L, true, (short)7, "ENT", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "InventoryIncomes", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}]}" },
                     { 6L, true, (short)6, "TRF", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "WarehouseTransfers", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}]}" },
                     { 5L, true, (short)5, "GST", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Expenses", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}]}" },
                     { 4L, true, (short)4, "COT", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Quotes", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}]}" },
-                    { 3L, true, (short)3, "CLI", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Customers", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}]}" },
+                    { 2L, true, (short)2, "VEND", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Sellers", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}]}" },
                     { 1L, true, (short)1, "FAC", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Invoices", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}]}" },
-                    { 15L, true, (short)15, "PRO", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Products", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}]}" },
-                    { 7L, true, (short)7, "ENT", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "InventoryIncomes", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}]}" },
-                    { 16L, true, (short)16, "MEN", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Menus", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}]}" }
+                    { 16L, true, (short)16, "MEN", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Menus", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}]}" },
+                    { 8L, true, (short)8, "DEV", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "CustomersReturns", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}]}" },
+                    { 17L, true, (short)17, "INS", new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, "Insurances", 0L, "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}]}" }
                 });
 
             migrationBuilder.InsertData(
@@ -2572,6 +2813,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 values: new object[,]
                 {
                     { "EN", "accountsReceivable_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Accounts Receivable" },
+                    { "ES", "dec_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Diciember" },
+                    { "ES", "defWarehouseNotExit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacen de defectuosos no existe. Favor ingresar uno con el código 'DEF'" },
+                    { "ES", "delete_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Borrar" },
                     { "ES", "deleteConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Está seguro que desea borrar?" },
                     { "ES", "deliverdBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Entregado por" },
                     { "ES", "deliverLead_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Marcar como entregado" },
@@ -2579,25 +2823,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "destinyBranchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sucursal destino" },
                     { "ES", "destinyWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén destino" },
                     { "ES", "details_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Detalles" },
-                    { "ES", "delete_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Borrar" },
+                    { "ES", "detailsRequired_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Detalles son obligatorios" },
                     { "ES", "differentCurrency_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Las monedas son distintas. Solo puede aplicar pagos de la misma moneda" },
+                    { "ES", "discountAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto descuento" },
                     { "ES", "discountRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Porcentaje descuento" },
                     { "ES", "dispatchInventory_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Despachar inventario" },
                     { "ES", "documentNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Número documento" },
                     { "ES", "edit_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Editar" },
-                    { "ES", "email_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Email" },
-                    { "ES", "email_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Email" },
-                    { "ES", "emptyInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La factura no tiene detalles, esta no puede ser vacía." },
-                    { "ES", "discountAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto descuento" },
-                    { "ES", "defWarehouseNotExit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacen de defectuosos no existe. Favor ingresar uno con el código 'DEF'" },
-                    { "ES", "dec_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Diciember" },
                     { "ES", "debtsToPay_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Deudas a pagar" },
+                    { "ES", "email_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Email" },
+                    { "ES", "debits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Débitos" },
+                    { "ES", "DaysCount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de días" },
+                    { "ES", "CurrencyCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda" },
+                    { "ES", "CurrencyId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "ID de moneda" },
                     { "ES", "CurrencyName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda" },
                     { "ES", "CurrentBalance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Balance actual" },
                     { "ES", "customer_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cliente" },
                     { "ES", "customerDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto deuda de cliente" },
                     { "ES", "CustomerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre de cliente" },
                     { "ES", "customerPayment_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Pagos" },
+                    { "ES", "customerReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Devolución de clientes" },
                     { "ES", "customers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Clientes" },
                     { "ES", "customersList_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Listado de clientes" },
                     { "ES", "CustomersOwedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto adeudado clientes" },
@@ -2606,40 +2851,41 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "date_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha" },
                     { "ES", "day_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Día de la semana" },
                     { "ES", "daysAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de días" },
-                    { "ES", "DaysCount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de días" },
                     { "ES", "Debit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Débito" },
-                    { "ES", "debits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Débitos" },
+                    { "ES", "email_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Email" },
+                    { "ES", "emptyInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La factura no tiene detalles, esta no puede ser vacía." },
                     { "ES", "endDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha final" },
-                    { "ES", "CurrencyId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "ID de moneda" },
-                    { "ES", "equivalence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Equivalencia" },
-                    { "ES", "errorDictionary_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Error de diccionario" },
+                    { "ES", "incomeReceipts_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Recibos de ingreso" },
+                    { "ES", "invalidInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Factura inválida" },
+                    { "ES", "invalidInvoiceStateReturn_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Estado de factura no es válido" },
                     { "ES", "inventory_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Inventario" },
                     { "ES", "inventoryDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "El inventario no es válido" },
                     { "ES", "inventoryIn_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Entradas de inventario" },
                     { "ES", "InvoiceCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda de factura" },
+                    { "ES", "invoiceDoesNotExist_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Número de factura no exixste" },
                     { "ES", "invoiceDueDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Vencimiento de factura (días)" },
                     { "ES", "InvoiceId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "ID factura" },
                     { "ES", "invoiceLeads_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Conduces de factura" },
-                    { "ES", "invalidInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Factura inválida" },
                     { "ES", "invoiceNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Número de factura" },
+                    { "ES", "invoiceNumberRequired_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Número de factura es requerido" },
+                    { "ES", "invoicePaid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La factura ya se encuentra pagada." },
                     { "ES", "invoices_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Facturas" },
                     { "ES", "isActive_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Activo?" },
                     { "ES", "isCompositeProduct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Producto compuesto" },
-                    { "ES", "isDefective_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Defectuoso" },
-                    { "ES", "isLocalCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda local" },
-                    { "ES", "isPrimary_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Principal" },
-                    { "ES", "isService_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Es servicio" },
-                    { "ES", "invoicePaid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La factura ya se encuentra pagada." },
-                    { "ES", "incomeReceipts_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Recibos de ingreso" },
                     { "ES", "incomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto recibidos" },
                     { "ES", "id_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Id" },
+                    { "ES", "GivenAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto aplicado" },
+                    { "ES", "gender_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Género" },
+                    { "ES", "equivalence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Equivalencia" },
+                    { "ES", "error_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Error: No se pudo completar la operación." },
+                    { "ES", "errorDictionary_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Error de diccionario" },
                     { "ES", "exchangeRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tasa de cambio" },
                     { "ES", "ExchangeRateAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto de tasa" },
                     { "ES", "existence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Existencia" },
                     { "ES", "exo_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Exonerado" },
                     { "ES", "expensePayments_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Pagos de gastos" },
+                    { "ES", "currency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda" },
                     { "ES", "ExpenseReference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Referencia de gasto" },
-                    { "ES", "expenses_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Gastos" },
                     { "ES", "expensesPayment_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Pagos" },
                     { "ES", "expensesRegister_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Registrar gastos" },
                     { "ES", "export_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Exportar" },
@@ -2648,12 +2894,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "fixedComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisión fija" },
                     { "ES", "forgotPass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Olvidó contraseña?" },
                     { "ES", "friday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Viernes" },
-                    { "ES", "gender_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Género" },
-                    { "ES", "GivenAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto aplicado" },
-                    { "ES", "error_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Error: No se pudo completar la operación." },
-                    { "ES", "jan_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Enero" },
-                    { "ES", "CurrencyCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda" },
+                    { "ES", "expenses_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Gastos" },
                     { "ES", "currencies_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monedas" },
+                    { "ES", "credits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Créditos" },
+                    { "ES", "creditNoteNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "NC no existe" },
+                    { "ES", "billing_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Facturación" },
+                    { "ES", "billingAmountLimit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto límite de facturación" },
                     { "ES", "billingDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha de facturación" },
                     { "ES", "billingStateB_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Facturado" },
                     { "ES", "billingStateC_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Convertido" },
@@ -2661,19 +2907,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "billingStateE_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Expirado" },
                     { "ES", "billingStateG_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Generado" },
                     { "ES", "billingStateI_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Inventario insuficiente" },
-                    { "ES", "billingAmountLimit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto límite de facturación" },
                     { "ES", "billingStateJ_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Proyectado" },
+                    { "ES", "billingStateM_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Conduce anulado" },
                     { "ES", "billingStateN_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Anulado" },
                     { "ES", "billingStateO_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Generado sin inventario" },
                     { "ES", "billingStateP_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Pago aplicado" },
                     { "ES", "billingStateQ_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cotizado" },
                     { "ES", "birthDay_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha de nacimiento" },
                     { "ES", "branchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sucursal" },
-                    { "ES", "branchOffice_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sucursales" },
-                    { "ES", "billingStateM_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Conduce anulado" },
-                    { "ES", "billing_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Facturación" },
                     { "ES", "billedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Facturado por" },
+                    { "ES", "billConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Está seguro de facturar esta cotización?" },
+                    { "ES", "bill_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Facturar Cotización" },
                     { "ES", "beforeTaxesAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto grabado" },
+                    { "ES", "actions_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Acciones" },
                     { "ES", "add_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Agregar" },
                     { "ES", "address_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Dirección" },
                     { "ES", "addRole_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Agregar rol" },
@@ -2681,8 +2927,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "all_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Todos" },
                     { "ES", "amount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto" },
                     { "ES", "amountIsGreater_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto NC es mayor que el monto de la factura" },
+                    { "ES", "branchOffice_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sucursales" },
                     { "ES", "appliedCreditNoteAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto NC aplicada" },
-                    { "ES", "april_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Abril" },
                     { "ES", "areadyClosed_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Ya se encuentra cerrado. Operación no válida" },
                     { "ES", "areYouSure_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Está seguro?" },
                     { "ES", "assignedWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén asignado" },
@@ -2691,10 +2937,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "balance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Balance" },
                     { "ES", "baseProducts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Productos bases" },
                     { "ES", "beforeTaxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto grabado" },
+                    { "ES", "april_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Abril" },
+                    { "ES", "isDefective_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Defectuoso" },
                     { "ES", "cancel_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cancelar" },
-                    { "ES", "currency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda" },
-                    { "ES", "CannotDeleteExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No es posible eliminar el gasto" },
-                    { "ES", "cannotEraseUnit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede eliminar las unidades del producto" },
+                    { "ES", "cannotDeleteTax_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede eliminar los impuestos del producto" },
+                    { "ES", "comissionAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto comisiones" },
                     { "ES", "comissionByProduct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisiones por producto" },
                     { "ES", "comissionRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Porcentaje de comisión" },
                     { "ES", "commissions_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisiones" },
@@ -2702,27 +2949,29 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "CompanyOwedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto adeudado compañia" },
                     { "ES", "contacts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Contactos" },
                     { "ES", "core_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Configuraciones" },
-                    { "ES", "comissionAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto comisiones" },
                     { "ES", "cost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Costo" },
+                    { "ES", "createLead_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Crear conduce" },
                     { "ES", "Credit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Crédito" },
                     { "ES", "creditAmountLimit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto límite de crédito" },
                     { "ES", "creditCard_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tarjeta de crédito" },
                     { "ES", "creditLimitReached_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Límite de credito alcanzado. No se puede continuar" },
+                    { "ES", "creditNote_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Nota de crédito" },
+                    { "ES", "creditNoteAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Moto de Nota de crédito" },
                     { "ES", "creditNoteApplied_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "NC ya está aplicada" },
-                    { "ES", "creditNoteNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "NC no existe" },
-                    { "ES", "credits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Créditos" },
-                    { "ES", "createLead_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Crear conduce" },
                     { "ES", "code_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Código" },
                     { "ES", "closureDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha de cierre" },
                     { "ES", "closureAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto de cierre" },
+                    { "ES", "closing_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cierre" },
+                    { "ES", "cannotEraseUnit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede eliminar las unidades del producto" },
                     { "ES", "cannotRemoveBaseProduct_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No es posible eliminar el producto base" },
                     { "ES", "CannotUpdateExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No es posible actualizar el gasto" },
                     { "ES", "cannotUpdatePayment_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No es posible actualizar el pago" },
                     { "ES", "CantCloseWithZero_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede realizar el cierre con valor 0" },
                     { "ES", "cardId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Documento identidad" },
+                    { "ES", "cardIdAlreadyExist_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Identificación ya existe." },
                     { "ES", "cash_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Efectivo" },
+                    { "ES", "CannotDeleteExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No es posible eliminar el gasto" },
                     { "ES", "cashRegister_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Caja" },
-                    { "ES", "cashRegister_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cajas registradoras" },
                     { "ES", "cashRegisterManteinance_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Mantenimiento" },
                     { "ES", "cashRegisterOpeningHours_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Horas de apertura de caja" },
                     { "ES", "cashRegisterOpeningIsClosed_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede aperturar la caja. Ya se encuentra cerrada" },
@@ -2731,36 +2980,28 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "check_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cheque" },
                     { "ES", "CheckbookNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Número de talonario" },
                     { "ES", "closeCashRegister_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cerrar caja" },
-                    { "ES", "closing_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cierre" },
-                    { "ES", "cannotDeleteTax_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede eliminar los impuestos del producto" },
-                    { "ES", "actions_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Acciones" },
-                    { "ES", "jul_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Julio" },
-                    { "ES", "language_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Lenguage" },
+                    { "ES", "cashRegister_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cajas registradoras" },
+                    { "ES", "accountState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Estado de cuentas" },
+                    { "ES", "isLocalCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Moneda local" },
+                    { "ES", "isService_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Es servicio" },
+                    { "ES", "sellers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Vendedores" },
+                    { "ES", "sep_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "septiembre" },
                     { "ES", "sequence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sequencia" },
                     { "ES", "sequenceError_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Error de secuencias." },
                     { "ES", "serie_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Serie" },
                     { "ES", "series_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Serie" },
+                    { "ES", "sessionTimeOut_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Session expired. Please login again." },
                     { "ES", "start_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Inicio" },
                     { "ES", "startDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha inicio" },
                     { "ES", "state_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Estado" },
-                    { "ES", "sep_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "septiembre" },
                     { "ES", "subTotal_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto grabado" },
+                    { "ES", "success_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La operación fue un exito" },
                     { "ES", "supplier_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Suplidor" },
                     { "ES", "supplierCosts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Costo por suplidor" },
                     { "ES", "suppliers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Suplidores" },
                     { "ES", "suppliersReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Devoluciones a suplidor" },
                     { "ES", "tax_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Impuesto" },
-                    { "ES", "taxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto impuesto" },
-                    { "ES", "taxes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Impuestos" },
-                    { "ES", "success_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La operación fue un exito" },
-                    { "ES", "sellers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Vendedores" },
-                    { "ES", "sellerRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Porcentaje de comisión" },
-                    { "ES", "SellerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre de vendedor" },
-                    { "ES", "resetPass_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reiniciar contraseña" },
-                    { "ES", "resultState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Estado resultado" },
-                    { "ES", "returnedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto devuelto" },
-                    { "ES", "reverse_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reversar" },
-                    { "ES", "role_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Roles" }
+                    { "ES", "sellerRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Porcentaje de comisión" }
                 });
 
             migrationBuilder.InsertData(
@@ -2768,22 +3009,31 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "LanguageCode", "Key", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "LanguageId", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Value" },
                 values: new object[,]
                 {
+                    { "ES", "taxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto impuesto" },
+                    { "ES", "SellerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre de vendedor" },
+                    { "ES", "selectColumns_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Seleccionar columnas" },
+                    { "ES", "resetPass_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reiniciar contraseña" },
+                    { "ES", "resultState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Estado resultado" },
+                    { "ES", "returnAlreadyApplied_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "La devolución ya se encuentra aplicada" },
+                    { "ES", "returnedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto devuelto" },
+                    { "ES", "reverse_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reversar" },
+                    { "ES", "role_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Roles" },
                     { "ES", "roles_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Roles" },
                     { "ES", "sales_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Ventas" },
                     { "ES", "salesComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisiones por ventas" },
                     { "ES", "salesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reporte de ventas" },
                     { "ES", "save_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Guardar" },
+                    { "ES", "savedFormData_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Existe información guardada en este formulario. Desea recuperarla?" },
                     { "ES", "school_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Escuela " },
                     { "ES", "schools_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Escuelas" },
                     { "ES", "search_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Buscar" },
                     { "ES", "section_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sección" },
                     { "ES", "sector_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sector" },
-                    { "ES", "selectColumns_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Seleccionar columnas" },
                     { "ES", "seller_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Vendedor" },
+                    { "ES", "taxes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Impuestos" },
                     { "ES", "taxes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Impuestos" },
-                    { "ES", "required_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Requerido" },
                     { "ES", "taxesAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto impuestos" },
-                    { "ES", "TaxId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "ID impuesto" },
+                    { "ES", "unitDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La unidad no existe" },
                     { "ES", "unitNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La unidad no existe" },
                     { "ES", "unitPrice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Precio unitario" },
                     { "ES", "units_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Unidades" },
@@ -2791,8 +3041,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "user_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Usuario" },
                     { "ES", "userName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre de usuario" },
                     { "ES", "users_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Usuarios" },
-                    { "ES", "unitDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "La unidad no existe" },
                     { "ES", "warehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén" },
+                    { "ES", "warehouse_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacenes" },
                     { "ES", "warehouseError_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén no existe." },
                     { "ES", "warehouseTransfers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Transferencias entre almacenes" },
                     { "ES", "week_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Semana" },
@@ -2800,18 +3050,20 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "yes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Si" },
                     { "ES", "zone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Zona" },
                     { "ES", "zones_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Zonas" },
-                    { "ES", "warehouse_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacenes" },
                     { "ES", "unitCost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Costo por unidad" },
                     { "ES", "unit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Unidad" },
                     { "ES", "type_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo" },
+                    { "ES", "tusday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Martes" },
+                    { "ES", "taxesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reporte de impuestos" },
+                    { "ES", "TaxId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "ID impuesto" },
                     { "ES", "taxIsReq_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Impuesto es requerido." },
                     { "ES", "thisIsABaseProduct_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Este producto es base de otro." },
                     { "ES", "thursday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Jueves" },
                     { "ES", "totalAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total" },
                     { "ES", "totalBilled_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Total facturado" },
                     { "ES", "totalCompanyDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total deuda de la compañia" },
+                    { "ES", "required_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Requerido" },
                     { "ES", "totalCustomersDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total deuda de clientes" },
-                    { "ES", "totalIncome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total de entradas" },
                     { "ES", "totalOutcome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total de salidas" },
                     { "ES", "totalOwed_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Total adeudado" },
                     { "ES", "totalPaid_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Total pagado" },
@@ -2820,11 +3072,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "TRNControl_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Control NCF" },
                     { "ES", "trnNotAvailable_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "NCFs insuficientes" },
                     { "ES", "TRNType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo NCF" },
-                    { "ES", "tusday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Martes" },
-                    { "ES", "taxesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reporte de impuestos" },
-                    { "ES", "jun_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Junio" },
+                    { "ES", "totalIncome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto total de entradas" },
                     { "ES", "reportType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo de reporte" },
-                    { "ES", "reference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Referencia" },
+                    { "ES", "reports_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reportes" },
+                    { "ES", "remember_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Recordarme?" },
+                    { "ES", "NameAndCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre y código" },
+                    { "ES", "no_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No" },
+                    { "ES", "notExistingClass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede procesar este producto/servicio. La clase no existe." },
                     { "ES", "notValid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Operación no válida" },
                     { "ES", "nov_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Noviembre" },
                     { "ES", "nrc_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "RNC" },
@@ -2832,25 +3086,27 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "NumberOfDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de días" },
                     { "ES", "numericControl_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Control numérico" },
                     { "ES", "oct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Octubre" },
-                    { "ES", "notExistingClass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No se puede procesar este producto/servicio. La clase no existe." },
                     { "ES", "ok_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "OK" },
+                    { "ES", "ok_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Operación completada con éxito." },
                     { "ES", "opening_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Apertura" },
                     { "ES", "openingAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto de apertura" },
                     { "ES", "openingDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Fecha de apertura" },
                     { "ES", "operations_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Operaciones" },
                     { "ES", "originBranchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Sucursal origen" },
-                    { "ES", "originQuantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de origen" },
-                    { "ES", "originWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén origen" },
-                    { "ES", "ok_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Operación completada con éxito." },
-                    { "ES", "no_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "No" },
-                    { "ES", "NameAndCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre y código" },
                     { "ES", "name_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Nombre" },
+                    { "ES", "movementType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo de movimiento" },
+                    { "ES", "movements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Movimientos" },
+                    { "ES", "month_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Mes" },
+                    { "ES", "jan_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Enero" },
+                    { "ES", "jul_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Julio" },
+                    { "ES", "jun_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Junio" },
+                    { "ES", "language_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Lenguage" },
                     { "ES", "lastName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Apellidos" },
                     { "ES", "leadDueDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Dias de vencimiento" },
                     { "ES", "leadNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Número de conduce" },
                     { "ES", "login_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Iniciar Sesión" },
+                    { "ES", "originQuantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad de origen" },
                     { "ES", "logOut_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Salir" },
-                    { "ES", "logOut_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Salir" },
                     { "ES", "male_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Masculino" },
                     { "ES", "march_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Marzo" },
                     { "ES", "markAsDeliveredConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Está seguro que desea marcar el conduce como entregado?" },
@@ -2859,13 +3115,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "menu_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Menú escolar" },
                     { "ES", "mobile_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Teléfono celular" },
                     { "ES", "monday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Lunes" },
-                    { "ES", "month_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Mes" },
-                    { "ES", "movements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Movimientos" },
-                    { "ES", "movementType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo de movimiento" },
-                    { "ES", "outcomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto entregrados" },
-                    { "ES", "reports_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reportes" },
+                    { "ES", "logOut_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Salir" },
+                    { "ES", "isPrimary_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Principal" },
+                    { "ES", "originWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Almacén origen" },
                     { "ES", "outOfStock_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Producto agotado" },
-                    { "ES", "owedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto adeudado" },
+                    { "ES", "print_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Imprimir" },
                     { "ES", "print_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Imprimir" },
                     { "ES", "product_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Producto" },
                     { "ES", "productCost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Costo de producto" },
@@ -2873,27 +3127,29 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "productNeedsTaxes_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "El producto necesita por lo menos un impuesto" },
                     { "ES", "productNeedsUnits_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Es obligatorio una unidad principal. Favor elegir una." },
                     { "ES", "products_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Producto" },
-                    { "ES", "print_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Imprimir" },
-                    { "ES", "productsMovements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Movimientos de productos" },
+                    { "ES", "profile_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Perfil" },
                     { "ES", "quantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cantidad" },
-                    { "ES", "quotes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Conduces" },
+                    { "ES", "quotes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cotizaciones" },
                     { "ES", "rate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Porcentaje" },
                     { "ES", "receiptsReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Reporte recibos ingreso" },
                     { "ES", "receivedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto recibido" },
                     { "ES", "receivedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Recibido por" },
                     { "ES", "recordedRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tasa registrada" },
-                    { "ES", "profile_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Perfil" },
+                    { "ES", "reference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Referencia" },
                     { "ES", "primaryUnitRequired_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Es obligatorio una unidad principal. Favor elegir una." },
                     { "ES", "pricesList_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Listado de precios" },
                     { "ES", "Price3_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Precio 3" },
+                    { "ES", "Price2_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Precio 2" },
+                    { "ES", "OutstandingAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto pendiente" },
+                    { "ES", "owedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto adeudado" },
                     { "ES", "owedAmountOutdated_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto adeudado está desactualizado. Favor ingresar nuevamente." },
                     { "ES", "paidAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto pagado" },
                     { "ES", "parentUnitDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Unidad padre no existe." },
                     { "ES", "password_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Contraseña" },
                     { "ES", "password_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Contraseña" },
                     { "ES", "pay_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Pagar" },
+                    { "ES", "outcomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto entregrados" },
                     { "ES", "paymentNotValid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "El pago no es válido." },
-                    { "ES", "paymentsComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisiones por cobro" },
                     { "ES", "paymentType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Tipo de pago" },
                     { "ES", "permissions_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Permisos" },
                     { "ES", "phone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Teléfono" },
@@ -2902,11 +3158,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "ES", "position_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Posición" },
                     { "ES", "positiveBalance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Balance a favor" },
                     { "ES", "price_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Precio" },
-                    { "ES", "Price2_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Precio 2" },
-                    { "ES", "OutstandingAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Monto pendiente" },
-                    { "ES", "accountState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Estado de cuentas" },
-                    { "ES", "remember_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Recordarme?" },
-                    { "EN", "zones_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Zones" },
+                    { "ES", "paymentsComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Comisiones por cobro" },
+                    { "ES", "accountsReceivable_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cuentas por cobrar" },
+                    { "ES", "productsMovements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Movimientos de productos" },
+                    { "EN", "zone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Zone" },
+                    { "EN", "debtsToPay_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Debts To Pay" },
+                    { "EN", "dec_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Dicember" },
+                    { "EN", "defWarehouseNotExit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Defective warehouse does not exist.Please create one with 'DEF' as code first. " },
                     { "EN", "delete_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Delete" },
                     { "EN", "deleteConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Are you sure you want to delete ? " },
                     { "EN", "deliverdBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Delivered by" },
@@ -2914,19 +3172,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "description_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Description" },
                     { "EN", "destinyBranchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Destiny branch office" },
                     { "EN", "destinyWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Destiny warehouse" },
-                    { "EN", "defWarehouseNotExit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Defective warehouse does not exist.Please create one with 'DEF' as code first. " },
                     { "EN", "details_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Details" },
+                    { "EN", "detailsRequired_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Details are required" },
+                    { "EN", "differentCurrency_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currencies are different.You can only apply the same currency. " },
                     { "EN", "discountAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Discount Amount" },
                     { "EN", "discountRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Discount rate" },
                     { "EN", "dispatchInventory_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Dispatch Inventory" },
                     { "EN", "documentNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Document number" },
-                    { "EN", "edit_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Edit" },
-                    { "EN", "email_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Email" },
-                    { "EN", "email_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Email" },
-                    { "EN", "differentCurrency_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currencies are different.You can only apply the same currency. " },
-                    { "EN", "dec_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Dicember" },
-                    { "EN", "debtsToPay_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Debts To Pay" },
                     { "EN", "debits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Debits" },
+                    { "EN", "edit_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Edit" },
+                    { "EN", "Debit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Debit" },
+                    { "EN", "daysAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Days amount" },
+                    { "EN", "currency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency" },
+                    { "EN", "CurrencyCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency code" },
                     { "EN", "CurrencyId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency ID" },
                     { "EN", "CurrencyName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency name" },
                     { "EN", "CurrentBalance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Current balance" },
@@ -2934,30 +3192,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "customerDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customer debts" },
                     { "EN", "CustomerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customer name" },
                     { "EN", "customerPayment_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payments" },
+                    { "EN", "customerReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customers returns" },
                     { "EN", "customers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customers" },
                     { "EN", "customersList_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customers List" },
                     { "EN", "CustomersOwedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customer debt" },
                     { "EN", "customersReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Customers Returns" },
                     { "EN", "dashboard_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Dashboard" },
-                    { "EN", "date_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Date" },
-                    { "EN", "day_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Day of week" },
-                    { "EN", "daysAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Days amount" },
-                    { "EN", "DaysCount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Days count" },
-                    { "EN", "Debit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Debit" },
-                    { "EN", "emptyInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice doesn't have any details. Cannot be empty." },
-                    { "EN", "CurrencyCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency code" },
-                    { "EN", "endDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "End date" },
-                    { "EN", "error_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Error: Could not completed the current operation. " },
-                    { "EN", "invalidInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invalid invoice." },
-                    { "EN", "inventory_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory" },
-                    { "EN", "inventoryDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory doesnt exist" },
-                    { "EN", "inventoryIn_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory Incomes" },
-                    { "EN", "InvoiceCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice currency" },
-                    { "EN", "invoiceDueDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice due days" },
-                    { "EN", "InvoiceId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice ID" },
-                    { "EN", "incomeReceipts_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Income Receipts" },
-                    { "EN", "invoiceLeads_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice Lead" },
-                    { "EN", "invoicePaid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice is already paid." }
+                    { "EN", "date_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Date" }
                 });
 
             migrationBuilder.InsertData(
@@ -2965,23 +3206,42 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "LanguageCode", "Key", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "LanguageId", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Value" },
                 values: new object[,]
                 {
+                    { "EN", "day_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Day of week" },
+                    { "EN", "DaysCount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Days count" },
+                    { "EN", "email_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Email" },
+                    { "EN", "email_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Email" },
+                    { "EN", "emptyInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice doesn't have any details. Cannot be empty." },
+                    { "EN", "incomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Income amount" },
+                    { "EN", "incomeReceipts_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Income Receipts" },
+                    { "EN", "invalidInvoice_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invalid invoice." },
+                    { "EN", "invalidInvoiceStateReturn_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invalid invoice state." },
+                    { "EN", "inventory_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory" },
+                    { "EN", "inventoryDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory doesnt exist" },
+                    { "EN", "inventoryIn_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Inventory Incomes" },
+                    { "EN", "InvoiceCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice currency" },
+                    { "EN", "invoiceDoesNotExist_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice number does not exists" },
+                    { "EN", "invoiceDueDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice due days" },
+                    { "EN", "InvoiceId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice ID" },
+                    { "EN", "invoiceLeads_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice Lead" },
+                    { "EN", "invoiceNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice number" },
+                    { "EN", "invoiceNumberRequired_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice number is required" },
+                    { "EN", "invoicePaid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice is already paid." },
                     { "EN", "invoices_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoices" },
                     { "EN", "isActive_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Active?" },
-                    { "EN", "isCompositeProduct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Composite product" },
-                    { "EN", "isDefective_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Defective" },
-                    { "EN", "isLocalCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Local currency" },
-                    { "EN", "isPrimary_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Primary" },
-                    { "EN", "invoiceNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Invoice number" },
-                    { "EN", "incomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Income amount" },
                     { "EN", "id_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Id" },
                     { "EN", "GivenAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Given amount" },
+                    { "EN", "gender_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Gender" },
+                    { "EN", "friday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Friday" },
+                    { "EN", "endDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "End date" },
+                    { "EN", "equivalence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Equivalence" },
+                    { "EN", "error_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Error: Could not completed the current operation. " },
                     { "EN", "errorDictionary_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Error dictionary" },
                     { "EN", "exchangeRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Exchange rate" },
                     { "EN", "ExchangeRateAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Exchange rate amount" },
                     { "EN", "existence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Existence" },
                     { "EN", "exo_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Exnonerated" },
+                    { "EN", "currencies_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currencies" },
                     { "EN", "expensePayments_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Expenses payments" },
-                    { "EN", "ExpenseReference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Expense reference" },
                     { "EN", "expenses_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Expenses" },
                     { "EN", "expensesPayment_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payments" },
                     { "EN", "expensesRegister_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Register expenses" },
@@ -2990,12 +3250,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "female_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Female" },
                     { "EN", "fixedComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Fixed comission" },
                     { "EN", "forgotPass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Forgot Password?" },
-                    { "EN", "friday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Friday" },
-                    { "EN", "gender_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Gender" },
-                    { "EN", "equivalence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Equivalence" },
-                    { "EN", "isService_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Is service" },
-                    { "EN", "currency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currency" },
+                    { "EN", "ExpenseReference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Expense reference" },
                     { "EN", "credits_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credits" },
+                    { "EN", "creditNoteNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note does not exist. " },
+                    { "EN", "creditNoteApplied_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note is already applied." },
+                    { "EN", "billConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Are you sure to convert this quote?" },
+                    { "EN", "billedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Billed by" },
                     { "EN", "billing_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Billing" },
                     { "EN", "billingAmountLimit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Billing amount limit" },
                     { "EN", "billingDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Billing date" },
@@ -3003,28 +3263,28 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "billingStateC_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Converted" },
                     { "EN", "billingStateD_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Delivered" },
                     { "EN", "billingStateE_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Expired" },
-                    { "EN", "billedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Billed by" },
                     { "EN", "billingStateG_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Generated" },
+                    { "EN", "billingStateI_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Not enough inventory " },
                     { "EN", "billingStateJ_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Projected" },
                     { "EN", "billingStateM_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Nulled Lead" },
                     { "EN", "billingStateN_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Nulled" },
                     { "EN", "billingStateO_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Generated without inventory" },
                     { "EN", "billingStateP_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Paid" },
                     { "EN", "billingStateQ_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Quoted" },
-                    { "EN", "birthDay_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Birth day" },
-                    { "EN", "billingStateI_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Not enough inventory " },
+                    { "EN", "bill_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Bill Quote" },
                     { "EN", "beforeTaxesAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Before taxes amount" },
                     { "EN", "beforeTaxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Before taxes amount" },
                     { "EN", "baseProducts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Base products" },
-                    { "ES", "accountsReceivable_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2L, null, null, null, "Cuentas por cobrar" },
+                    { "EN", "zones_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Zones" },
                     { "EN", "accountState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Account State" },
                     { "EN", "actions_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Actions" },
                     { "EN", "add_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Add" },
                     { "EN", "address_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Address" },
+                    { "EN", "addRole_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Add roles" },
                     { "EN", "addSector_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Add sector" },
                     { "EN", "all_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "All" },
+                    { "EN", "birthDay_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Birth day" },
                     { "EN", "amount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Amount" },
-                    { "EN", "amountIsGreater_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note amount is greater than invoice amount." },
                     { "EN", "appliedCreditNoteAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Applied CN amount" },
                     { "EN", "april_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "April" },
                     { "EN", "areadyClosed_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Already closed" },
@@ -3033,10 +3293,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "aug_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Augoust" },
                     { "EN", "auth_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Auth" },
                     { "EN", "balance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Balance" },
+                    { "EN", "amountIsGreater_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note amount is greater than invoice amount." },
+                    { "EN", "isCompositeProduct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Composite product" },
                     { "EN", "branchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Branch office" },
-                    { "EN", "currencies_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Currencies" },
-                    { "EN", "branchOffice_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Branch Offices" },
-                    { "EN", "CannotDeleteExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot delete expense" },
+                    { "EN", "cancel_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cancel" },
+                    { "EN", "code_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Code" },
                     { "EN", "comissionAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Comissions amount" },
                     { "EN", "comissionByProduct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product comissions" },
                     { "EN", "comissionRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Comission rate" },
@@ -3044,27 +3305,29 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "companyDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Company debts" },
                     { "EN", "CompanyOwedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Company debt" },
                     { "EN", "contacts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Contacts" },
-                    { "EN", "code_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Code" },
                     { "EN", "core_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Configurations" },
+                    { "EN", "cost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cost" },
                     { "EN", "createLead_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Create lead" },
                     { "EN", "Credit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit" },
                     { "EN", "creditAmountLimit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit amount limit" },
                     { "EN", "creditCard_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit card" },
                     { "EN", "creditLimitReached_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit limit reached.Cannot continue." },
-                    { "EN", "creditNoteApplied_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note is already applied." },
-                    { "EN", "creditNoteNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit note does not exist. " },
-                    { "EN", "cost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cost" },
+                    { "EN", "creditNote_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit Note" },
+                    { "EN", "creditNoteAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Credit Note Amount" },
                     { "EN", "closureDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Closure date" },
                     { "EN", "closureAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Closure amount" },
                     { "EN", "closing_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Closing" },
+                    { "EN", "closeCashRegister_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Close cash register" },
+                    { "EN", "CannotDeleteExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot delete expense" },
                     { "EN", "cannotDeleteTax_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot delete product tax. " },
+                    { "EN", "cannotEraseUnit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot erase product unit." },
                     { "EN", "cannotRemoveBaseProduct_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot remove base product." },
                     { "EN", "CannotUpdateExpense_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot update  expense" },
-                    { "EN", "cannotUpdatePayment_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot update payment. " },
                     { "EN", "CantCloseWithZero_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Closure amount cannot be 0" },
                     { "EN", "cardId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Card Id" },
+                    { "EN", "cardIdAlreadyExist_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Card id already exists." },
+                    { "EN", "branchOffice_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Branch Offices" },
                     { "EN", "cash_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cash" },
-                    { "EN", "cashRegister_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cash register" },
                     { "EN", "cashRegister_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cash Registers" },
                     { "EN", "cashRegisterManteinance_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Manteinance" },
                     { "EN", "cashRegisterOpeningHours_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cash register opening hours" },
@@ -3073,52 +3336,54 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "changePass_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Change Password" },
                     { "EN", "check_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Check" },
                     { "EN", "CheckbookNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Checkbook number" },
-                    { "EN", "closeCashRegister_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Close cash register" },
-                    { "EN", "cancel_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cancel" },
-                    { "EN", "jan_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "January" },
-                    { "EN", "cannotEraseUnit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot erase product unit." },
-                    { "EN", "jun_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Jun" },
+                    { "EN", "cashRegister_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cash register" },
+                    { "EN", "isDefective_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Defective" },
+                    { "EN", "cannotUpdatePayment_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot update payment. " },
+                    { "EN", "isPrimary_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Primary" },
+                    { "EN", "SellerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Seller name" },
+                    { "EN", "sellerRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Seller rate" },
                     { "EN", "sellers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sellers" },
                     { "EN", "sep_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "September" },
                     { "EN", "sequence_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sequence" },
                     { "EN", "sequenceError_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sequence Error." },
                     { "EN", "serie_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Serie" },
                     { "EN", "series_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Series" },
+                    { "EN", "sessionTimeOut_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "La sesión ha expirado. Favor iniciar sesión nuevamente." },
                     { "EN", "start_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Start" },
-                    { "EN", "sellerRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Seller rate" },
                     { "EN", "startDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Start date" },
+                    { "EN", "state_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "State" },
                     { "EN", "subTotal_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Before taxes amount" },
                     { "EN", "success_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Operation successfully" },
                     { "EN", "supplier_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Supplier" },
                     { "EN", "supplierCosts_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Supplier costs" },
                     { "EN", "suppliers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Suppliers" },
-                    { "EN", "suppliersReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Suppliers Returns" },
-                    { "EN", "tax_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax" },
-                    { "EN", "state_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "State" },
-                    { "EN", "SellerName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Seller name" },
                     { "EN", "seller_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Seller" },
                     { "EN", "selectColumns_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Select columns" },
+                    { "EN", "sector_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sector" },
+                    { "EN", "section_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Section" },
+                    { "EN", "reports_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Reports" },
                     { "EN", "reportType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Report type" },
                     { "EN", "required_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Required" },
                     { "EN", "resetPass_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Reset Password" },
                     { "EN", "resultState_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Result State" },
+                    { "EN", "returnAlreadyApplied_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Return already applied" },
                     { "EN", "returnedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Returned amount" },
                     { "EN", "reverse_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Reverse" },
+                    { "EN", "suppliersReturns_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Suppliers Returns" },
                     { "EN", "role_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Roles" },
-                    { "EN", "roles_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Roles" },
                     { "EN", "sales_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sales" },
                     { "EN", "salesComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sales comissions" },
                     { "EN", "salesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sales report" },
                     { "EN", "save_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Save" },
+                    { "EN", "savedFormData_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "There is previous information saved for this form. Do you want to recover?" },
                     { "EN", "school_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "School" },
                     { "EN", "schools_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Schools" },
                     { "EN", "search_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Search" },
-                    { "EN", "section_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Section" },
-                    { "EN", "sector_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Sector" },
-                    { "EN", "taxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax amount" },
+                    { "EN", "roles_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Roles" },
+                    { "EN", "remember_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Remember me?" },
+                    { "EN", "tax_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax" },
                     { "EN", "taxes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes" },
-                    { "EN", "taxes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes" },
-                    { "EN", "taxesAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes amount" },
+                    { "EN", "unitCost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit costs" },
                     { "EN", "unitDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit doesnt exist" },
                     { "EN", "unitNotExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit does not exist." },
                     { "EN", "unitPrice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit price" },
@@ -3130,31 +3395,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "warehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Warehouse" },
                     { "EN", "warehouse_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Warehouses" },
                     { "EN", "warehouseError_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Warehouse does not exist." },
-                    { "EN", "warehouseTransfers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Warehouses Transfers" },
-                    { "EN", "week_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Week of month" },
-                    { "EN", "wendsday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Wendsday" },
-                    { "EN", "yes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Yes" },
-                    { "EN", "jul_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "July" },
-                    { "EN", "zone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Zone" },
-                    { "EN", "unitCost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit costs" },
-                    { "EN", "reports_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Reports" },
-                    { "EN", "unit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit" },
-                    { "EN", "tusday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tusday" },
-                    { "EN", "taxesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes Report" },
-                    { "EN", "TaxId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax ID" },
-                    { "EN", "taxIsReq_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax is required" },
-                    { "EN", "thisIsABaseProduct_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "This is a base product" },
-                    { "EN", "thursday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Thursday" },
-                    { "EN", "totalAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total amount" },
-                    { "EN", "totalBilled_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total billed" },
-                    { "EN", "totalCompanyDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total company debts" },
-                    { "EN", "totalCustomersDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total customers debts" },
-                    { "EN", "totalIncome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total income" },
-                    { "EN", "totalOutcome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total outcome" },
-                    { "EN", "totalOwed_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total owed" },
-                    { "EN", "totalPaid_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total paid" },
-                    { "EN", "trn_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN" },
-                    { "EN", "trnControl_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN control" }
+                    { "EN", "warehouseTransfers_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Warehouses Transfers" }
                 });
 
             migrationBuilder.InsertData(
@@ -3162,12 +3403,40 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 columns: new[] { "LanguageCode", "Key", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "LanguageId", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Value" },
                 values: new object[,]
                 {
-                    { "EN", "trnNotAvailable_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN is not available." },
-                    { "EN", "TRNType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN type" },
+                    { "EN", "week_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Week of month" },
+                    { "EN", "wendsday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Wendsday" },
+                    { "EN", "isLocalCurrency_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Local currency" },
+                    { "EN", "yes_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Yes" },
+                    { "EN", "unit_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Unit" },
                     { "EN", "type_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Type" },
-                    { "EN", "remember_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Remember me?" },
+                    { "EN", "tusday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tusday" },
+                    { "EN", "TRNType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN type" },
+                    { "EN", "taxes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes" },
+                    { "EN", "taxesAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes amount" },
+                    { "EN", "taxesReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Taxes Report" },
+                    { "EN", "TaxId_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax ID" },
+                    { "EN", "taxIsReq_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax is required" },
+                    { "EN", "thisIsABaseProduct_error", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "This is a base product" },
+                    { "EN", "thursday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Thursday" },
+                    { "EN", "totalAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total amount" },
+                    { "EN", "taxAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Tax amount" },
+                    { "EN", "totalBilled_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total billed" },
+                    { "EN", "totalCustomersDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total customers debts" },
+                    { "EN", "totalIncome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total income" },
+                    { "EN", "totalOutcome_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total outcome" },
+                    { "EN", "totalPaid_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total paid" },
+                    { "EN", "trn_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN" },
+                    { "EN", "trnControl_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN control" },
                     { "EN", "TRNControl_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN Control" },
+                    { "EN", "trnNotAvailable_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "TRN is not available." },
+                    { "EN", "totalCompanyDebt_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total company debts" },
                     { "EN", "reference_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Reference" },
+                    { "EN", "totalOwed_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Total owed" },
+                    { "EN", "receivedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Received by" },
+                    { "EN", "name_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Name" },
+                    { "EN", "NameAndCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Name and code" },
+                    { "EN", "no_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "No" },
+                    { "EN", "notExistingClass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot process this product/Service. Class does not exist." },
                     { "EN", "notValid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Not valid" },
                     { "EN", "nov_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "November" },
                     { "EN", "nrc_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "NRC" },
@@ -3175,78 +3444,77 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { "EN", "NumberOfDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Days count" },
                     { "EN", "numericControl_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Numeric number" },
                     { "EN", "oct_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "October" },
-                    { "EN", "notExistingClass_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Cannot process this product/Service. Class does not exist." },
                     { "EN", "ok_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "OK" },
+                    { "EN", "ok_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Operation completed successfully." },
                     { "EN", "opening_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Opening" },
                     { "EN", "openingAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Opening amount" },
                     { "EN", "openingDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Opening date" },
                     { "EN", "operations_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Operations" },
-                    { "EN", "originBranchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin branch office" },
-                    { "EN", "originQuantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin quantity" },
-                    { "EN", "originWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin warehouse" },
-                    { "EN", "ok_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Operation completed successfully." },
-                    { "EN", "no_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "No" },
-                    { "EN", "NameAndCode_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Name and code" },
-                    { "EN", "name_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Name" },
-                    { "EN", "lastName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Last name" },
+                    { "EN", "movementType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Movement type" },
+                    { "EN", "movements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Movements" },
+                    { "EN", "month_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Month" },
+                    { "EN", "monday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Monday" },
+                    { "EN", "isService_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Is service" },
+                    { "EN", "jan_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "January" },
+                    { "EN", "recordedRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Recorded rate" },
+                    { "EN", "jul_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "July" },
+                    { "EN", "jun_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Jun" },
                     { "EN", "language_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Language" },
+                    { "EN", "lastName_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Last name" },
                     { "EN", "leadDueDays_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Lead due days" },
+                    { "EN", "originBranchOffice_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin branch office" },
                     { "EN", "leadNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Lead number" },
-                    { "EN", "login_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Login" },
                     { "EN", "logOut_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Log Out" },
                     { "EN", "logOut_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Log out" },
                     { "EN", "male_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Male" },
                     { "EN", "march_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "March" },
                     { "EN", "markAsDeliveredConfirm_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Are you sure to mark this lead as delivered?" },
-                    { "EN", "maxClosureDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Max closure date" },
                     { "EN", "may_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "May" },
-                    { "EN", "mobile_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Mobile phone number" },
-                    { "EN", "monday_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Monday" },
-                    { "EN", "month_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Month" },
-                    { "EN", "movements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Movements" },
-                    { "EN", "movementType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Movement type" },
-                    { "EN", "outcomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Outcome amount" },
-                    { "EN", "outOfStock_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product is out of stock." },
                     { "EN", "menu_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Lunch menu" },
-                    { "EN", "owedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Owed amount" },
+                    { "EN", "mobile_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Mobile phone number" },
+                    { "EN", "login_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Login" },
+                    { "EN", "originQuantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin quantity" },
+                    { "EN", "maxClosureDate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Max closure date" },
+                    { "EN", "outcomeAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Outcome amount" },
+                    { "EN", "Price3_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price 3" },
+                    { "EN", "pricesList_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Prices List" },
+                    { "EN", "primaryUnitRequired_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Primary unit is required. Please select one" },
                     { "EN", "print_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Print" },
                     { "EN", "print_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Print" },
                     { "EN", "product_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product" },
                     { "EN", "productCost_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product cost" },
                     { "EN", "productNeedsPrimaryUnit_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product needs one primary unit." },
+                    { "EN", "Price2_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price 2" },
                     { "EN", "productNeedsTaxes_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product need at least one tax" },
-                    { "EN", "productNeedsUnits_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product needs at least one unit." },
-                    { "EN", "products_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Products" },
+                    { "EN", "productsMovements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Products Movements" },
                     { "EN", "profile_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Profile" },
                     { "EN", "quantity_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Quantity" },
                     { "EN", "quotes_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Quotes" },
-                    { "EN", "rate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Rate" },
-                    { "EN", "receiptsReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Receipts report" },
+                    { "EN", "originWarehouse_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Origin warehouse" },
                     { "EN", "receivedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Received amount" },
+                    { "EN", "receiptsReport_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Receipts report" },
+                    { "EN", "rate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Rate" },
+                    { "EN", "products_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Products" },
+                    { "EN", "price_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price" },
+                    { "EN", "productNeedsUnits_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product needs at least one unit." },
+                    { "EN", "position_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Position" },
+                    { "EN", "owedAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Owed amount" },
+                    { "EN", "positiveBalance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Positive balance" },
                     { "EN", "OutstandingAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Outstanding amount" },
-                    { "EN", "recordedRate_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Recorded rate" },
-                    { "EN", "receivedBy_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Received by" },
-                    { "EN", "primaryUnitRequired_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Primary unit is required. Please select one" },
-                    { "EN", "pricesList_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Prices List" },
-                    { "EN", "productsMovements_menu", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Products Movements" },
-                    { "EN", "Price2_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price 2" },
+                    { "EN", "outOfStock_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Product is out of stock." },
                     { "EN", "paidAmount_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Paid amount" },
-                    { "EN", "owedAmountOutdated_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Owed amount is outdated. please try update and try again." },
-                    { "EN", "Price3_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price 3" },
                     { "EN", "parentUnitDoesntExist_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Parent unit does not exist." },
-                    { "EN", "password_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Password" },
+                    { "EN", "owedAmountOutdated_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Owed amount is outdated. please try update and try again." },
                     { "EN", "password_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Password" },
-                    { "EN", "paymentNotValid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payment is not valid." },
+                    { "EN", "pay_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Pay" },
+                    { "EN", "password_input", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Password" },
+                    { "EN", "pleaseSelect_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Please select" },
                     { "EN", "paymentsComission_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payments comissions" },
                     { "EN", "paymentType_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payment type" },
-                    { "EN", "pay_btn", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Pay" },
-                    { "EN", "phone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Phone number" },
-                    { "EN", "price_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Price" },
-                    { "EN", "phoneNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Phone number" },
-                    { "EN", "pleaseSelect_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Please select" },
-                    { "EN", "position_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Position" },
                     { "EN", "permissions_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Permissions" },
-                    { "EN", "positiveBalance_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Positive balance" }
+                    { "EN", "paymentNotValid_msg", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Payment is not valid." },
+                    { "EN", "phoneNumber_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Phone number" },
+                    { "EN", "phone_lbl", true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1L, null, null, null, "Phone number" }
                 });
 
             migrationBuilder.InsertData(
@@ -3255,38 +3523,38 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 values: new object[,]
                 {
                     { 688L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 35L },
-                    { 686L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 35L },
+                    { 695L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 35L },
                     { 694L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 35L },
                     { 693L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 35L },
-                    { 692L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 35L },
-                    { 690L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 35L },
-                    { 711L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 36L },
-                    { 689L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 35L },
-                    { 695L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 35L },
-                    { 687L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 35L },
+                    { 686L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 35L },
                     { 691L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 35L },
+                    { 687L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 35L },
+                    { 690L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 35L },
+                    { 689L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 35L },
+                    { 692L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 35L },
                     { 696L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 35L },
-                    { 704L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 36L },
+                    { 703L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 36L },
                     { 698L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 35L },
                     { 699L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 35L },
                     { 701L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 36L },
                     { 702L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 36L },
-                    { 703L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 36L },
+                    { 704L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 36L },
                     { 705L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 36L },
                     { 706L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 36L },
                     { 707L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 36L },
+                    { 711L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 36L },
                     { 708L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 36L },
                     { 685L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 35L },
                     { 709L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 36L },
                     { 710L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 36L },
                     { 697L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 35L },
                     { 684L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 35L },
-                    { 664L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 34L },
+                    { 665L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 34L },
                     { 682L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 35L },
-                    { 652L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 33L },
                     { 653L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 33L },
-                    { 712L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 36L },
                     { 654L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 33L },
+                    { 712L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 36L },
+                    { 652L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 33L },
                     { 655L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 33L },
                     { 656L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 33L },
                     { 657L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 33L },
@@ -3295,7 +3563,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 661L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 34L },
                     { 662L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 34L },
                     { 663L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 34L },
-                    { 665L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 34L },
+                    { 664L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 34L },
                     { 683L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 35L },
                     { 666L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 34L },
                     { 668L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 34L },
@@ -3313,15 +3581,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 681L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 35L },
                     { 667L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 34L },
                     { 713L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 36L },
-                    { 753L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 38L },
+                    { 755L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 38L },
                     { 715L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 36L },
                     { 749L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 38L },
                     { 750L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 38L },
                     { 751L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 38L },
                     { 752L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 38L },
-                    { 776L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 39L },
+                    { 753L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 38L },
                     { 754L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 38L },
-                    { 755L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 38L },
                     { 756L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 38L },
                     { 757L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 38L },
                     { 758L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 38L },
@@ -3340,8 +3607,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 772L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 39L },
                     { 773L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 39L },
                     { 774L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 39L },
-                    { 651L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 33L },
+                    { 651L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 33L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionOperations",
+                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
+                values: new object[,]
+                {
                     { 775L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 39L },
+                    { 776L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 39L },
                     { 748L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 38L },
                     { 714L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 36L },
                     { 747L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 38L },
@@ -3369,20 +3644,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 737L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 37L },
                     { 738L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 37L },
                     { 739L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 37L },
-                    { 741L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 38L }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionOperations",
-                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
-                values: new object[,]
-                {
+                    { 741L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 38L },
                     { 742L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 38L },
                     { 743L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 38L },
                     { 744L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 38L },
                     { 746L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 38L },
                     { 650L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 33L },
-                    { 565L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 29L },
+                    { 562L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 29L },
                     { 648L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 33L },
                     { 553L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 28L },
                     { 554L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 28L },
@@ -3392,9 +3660,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 558L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 28L },
                     { 559L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 28L },
                     { 561L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 29L },
-                    { 562L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 29L },
                     { 563L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 29L },
                     { 564L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 29L },
+                    { 565L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 29L },
                     { 566L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 29L },
                     { 567L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 29L },
                     { 568L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 29L },
@@ -3506,7 +3774,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 614L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 31L },
                     { 616L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 31L },
                     { 778L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 39L },
-                    { 951L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 48L },
+                    { 957L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 48L },
                     { 781L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 40L },
                     { 945L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 48L },
                     { 946L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 48L },
@@ -3514,12 +3782,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 948L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 48L },
                     { 949L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 48L },
                     { 950L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 48L },
+                    { 951L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 48L },
                     { 952L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 48L },
                     { 953L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 48L },
                     { 954L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 48L },
                     { 955L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 48L },
                     { 956L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 48L },
-                    { 957L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 48L },
                     { 958L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 48L },
                     { 959L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 48L },
                     { 961L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 49L },
@@ -3555,7 +3823,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 926L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 47L },
                     { 927L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 47L },
                     { 928L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 47L },
-                    { 929L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 47L },
+                    { 929L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 47L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionOperations",
+                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
+                values: new object[,]
+                {
                     { 930L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 47L },
                     { 931L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 47L },
                     { 932L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 47L },
@@ -3585,14 +3860,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 1079L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 52L },
                     { 1080L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 52L },
                     { 1081L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 52L },
-                    { 1082L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 52L }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionOperations",
-                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
-                values: new object[,]
-                {
+                    { 1082L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 52L },
                     { 1083L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 52L },
                     { 1084L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 52L },
                     { 1085L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 52L },
@@ -3761,7 +4029,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 874L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 44L },
                     { 876L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 44L },
                     { 519L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 26L },
-                    { 174L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 9L },
+                    { 161L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 9L },
                     { 517L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 26L },
                     { 164L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 9L },
                     { 165L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 9L },
@@ -3771,9 +4039,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 169L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 9L },
                     { 170L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 9L },
                     { 171L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 9L },
-                    { 172L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 9L },
+                    { 172L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 9L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionOperations",
+                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
+                values: new object[,]
+                {
                     { 173L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 13L, 9L },
-                    { 1093L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 52L },
+                    { 174L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 9L },
                     { 175L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 15L, 9L },
                     { 163L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 9L },
                     { 176L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 9L },
@@ -3791,7 +4066,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 190L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 10L },
                     { 177L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 9L },
                     { 162L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 9L },
-                    { 161L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 9L },
+                    { 1093L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 52L },
                     { 159L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 8L },
                     { 131L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 11L, 7L },
                     { 132L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 12L, 7L },
@@ -3801,14 +4076,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 136L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 7L },
                     { 137L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 7L },
                     { 138L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 7L },
-                    { 139L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 7L }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionOperations",
-                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
-                values: new object[,]
-                {
+                    { 139L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 7L },
                     { 141L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 8L },
                     { 142L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 8L },
                     { 143L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 8L },
@@ -3987,7 +4255,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 96L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 16L, 5L },
                     { 94L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 14L, 5L },
                     { 66L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 4L },
-                    { 67L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 4L },
+                    { 67L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 4L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionOperations",
+                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
+                values: new object[,]
+                {
                     { 68L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 4L },
                     { 69L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 9L, 4L },
                     { 70L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 4L },
@@ -4017,14 +4292,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 518L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 18L, 26L },
                     { 257L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 17L, 13L },
                     { 259L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 13L },
-                    { 424L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 22L }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionOperations",
-                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
-                values: new object[,]
-                {
+                    { 424L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 22L },
                     { 425L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 22L },
                     { 426L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 22L },
                     { 427L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 22L },
@@ -4203,7 +4471,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 283L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 15L },
                     { 284L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 15L },
                     { 285L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 15L },
-                    { 286L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 15L },
+                    { 286L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 15L }
+                });
+
+            migrationBuilder.InsertData(
+                table: "SectionOperations",
+                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
+                values: new object[,]
+                {
                     { 287L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 7L, 15L },
                     { 288L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 8L, 15L },
                     { 290L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 10L, 15L },
@@ -4233,14 +4508,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     { 379L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 19L, 19L },
                     { 381L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 1L, 20L },
                     { 382L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 2L, 20L },
-                    { 383L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 20L }
-                });
-
-            migrationBuilder.InsertData(
-                table: "SectionOperations",
-                columns: new[] { "Id", "Active", "CreatedBy", "CreatedByName", "CreatedDate", "ModifiedBy", "ModifiedByName", "ModifiedDate", "OperationId", "SectionId" },
-                values: new object[,]
-                {
+                    { 383L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 3L, 20L },
                     { 384L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 4L, 20L },
                     { 385L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 5L, 20L },
                     { 386L, true, new Guid("00000000-0000-0000-0000-000000000000"), null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, null, 6L, 20L },
@@ -4498,6 +4766,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CashRegisterFlowDetails_CashRegisterOpeningId",
+                table: "CashRegisterFlowDetails",
+                column: "CashRegisterOpeningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CashRegisterFlowDetails_CurrencyId",
+                table: "CashRegisterFlowDetails",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CashRegisterFlowDetails_PaymentTypeId",
+                table: "CashRegisterFlowDetails",
+                column: "PaymentTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CashRegisterOpeningDetails_CashRegisterOpeningId",
                 table: "CashRegisterOpeningDetails",
                 column: "CashRegisterOpeningId");
@@ -4568,9 +4851,24 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_InsuranceId",
+                table: "Customers",
+                column: "InsuranceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_InsurancePlanId",
+                table: "Customers",
+                column: "InsurancePlanId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_TRNControlId",
                 table: "Customers",
                 column: "TRNControlId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_ZoneId",
+                table: "Customers",
+                column: "ZoneId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomersBalance_CurrencyId",
@@ -4618,14 +4916,34 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "CustomerReturnId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CustomersReturnDetails_ProductoId",
+                name: "IX_CustomersReturnDetails_ProductId",
                 table: "CustomersReturnDetails",
-                column: "ProductoId");
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomersReturnDetails_WarehouseId",
                 table: "CustomersReturnDetails",
                 column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomersReturns_BranchOfficeId",
+                table: "CustomersReturns",
+                column: "BranchOfficeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomersReturns_CreditNoteId",
+                table: "CustomersReturns",
+                column: "CreditNoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomersReturns_CurrencyId",
+                table: "CustomersReturns",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomersReturns_CustomerId",
+                table: "CustomersReturns",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomersReturns_InvoiceId",
@@ -4698,6 +5016,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "TaxId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InsurancePlans_InsuranceId",
+                table: "InsurancePlans",
+                column: "InsuranceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Insurances_CurrencyId",
+                table: "Insurances",
+                column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Inventory_BranchOfficeId",
                 table: "Inventory",
                 column: "BranchOfficeId");
@@ -4748,6 +5076,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "WarehouseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetails_InvoiceId",
+                table: "InvoiceDetails",
+                column: "InvoiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetails_ProductId",
+                table: "InvoiceDetails",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InvoiceDetails_UnitId",
+                table: "InvoiceDetails",
+                column: "UnitId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Invoices_BranchOfficeId",
                 table: "Invoices",
                 column: "BranchOfficeId");
@@ -4761,6 +5104,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 name: "IX_Invoices_CustomerId",
                 table: "Invoices",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_InsuranceId",
+                table: "Invoices",
+                column: "InsuranceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_InsurancePlanId",
+                table: "Invoices",
+                column: "InsurancePlanId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invoices_SellerId",
@@ -5122,13 +5475,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CashRegisterFlowDetails");
+
+            migrationBuilder.DropTable(
                 name: "CashRegisterOpeningDetails");
 
             migrationBuilder.DropTable(
                 name: "CompositeProducts");
-
-            migrationBuilder.DropTable(
-                name: "CreditNotes");
 
             migrationBuilder.DropTable(
                 name: "CustomersBalance");
@@ -5150,6 +5503,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "InventoryEntries");
+
+            migrationBuilder.DropTable(
+                name: "InvoiceDetails");
 
             migrationBuilder.DropTable(
                 name: "InvoicesTaxes");
@@ -5248,6 +5604,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 name: "Units");
 
             migrationBuilder.DropTable(
+                name: "CreditNotes");
+
+            migrationBuilder.DropTable(
                 name: "Suppliers");
 
             migrationBuilder.DropTable(
@@ -5284,16 +5643,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Zones");
-
-            migrationBuilder.DropTable(
                 name: "BranchOffices");
 
             migrationBuilder.DropTable(
-                name: "Currencies");
+                name: "InsurancePlans");
 
             migrationBuilder.DropTable(
                 name: "TRNsControl");
+
+            migrationBuilder.DropTable(
+                name: "Zones");
+
+            migrationBuilder.DropTable(
+                name: "Insurances");
+
+            migrationBuilder.DropTable(
+                name: "Currencies");
         }
     }
 }

@@ -62,12 +62,12 @@ export class PagesComponent {
         hidden: !this.securityService.validateMenuChildren(menuChildren.core),
         children: [
           {
-            title: this.lang.getValueByKey('branchOffice_menu'),
+            title: this.lang.getValueByKey('hospitals_menu'),
             link: 'branchoffice',
             hidden: !this.securityService.isUserValidInMenu(AppSections.BranchOffices)
           },
           {
-            title: this.lang.getValueByKey('warehouse_menu'),
+            title: this.lang.getValueByKey('medicineWarehouse_menu'),
             link: 'warehouse',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Warehouses)
           },
@@ -96,23 +96,19 @@ export class PagesComponent {
             link: 'trncontrol',
             hidden: !this.securityService.isUserValidInMenu(AppSections.TRNControl)
           },
+        
           {
-            title: this.lang.getValueByKey('zones_menu'),
-            link: 'zone',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Zones)
-          },
-          {
-            title: this.lang.getValueByKey('sellers_menu'),
-            link: 'seller',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Sellers)
-          },
-          {
-            title: this.lang.getValueByKey('customers_menu'),
+            title: this.lang.getValueByKey('patients_menu'),
             link: 'customer',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
           {
-            title: this.lang.getValueByKey('products_menu'),
+            title: this.lang.getValueByKey('insurances_menu'),
+            link: 'insurance',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
+          },
+          {
+            title: this.lang.getValueByKey('services_menu'),
             link: 'product',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
           },

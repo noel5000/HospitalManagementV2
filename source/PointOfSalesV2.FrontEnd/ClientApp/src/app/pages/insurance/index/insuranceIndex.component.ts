@@ -3,22 +3,23 @@ import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
-import { CustomerService } from '../../../@core/services/CustomerService';
 import { basename } from 'path';
 import {IPaginationModel, IActionButtonModel } from '../../../@theme/components/pagination/pagination.component';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
-import { Customer } from '../../../@core/data/customer';
+import { BaseService } from '../../../@core/services/baseService';
+import { endpointUrl } from '../../../@core/common/constants';
+import { HttpClient } from '@angular/common/http';
 
 
 declare const $: any;
 @Component({
-    selector: "customer-list",
-    templateUrl: "./customerIndex.component.html",
-    styleUrls: ["../customerStyles.component.scss"]
+    selector: "insurance-list",
+    templateUrl: "./insuranceIndex.component.html",
+    styleUrls: ["../insuranceStyles.component.scss"]
 })
-export class CustomerIndexComponent extends BaseComponent implements OnInit {
+export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.verifyUser();
         this.getPagedData(1);
@@ -28,23 +29,29 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
     pageSize:number=10;
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
     maxCount:number=0;
   filters: QueryFilter[] = [
-      
+        {
+            property: "Currency",
+            value: "Name",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        },
     ];
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
-    Customers:Customer[]=[];
+    insurances:any[]=[];
 
 
     constructor(
         route: Router,
+        private  http: HttpClient,
         langService: LanguageService,
-        private service: CustomerService,
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Customers,modalService);
+        super(route, langService, AppSections.Insurance,modalService);
         let scope = this;
        
         this.tableConfig=[
@@ -70,17 +77,6 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
-  {
-      visible:true,
-      id:'cardId',
-      type:'text',
-      isTranslated:false,
-      name:this.lang.getValueByKey('cardId_lbl'),
-      sorting:'desc',
-      toSort:false,
-      objectType:ObjectTypes.String,
-      filterIsActive:true
-    },
     {
         visible:true,
         id:'phoneNumber',
@@ -103,29 +99,6 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
           objectType:ObjectTypes.String,
           filterIsActive:true
         },
-        {
-            visible:true,
-            id:'insuranceId',
-            type:'text',
-            fieldToShow:'insurance.name',
-            isTranslated:false,
-            name:this.lang.getValueByKey('insurance_lbl'),
-            sorting:'desc',
-            toSort:true,
-            objectType:ObjectTypes.String,
-            filterIsActive:false
-          },{
-            visible:true,
-            id:'insurancePlanId',
-            type:'text',
-            fieldToShow:'insurancePlan.name',
-            isTranslated:false,
-            name:this.lang.getValueByKey('insurancePlan_lbl'),
-            sorting:'desc',
-            toSort:true,
-            objectType:ObjectTypes.String,
-            filterIsActive:false
-          },
         ];
 this.actions=[
     {
@@ -161,7 +134,7 @@ this.actions=[
         this.service.getFiltered(this.pageNumber, this.pageSize, this.filters, this.orderBy, this.orderDirection).subscribe(r => {
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
-            this.Customers=r['value'];
+            this.insurances=r['value'];
           
         },
             error => {
@@ -185,7 +158,12 @@ else{
 }
     getPagedData(page:number) {
         const expandFilters =[
-            
+            {
+                property: "Currency",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:false
+            }
         ];
         expandFilters.forEach(expandFilter=>{
             const expandIndex = this.filters.findIndex(x => x.property == expandFilter.property);
@@ -256,13 +234,13 @@ else{
     }
 
     addNew() {
-        this.router.navigateByUrl(`pages/customer/add`);
+        this.router.navigateByUrl(`pages/insurance/add`);
     }
-    edit(e:Customer) {
-        this.router.navigateByUrl(`pages/customer/edit/${e.id}`);
+    edit(e:any) {
+        this.router.navigateByUrl(`pages/insurance/edit/${e.id}`);
     }
     source:any={};
-    onDeleteConfirm(event:Customer): void {
+    onDeleteConfirm(event:any): void {
  var result =       this.modalService.confirmationModal({
             titleText:this.lang.getValueByKey('deleteConfirm_lbl'),
             bodyText:this.lang.getValueByKey('areYouSure_lbl'),

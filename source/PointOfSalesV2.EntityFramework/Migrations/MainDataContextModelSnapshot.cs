@@ -591,6 +591,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("BillingAmountLimit")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<string>("BloodType")
+                        .HasColumnType("nvarchar(4)")
+                        .HasMaxLength(4);
+
                     b.Property<string>("CardId")
                         .HasColumnType("nvarchar(20)")
                         .HasMaxLength(20);
@@ -613,6 +617,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancPlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("InsuranceCardId")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("InvoiceDueDays")
@@ -655,6 +675,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
 
                     b.HasIndex("TRNControlId");
 
@@ -1257,6 +1281,128 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("ExpensesPayments");
                 });
 
+            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Contact1")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Contact2")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Contact3")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.ToTable("Insurances");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.ToTable("InsurancePlans");
+                });
+
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
                 {
                     b.Property<long>("Id")
@@ -1480,6 +1626,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("ExchangeRate")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<string>("InsuranceCardId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("InventoryModified")
                         .HasColumnType("bit");
 
@@ -1556,6 +1711,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
 
                     b.HasIndex("SellerId");
 
@@ -2045,6 +2204,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "addRole_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Add roles"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "addSector_btn",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -2191,6 +2360,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Before taxes amount"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "bill_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Bill Quote"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "billConfirm_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Are you sure to convert this quote?"
                         },
                         new
                         {
@@ -2471,6 +2660,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Card Id"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "cardIdAlreadyExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Card id already exists."
                         },
                         new
                         {
@@ -2765,6 +2964,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "creditNote_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Credit Note"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "creditNoteAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Credit Note Amount"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "creditNoteApplied_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -2891,6 +3110,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Payments"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "customerReturns_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Customers returns"
                         },
                         new
                         {
@@ -3111,6 +3340,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Details"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "detailsRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Details are required"
                         },
                         new
                         {
@@ -3455,6 +3694,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "invalidInvoiceStateReturn_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Invalid invoice state."
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "inventory_menu",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3495,6 +3744,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "invoiceDoesNotExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Invoice number does not exists"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "invoiceDueDays_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3531,6 +3790,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Invoice number"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "invoiceNumberRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Invoice number is required"
                         },
                         new
                         {
@@ -4505,6 +4774,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "returnAlreadyApplied_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Return already applied"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "returnedAmount_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4581,6 +4860,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Save"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "savedFormData_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "There is previous information saved for this form. Do you want to recover?"
                         },
                         new
                         {
@@ -4731,6 +5020,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Series"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "sessionTimeOut_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "La sesión ha expirado. Favor iniciar sesión nuevamente."
                         },
                         new
                         {
@@ -5475,6 +5774,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "bill_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Facturar Cotización"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "billConfirm_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Está seguro de facturar esta cotización?"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "billedBy_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5751,6 +6070,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Documento identidad"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "cardIdAlreadyExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Identificación ya existe."
                         },
                         new
                         {
@@ -6045,6 +6374,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "creditNote_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Nota de crédito"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "creditNoteAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Moto de Nota de crédito"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "creditNoteApplied_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6171,6 +6520,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Pagos"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "customerReturns_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Devolución de clientes"
                         },
                         new
                         {
@@ -6391,6 +6750,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Detalles"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "detailsRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Detalles son obligatorios"
                         },
                         new
                         {
@@ -6735,6 +7104,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "invalidInvoiceStateReturn_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Estado de factura no es válido"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "inventory_menu",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6775,6 +7154,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "invoiceDoesNotExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Número de factura no exixste"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "invoiceDueDays_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6811,6 +7200,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Número de factura"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "invoiceNumberRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Número de factura es requerido"
                         },
                         new
                         {
@@ -7660,7 +8059,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Conduces"
+                            Value = "Cotizaciones"
                         },
                         new
                         {
@@ -7785,6 +8184,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "returnAlreadyApplied_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "La devolución ya se encuentra aplicada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "returnedAmount_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7861,6 +8270,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Guardar"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "savedFormData_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Existe información guardada en este formulario. Desea recuperarla?"
                         },
                         new
                         {
@@ -8011,6 +8430,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Serie"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "sessionTimeOut_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Session expired. Please login again."
                         },
                         new
                         {
@@ -21759,6 +22188,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Name = "Menus",
                             NumericControl = 0L,
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}]}"
+                        },
+                        new
+                        {
+                            Id = 17L,
+                            Active = true,
+                            Code = (short)17,
+                            CodeName = "INS",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Insurances",
+                            NumericControl = 0L,
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}]}"
                         });
                 });
 
@@ -22798,6 +23240,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany("Affiliates")
+                        .HasForeignKey("InsuranceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany("SubscribedPatients")
+                        .HasForeignKey("InsurancePlanId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("PointOfSalesV2.Entities.TRNControl", "TRNControl")
                         .WithMany()
                         .HasForeignKey("TRNControlId")
@@ -22996,6 +23448,24 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany("InsurancePlans")
+                        .HasForeignKey("InsuranceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
                 {
                     b.HasOne("PointOfSalesV2.Entities.BranchOffice", "BranchOffice")
@@ -23081,6 +23551,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany()
+                        .HasForeignKey("InsuranceId");
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany()
+                        .HasForeignKey("InsurancePlanId");
 
                     b.HasOne("PointOfSalesV2.Entities.Seller", "Seller")
                         .WithMany()

@@ -52,6 +52,7 @@ import { ComissionsReportModule } from './comissionsReport/comissionsReport.modu
 import { quotesModule } from './quotes/quote.module';
 import { CustomerReturnModule } from './customerReturn/customerReturn.module';
 import { httpInterceptorProviders } from '../@core/services/baseService';
+import { InsuranceModule } from './insurance/insurance.module';
 
 @NgModule({
   imports: [
@@ -69,6 +70,7 @@ import { httpInterceptorProviders } from '../@core/services/baseService';
     WarehouseModule,
     UserModule,
     CustomerModule,
+    InsuranceModule,
     ProductModule,
     RoleModule,
     UserRoleModule,

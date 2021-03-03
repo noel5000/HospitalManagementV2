@@ -12,3 +12,5 @@ source/PointOfSalesV2.EntityFramework/obj/
 source/PointOfSalesV2.Repository/bin/
 source/PointOfSalesV2.Repository/obj/
 source/PointOfSalesV2.Test/obj/
+source/PointOfSalesV2.Console/bin/
+source/PointOfSalesV2.Test/bin/

@@ -176,6 +176,8 @@ export enum AppSections {
     InventoryIncomes = 47,
     CompanyPayments=48,
     Menu=49,
+    Insurance=53,
+    InsurancePlan=54
 
 }
 export enum MovementTypes {

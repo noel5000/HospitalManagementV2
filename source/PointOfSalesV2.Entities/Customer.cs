@@ -71,6 +71,20 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("TRNControlId")]
         [Export(Order =11, ChildProperty ="Name" )]
         public TRNControl TRNControl { get; set; }
+        [MaxLength(4)]
+        public string BloodType { get; set; }
+        public long? InsurancId { get; set; }
+
+        public long? InsurancPlanId { get; set; }
+
+        [MaxLength(50)]
+        public string InsuranceCardId { get; set; }
+
+        [ForeignKey("InsuranceId")]
+        public virtual Insurance Insurance { get; set; }
+
+        [ForeignKey("InsurancePlanId")]
+        public virtual InsurancePlan InsurancePlan { get; set; }
 
     }
 }

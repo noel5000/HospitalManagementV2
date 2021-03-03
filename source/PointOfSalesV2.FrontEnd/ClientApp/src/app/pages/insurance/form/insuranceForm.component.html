@@ -1,5 +1,5 @@
 <div class="card m-3">
-    <h5 class="card-header">{{'patients_menu' | translate}}</h5>
+    <h5 class="card-header">{{'insurances_menu' | translate}}</h5>
     <div class="card-body">
         <form [formGroup]="itemForm" (ngSubmit)="save()">
             <div class="form-row">
@@ -12,30 +12,7 @@
                     </div>
                 </div>
 
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'cardId_lbl' | translate}}</label>
-                    <input type="text" formControlName="cardId" minlength="1" maxlength="20" class="form-control" [ngClass]="{ 'is-invalid': form.cardId.errors }" />
-                   
-                </div>
-
               
-
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'bloodType_lbl' | translate}}</label>
-                    <select class="form-control"
-                    required
-                    [ngClass]="{ 'is-invalid': form.bloodType.errors }"
-                    formControlName="bloodType"
-                    >
-                    <option *ngFor="let bloodTypeText of bloodTypes"
-                     [value]="bloodTypeText"
-                     >{{bloodTypeText}}</option>
-                    </select>
-                    <div *ngIf="form.bloodType.errors" class="invalid-feedback">
-                        <div *ngIf="form.bloodType.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-
                
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'phoneNumber_lbl' | translate}}</label>
@@ -59,7 +36,29 @@
                         <div *ngIf="form.address.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'accountNumber_lbl' | translate}}</label>
+                    <input type="text" formControlName="accountNumber" minlength="1" maxlength="50" class="form-control"  />
+                    
+                </div>
 
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'contact1_lbl' | translate}}</label>
+                    <input type="text" formControlName="contact1" minlength="1" maxlength="50" class="form-control"  />
+                    
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'contact2_lbl' | translate}}</label>
+                    <input type="text" formControlName="contact2" minlength="1" maxlength="50" class="form-control"  />
+                    
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'contact3_lbl' | translate}}</label>
+                    <input type="text" formControlName="contact3" minlength="1" maxlength="50" class="form-control"  />
+                    
+                </div>
                
                
                 <div class="form-group col-md-6 col-xs-12">
@@ -77,48 +76,6 @@
                     </div>
                 </div>
 
-               
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'trnControl_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.trnControlId.errors }"
-                    formControlName="trnControlId"
-                    >
-                    <option *ngFor="let trnControl of trnControls"
-                     [value]="trnControl.id"
-                     >{{trnControl.name}}</option>
-                    </select>
-                    <div *ngIf="form.trnControlId.errors" class="invalid-feedback">
-                        <div *ngIf="form.trnControlId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'Insurance_lbl' | translate}}</label>
-                    <select class="form-control"
-                    formControlName="insuranceId"
-                    >
-                    <option *ngFor="let insurance of insurances"
-                     [value]="insurance.id"
-                     >{{insurance.name}}</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'InsurancePlan_lbl' | translate}}</label>
-                    <select class="form-control"
-                    formControlName="insurancePlanId"
-                    >
-                    <option *ngFor="let insurancePlan of insurancePlans"
-                     [value]="insurancePlan.id"
-                     >{{insurancePlan.name}}</option>
-                    </select>
-                </div>
-
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'insuranceCardId_lbl' | translate}}</label>
-                    <input type="text" formControlName="insuranceCardId" minlength="1" maxlength="20" class="form-control"  />
-                    
-                </div>
 
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'code_lbl' | translate}}</label>
@@ -127,7 +84,46 @@
                 </div>
                
             </div>
-          
+            
+          <div *ngIf="id>0" class="" id="insurancePlanForm">
+              <h3>{{'plans_lbl'}}</h3>
+              <br>
+<div class="row">
+    <div class="form-group col-md-6 col-xs-12">
+        <label>{{'name_lbl' | translate}}</label>
+        <input type="text" formControlName="planName" maxlength="50"  class="form-control" />
+       
+    </div>
+    
+    <div class=" form-group  col-md-3 col-xs-12">
+        <i class="btn btn-primary mr-1  my-4" (click)="addPlan()">{{'add_btn' | translate}}</i>
+    </div>
+</div>
+            
+            <div class="scrollTableMobile">
+                <table class="table">
+                    <thead>
+                       <tr>
+                          <th>{{'id_lbl' | translate}}</th>
+                          <th>{{'name_lbl' | translate}}</th>
+                          <th></th>
+                       </tr>
+                      
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let plan of insurancePlans">
+                            <td>{{plan.id}}</td>
+                            <td>{{plan.name}}</td>
+                            <td>
+                               <i class="btn btn-info" (click)="editPlan(plan.id)">{{'edit_btn' | translate}}</i>
+                               <i class="btn btn-danger" (click)="onDeletePlanConfirm(plan.id)">{{'delete_btn' | translate}}</i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+          </div>
           
             <div class="text-center">
                 <button class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>

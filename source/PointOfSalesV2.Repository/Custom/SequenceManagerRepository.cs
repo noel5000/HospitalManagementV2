@@ -22,7 +22,7 @@ namespace PointOfSalesV2.Repository
             
             if (sequence != null) 
             {
-                result = String.Format("{0}{1:00000}", ((SequenceTypeCode)(short)sequence.Code).ToString() , (sequence.NumericControl + 1));
+                result = String.Format("{0}{1:00000}", sequence.CodeName , (sequence.NumericControl + 1));
                 sequence.NumericControl += 1;
                 _Context.SequencesControl.Update(sequence);
                 _Context.SaveChanges();

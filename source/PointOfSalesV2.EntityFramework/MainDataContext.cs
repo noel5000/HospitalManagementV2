@@ -27,6 +27,8 @@ public class MainDataContext : DbContext
     }
     #region Tables
 
+    public virtual DbSet<Insurance> Insurances { get; set; }
+    public virtual DbSet<InsurancePlan> InsurancePlans { get; set; }
     public virtual DbSet<CashRegister> CashRegisters { get; set; }
     public virtual DbSet<LanguageKey> LanguageKeys { get; set; }
     public virtual DbSet<CashRegisterOpening> CashRegisterOpenings { get; set; }
@@ -111,6 +113,18 @@ public class MainDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Insurance>()
+         .HasMany(p => p.InsurancePlans)
+         .WithOne(d => d.Insurance).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Insurance>()
+        .HasMany(p => p.Affiliates)
+        .WithOne(d => d.Insurance).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<InsurancePlan>()
+      .HasMany(p => p.SubscribedPatients)
+      .WithOne(d => d.InsurancePlan).OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<Invoice>()
           .HasMany(p => p.InvoiceDetails)
           .WithOne(d=>d.Invoice).OnDelete(DeleteBehavior.Restrict);

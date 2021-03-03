@@ -109,7 +109,8 @@ namespace PointOfSalesV2.Common
             Schools=13,
             ExpensePayments=14,
             Products=15,
-            Menus=16
+            Menus=16,
+            Insurances=17
         }
 
       
@@ -138,6 +139,7 @@ namespace PointOfSalesV2.Common
             PG=14,
             PRO = 15,
             MEN=16,
+            INS=17
         }
 
         public enum AppSections
@@ -194,6 +196,8 @@ namespace PointOfSalesV2.Common
             School = 50,
             SchoolMenu=51,
             InvoiceLeads=52,
+            Insurance=53,
+            InsurancePlan=54
 
         }
         public enum MovementTypes
@@ -218,10 +222,12 @@ namespace PointOfSalesV2.Common
             {AppSections.Currencies,"Currency" },
             {AppSections.Taxes,"Tax" },
             {AppSections.InvoiceLeads,"InvoiceLead,Product,Customer,BranchOffice" },
-            {AppSections.Invoices,"Invoice,InvoiceDetail,TRNControl,Unit,UnitProductEquivalence,Seller,BranchOffice,Warehouse,CreditNote,Currency,Customer,Inventory,PaymentType" },
-            {AppSections.Quotes,"Invoice,InvoiceDetail,Unit,UnitProductEquivalence,Seller,Currency,Customer" },
-            {AppSections.Customers,"Customer,BranchOffice,Warehouse,TRNControl,Zone" },
+            {AppSections.Invoices,"Invoice,InvoiceDetail,TRNControl,Unit,UnitProductEquivalence,Seller,BranchOffice,Warehouse,CreditNote,Currency,Customer,Inventory,PaymentType,Insurance,InsurancePlan" },
+            {AppSections.Quotes,"Invoice,InvoiceDetail,Unit,UnitProductEquivalence,Seller,Currency,Customer,Insurance,InsurancePlan" },
+            {AppSections.Customers,"Customer,BranchOffice,Warehouse,TRNControl,Zone,Invoice,InvoicePlan,Insurance,InsurancePlan" },
             {AppSections.Warehouses,"BranchOffice,Warehouse" },
+           { AppSections.Insurance,"Insurance,Currency"},
+           { AppSections.InsurancePlan,"InsurancePlan,Insurance,Currency"},
             {AppSections.All,"*" },
             {AppSections.Inventories,"Inventory,Product,BranchOffice,Warehouse,Supplier" },
             {AppSections.TRNControl,"TRNControl" },

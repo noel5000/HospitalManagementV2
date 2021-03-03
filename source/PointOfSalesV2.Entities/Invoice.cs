@@ -66,7 +66,21 @@ namespace PointOfSalesV2.Entities
             this.PaidDate = newInvoice.PaidDate;
             this.InventoryModified = newInvoice.InventoryModified;
             this.CurrentPaidAmount = newInvoice.CurrentPaidAmount;
+            this.Insurance = newInvoice.Insurance;
+            this.InsuranceId = newInvoice.InsuranceId;
+            this.InsurancePlan = newInvoice.InsurancePlan;
+            this.InsurancePlanId = newInvoice.InsurancePlanId;
+            this.InsuranceCardId = newInvoice.InsuranceCardId;
         }
+        public string InsuranceCardId { get; set; }
+
+        [ForeignKey("InsuranceId")]
+        public virtual Insurance Insurance { get; set; }
+        [ForeignKey("InsurancePlanId")]
+        public virtual InsurancePlan InsurancePlan { get; set; }
+
+        public long? InsuranceId { get; set; }
+        public long? InsurancePlanId { get; set; }
 
         public DateTime InitialDate 
         {
