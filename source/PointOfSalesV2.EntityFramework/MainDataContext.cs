@@ -93,6 +93,7 @@ public class MainDataContext : DbContext
     public virtual DbSet<UserClaims> UsersClaims { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
+    public virtual DbSet<InsuranceServiceCoverage> InsuranceServiceCoverages { get; set; }
 
 
 

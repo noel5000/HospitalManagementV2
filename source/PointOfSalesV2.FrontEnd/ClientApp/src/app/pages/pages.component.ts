@@ -101,17 +101,21 @@ export class PagesComponent {
             link: 'insurance',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
-        
+          {
+            title: this.lang.getValueByKey('consultation_menu'),
+            link: 'product',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
+          },  {
+            title: this.lang.getValueByKey('insuranceCoverage_menu'),
+            link: 'insuranceCoverage',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Insurance)
+          }, 
           {
             title: this.lang.getValueByKey('patients_menu'),
             link: 'customer',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
-          {
-            title: this.lang.getValueByKey('services_menu'),
-            link: 'product',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
-          }, 
+         
           {
             title: this.lang.getValueByKey('medicalSpecialities_menu'),
             link: 'medicalSpeciality',

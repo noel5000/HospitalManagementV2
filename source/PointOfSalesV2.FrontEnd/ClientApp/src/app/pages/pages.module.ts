@@ -54,6 +54,8 @@ import { CustomerReturnModule } from './customerReturn/customerReturn.module';
 import { httpInterceptorProviders } from '../@core/services/baseService';
 import { InsuranceModule } from './insurance/insurance.module';
 import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.module';
+import { appointmentsModule } from './appointment/appointment.module';
+import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.module';
 
 @NgModule({
   imports: [
@@ -101,7 +103,9 @@ import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.m
     TaxReportModule,
     CustomerReturnModule,
     ComissionsReportModule,
-    medicalSpecialityModule
+    medicalSpecialityModule,
+    appointmentsModule,
+    insuranceCoverageModule
   ],
   declarations: [
     PagesComponent,

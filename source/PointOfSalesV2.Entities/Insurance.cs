@@ -20,7 +20,6 @@ namespace PointOfSalesV2.Entities
         [Export(Order = 4)]
         public string PhoneNumber { get; set; }
 
-        public long CurrencyId { get; set; }
 
         [MaxLength(200)]
         [Export(Order = 5)]
@@ -49,12 +48,10 @@ namespace PointOfSalesV2.Entities
 
 
 
-        [ForeignKey("CurrencyId")]
-        [Export(Order = 9, ChildProperty = "Code")]
-        public Currency Currency { get; set; }
-
         public virtual List<InsurancePlan> InsurancePlans { get; set; }
 
         public virtual List<Customer> Affiliates { get; set; }
+
+        public virtual List<InsuranceServiceCoverage> Coverages { get; set; }
     }
 }

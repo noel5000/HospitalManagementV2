@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20210303114248_InsuranceNameFix")]
-    partial class InsuranceNameFix
+    [Migration("20210305040006_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -619,12 +619,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<long>("CurrencyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("InsurancId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("InsurancPlanId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("InsuranceCardId")
@@ -1327,9 +1321,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("CurrencyId")
-                        .HasColumnType("bigint");
-
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1352,8 +1343,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
 
                     b.ToTable("Insurances");
                 });
@@ -1403,6 +1392,70 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("InsuranceId");
 
                     b.ToTable("InsurancePlans");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("ConsultationPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("CoverageAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("InsuranceServiceCoverages");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
@@ -9081,6 +9134,44 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("LeadsDetails");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("LeadDetail");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.MedicalSpeciality", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MedicalSpecialities");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Menu", b =>
@@ -22671,6 +22762,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasMaxLength(30);
 
+                    b.Property<long?>("MedicalSpecialityId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Mobile")
                         .HasColumnType("nvarchar(15)")
                         .HasMaxLength(15);
@@ -22700,6 +22794,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<double?>("Size")
                         .HasColumnType("float");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)")
@@ -22718,6 +22816,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("CashRegisterId");
 
                     b.HasIndex("LanguageCode");
+
+                    b.HasIndex("MedicalSpecialityId");
 
                     b.HasIndex("WarehouseId");
 
@@ -22743,6 +22843,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Name = "admin",
                             Password = "yeLiBgtdL//mX+coUwD6bw==",
                             Phone = "8095555555",
+                            Type = "U",
                             UserName = "admin"
                         });
                 });
@@ -23450,20 +23551,34 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany("InsurancePlans")
+                        .HasForeignKey("InsuranceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
                 {
                     b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
                         .WithMany()
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
-                {
                     b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
-                        .WithMany("InsurancePlans")
-                        .HasForeignKey("InsuranceId")
+                        .WithMany("Coverages")
+                        .HasForeignKey("InsuranceId");
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany()
+                        .HasForeignKey("InsurancePlanId");
+
+                    b.HasOne("PointOfSalesV2.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -23945,6 +24060,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageCode");
+
+                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
+                        .WithMany("Doctors")
+                        .HasForeignKey("MedicalSpecialityId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("PointOfSalesV2.Entities.Warehouse", "Warehouse")
                         .WithMany()

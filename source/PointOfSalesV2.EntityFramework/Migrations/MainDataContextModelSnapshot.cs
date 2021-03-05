@@ -1319,9 +1319,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("CurrencyId")
-                        .HasColumnType("bigint");
-
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -1344,8 +1341,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
 
                     b.ToTable("Insurances");
                 });
@@ -1395,6 +1390,70 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("InsuranceId");
 
                     b.ToTable("InsurancePlans");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("ConsultationPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("CoverageAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("InsuranceServiceCoverages");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
@@ -23490,20 +23549,34 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany("InsurancePlans")
+                        .HasForeignKey("InsuranceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
                 {
                     b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
                         .WithMany()
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
-                {
                     b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
-                        .WithMany("InsurancePlans")
-                        .HasForeignKey("InsuranceId")
+                        .WithMany("Coverages")
+                        .HasForeignKey("InsuranceId");
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany()
+                        .HasForeignKey("InsurancePlanId");
+
+                    b.HasOne("PointOfSalesV2.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

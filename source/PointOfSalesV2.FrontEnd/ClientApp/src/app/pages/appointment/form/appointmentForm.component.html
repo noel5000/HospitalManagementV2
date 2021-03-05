@@ -1,0 +1,156 @@
+
+  
+        <form [formGroup]="itemForm" (ngSubmit)="save()">
+            <div class="form-row">
+               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'date_lbl' | translate}}</label>
+                    <input type="datetime" formControlName="date" class="form-control"/>
+                    <div *ngIf="form.date.errors" class="invalid-feedback">
+                        <div *ngIf="form.date.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'medicalSpeciality_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
+                    formControlName="medicalSpecialityId"
+                    required
+                    >
+                    <option *ngFor="let medicalSpeciality of medicalSpecialities"
+                     [value]="medicalSpeciality.id"
+                     >{{medicalSpeciality.name}}</option>
+                    </select>
+                    <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
+                        <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+            
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'doctor_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.doctorId.errors }"
+                    formControlName="doctorId"
+                    required
+                    >
+                    <option *ngFor="let doctor of doctors"
+                     [value]="doctor.userId"
+                     >{{doctor.name}}</option>
+                    </select>
+                    <div *ngIf="form.doctorId.errors" class="invalid-feedback">
+                        <div *ngIf="form.doctorId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'patient_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.patientId.errors }"
+                    formControlName="patientId"
+                    >
+                    <option *ngFor="let patient of patients"
+                     [value]="patient.id"
+                     >{{patient.name}}</option>
+                    </select>
+                    <div *ngIf="form.patientId.errors" class="invalid-feedback">
+                        <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'consultation_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.productId.errors }"
+                    formControlName="productId"
+                    >
+                    <option *ngFor="let product of products"
+                     [value]="product.id"
+                     >{{product.name}}</option>
+                    </select>
+                    <div *ngIf="form.productId.errors" class="invalid-feedback">
+                        <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'beforeTaxesAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="beforeTaxesAmount" required class="form-control" min="1" [ngClass]="{ 'is-invalid':form.beforeTaxesAmount && form.beforeTaxesAmount.errors }" />
+                    <div *ngIf="form.beforeTaxesAmount.errors" class="invalid-feedback">
+                        <div *ngIf="form.beforeTaxesAmount.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'taxAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="taxesAmount" required class="form-control" min="1" [ngClass]="{ 'is-invalid':form.taxesAmount && form.taxesAmount.errors }" />
+                    <div *ngIf="form.taxesAmount.errors" class="invalid-feedback">
+                        <div *ngIf="form.taxesAmount.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'totalAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="totalAmount"  class="form-control" disabled />
+                    
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'insuranceCoverageAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="insuranceCoverageAmount"  class="form-control" min="0" [ngClass]="{ 'is-invalid':form.insuranceCoverageAmount && form.insuranceCoverageAmount.errors }" />
+                    <div *ngIf="form.insuranceCoverageAmount.errors" class="invalid-feedback">
+                        <div *ngIf="form.insuranceCoverageAmount.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'patientPaymentAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="patientPaymentAmount"  class="form-control" min="0" [ngClass]="{ 'is-invalid':form.patientPaymentAmount && form.patientPaymentAmount.errors }" />
+                    <div *ngIf="form.patientPaymentAmount.errors" class="invalid-feedback">
+                        <div *ngIf="form.patientPaymentAmount.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+              
+                
+                
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'currency_lbl' | translate}}</label>
+                    <input type="text" formControlName="currencyCode"  disabled class="form-control"/>
+                </div>
+               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'productCost_lbl' | translate}}</label>
+                    <input type="number" formControlName="productCost"class="form-control" disabled  />
+                  
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'unitPrice_lbl' | translate}}</label>
+                    <input type="number" formControlName="productPrice"class="form-control" disabled  />
+                  
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'beforeTaxesAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="beforeTaxesAmount"class="form-control" disabled />
+                  
+                </div>
+                <div class="form-check form-group col-md-3  col-xs-4 mx-4 my-4">
+                    <input class="form-check-input" type="checkbox"  formControlName="noTaxes"    >
+                    <label class="form-check-label" for="defaultCheck2">
+                        {{'exo_lbl' | translate}}
+                    </label>
+                  </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'taxAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="taxAmount"class="form-control" disabled  />
+                  
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'totalAmount_lbl' | translate}}</label>
+                    <input type="number" formControlName="totalAmount" disabled class="form-control" />
+                  
+                </div>
+              
+            </div>
+           
+          
+
+            <div class="text-center">
+                <button class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
+                <button class="btn btn-secondary" type="reset" (click)="cancel()">{{'cancel_btn' | translate}}</button>
+            </div>
+        </form>
+

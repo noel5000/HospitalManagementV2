@@ -53,6 +53,34 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Insurances",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    AccountNumber = table.Column<string>(maxLength: 50, nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    Code = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact1 = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact2 = table.Column<string>(maxLength: 50, nullable: true),
+                    Contact3 = table.Column<string>(maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Insurances", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Languages",
                 columns: table => new
                 {
@@ -70,6 +98,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("Code", x => x.Code);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MedicalSpecialities",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalSpecialities", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -444,40 +492,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Insurances",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    TranslationData = table.Column<string>(nullable: true),
-                    AccountNumber = table.Column<string>(maxLength: 50, nullable: true),
-                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    Code = table.Column<string>(maxLength: 50, nullable: true),
-                    Contact1 = table.Column<string>(maxLength: 50, nullable: true),
-                    Contact2 = table.Column<string>(maxLength: 50, nullable: true),
-                    Contact3 = table.Column<string>(maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Insurances", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Insurances_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -512,6 +526,34 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         name: "FK_Products_Currencies_CurrencyId",
                         column: x => x.CurrencyId,
                         principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InsurancePlans",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    InsuranceId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InsurancePlans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InsurancePlans_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -795,6 +837,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     LanguageCode = table.Column<string>(maxLength: 2, nullable: true),
                     Active = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(maxLength: 30, nullable: false),
+                    Type = table.Column<string>(nullable: false),
+                    MedicalSpecialityId = table.Column<long>(nullable: true),
                     LastName = table.Column<string>(maxLength: 30, nullable: false),
                     BirthDay = table.Column<DateTime>(nullable: true),
                     Phone = table.Column<string>(maxLength: 15, nullable: true),
@@ -836,36 +880,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_Users_MedicalSpecialities_MedicalSpecialityId",
+                        column: x => x.MedicalSpecialityId,
+                        principalTable: "MedicalSpecialities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Users_Warehouses_WarehouseId",
                         column: x => x.WarehouseId,
                         principalTable: "Warehouses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InsurancePlans",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    TranslationData = table.Column<string>(nullable: true),
-                    InsuranceId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InsurancePlans", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InsurancePlans_Insurances_InsuranceId",
-                        column: x => x.InsuranceId,
-                        principalTable: "Insurances",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -1339,6 +1362,123 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    CardId = table.Column<string>(maxLength: 20, nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TRNControlId = table.Column<long>(nullable: false),
+                    Address = table.Column<string>(maxLength: 200, nullable: true),
+                    Code = table.Column<string>(maxLength: 50, nullable: true),
+                    InvoiceDueDays = table.Column<long>(nullable: false),
+                    BillingAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    CreditAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    ZoneId = table.Column<long>(nullable: true),
+                    WarehouseId = table.Column<long>(nullable: true),
+                    Name = table.Column<string>(maxLength: 100, nullable: true),
+                    TRNType = table.Column<string>(maxLength: 50, nullable: true),
+                    BloodType = table.Column<string>(maxLength: 4, nullable: true),
+                    InsuranceId = table.Column<long>(nullable: true),
+                    InsurancePlanId = table.Column<long>(nullable: true),
+                    InsuranceCardId = table.Column<string>(maxLength: 50, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_InsurancePlans_InsurancePlanId",
+                        column: x => x.InsurancePlanId,
+                        principalTable: "InsurancePlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_TRNsControl_TRNControlId",
+                        column: x => x.TRNControlId,
+                        principalTable: "TRNsControl",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Zones_ZoneId",
+                        column: x => x.ZoneId,
+                        principalTable: "Zones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InsuranceServiceCoverages",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    TranslationData = table.Column<string>(nullable: true),
+                    InsuranceId = table.Column<long>(nullable: true),
+                    ProductId = table.Column<long>(nullable: false),
+                    InsurancePlanId = table.Column<long>(nullable: true),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    CoverageAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    ConsultationPrice = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InsuranceServiceCoverages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InsuranceServiceCoverages_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InsuranceServiceCoverages_Insurances_InsuranceId",
+                        column: x => x.InsuranceId,
+                        principalTable: "Insurances",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InsuranceServiceCoverages_InsurancePlans_InsurancePlanId",
+                        column: x => x.InsurancePlanId,
+                        principalTable: "InsurancePlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_InsuranceServiceCoverages_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleSectionOperations",
                 columns: table => new
                 {
@@ -1600,75 +1740,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    TranslationData = table.Column<string>(nullable: true),
-                    CardId = table.Column<string>(maxLength: 20, nullable: true),
-                    PhoneNumber = table.Column<string>(maxLength: 20, nullable: true),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    TRNControlId = table.Column<long>(nullable: false),
-                    Address = table.Column<string>(maxLength: 200, nullable: true),
-                    Code = table.Column<string>(maxLength: 50, nullable: true),
-                    InvoiceDueDays = table.Column<long>(nullable: false),
-                    BillingAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    CreditAmountLimit = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    ZoneId = table.Column<long>(nullable: true),
-                    WarehouseId = table.Column<long>(nullable: true),
-                    Name = table.Column<string>(maxLength: 100, nullable: true),
-                    TRNType = table.Column<string>(maxLength: 50, nullable: true),
-                    BloodType = table.Column<string>(maxLength: 4, nullable: true),
-                    InsurancId = table.Column<long>(nullable: true),
-                    InsurancPlanId = table.Column<long>(nullable: true),
-                    InsuranceCardId = table.Column<string>(maxLength: 50, nullable: true),
-                    InsuranceId = table.Column<long>(nullable: true),
-                    InsurancePlanId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customers_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_Insurances_InsuranceId",
-                        column: x => x.InsuranceId,
-                        principalTable: "Insurances",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_InsurancePlans_InsurancePlanId",
-                        column: x => x.InsurancePlanId,
-                        principalTable: "InsurancePlans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_TRNsControl_TRNControlId",
-                        column: x => x.TRNControlId,
-                        principalTable: "TRNsControl",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_Zones_ZoneId",
-                        column: x => x.ZoneId,
-                        principalTable: "Zones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompositeProducts",
                 columns: table => new
                 {
@@ -1716,78 +1787,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CashRegisterFlowDetails",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    CashRegisterOpeningId = table.Column<long>(nullable: false),
-                    PaymentTypeId = table.Column<long>(nullable: false),
-                    MovementType = table.Column<string>(nullable: true),
-                    Reference = table.Column<string>(nullable: true),
-                    UserId = table.Column<Guid>(nullable: false),
-                    CurrencyId = table.Column<long>(nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CashRegisterFlowDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CashRegisterFlowDetails_CashRegisterOpenings_CashRegisterOpeningId",
-                        column: x => x.CashRegisterOpeningId,
-                        principalTable: "CashRegisterOpenings",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CashRegisterFlowDetails_Currencies_CurrencyId",
-                        column: x => x.CurrencyId,
-                        principalTable: "Currencies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CashRegisterFlowDetails_PaymentTypes_PaymentTypeId",
-                        column: x => x.PaymentTypeId,
-                        principalTable: "PaymentTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CashRegisterOpeningDetails",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<Guid>(nullable: false),
-                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    ModifiedBy = table.Column<Guid>(nullable: true),
-                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    ModifiedDate = table.Column<DateTime>(nullable: true),
-                    Active = table.Column<bool>(nullable: false),
-                    IsClosing = table.Column<bool>(nullable: false),
-                    CashRegisterOpeningId = table.Column<long>(nullable: false),
-                    Type = table.Column<string>(nullable: true),
-                    Details = table.Column<string>(nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CashRegisterOpeningDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CashRegisterOpeningDetails_CashRegisterOpenings_CashRegisterOpeningId",
-                        column: x => x.CashRegisterOpeningId,
-                        principalTable: "CashRegisterOpenings",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -2041,6 +2040,78 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         principalTable: "Zones",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CashRegisterFlowDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    CashRegisterOpeningId = table.Column<long>(nullable: false),
+                    PaymentTypeId = table.Column<long>(nullable: false),
+                    MovementType = table.Column<string>(nullable: true),
+                    Reference = table.Column<string>(nullable: true),
+                    UserId = table.Column<Guid>(nullable: false),
+                    CurrencyId = table.Column<long>(nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashRegisterFlowDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_CashRegisterOpenings_CashRegisterOpeningId",
+                        column: x => x.CashRegisterOpeningId,
+                        principalTable: "CashRegisterOpenings",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_Currencies_CurrencyId",
+                        column: x => x.CurrencyId,
+                        principalTable: "Currencies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterFlowDetails_PaymentTypes_PaymentTypeId",
+                        column: x => x.PaymentTypeId,
+                        principalTable: "PaymentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CashRegisterOpeningDetails",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<Guid>(nullable: false),
+                    CreatedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    ModifiedBy = table.Column<Guid>(nullable: true),
+                    ModifiedByName = table.Column<string>(maxLength: 100, nullable: true),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    ModifiedDate = table.Column<DateTime>(nullable: true),
+                    Active = table.Column<bool>(nullable: false),
+                    IsClosing = table.Column<bool>(nullable: false),
+                    CashRegisterOpeningId = table.Column<long>(nullable: false),
+                    Type = table.Column<string>(nullable: true),
+                    Details = table.Column<string>(nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashRegisterOpeningDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CashRegisterOpeningDetails_CashRegisterOpenings_CashRegisterOpeningId",
+                        column: x => x.CashRegisterOpeningId,
+                        principalTable: "CashRegisterOpenings",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -4549,8 +4620,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "UserId", "Active", "Address", "BirthDay", "BranchOfficeId", "CashRegisterId", "CashRegisterOpenningTimeHours", "ContentType", "CreatedBy", "CreatedByName", "CreatedDate", "Email", "Gender", "Height", "ImageData", "LanguageCode", "LastName", "Mobile", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Name", "Password", "Phone", "Size", "UserName", "WarehouseId", "Width" },
-                values: new object[] { new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), true, "", new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 0, "", new Guid("00000000-0000-0000-0000-000000000000"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@admin.com", "M", null, null, "ES", "admin", "8095555555", null, null, null, "admin", "yeLiBgtdL//mX+coUwD6bw==", "8095555555", null, "admin", null, null });
+                columns: new[] { "UserId", "Active", "Address", "BirthDay", "BranchOfficeId", "CashRegisterId", "CashRegisterOpenningTimeHours", "ContentType", "CreatedBy", "CreatedByName", "CreatedDate", "Email", "Gender", "Height", "ImageData", "LanguageCode", "LastName", "MedicalSpecialityId", "Mobile", "ModifiedBy", "ModifiedByName", "ModifiedDate", "Name", "Password", "Phone", "Size", "Type", "UserName", "WarehouseId", "Width" },
+                values: new object[] { new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"), true, "", new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, 0, "", new Guid("00000000-0000-0000-0000-000000000000"), "admin", new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@admin.com", "M", null, null, "ES", "admin", null, "8095555555", null, null, null, "admin", "yeLiBgtdL//mX+coUwD6bw==", "8095555555", null, "U", "admin", null, null });
 
             migrationBuilder.InsertData(
                 table: "RoleSectionOperations",
@@ -5021,9 +5092,24 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "InsuranceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Insurances_CurrencyId",
-                table: "Insurances",
+                name: "IX_InsuranceServiceCoverages_CurrencyId",
+                table: "InsuranceServiceCoverages",
                 column: "CurrencyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceServiceCoverages_InsuranceId",
+                table: "InsuranceServiceCoverages",
+                column: "InsuranceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceServiceCoverages_InsurancePlanId",
+                table: "InsuranceServiceCoverages",
+                column: "InsurancePlanId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InsuranceServiceCoverages_ProductId",
+                table: "InsuranceServiceCoverages",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventory_BranchOfficeId",
@@ -5407,6 +5493,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 column: "LanguageCode");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_MedicalSpecialityId",
+                table: "Users",
+                column: "MedicalSpecialityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_WarehouseId",
                 table: "Users",
                 column: "WarehouseId");
@@ -5497,6 +5588,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExpenseTaxes");
+
+            migrationBuilder.DropTable(
+                name: "InsuranceServiceCoverages");
 
             migrationBuilder.DropTable(
                 name: "Inventory");
@@ -5634,6 +5728,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 name: "Languages");
 
             migrationBuilder.DropTable(
+                name: "MedicalSpecialities");
+
+            migrationBuilder.DropTable(
                 name: "Sellers");
 
             migrationBuilder.DropTable(
@@ -5646,6 +5743,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 name: "BranchOffices");
 
             migrationBuilder.DropTable(
+                name: "Currencies");
+
+            migrationBuilder.DropTable(
                 name: "InsurancePlans");
 
             migrationBuilder.DropTable(
@@ -5656,9 +5756,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "Insurances");
-
-            migrationBuilder.DropTable(
-                name: "Currencies");
         }
     }
 }

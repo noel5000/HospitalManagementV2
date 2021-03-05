@@ -8,45 +8,63 @@ import {IPaginationModel, IActionButtonModel } from '../../../@theme/components/
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
-import { BaseService } from '../../../@core/services/baseService';
-import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { endpointUrl } from '../../../@core/common/constants';
+import { BaseService } from '../../../@core/services/baseService';
 
 
 declare const $: any;
 @Component({
-    selector: "insurance-list",
-    templateUrl: "./insuranceIndex.component.html",
-    styleUrls: ["../insuranceStyles.component.scss"]
+    selector: "insuranceCoverage-list",
+    templateUrl: "./insuranceCoverageIndex.component.html",
 })
-export class InsuranceIndexComponent extends BaseComponent implements OnInit {
+export class insuranceCoverageIndexComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.verifyUser();
         this.getPagedData(1);
     }
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
-    actions:IActionButtonModel[]=[];
+    actions:IActionButtonModel[]=[];    
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
     pageNumber:number=1;
     pageSize:number=10;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
     maxCount:number=0;
-  filters: QueryFilter[] = [
-      
-    ];
+    filters: QueryFilter[] = [
+        {
+            property: "Insurance",
+            value: "Name",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        },
+        {
+            property: "InsurancePlan",
+            value: "Name",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        },
+        
+        {
+            property: "Currency",
+            value: "Name",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        }
+        ];
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
-    insurances:any[]=[];
+    insuranceCoverages:any[]=[];
 
 
     constructor(
         route: Router,
-        private  http: HttpClient,
         langService: LanguageService,
         private modals:NgbModal,
+        private http:HttpClient,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Insurance,modalService);
+        super(route, langService, AppSections.Users,modalService);
+        this.section=AppSections.Users;
         let scope = this;
        
         this.tableConfig=[
@@ -63,37 +81,51 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
 },
 {
     visible:true,
-    id:'name',
+    id:'insuranceId',
+    fieldToShow:'insurance.name',
     type:'text',
     isTranslated:false,
-    name:this.lang.getValueByKey('name_lbl'),
+    name:scope.lang.getValueByKey('insurance_lbl'),
     sorting:'desc',
-    toSort:false,
+    toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:true
-  },
-    {
-        visible:true,
-        id:'phoneNumber',
-        type:'text',
-        isTranslated:false,
-        name:this.lang.getValueByKey('phone_lbl'),
-        sorting:'desc',
-        toSort:false,
-        objectType:ObjectTypes.String,
-        filterIsActive:true
-      },
-      {
-          visible:true,
-          id:'code',
-          type:'text',
-          isTranslated:false,
-          name:this.lang.getValueByKey('code_lbl'),
-          sorting:'desc',
-          toSort:true,
-          objectType:ObjectTypes.String,
-          filterIsActive:true
-        },
+    filterIsActive:false
+ },
+ {
+    visible:true,
+    id:'insurancePlanId',
+    fieldToShow:'insurancePlan.name',
+    type:'text',
+    isTranslated:false,
+    name:scope.lang.getValueByKey('insurancePlan_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:false
+ },
+ {
+    visible:true,
+    id:'currencyId',
+    fieldToShow:'currency.name',
+    type:'text',
+    isTranslated:false,
+    name:scope.lang.getValueByKey('currency_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:false
+ },
+ {
+    visible:true,
+    id:'coverageAmount',
+    type:'number',
+    isTranslated:false,
+    name:scope.lang.getValueByKey('coverageAmount_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:false
+ },
         ];
 this.actions=[
     {
@@ -129,7 +161,7 @@ this.actions=[
         this.service.getFiltered(this.pageNumber, this.pageSize, this.filters, this.orderBy, this.orderDirection).subscribe(r => {
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
-            this.insurances=r['value'];
+            this.insuranceCoverages=r['value'];
           
         },
             error => {
@@ -152,25 +184,10 @@ else{
 
 }
     getPagedData(page:number) {
-        const expandFilters =[
-          
-        ];
-        expandFilters.forEach(expandFilter=>{
-            const expandIndex = this.filters.findIndex(x => x.property == expandFilter.property);
-            if (expandIndex >= 0) {
-                this.filters.splice(expandIndex, 1);
-                this.filters.push(expandFilter);
-            }
-            else {
-                this.filters.push(expandFilter);
-            }
-        });
-            
-    
-            this.pageNumber = page?page:1;
-            this.orderBy=this.tableConfig.find(x=>x.toSort).id;
-            this.orderDirection=this.tableConfig.find(x=>x.toSort).sorting;
-            this.getData();
+        this.pageNumber = page?page:1;
+        this.orderBy=this.tableConfig.find(x=>x.toSort).id;
+        this.orderDirection=this.tableConfig.find(x=>x.toSort).sorting;
+        this.getData();
     }
 
     onSort(e){
@@ -224,10 +241,10 @@ else{
     }
 
     addNew() {
-        this.router.navigateByUrl(`pages/insurance/add`);
+        this.router.navigateByUrl(`pages/insuranceCoverage/add`);
     }
     edit(e:any) {
-        this.router.navigateByUrl(`pages/insurance/edit/${e.id}`);
+        this.router.navigateByUrl(`pages/insuranceCoverage/edit/${e.id}`);
     }
     source:any={};
     onDeleteConfirm(event:any): void {

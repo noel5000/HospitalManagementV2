@@ -60,7 +60,6 @@ export class InsuranceFormComponent extends BaseComponent implements OnInit {
             planName:[''],
             insurancePlanId:[0],
             contact3:[""],
-            currencyId: [0,[Validators.required,Validators.min(1)]],
             id: [0]
         });
     }
@@ -75,7 +74,6 @@ export class InsuranceFormComponent extends BaseComponent implements OnInit {
      this.validateFormData();
      
         this.verifyUser();
-        this.getCurrencies();
     }
 
    async getItem(id:number){
@@ -190,8 +188,7 @@ getPlans(){
       
            if(!this.item)
            this.item = {};
-           this.item=  this.updateModel<any>(formValue,this.item);;
-           this.item.currencyId=parseInt(this.item.currencyId.toString());
+           this.item=  this.updateModel<any>(formValue,this.item);
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){

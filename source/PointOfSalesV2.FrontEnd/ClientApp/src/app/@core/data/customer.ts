@@ -29,4 +29,5 @@ export class Customer extends BaseModel {
     insurancePlan:any;
     insuranceCardId:string;     
     bloodType:string;
+    
 }

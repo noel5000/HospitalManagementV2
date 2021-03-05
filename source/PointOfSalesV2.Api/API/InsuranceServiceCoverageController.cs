@@ -20,14 +20,13 @@ namespace PointOfSalesV2.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Insurance)]
-    public class InsuranceController : BaseController<Insurance>
+    [ControllerAuthorize(Common.Enums.AppSections.InsurancePlan)]
+    public class InsuranceServiceCoverageController : BaseController<InsuranceServiceCoverage>
     {
-        
-        readonly ISequenceManagerRepository sequence;
-        public InsuranceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>())
+        readonly IProductRepository _customRepo;
+        public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
         {
-            this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
+            _customRepo = repositoryFactory.GetCustomDataRepositories<IProductRepository>();
         }
 
         [HttpGet]
@@ -38,7 +37,8 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<Insurance>(x =>x
+                var data = _baseRepo.GetAll<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance)
+                .Include(t=>t.Product)
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -50,6 +50,11 @@ namespace PointOfSalesV2.Api.Controllers
             }
         }
 
+
+       
+
+    
+
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
@@ -57,12 +62,12 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<Insurance>(x => x
+                var data = _baseRepo.GetAll<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance).Include(t=>t.Product)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "ES";
-                var excelData = ExportUtility.GetExcelData<Insurance>(data, requestLanguage, this.languageKeys.ToList());
+                var excelData = ExportUtility.GetExcelData<InsuranceServiceCoverage>(data, requestLanguage, this.languageKeys.ToList());
                 var excelStream = ExcelImport.CreateXlsStream(
                     excelData.Item1,
                    excelData.Item2
@@ -70,7 +75,7 @@ namespace PointOfSalesV2.Api.Controllers
                 if (data != null && excelStream != null && excelStream.Length > 0)
                 {
 
-                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Insurance().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new InsuranceServiceCoverage().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
                 return BadRequest(new { status = -1, message = "Documento no existe" });
 
