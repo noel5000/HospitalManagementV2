@@ -71,7 +71,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     medicalSpecialities:any[]=[];
     doctors:any[]=[];
     patients:any[]=[];
-    selectedDate:Date=new Date();
+    selectedDate:Date=null;
     selectedAppointments:any[]=[];
     appointments:any[]=[];
     view: CalendarView = CalendarView.Month;
@@ -166,6 +166,12 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
          });
          this.changes.detectChanges();
       })
+    }
+
+     getSelectedDateFormatted(){
+      if(!this.selectedDate)
+      return "";
+      return `${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth()+1}-${this.selectedDate.getDate()}`;
     }
 
     async getSpecialtities(){
@@ -374,7 +380,7 @@ print(e: any) {
   addNew() {
     const form = this.itemForm.getRawValue();
     const dateFormatted=`${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth()+1}-${this.selectedDate.getDate()}`;
-    this.router.navigateByUrl(`pages/appointment/add/${dateFormatted}/${form.branchOfficeId}/${form.medicalSpecialityId}/${form.doctorId}/${form.patientId}`);
+    this.router.navigateByUrl(`pages/appointment/add/${form.branchOfficeId}/${dateFormatted}/${form.medicalSpecialityId}/${form.doctorId}/${form.patientId}`);
 }
 
 editAppointment(appointment:any) {

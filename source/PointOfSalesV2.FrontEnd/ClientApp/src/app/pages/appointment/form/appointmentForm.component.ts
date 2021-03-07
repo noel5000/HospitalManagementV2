@@ -54,7 +54,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     productTaxes:any[]=[];//
     doctors:any[]=[];
     patients:any[]=[];
-    defaultTaxAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
+    defaulttaxesAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
     currentProductCost:any={cost:0};
     currentProductPrice:any={sellingPrice:0,costPrice:0};
@@ -84,7 +84,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
           
             this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):0;
             this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
-            this.currentDate = this._route.snapshot.paramMap.get('date');
+            this.currentDate = new Date(this._route.snapshot.paramMap.get('date')).toISOString().split('.')[0];
          
         this.itemForm = this.formBuilder.group({
 id: [0],
@@ -95,6 +95,8 @@ patientId:[this.patientId,[ Validators.required,Validators.min(1), Validators.ma
 productId:[null,[ Validators.required,Validators.min(1)]],
 beforeTaxesAmount:[0],
 taxesAmount:[0],
+productCost:[0],
+productPrice:[0],
 totalAmount:[0],
 insuranceCoverageAmount:[0],
 patientPaymentAmount:[0],
@@ -195,7 +197,7 @@ sequence:[''],
       
 
          
-            this.itemForm.get('taxAmount').valueChanges.subscribe(val => {
+            this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
                
                     this.refreshAmounts(true);
                 

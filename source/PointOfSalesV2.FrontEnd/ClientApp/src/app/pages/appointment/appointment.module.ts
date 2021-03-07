@@ -31,15 +31,15 @@ const routes: Routes = [
     },
 
     {
-        path: "add/:menuid/:leadid/:schoolid/:branchofficeid/:warehouseid/:date",
+        path: "add/:hospitalId/:date/:specialityid/:doctorid/:patientid",
         component: appointmentFormComponent
     },
     {
-        path: "edit/:menuid/:leadid/:schoolid/:branchofficeid/:warehouseid/:date",
+        path: "edit/:id",
         component: appointmentFormComponent
     },
     {
-        path: "print/:leadid/:menuid/:schoolid/:date/:sequence",
+        path: "print/:id",
         component: appointmentPrintComponent
     },
 ];

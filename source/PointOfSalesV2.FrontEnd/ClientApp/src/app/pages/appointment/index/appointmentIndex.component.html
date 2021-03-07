@@ -116,7 +116,11 @@
  
     
     <div class="table-responsive scrollTableMobile">
-      <a class="btn btn-lg btn-info" (click)="addNew()">{{'add_btn' |translate}}</a>
+      <div class="row" *ngIf="selectedDate">
+        <a class="btn btn-lg btn-info col-4" (click)="addNew()">{{'add_btn' |translate}}</a>
+        <h5 class="col-4">{{'selectedDate_lbl'}} {{getSelectedDateFormatted()}}</h5>
+      </div>
+      
       <br /><br />
       <table class="table table-bordered">
         <thead>

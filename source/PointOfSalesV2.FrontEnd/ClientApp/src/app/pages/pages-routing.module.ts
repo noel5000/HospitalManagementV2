@@ -482,7 +482,7 @@ component: AccountStateIndexComponent
   component: appointmentIndexComponent
 },
 {
-  path: 'appointment/add',
+  path: 'appointment/add/:hospitalId/:date/:specialityid/:doctorid/:patientid',
   component: appointmentFormComponent
 },
 {
