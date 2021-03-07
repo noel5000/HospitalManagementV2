@@ -19,6 +19,7 @@ using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using static PointOfSalesV2.Common.Enums;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -56,7 +57,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<T>(x => x.Where(y => y.Active == true));
+                var data = _baseRepo.GetAll<T>(x => x.AsNoTracking(),y=>y.Active==true);
                 return Ok(data);
             }
 

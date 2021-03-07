@@ -3,7 +3,9 @@ import {
     OnInit, 
     ChangeDetectionStrategy,
     ViewChild,
-    TemplateRef, } from '@angular/core';
+    TemplateRef,
+    NgZone,
+    ChangeDetectorRef, } from '@angular/core';
     import {
         startOfDay,
         endOfDay,
@@ -41,6 +43,8 @@ import { HttpClient } from '@angular/common/http';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { Warehouse } from '../../../@core/data/Warehouse';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
+import { FormBuilder, Validators } from '@angular/forms';
+import { medicalSpecialityModule } from '../../medicalSpeciality/medicalSpeciality.module';
 
 
 declare const $: any;
@@ -48,7 +52,7 @@ declare const $: any;
 
 
 @Component({
-    selector: "invoice-lead-list",
+    selector: "appointments-list",
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: "./appointmentIndex.component.html",
     styleUrls: ["../appointmentStyles.component.scss"],
@@ -57,17 +61,23 @@ declare const $: any;
 export class appointmentIndexComponent extends BaseComponent implements OnInit {
     
     @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}Menu`);
-    leadService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}appointment`);
-    projectedLeads:any[]=[];
-    branchOffices:BranchOffice[]=[];
-    warehouses:Warehouse[]=[];
+    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}Appointment`);
+    hospitalService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}branchoffice`);
+    medicalSpecialitiesService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}medicalSpeciality`);
+    doctorService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}user`);
+    patientsService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}Customer`);
+    visible:boolean=true;
+    hospitals:any[]=[];
+    medicalSpecialities:any[]=[];
+    doctors:any[]=[];
+    patients:any[]=[];
+    selectedDate:Date=new Date();
+    selectedAppointments:any[]=[];
+    appointments:any[]=[];
     view: CalendarView = CalendarView.Month;
-    menuDetails:any[]=[];
-    branchOfficeId:number=0;
-    warehouseId:number=0;
+
     CalendarView = CalendarView;
-    selectedLeads:any[]=[];
+
   
     viewDate: Date = new Date();
   
@@ -75,6 +85,100 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       action: string;
       event: CalendarEvent;
     };
+
+ 
+      refresh: Subject<any> = new Subject();
+
+      events: CalendarEvent[] = [];
+    
+      activeDayIsOpen: boolean = false;
+      constructor(
+        private zone:NgZone,
+        private changes:ChangeDetectorRef,
+        private formBuilder: FormBuilder,
+        router: ActivatedRoute,
+        route: Router,
+        langService: LanguageService,
+        private modals:NgbModal,
+         modalService:ModalService,
+      private  http: HttpClient
+        ){
+      super(route, langService, AppSections.Users,modalService);  
+      this.itemForm = this.formBuilder.group({
+        branchOfficeId: [0],
+        doctorId: ["null"],
+        medicalSpecialityId:[0],
+        patientId:[0]        
+    });     
+    }
+    async getHospitals(){
+      this.hospitalService.getAll().subscribe(r=>{
+ 
+        this.hospitals=r;
+        if(this.hospitals.length==1)
+       this.itemForm.patchValue({
+        branchOfficeId:this.hospitals[0].id
+       });
+       this.changes.detectChanges();
+      })
+    }
+    async getPatients(){
+      this.patientsService.getAll().subscribe(r=>{
+      
+        this.patients=r;
+        if(this.patients.length==1)
+        this.itemForm.patchValue({
+          patientId:this.patients[0].id
+         });
+         this.changes.detectChanges();
+      })
+    }
+
+    
+    async getDoctors(specialityId:number, hospitalId:number){
+      let filter :QueryFilter[]=[];
+
+      if(specialityId && specialityId>0)
+      filter.push(
+        {
+          property: "MedicalSpecialityId",
+          value: specialityId.toString(),
+          type: ObjectTypes.Number,
+          isTranslated: false
+      } as QueryFilter
+      );
+
+      if(hospitalId && hospitalId>0)
+      filter.push(
+        {
+          property: "BranchOfficeId",
+          value: hospitalId.toString(),
+          type: ObjectTypes.Number,
+          isTranslated: false
+      } as QueryFilter
+      )
+      this.doctorService.getAllFiltered(filter).subscribe(r=>{
+    
+        this.doctors=r['value'];
+        if(this.doctors.length==1)
+        this.itemForm.patchValue({
+          doctorId:this.doctors[0].userId
+         });
+         this.changes.detectChanges();
+      })
+    }
+
+    async getSpecialtities(){
+      this.medicalSpecialitiesService.getAll().subscribe(r=>{
+      
+        this.medicalSpecialities=r;
+        if(this.medicalSpecialities.length==1)
+        this.itemForm.patchValue({
+          medicalSpecialityId:this.medicalSpecialities[0].id
+         });
+         this.changes.detectChanges();
+      })
+    }
 
     actions: CalendarEventAction[] = [
         {
@@ -93,28 +197,42 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
           },
         },
       ];
-
-      refresh: Subject<any> = new Subject();
-
-      events: CalendarEvent[] = [];
-    
-      activeDayIsOpen: boolean = false;
-      constructor(
-        router: ActivatedRoute,
-        route: Router,
-        langService: LanguageService,
-        private modals:NgbModal,
-         modalService:ModalService,
-      private  http: HttpClient
-        ){
-      super(route, langService, AppSections.Users,modalService);       
-    }
+      save(){}
 
     ngOnInit(): void {
         this.verifyUser();
+        this.getHospitals();
+        this.getPatients();
+        this.getMonthAppointments();
+        this.getSpecialtities();
+        this.OnChanges();
     }
   
-    
+    async OnChanges(){
+      this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
+        
+        if(val && val>0){
+          const {medicalSpecialityId}=this.itemForm.getRawValue();
+          this.getDoctors(medicalSpecialityId,val);
+          this.changes.detectChanges();
+        }
+        
+        
+          });
+      this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+        if(val && val>0){
+          const {branchOfficeId}=this.itemForm.getRawValue();
+          this.getDoctors(val,branchOfficeId);
+          this.changes.detectChanges();
+        }
+          });
+      this.itemForm.get('doctorId').valueChanges.subscribe(val => {
+        this.changes.detectChanges();
+          });
+      this.itemForm.get('patientId').valueChanges.subscribe(val => {
+        this.changes.detectChanges();
+          });
+  }
   
 
 
@@ -124,7 +242,7 @@ getStatusDescription(state:string):string{
 
 
 
-removeLead(lead:any){
+removeAppointment(appointment:any){
   var result =       this.modalService.confirmationModal({
     titleText:this.lang.getValueByKey('deleteConfirm_lbl'),
     bodyText:this.lang.getValueByKey('areYouSure_lbl'),
@@ -133,62 +251,52 @@ removeLead(lead:any){
 });
 result.subscribe(r=>{
 if(r)
-this.leadService.delete(lead.id).subscribe(r=>{
+this.service.delete(appointment.id).subscribe(r=>{
   if(r.status>=0)
     this.modalService.showSuccess(this.lang.getValueByKey(r.message));
   else
   this.modalService.showError(this.lang.getValueByKey(r.message));
   
-  this.getProjectedLeads();
+  this.getDayAppointments(this.viewDate);
 });
 });
  
 }
-printLead(lead:any){
+printAppointment(appointment:any){
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/appointmentPrint?id=${lead.id}&menuId=${lead.menuId}&schoolId=${lead.schoolId}&sequence=${lead.leadSequence}&language=${user.languageId}` }], {
+  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/appointmentPrint?id=${appointment.id}&language=${user.languageId}` }], {
     skipLocationChange: true,
 });
 }
 
 print(e: any) {
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/appointmentPrint?id=${e.id}&menuId=${e.menuId}&schoolId=${e.schoolId}&sequence=${e.leadSequence}&language=${user.languageId}` }], {
+  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/appointmentPrint?id=${e.id}&language=${user.languageId}` }], {
     skipLocationChange: true,
 });
   }
+  async getDayAppointments(date:Date){
+    const form = this.itemForm.getRawValue();
+    const dateFormatted=`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+    this.service.getByUrlParameters(['GetAppointmentsByDay',dateFormatted,form.branchOfficeId.toString(),
+    form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString()]).subscribe(r=>{
+     this.selectedAppointments=r.data;
+    });
+  }
 
-deliverLead(lead:any){
-  var result =       this.modalService.confirmationModal({
-    titleText:this.lang.getValueByKey('markAsDeliveredConfirm_lbl'),
-    bodyText:this.lang.getValueByKey('areYouSure_lbl'),
-    cancelButtonText:this.lang.getValueByKey('cancel_btn'),
-    okText:this.lang.getValueByKey('ok_btn'),
-});
-result.subscribe(r=>{
-if(r)
-this.leadService.getByUrlParameters(["deliverLead",lead.id.toString()]).subscribe(r=>{
-  if(r.status>=0)
-    this.modalService.showSuccess(this.lang.getValueByKey(r.message));
-  else
-  this.modalService.showError(this.lang.getValueByKey(r.message));
-  
-  this.getProjectedLeads();
-});
-});
-}
 
-   async getProjectedLeads(){
-
-     this.service.getByUrlParameters(['GetProjectedLeads',this.branchOfficeId.toString(),
-     this.warehouseId.toString(),this.viewDate.toUTCString()]).subscribe(r=>{
-      this.projectedLeads=r.data;
+   async getMonthAppointments(){
+    const form = this.itemForm.getRawValue();
+    const dateFormatted=`${this.viewDate.getFullYear()}-${this.viewDate.getMonth()+1}-${this.viewDate.getDate()}`;
+     this.service.getByUrlParameters(['GetAppointmentsByMonth',dateFormatted,form.branchOfficeId.toString(),
+     form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString()]).subscribe(r=>{
+      this.appointments=r.data;
       this.events=[];
-      this.projectedLeads.forEach(d=>{
+      this.appointments.forEach(d=>{
         this.events.push({
           start:new Date(d.date),
           end: new Date(d.date),
-          title: `${d.leadSequence} ${d.schoolName}`,
+          title: `${d.doctor.name} ${d.patient.name}`,
           color:BillingStatesColors[d.state],
           actions: this.actions,
           allDay: true,
@@ -207,7 +315,8 @@ this.leadService.getByUrlParameters(["deliverLead",lead.id.toString()]).subscrib
       }
     
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-   this.selectedLeads=this.projectedLeads.filter(x=>new Date(x.date).toUTCString()==date.toUTCString());
+    this.selectedDate=date;
+ this.getDayAppointments(date);
   }
 
   eventTimesChanged({
@@ -259,15 +368,17 @@ this.leadService.getByUrlParameters(["deliverLead",lead.id.toString()]).subscrib
 
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
-    this.getProjectedLeads();
+    this.getMonthAppointments();
   }
 
-  addNew(lead:any) {
-    this.router.navigateByUrl(`pages/appointment/add/${lead.menuId}/${lead.id}/${lead.schoolId}/${this.branchOfficeId}/${this.warehouseId}/${lead.date}`);
+  addNew() {
+    const form = this.itemForm.getRawValue();
+    const dateFormatted=`${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth()+1}-${this.selectedDate.getDate()}`;
+    this.router.navigateByUrl(`pages/appointment/add/${dateFormatted}/${form.branchOfficeId}/${form.medicalSpecialityId}/${form.doctorId}/${form.patientId}`);
 }
 
-editLead(lead:any) {
-  this.router.navigateByUrl(`pages/appointment/edit/${lead.menuId}/${lead.id}/${lead.schoolId}/${this.branchOfficeId}/${this.warehouseId}/${lead.date}`);
+editAppointment(appointment:any) {
+  this.router.navigateByUrl(`pages/appointment/edit/${appointment.id}`);
 }
 
 }

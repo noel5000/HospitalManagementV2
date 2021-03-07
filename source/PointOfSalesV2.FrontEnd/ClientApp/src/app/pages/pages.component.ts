@@ -102,6 +102,11 @@ export class PagesComponent {
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
           {
+            title: this.lang.getValueByKey('medicalSpecialities_menu'),
+            link: 'medicalSpeciality',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Users)
+          },
+          {
             title: this.lang.getValueByKey('consultation_menu'),
             link: 'product',
             hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
@@ -116,12 +121,14 @@ export class PagesComponent {
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
          
-          {
-            title: this.lang.getValueByKey('medicalSpecialities_menu'),
-            link: 'medicalSpeciality',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Users)
-          },
+         
         ],
+      },
+      {
+        title: this.lang.getValueByKey('appointment_menu'),
+        icon: 'printer-outline',
+        hidden: !this.securityService.validateMenuChildren(menuChildren.cashRegister),
+        link:'appointment'
       },
       {
         title: this.lang.getValueByKey('cashRegister_menu'),

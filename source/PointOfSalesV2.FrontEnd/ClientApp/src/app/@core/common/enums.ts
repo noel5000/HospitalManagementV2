@@ -72,6 +72,18 @@ export const BillingStatesColors={
           primary: '#98FB98',
           secondary: '#98FB98',
       },
+      F:{
+        primary: '#98FB98',
+        secondary: '#98FB98',
+    },
+    S:{
+      primary: '#98FB98',
+      secondary: '#98FB98',
+  },
+  R:{
+    primary: '#228B22',
+    secondary: '#228B22',
+},
 }
 
 export enum ExcelColumnsDef {

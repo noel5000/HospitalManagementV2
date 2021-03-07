@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210307155446_Appointments")]
+    partial class Appointments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +51,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<Guid?>("DoctorId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("HospitalId")
-                        .HasColumnType("bigint");
 
                     b.Property<decimal>("InsuranceCoverage")
                         .HasColumnType("decimal(18, 2)");
@@ -99,8 +98,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.HasIndex("DoctorId");
-
-                    b.HasIndex("HospitalId");
 
                     b.HasIndex("InsuranceId");
 
@@ -23330,12 +23327,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.User", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId");
-
-                    b.HasOne("PointOfSalesV2.Entities.BranchOffice", "Hospital")
-                        .WithMany()
-                        .HasForeignKey("HospitalId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
 
                     b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
                         .WithMany()

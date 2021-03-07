@@ -52,6 +52,7 @@ namespace PointOfSalesV2.Api.Helpers
             builder.EntitySet<PaymentType>("PaymentType");
             builder.EntitySet<PaymentDetail>("PaymentDetail");
             builder.EntitySet<Product>("Product").HasOptionalBinding(x=>x.Currency,"Currency");
+            builder.EntitySet<Product>("Product").HasOptionalBinding(x => x.MedicalSpeciality, "MedicalSpeciality");
             builder.EntitySet<ProductTax>("ProductTax").HasOptionalBinding(x=>x.Product,"Product");
             builder.EntitySet<ProductTax>("ProductTax").HasOptionalBinding(x=>x.Tax,"Tax");
             builder.EntitySet<ReturnDetail>("ReturnDetail");
@@ -123,7 +124,14 @@ namespace PointOfSalesV2.Api.Helpers
             builder.EntitySet<InsuranceServiceCoverage>("InsuranceServiceCoverage").HasOptionalBinding(x => x.Currency, "Currency");
             builder.EntitySet<InsurancePlan>("InsurancePlan").HasOptionalBinding(x => x.Insurance, "Insurance");
 
-
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.MedicalSpeciality, "MedicalSpeciality");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Insurance, "Insurance");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Product, "Product");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Patient, "Patient"); 
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.InsurancePlan, "InsurancePlan");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Doctor, "Doctor");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Currency, "Currency");
+            builder.EntitySet<Appointment>("Appointment").HasOptionalBinding(x => x.Hospital, "Hospital");
 
             return builder.GetEdmModel();
         }

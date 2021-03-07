@@ -24,6 +24,8 @@ namespace PointOfSalesV2.Entities
         [MaxLength(50)]
         [Export(Order = 3)]
         public string Code { get; set; }
+
+        public long? MedicalSpecialityId { get; set; }
         public string DetailsClass { get; set; }
         public bool IsService { get; set; }
         public bool IsCompositeProduct { get; set; }
@@ -52,6 +54,11 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("CurrencyId")]
         [Export(Order = 4, ChildProperty = "Code")]
         public Currency Currency { get; set; }
+
+
+        [ForeignKey("MedicalSpecialityId")]
+        [Export(Order = 4, ChildProperty = "Name")]
+        public MedicalSpeciality MedicalSpeciality { get; set; }
 
 
 

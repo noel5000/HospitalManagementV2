@@ -31,34 +31,44 @@ namespace PointOfSalesV2.Common
             FullPaid = 'R',
             Quoted = 'Q',
             Converted = 'C',
-            Generated='G',
-            Projected='J',
-            Delivered='D',
-            Expired='E',
-            NotEnoughInventory='I',
+            Generated = 'G',
+            Projected = 'J',
+            Delivered = 'D',
+            Expired = 'E',
+            NotEnoughInventory = 'I',
             NulledLead = 'M',
             GeneratedWithoutInventory = 'O',
-
+            Scheduled = 'S',
+            InProgress = 'F'
         }
-       
 
-
-        public enum CashRegisterOpeningType 
+        public enum AppointmentStates
         {
-        cash,
-        check,
-        creditCard
+            Scheduled = 'S',
+            InProgress = 'F',
+            Billed = 'B',
+            Nulled = 'N',
+            FullPaid = 'R'
+        }
+
+
+
+        public enum CashRegisterOpeningType
+        {
+            cash,
+            check,
+            creditCard
         }
         public enum CashRegisterOpeningStates
         {
-           Open='O',
-           Close='C',
-           Nulled='N'
+            Open = 'O',
+            Close = 'C',
+            Nulled = 'N'
         }
-        public enum SortDirections 
+        public enum SortDirections
         {
-        DESC=0,
-        ASC=1
+            DESC = 0,
+            ASC = 1
         }
 
         public enum ExcelColumnsDef
@@ -69,7 +79,7 @@ namespace PointOfSalesV2.Common
             DATETIME = 4
         }
 
-        public static Dictionary<string, ExcelColumnsDef> PropertyTypesToExcelEnum = new Dictionary<string, ExcelColumnsDef>() 
+        public static Dictionary<string, ExcelColumnsDef> PropertyTypesToExcelEnum = new Dictionary<string, ExcelColumnsDef>()
         {
             {"datetime",ExcelColumnsDef.DATETIME },
             {"int",ExcelColumnsDef.INTEGER },
@@ -82,18 +92,18 @@ namespace PointOfSalesV2.Common
             {"char",ExcelColumnsDef.TEXT },
         };
 
-        public enum ObjectType 
+        public enum ObjectType
         {
-        STRING=0,
-        NUMBER=2,
-        DATE=3,
-        BOOL=4
+            STRING = 0,
+            NUMBER = 2,
+            DATE = 3,
+            BOOL = 4
         }
-        
+
 
         public enum SequenceTypes
         {
-            
+
             Invoices = 1,
             Sellers = 2,
             Customers = 3,
@@ -105,20 +115,20 @@ namespace PointOfSalesV2.Common
             SupplierReturns = 9,
             CustomerPayments = 10,
             CompanyPayments = 11,
-            Leads=12,
-            Schools=13,
-            ExpensePayments=14,
-            Products=15,
-            Menus=16,
-            Insurances=17
+            Leads = 12,
+            Schools = 13,
+            ExpensePayments = 14,
+            Products = 15,
+            Menus = 16,
+            Insurances = 17
         }
 
-      
+
 
         public enum CompanyPaymentTypes
         {
-        ExpensePayment=0,
-        CustomerPayment=1
+            ExpensePayment = 0,
+            CustomerPayment = 1
         }
 
         public enum SequenceTypeCode
@@ -136,10 +146,10 @@ namespace PointOfSalesV2.Common
             P = 11,
             CONDUCE = 12,
             ESC = 13,
-            PG=14,
+            PG = 14,
             PRO = 15,
-            MEN=16,
-            INS=17
+            MEN = 16,
+            INS = 17
         }
 
         public enum AppSections
@@ -155,30 +165,30 @@ namespace PointOfSalesV2.Common
             Customers = 9,
             Warehouses = 10,
             All = 11,
-            Inventories=12,
-            TRNControl=13,
-            Expenses=14,
-            BranchOffices=15,
-            ExpensesPayments=16,
-            Suppliers=17,
-            Units=18,
-            Users=19,
-            PaymentTypes=20,
-            CashRegisters=21,
-            CashRegisterOpenings=22,
-            CashRegisterOpeningsAmounts=23,
-            IncomeMovements=24,
-            CustomersReturns=25,
-            SuppliersReturns=26,
-            WarehouseTransfers=27,
-            ProductUnits=28,
-            Roles=29,
-            Sections=30,
-            Operations=31,
-            Sellers=32,
-            Zones=33,
-            UserRoles=34,
-            DashBoard=35,
+            Inventories = 12,
+            TRNControl = 13,
+            Expenses = 14,
+            BranchOffices = 15,
+            ExpensesPayments = 16,
+            Suppliers = 17,
+            Units = 18,
+            Users = 19,
+            PaymentTypes = 20,
+            CashRegisters = 21,
+            CashRegisterOpenings = 22,
+            CashRegisterOpeningsAmounts = 23,
+            IncomeMovements = 24,
+            CustomersReturns = 25,
+            SuppliersReturns = 26,
+            WarehouseTransfers = 27,
+            ProductUnits = 28,
+            Roles = 29,
+            Sections = 30,
+            Operations = 31,
+            Sellers = 32,
+            Zones = 33,
+            UserRoles = 34,
+            DashBoard = 35,
             SalesReport = 36,
             AccountsReceivable = 37,
             IncomeReceipts = 38,
@@ -191,13 +201,15 @@ namespace PointOfSalesV2.Common
             ResultState = 45,
             TaxesReport = 46,
             InventoryIncomes = 47,
-            CompanyPayments=48,
+            CompanyPayments = 48,
             Menu = 49,
             School = 50,
-            SchoolMenu=51,
-            InvoiceLeads=52,
-            Insurance=53,
-            InsurancePlan=54
+            SchoolMenu = 51,
+            InvoiceLeads = 52,
+            Insurance = 53,
+            InsurancePlan = 54,
+            InsuranceCoverage = 55,
+            Appointment = 56
 
         }
         public enum MovementTypes
@@ -211,9 +223,9 @@ namespace PointOfSalesV2.Common
             CASH = 1,
             CHECK = 2,
             CREDITCARD = 3,
-            BANKTRANSFER=4
+            BANKTRANSFER = 4
         }
-       public static Dictionary<AppSections, string> SectionsControllers = new Dictionary<AppSections, string>()
+        public static Dictionary<AppSections, string> SectionsControllers = new Dictionary<AppSections, string>()
         {
             {AppSections.Permissions,"User,UserClaims,Role,RoleSection,Section,SectionOperation" },
             {AppSections.CustomerRates,"Customer,CustomerRate" },
@@ -268,7 +280,7 @@ namespace PointOfSalesV2.Common
             {AppSections.CompanyPayments,"CompanyPayment" },
             {AppSections.Menu,"" },
            { AppSections.School,"School,BranchOffice,Zone,Customer"},
-            {AppSections.SchoolMenu,"Menu" },
+            {AppSections.Appointment,"" },
         };
         public enum Gender
         {
@@ -276,10 +288,10 @@ namespace PointOfSalesV2.Common
             Female = 'F'
         }
 
-        public enum ServerDirectoryType 
+        public enum ServerDirectoryType
         {
-        Folder=0,
-        FTP=1
+            Folder = 0,
+            FTP = 1
         }
 
         public enum Operations
@@ -288,21 +300,21 @@ namespace PointOfSalesV2.Common
             ADD = 2,
             UPDATE = 3,
             DELETE = 4,
-            READALL=5,
-            EXPORT=6,
-            ALL=7,
+            READALL = 5,
+            EXPORT = 6,
+            ALL = 7,
             NONE = 8,
-            ACCOUNTSTATEREPORT=9,
-            RECEIPTSREPORT=10,
-            DEBTSTOPAYREPORT=11,
-            MENU=12,
-            INVENTORYREPORT=13,
-            ACCOUNTRECEIVABLES=14,
-            SALESREPORT=15,
-            TAXREPORT=16,
-            GENERATEDICTIONARY=17,
-            COMISSIONSREPORT=18,
-            PRODUCTMOVEMENTS=19
+            ACCOUNTSTATEREPORT = 9,
+            RECEIPTSREPORT = 10,
+            DEBTSTOPAYREPORT = 11,
+            MENU = 12,
+            INVENTORYREPORT = 13,
+            ACCOUNTRECEIVABLES = 14,
+            SALESREPORT = 15,
+            TAXREPORT = 16,
+            GENERATEDICTIONARY = 17,
+            COMISSIONSREPORT = 18,
+            PRODUCTMOVEMENTS = 19
 
         }
     }

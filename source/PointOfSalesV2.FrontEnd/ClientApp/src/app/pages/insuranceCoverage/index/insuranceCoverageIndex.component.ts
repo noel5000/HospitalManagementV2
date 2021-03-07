@@ -49,6 +49,13 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
             value: "Name",
             type: ObjectTypes.ChildObject,
             isTranslated:false
+        },
+        
+        {
+            property: "Product",
+            value: "Name",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
         }
         ];
     orderBy: string = 'Id';
@@ -98,6 +105,18 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
     type:'text',
     isTranslated:false,
     name:scope.lang.getValueByKey('insurancePlan_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:false
+ },
+ {
+    visible:true,
+    id:'productId',
+    fieldToShow:'product.name',
+    type:'text',
+    isTranslated:false,
+    name:scope.lang.getValueByKey('consultation_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,

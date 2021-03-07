@@ -37,7 +37,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<Product>(x => x.Include(t => t.Currency)
+                var data = _baseRepo.GetAll<Product>(x => x.Include(t => t.Currency).Include(x=>x.MedicalSpeciality)
                  , y => y.Active == true);
                 return Ok(data);
                

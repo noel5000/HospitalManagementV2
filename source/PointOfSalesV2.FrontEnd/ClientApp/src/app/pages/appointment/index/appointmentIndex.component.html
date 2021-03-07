@@ -1,26 +1,60 @@
 <nb-card>
   <nb-card-header>
     <div class="form-row">
-      <div class="col-md-6 col-xs-12">{{'invoiceLeads_lbl' | translate}}</div>
+      <div class="col-md-6 col-xs-12">{{'appointments_lbl' | translate}}</div>
       
     </div>
     <br>
-    <div class="form-row">
-      <div class="col-md-1 text-right col-xs-6">{{'branchOffice_lbl' | translate}}</div>
-      <div class="col-md-3 col-xs-6">
-        <select class="form-control" [ngModel]="branchOfficeId"(ngModelChange)="getWarehouses($event)">
-          <option value="0"></option>
-          <option *ngFor="let branchOffice of branchOffices" [value]="branchOffice.id" >{{branchOffice.name}}</option>
-        </select>
-      </div>
-      <div class="col-md-1 text-right col-xs-6">{{'warehouse_lbl' | translate}}</div>
-      <div class="col-md-3 col-xs-6">
-        <select class="form-control" [ngModel]="warehouseId"(ngModelChange)="warehouseChange($event)">
-          <option value="0"></option>
-          <option *ngFor="let warehouse of warehouses" [value]="warehouse.id" >{{warehouse.name}}</option>
-        </select>
-      </div>
-    </div>
+    <form [formGroup]="itemForm" (ngSubmit)="save()">
+   <div class="row" *ngIf="visible">
+    <div class="form-group col-md-6 col-xs-12">
+      <label>{{'hospital_lbl' | translate}}</label>
+      <select class="form-control"
+      formControlName="branchOfficeId"
+      >
+      <option *ngFor="let branchOffice of hospitals"
+       [value]="branchOffice.id"
+       >{{branchOffice.name}}</option>
+      </select>
+  </div>
+  <div class="form-group col-md-6 col-xs-12">
+    <label>{{'medicalSpecialty_lbl' | translate}}</label>
+    <select class="form-control"
+    formControlName="medicalSpecialityId"
+    >
+    <option *ngFor="let medicalSpeciality of medicalSpecialities"
+     [value]="medicalSpeciality.id"
+     >{{medicalSpeciality.name}}</option>
+    </select>
+</div>
+
+<div class="form-group col-md-6 col-xs-12">
+  <label>{{'doctor_lbl' | translate}}</label>
+  <select class="form-control"
+  formControlName="doctorId"
+  >
+  <option *ngFor="let doctor of doctors"
+   [value]="doctor.userId"
+   >{{doctor.name}}</option>
+  </select>
+</div>
+
+<div class="form-group col-md-6 col-xs-12">
+  <label>{{'patient_lbl' | translate}}</label>
+  <select class="form-control"
+  formControlName="patientId"
+  >
+  <option *ngFor="let patient of patients"
+   [value]="patient.id"
+   >{{patient.name}}</option>
+  </select>
+</div>
+
+   </div>
+     
+  </form>
+   
+   
    
   </nb-card-header>
 
@@ -58,31 +92,7 @@
       <div class="col-md-4">
         <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
       </div>
-      <!-- <div class="col-md-4">
-        <div class="btn-group">
-          <div
-            class="btn btn-primary"
-            (click)="setView(CalendarView.Month)"
-            [class.active]="view === CalendarView.Month"
-          >
-            Month
-          </div>
-          <div
-            class="btn btn-primary"
-            (click)="setView(CalendarView.Week)"
-            [class.active]="view === CalendarView.Week"
-          >
-            Week
-          </div>
-          <div
-            class="btn btn-primary"
-            (click)="setView(CalendarView.Day)"
-            [class.active]="view === CalendarView.Day"
-          >
-            Day
-          </div>
-        </div>
-      </div> -->
+     
     </div>
     <br />
     <div >
@@ -105,38 +115,43 @@
     
  
     
-    <div class="table-responsive scrollTableMobile" *ngIf="selectedLeads.length>0">
+    <div class="table-responsive scrollTableMobile">
+      <a class="btn btn-lg btn-info" (click)="addNew()">{{'add_btn' |translate}}</a>
+      <br /><br />
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>{{'school_lbl' | translate}}</th>
-            <th>{{'sequence_lbl' | translate}}</th>
-            <th>{{'state_lbl' | translate}}?</th>
-            <th>{{'existence_lbl' | translate}}?</th>
+            <th>{{'doctor_lbl' | translate}}</th>
+            <th>{{'medicalSpeciality_lbl' | translate}}</th>
+            <th>{{'patient_lbl' | translate}}</th>
+            <th>{{'insurance_lbl' | translate}}</th>
+            <th>{{'insurancePlan_lbl' | translate}}</th>
+            <th>{{'time_lbl' | translate}}</th>
+            <th>{{'totalAmount_lbl' | translate}}</th>
+            <th>{{'state_lbl' | translate}}</th>
+            <th></th>
           </tr>
         </thead>
     
         <tbody>
-          <tr *ngFor="let selectedLead of selectedLeads">
-            <td>{{selectedLead.schoolName}}</td>
-            <td>{{selectedLead.leadSequence}}</td>
-            <td>{{getStatusDescription(selectedLead.state)}}</td>
-            <td>{{(selectedLead.enoughExistence?'yes_lbl':'no_lbl')| translate}}</td>
+          <tr *ngFor="let appointment of selectedAppointments">
+            <td>{{appointment.doctor.name}}</td>
+            <td>{{appointment.medicalSpeciality.name}}</td>
+            <td>{{appointment.patient.name}}</td>
+            <td>{{appointment.insurance.name}}</td>
+            <td>{{appointment.insurancePlan.name}}</td>
+            <td>{{appointment.appointmentHourString}}</td>
+            <td>{{appointment.totalAmount | currency:""}}</td>
+            <td>{{getStatusDescription(appointment.state)}}</td>
             <td>
               <button mat-button [matMenuTriggerFor]="menu">{{'actions_lbl' | translate}}</button>
 <mat-menu #menu="matMenu">
-  <button *ngIf="selectedLead.state=='J'" (click)="addNew(selectedLead)" mat-menu-item>{{'createLead_lbl' | translate}}</button>
-  <button *ngIf="selectedLead.state=='G' || selectedLead.state=='O'" (click)="editLead(selectedLead)"  mat-menu-item>{{'edit_btn' | translate}}</button>
-  <button *ngIf="selectedLead.state=='G' || selectedLead.state=='O'" (click)="removeLead(selectedLead)"  mat-menu-item>{{'delete_btn' | translate}}</button>
-  <button *ngIf="selectedLead.state=='G'" (click)="deliverLead(selectedLead)" mat-menu-item>{{'deliverLead_lbl' | translate}}</button>
-  <button (click)="printLead(selectedLead)" mat-menu-item>{{'print_lbl' | translate}}</button>
+  <button *ngIf="appointment.state=='S'" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
+  <button *ngIf="appointment.state=='S'" (click)="removeAppointment(appointment)"  mat-menu-item>{{'delete_btn' | translate}}</button>
+  <button (click)="printAppointment(appointment)" mat-menu-item>{{'print_lbl' | translate}}</button>
 </mat-menu>
             </td>
-            <!-- <td>
-              <button class="btn btn-danger" (click)="deleteEvent(event)">
-                Delete
-              </button>
-            </td> -->
+        
           </tr>
         </tbody>
       </table>
