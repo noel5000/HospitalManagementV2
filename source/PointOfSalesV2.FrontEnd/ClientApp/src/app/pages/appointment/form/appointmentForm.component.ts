@@ -64,7 +64,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     userService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}User`);
     productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
     productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductTax`);
-    insuranceCoverageService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
    
 
     constructor(
@@ -108,10 +108,12 @@ productCost:[0],
 productPrice:[0],
 totalAmount:[0],
 insuranceCoverageAmount:[0],
+insuranceName:[""],
+insurancePlanName:[""],
 patientPaymentAmount:[0],
 currencyId:[null,[Validators.required, Validators.min(1)]],
 hospitalId:[null,[Validators.required, Validators.min(1)]],
-currencyCode:[''],
+currencyName:[''],
 sequence:[''],
         });
     }
@@ -119,7 +121,6 @@ sequence:[''],
    
      this.onChanges();
         this.verifyUser();
-        this.getProducts();
         this.getEspecialities();
         this.getPatients();
         this.getHospitals();
@@ -162,6 +163,9 @@ sequence:[''],
     ]
         this.productTaxService.getAllFiltered(filter).subscribe(r=>{
             this.productTaxes=r['value'];
+         const taxesAmount=   this.CalculateProductTax();
+         this.itemForm.patchValue({taxesAmount});
+         this.refreshAmounts(false);
         });
     }
 
@@ -169,8 +173,6 @@ sequence:[''],
         const {productPrice}= this.itemForm.getRawValue();
         return this.productTaxes.length<=0?0:this.productTaxes.reduce(function(a,b){return a+(b.tax.rate*productPrice)},0);
     }
-
-    
 
     async GetProductCost(productId:number){
         const currentProduct = this.products.find(x=>x.id==productId);
@@ -180,9 +182,7 @@ sequence:[''],
         this.refreshAmounts();
     }
 
-  
-
-    async getProducts(){
+    async getProducts(medicalSpecialityId:number){
         const filter = [
         {
             property: "Currency",
@@ -196,6 +196,13 @@ sequence:[''],
             type: ObjectTypes.Boolean,
             isTranslated: false,
             comparer: ODataComparers.equals
+        } as QueryFilter,
+        {
+            property: "MedicalSpecialityId",
+            value: medicalSpecialityId.toString(),
+            type: ObjectTypes.Number,
+            isTranslated: false,
+            comparer: ODataComparers.equals
         } as QueryFilter
     ]
         this.productService.getAllFiltered(filter).subscribe(r=>{
@@ -203,29 +210,38 @@ sequence:[''],
             this.products=this.products.concat( r['value']);
         });
     }
-    async getDoctors(medicalSpeciality:number){
-        const filter = [
-       
-        {
-            property: "UserType",
-            value: "D",
-            type: ObjectTypes.String,
-            isTranslated: false,
-            comparer: ODataComparers.equals
-        } as QueryFilter,
-        {
+
+    async getDoctors(specialityId:number, hospitalId:number){
+        let filter :QueryFilter[]=[];
+  
+        if(specialityId && specialityId>0)
+        filter.push(
+          {
             property: "MedicalSpecialityId",
-            value: medicalSpeciality.toString(),
+            value: specialityId.toString(),
             type: ObjectTypes.Number,
-            isTranslated: false,
-            comparer: ODataComparers.equals
+            isTranslated: false
         } as QueryFilter
-    ]
+        );
+  
+        if(hospitalId && hospitalId>0)
+        filter.push(
+          {
+            property: "BranchOfficeId",
+            value: hospitalId.toString(),
+            type: ObjectTypes.Number,
+            isTranslated: false
+        } as QueryFilter
+        )
         this.userService.getAllFiltered(filter).subscribe(r=>{
-            this.doctors=[{userId:'', name:''}];
-            this.doctors=this.doctors.concat( r['value']);
-        });
-    }
+      
+          this.doctors=r['value'];
+          if(this.doctors.length==1)
+          this.itemForm.patchValue({
+            doctorId:this.doctors[0].userId
+           });
+        })
+      }
     async getEspecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=[{id:null, name:""}];
@@ -245,6 +261,46 @@ sequence:[''],
     }
 
     async getPatients(){
+
+        const filter = [
+            {
+                property: "InsurancePlan",
+                value: "Id,Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated: false
+            } as QueryFilter,
+            {
+                property: "Insurance",
+                value: "Id,Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated: false
+            } as QueryFilter,
+            {
+                property: "Currency",
+                value: "Id,Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated: false
+            } as QueryFilter,
+          
+        ]
+            this.customerService.getAllFiltered(filter).subscribe(r=>{
+                this.customers=[{id:null, name:""} as Customer];
+                this.customers=this.customers.concat(r["value"]);
+                if(r["value"].length==1){
+                    this.itemForm.patchValue({
+                        patientId:r["value"][0].id,
+                        insuranceId:r["value"][0].insuranceId,
+                        insurancePlanId:r["value"][0].insurancePlanId,
+                        insuranceName:r["value"][0].insurance?r["value"][0].insurance.name:'',
+                        insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
+                        currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
+                        currencyId:r["value"][0].currencyId,
+                        insuranceCoverageAmount:0
+                    });
+                }
+            });
+
+
         this.customerService.getAll().subscribe(r=>{
             this.customers=[{id:null, name:""} as Customer];
             this.customers=this.customers.concat(r);
@@ -259,14 +315,63 @@ sequence:[''],
         });
     }
 
-  
     onChanges(): void {
       
 
          
             this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
                
-                    this.refreshAmounts(true);
+                    
+                
+                });
+
+                this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
+               
+                    const {medicalSpecialityId} = this.itemForm.getRawValue();
+                    if(val && val>0 && medicalSpecialityId && medicalSpecialityId>0 )
+                    this.getDoctors(medicalSpecialityId,val);
+                
+                });
+
+                this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+               
+                    const {hospitalId} = this.itemForm.getRawValue();
+                    if(val && val>0 && hospitalId && hospitalId>0 ){
+                        this.getProducts(val);
+                        this.getDoctors(val,hospitalId);
+                    }
+                    
+        
+                
+                });
+
+                this.itemForm.get('patientId').valueChanges.subscribe(val => {
+               
+                   if(val && val>0){
+                    const patient = this.customers.find(x=>x.id==val);
+                    if(patient){
+                        this.itemForm.patchValue({
+                            insuranceId:patient.insuranceId,
+                            insurancePlanId:patient.insurancePlanId,
+                            insuranceName:patient.insurance?patient.insurance.name:'',
+                            insurancePlanName:patient.insurancePlan?patient.insurancePlan.name:'',
+                            currencyId:patient.currencyId,
+                            currencyName:patient.currency?patient.currency.name:'',
+                            insuranceCoverageAmount:0
+                        });
+                    }
+                   }
+                   else{
+                    this.itemForm.patchValue({
+                        insuranceId:null,
+                        insurancePlanId:null,
+                        insuranceName:'',
+                        insurancePlanName:'',
+                        currencyId:null,
+                        currencyName:'',
+                        insuranceCoverageAmount:0
+                    });
+                   }
                 
                 });
              
@@ -277,17 +382,40 @@ sequence:[''],
         this.itemForm.get('productId').valueChanges.subscribe(val => {
             if(val && val>0){
                 const product= this.products.find(x=>x.id==val);
-                this.itemForm.patchValue({currencyCode:product.currency.code})
+                this.itemForm.patchValue({
+                    insuranceCoverageAmount:0,
+                    beforeTaxesAmount:product.price,
+                    totalAmount:0,
+                    taxesAmount:0,
+                    productPrice:product.price,
+                })
             
                 this.productTaxes=[];
                 this.GetProductTaxes(val);
-                this.GetProductCost(val);
+                const form = this.itemForm.getRawValue();
+                this.getInsuranceCoverage(val,form.insuranceId,form.insurancePlanId);
+               
             }
+            else
+            this.itemForm.patchValue({insuranceCoverageAmount:0})
         });
       
       }
     
     get form() { return this.itemForm.controls; }
+
+    getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
+        this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
+        .subscribe(r=>{
+            if(r.status>=0){
+                const coverage=r.data[0];
+                this.itemForm.patchValue({insuranceCoverageAmount:coverage.coverageAmount});
+                this.refreshAmounts(false);
+            }
+            else
+            this.modalService.showError('error_msg');
+        })
+    }
 
     verifyTotalAmount(){
         const calculatedAmount= this.itemForm.get('totalAmountCalc')?this.itemForm.get('totalAmountCalc').value:0;
@@ -327,20 +455,21 @@ sequence:[''],
     }
     refreshAmounts(fromForm:boolean=false){
     
-        let {productPrice,productCost,quantity,unitId,beforeTaxesAmount, totalAmount, taxesAmount} = this.itemForm.getRawValue() as any;
-
+        let {productPrice,productCost,patientPaymentAmount,quantity,insuranceCoverageAmount,unitId,beforeTaxesAmount, totalAmount, taxesAmount} = this.itemForm.getRawValue() as any;
+        quantity=!quantity?1:quantity;
        const equivalence =unitId && unitId>0? this.productUnits.find(x=>x.unitId==unitId).equivalence:1;
             productCost=fromForm?productCost:this.currentProductCost.cost>0?(this.currentProductCost.cost/equivalence):productCost;
-            productPrice=fromForm?productPrice:this.currentProductPrice.sellingPrice>0?(this.currentProductPrice.sellingPrice/equivalence):productPrice;
-            beforeTaxesAmount= quantity * productCost;
+            productPrice=fromForm?productPrice:this.currentProductPrice.sellingPrice>0?(this.currentProductPrice.sellingPrice/equivalence):productPrice;            
             taxesAmount=this.CalculateProductTax() * quantity;
             totalAmount= beforeTaxesAmount + taxesAmount;
+            patientPaymentAmount= totalAmount - insuranceCoverageAmount;
             this.itemForm.patchValue({
                 productCost,
                 beforeTaxesAmount,
                 totalAmount,
                 productPrice,
-                taxesAmount
+                taxesAmount,
+                patientPaymentAmount
             })
         
             

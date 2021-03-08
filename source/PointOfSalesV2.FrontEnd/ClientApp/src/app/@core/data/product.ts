@@ -20,7 +20,9 @@ export class Product extends BaseModel {
     name:string;
     details:string;
     currency :Currency
+    medicalSpecialityId:number=null;
     taxes:any[];
+    medicalSpeciality:any;
     productUnits:any[];
     baseCompositeProducts:any[];
     suppliersCosts:any[]=[];

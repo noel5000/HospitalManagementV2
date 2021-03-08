@@ -23,9 +23,10 @@ namespace PointOfSalesV2.Entities
         public long? InsurancePlanId { get; set; }
 
         public decimal BeforeTaxesAmount { get; set; }
+        public decimal PatientPaymentAmount { get; set; }
 
         public decimal TaxesAmount { get; set; }
-        public decimal InsuranceCoverage { get; set; }
+        public decimal InsuranceCoverageAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public char State { get; set; }
 
@@ -67,6 +68,35 @@ namespace PointOfSalesV2.Entities
 
         [ForeignKey("HospitalId")]
         public BranchOffice Hospital { get; set; }
+
+        [NotMapped]
+        public string MedicalSpecialityName { get; set; }
+
+        [NotMapped]
+        public string InsuranceName { get; set; }
+
+        [NotMapped]
+        public string SpecialityName { get; set; }
+
+        [NotMapped]
+        public string ProductName { get; set; }
+
+        [NotMapped]
+        public string PatientName { get; set; }
+
+        [NotMapped]
+        public string InsurancePlanName { get; set; }
+
+        [NotMapped]
+        public string DoctorName { get; set; }
+
+
+        [NotMapped]
+        public string CurrencyName { get; set; }
+
+
+        [NotMapped]
+        public string HospitalName { get; set; }
 
     }
 }

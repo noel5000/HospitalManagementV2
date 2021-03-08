@@ -10,6 +10,9 @@ using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using Microsoft.EntityFrameworkCore;
+using static PointOfSalesV2.Common.Enums;
+using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.Cors;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -19,11 +22,13 @@ namespace PointOfSalesV2.Api.Controllers
     public class AppointmentController : BaseController<Appointment>
     {
         protected readonly IAppointmentRepository appointmentRepository;
-        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>())
         {
             this.appointmentRepository = this._repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>();
         }
-
+        [ActionAuthorize(Operations.READALL)]
+        [EnableQuery()]
+        [EnableCors("AllowAllOrigins")]
         public override IActionResult Get()
         {
             try
@@ -46,7 +51,7 @@ namespace PointOfSalesV2.Api.Controllers
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
-
+        [EnableCors("AllowAllOrigins")]
         [HttpGet("GetAppointmentsByDay/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
         public async Task<IActionResult> GetAppointmentsByDay(DateTime date,long hospitalId, string doctorId, long? medicalSpeciality, long? patientId) 
         {
@@ -62,7 +67,7 @@ namespace PointOfSalesV2.Api.Controllers
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
-
+        [EnableCors("AllowAllOrigins")]
         [HttpGet("GetAppointmentsByMonth/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
         public async Task<IActionResult> GetAppointmentsByMonth(DateTime date,long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
         {

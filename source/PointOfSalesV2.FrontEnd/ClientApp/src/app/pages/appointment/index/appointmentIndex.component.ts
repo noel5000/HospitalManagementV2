@@ -287,6 +287,7 @@ print(e: any) {
     this.service.getByUrlParameters(['GetAppointmentsByDay',dateFormatted,form.branchOfficeId.toString(),
     form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString()]).subscribe(r=>{
      this.selectedAppointments=r.data;
+     this.changes.detectChanges();
     });
   }
 
@@ -302,13 +303,14 @@ print(e: any) {
         this.events.push({
           start:new Date(d.date),
           end: new Date(d.date),
-          title: `${d.doctor.name} ${d.patient.name}`,
+          title: `${d.doctorName} ${d.patientName}`,
           color:BillingStatesColors[d.state],
           actions: this.actions,
           allDay: true,
         } as CalendarEvent)
       });
       this.refresh.next();
+      this.changes.detectChanges();
      });
    }
     beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {

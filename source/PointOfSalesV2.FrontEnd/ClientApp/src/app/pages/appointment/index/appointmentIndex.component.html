@@ -139,11 +139,11 @@
     
         <tbody>
           <tr *ngFor="let appointment of selectedAppointments">
-            <td>{{appointment.doctor.name}}</td>
-            <td>{{appointment.medicalSpeciality.name}}</td>
-            <td>{{appointment.patient.name}}</td>
-            <td>{{appointment.insurance.name}}</td>
-            <td>{{appointment.insurancePlan.name}}</td>
+            <td>{{appointment.doctorName}}</td>
+            <td>{{appointment.medicalSpecialityName}}</td>
+            <td>{{appointment.patientName}}</td>
+            <td>{{appointment.insuranceName}}</td>
+            <td>{{appointment.insurancePlanName}}</td>
             <td>{{appointment.appointmentHourString}}</td>
             <td>{{appointment.totalAmount | currency:""}}</td>
             <td>{{getStatusDescription(appointment.state)}}</td>

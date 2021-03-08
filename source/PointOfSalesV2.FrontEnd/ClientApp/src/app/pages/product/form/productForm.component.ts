@@ -44,8 +44,10 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
     baseProducts:any[]=[];//
     baseProductUnits:any[]=[];//
     taxes:Tax[]=[];//
+    medicalSpecialities:any[]=[];
     productTaxes:any[]=[];//
     selectedBaseProduct:number=0;
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
     productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}ProductCost`);
     baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CompositeProduct`);
@@ -91,6 +93,7 @@ supplierId:[0],
 supplierCost:[0],
 baseProductId:[0],
 baseUnitId:[null],
+medicalSpecialityId:[null],
 quantity:[0],
 taxId:0
         });
@@ -110,6 +113,7 @@ taxId:0
         this.getCurrencies();
         this.getSuppliers();
         this.getUnits();
+        this.getEspecialities();
         this.getAllProducts();
        
     }
@@ -154,6 +158,15 @@ taxId:0
         this.otherProducts.splice(index,1);
      }
             
+        });
+    }
+
+    async getEspecialities(){
+        this.medicalSpecialityService.getAll().subscribe(r=>{
+            this.medicalSpecialities=[{id:null, name:""}];
+            this.medicalSpecialities=this.medicalSpecialities.concat(r);
+            if(r.length==1)
+            this.itemForm.patchValue({medicalSpecialityId:r[0].id});
         });
     }
 
@@ -271,6 +284,7 @@ async getSuppliers(){
                 isService:this.item.isService,
                 isCompositeProduct:this.item.isCompositeProduct,
                 unitId:0,
+                medicalSpecialityId:this.item.medicalSpecialityId,
                 equivalence:0,
                 isPrimary:false,
                 supplierId:0,

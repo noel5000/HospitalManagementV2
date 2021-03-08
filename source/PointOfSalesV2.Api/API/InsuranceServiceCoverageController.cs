@@ -23,10 +23,10 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.InsurancePlan)]
     public class InsuranceServiceCoverageController : BaseController<InsuranceServiceCoverage>
     {
-        readonly IProductRepository _customRepo;
+        readonly IInsuranceRepository _customRepo;
         public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
         {
-            _customRepo = repositoryFactory.GetCustomDataRepositories<IProductRepository>();
+            _customRepo = repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>();
         }
 
         [HttpGet]
@@ -51,9 +51,28 @@ namespace PointOfSalesV2.Api.Controllers
         }
 
 
-       
+        [HttpGet("GetInsuranceCoverage/{productId:long}/{insuranceId:long?}/{insurancePlanId:long?}")]
+        [ActionAuthorize(Operations.READALL)]
+        [EnableCors("AllowAllOrigins")]
+        public async Task<IActionResult> GetInsuranceCoverage(long productId, long?insuranceId=null, long? insurancePlanId=null)
+        {
+            try
+            {
+                var data = await this._customRepo.GetInsuranceCoverage(productId, insuranceId, insurancePlanId);
+                return Ok(new {id=0, status=0, data =new InsuranceServiceCoverage[] {data } });
 
-    
+            }
+
+            catch (Exception ex)
+            {
+                return Ok(new { status = -1, message = ex.Message });
+            }
+        }
+
+
+
+
+
 
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
