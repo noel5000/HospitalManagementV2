@@ -364,6 +364,8 @@ print(e: any) {
     ];
   }
 
+
+
   deleteEvent(eventToDelete: CalendarEvent) {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
@@ -379,7 +381,7 @@ print(e: any) {
 
   addNew() {
     const form = this.itemForm.getRawValue();
-    const dateFormatted=`${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth()+1}-${this.selectedDate.getDate()}`;
+    const dateFormatted=`${this.selectedDate.getFullYear()}-${this.selectedDate.getMonth()+1}-${this.selectedDate.getDate()} ${this.selectedDate.getHours()}:${this.selectedDate.getMinutes()}:${this.selectedDate.getSeconds()}`;
     this.router.navigateByUrl(`pages/appointment/add/${form.branchOfficeId}/${dateFormatted}/${form.medicalSpecialityId}/${form.doctorId}/${form.patientId}`);
 }
 

@@ -43,6 +43,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     item: any;
     medicalSpecialities:any[]=[];
     doctorId:number=0;
+    hospitals:BranchOffice[]=[];
     patientId:number=0;
     customers:Customer[]=[];
     branchOfficeId:number=0;
@@ -70,6 +71,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
+        private branchOfficeService:BranchOfficeService,
         private customerService:CustomerService,
         langService: LanguageService,
         private modals:NgbModal,
@@ -84,15 +86,22 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
           
             this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):0;
             this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
-            this.currentDate = new Date(this._route.snapshot.paramMap.get('date')).toISOString().split('.')[0];
+            const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
+            let month= (dateFromUrl.getMonth()+1).toString();
+            month=month.length>1?month:`0${month}`;
+            let day= (dateFromUrl.getDate()).toString();
+            day=day.length>1?day:`0${day}`;
+            this.currentDate = `${dateFromUrl.getFullYear()}-${month}-${day}T00:00:00`;
          
         this.itemForm = this.formBuilder.group({
 id: [0],
 date:[this.currentDate,[Validators.required]],
-medicalSpecialityId:[null,[ Validators.required,Validators.min(0), Validators.max(4)]],
-doctorId:[this.doctorId,[ Validators.required,Validators.min(1), Validators.max(5)]],
-patientId:[this.patientId,[ Validators.required,Validators.min(1), Validators.max(5)]],
+medicalSpecialityId:[null,[ Validators.required,Validators.min(1)]],
+doctorId:[this.doctorId,[ Validators.required,Validators.min(1)]],
+patientId:[this.patientId,[ Validators.required,Validators.min(1)]],
 productId:[null,[ Validators.required,Validators.min(1)]],
+insuranceId:[null],
+insurancePlanId:[null],
 beforeTaxesAmount:[0],
 taxesAmount:[0],
 productCost:[0],
@@ -100,7 +109,8 @@ productPrice:[0],
 totalAmount:[0],
 insuranceCoverageAmount:[0],
 patientPaymentAmount:[0],
-currencyId:[0],
+currencyId:[null,[Validators.required, Validators.min(1)]],
+hospitalId:[null,[Validators.required, Validators.min(1)]],
 currencyCode:[''],
 sequence:[''],
         });
@@ -110,7 +120,9 @@ sequence:[''],
      this.onChanges();
         this.verifyUser();
         this.getProducts();
-       
+        this.getEspecialities();
+        this.getPatients();
+        this.getHospitals();
     }
 
 
@@ -180,7 +192,7 @@ sequence:[''],
         } as QueryFilter,
         {
             property: "IsService",
-            value: "1",
+            value: "true",
             type: ObjectTypes.Boolean,
             isTranslated: false,
             comparer: ODataComparers.equals
@@ -189,6 +201,61 @@ sequence:[''],
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
+        });
+    }
+    async getDoctors(medicalSpeciality:number){
+        const filter = [
+       
+        {
+            property: "UserType",
+            value: "D",
+            type: ObjectTypes.String,
+            isTranslated: false,
+            comparer: ODataComparers.equals
+        } as QueryFilter,
+        {
+            property: "MedicalSpecialityId",
+            value: medicalSpeciality.toString(),
+            type: ObjectTypes.Number,
+            isTranslated: false,
+            comparer: ODataComparers.equals
+        } as QueryFilter
+    ]
+        this.userService.getAllFiltered(filter).subscribe(r=>{
+            this.doctors=[{userId:'', name:''}];
+            this.doctors=this.doctors.concat( r['value']);
+        });
+    }
+    async getEspecialities(){
+        this.medicalSpecialityService.getAll().subscribe(r=>{
+            this.medicalSpecialities=[{id:null, name:""}];
+            this.medicalSpecialities=this.medicalSpecialities.concat(r);
+            if(r.length==1)
+            this.itemForm.patchValue({medicalSpecialityId:r[0].id});
+        });
+    }
+
+    async getHospitals(){
+        this.branchOfficeService.getAll().subscribe(r=>{
+            this.hospitals=[{id:null, name:""} as BranchOffice];
+            this.hospitals=this.hospitals.concat(r);
+            if(r.length==1)
+            this.itemForm.patchValue({hospitalId:r[0].id});
+        });
+    }
+
+    async getPatients(){
+        this.customerService.getAll().subscribe(r=>{
+            this.customers=[{id:null, name:""} as Customer];
+            this.customers=this.customers.concat(r);
+            if(r.length==1){
+                this.itemForm.patchValue({
+                    patientId:r[0].id,
+                    insuranceId:r[0].insuranceId,
+                    insurancePlanId:r[0].insurancePlanId,
+                    currencyId:r[0].currencyId
+                });
+            }
         });
     }
 

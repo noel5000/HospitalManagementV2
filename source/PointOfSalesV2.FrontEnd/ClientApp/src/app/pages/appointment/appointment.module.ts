@@ -16,7 +16,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { appointmentIndexComponent } from './index/appointmentIndex.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { MatMenuModule, MatButtonModule, MatButtonToggleModule } from '@angular/material';
+import { MatMenuModule, MatButtonModule, MatButtonToggleModule, MatInputModule } from '@angular/material';
 import { WarehouseService } from '../../@core/services/WarehouseService';
 import { appointmentFormComponent } from './form/appointmentForm.component';
 import { SchoolService } from '../../@core/services/SchoolService';
@@ -66,6 +66,7 @@ const routes: Routes = [
         NbIconModule,
         NbInputModule,
         ThemeModule,
+       
         CommonModule,
         RouterModule.forChild(routes),
         ReactiveFormsModule,
