@@ -21,6 +21,7 @@ import { WarehouseService } from '../../@core/services/WarehouseService';
 import { appointmentFormComponent } from './form/appointmentForm.component';
 import { SchoolService } from '../../@core/services/SchoolService';
 import { appointmentPrintComponent } from './print/appointmentPrint.component';
+import { appointmentEditFormComponent } from './form/appointmentEditForm.component';
 
 
 const routes: Routes = [
@@ -36,7 +37,7 @@ const routes: Routes = [
     },
     {
         path: "edit/:id",
-        component: appointmentFormComponent
+        component: appointmentEditFormComponent
     },
     {
         path: "print/:id",
@@ -46,7 +47,7 @@ const routes: Routes = [
 
 @NgModule({
 
-    declarations: [appointmentFormComponent, appointmentIndexComponent,appointmentPrintComponent],
+    declarations: [appointmentFormComponent,appointmentEditFormComponent, appointmentIndexComponent,appointmentPrintComponent],
     bootstrap: [],
     providers: [
         LanguageService,

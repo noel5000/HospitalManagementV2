@@ -30,15 +30,16 @@ import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Customer } from '../../../@core/data/customer';
+import { appointmentFormComponent } from './appointmentForm.component';
 
 
 declare const $: any;
 @Component({
-    selector: "invoice-lead-form",
-    templateUrl: "./appointmentForm.component.html",
+    selector: "invoice-lead-editform",
+    templateUrl: "./appointmentEditForm.component.html",
     styleUrls: ["../appointmentStyles.component.scss"]
 })
-export class appointmentFormComponent extends BaseComponent implements OnInit {
+export class appointmentEditFormComponent extends BaseComponent implements OnInit {
     itemForm: FormGroup;
     item: any;
     medicalSpecialities:any[]=[];
@@ -85,17 +86,11 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
             super(route, langService, AppSections.Users,modalService);
             this._route=router;
           
-            this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):0;
-            this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
-            const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
-            let month= (dateFromUrl.getMonth()+1).toString();
-            month=month.length>1?month:`0${month}`;
-            let day= (dateFromUrl.getDate()).toString();
-            day=day.length>1?day:`0${day}`;
-            this.currentDate = `${dateFromUrl.getFullYear()}-${month}-${day}T00:00:00`;
-         
+            this.id =parseInt( this._route.snapshot.paramMap.get('id'))>0?parseInt( this._route.snapshot.paramMap.get('id')):0;
+         if(this.id>0)
+         this.getItem();
         this.itemForm = this.formBuilder.group({
-id: [0],
+id: [this.id],
 date:[this.currentDate,[Validators.required]],
 medicalSpecialityId:[null,[ Validators.required,Validators.min(1)]],
 doctorId:[this.doctorId,[ Validators.required,Validators.min(1)]],
@@ -126,7 +121,13 @@ sequence:[''],
         this.getPatients();
         this.getHospitals();
     }
-
+async getItem(){
+    this.appointmentService.getById(this.id).subscribe(r=>{
+        const appointment = r.data[0];
+        this.itemForm.patchValue(appointment);
+        this.GetProductTaxes(appointment.productId)
+    });
+}
 
     async GetProductUnits(id:number){
         const filter = [{
@@ -171,15 +172,15 @@ sequence:[''],
     }
 
     CalculateProductTax():number{
-        const {productPrice}= this.itemForm.getRawValue();
-        return this.productTaxes.length<=0?0:this.productTaxes.reduce(function(a,b){return a+(b.tax.rate*productPrice)},0);
+        const {beforeTaxesAmount}= this.itemForm.getRawValue();
+        return this.productTaxes.length<=0?0:this.productTaxes.reduce(function(a,b){return a+(b.tax.rate*beforeTaxesAmount)},0);
     }
 
     async GetProductCost(productId:number){
         const currentProduct = this.products.find(x=>x.id==productId);
         this.currentProductCost.cost=currentProduct.cost;
         const {unitId} = this.itemForm.getRawValue();
-        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice: currentProduct.price;
+        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice:currentProduct? currentProduct.price:0;
         this.refreshAmounts();
     }
 
@@ -296,7 +297,6 @@ sequence:[''],
                         insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
                         currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
                         currencyId:r["value"][0].currencyId,
-                        insuranceCoverageAmount:0
                     });
                 }
             });
@@ -320,22 +320,24 @@ sequence:[''],
       
 
          
-        this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
+            this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
                
-            this.refreshAmounts(true);
-        
-        });
-    this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
-       
-            this.refreshAmounts(true);
-        
-        });
-    this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
-       
-            this.refreshAmounts(true);
-        
-        });
-
+                    this.refreshAmounts(true);
+                    this.changes.detectChanges();
+                
+                });
+            this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
+               
+                    this.refreshAmounts(true);
+                    this.changes.detectChanges();
+                
+                });
+            this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
+               
+                    this.refreshAmounts(true);
+                    this.changes.detectChanges();
+                
+                });
                 this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
                
                     const {medicalSpecialityId} = this.itemForm.getRawValue();
@@ -368,7 +370,6 @@ sequence:[''],
                             insurancePlanName:patient.insurancePlan?patient.insurancePlan.name:'',
                             currencyId:patient.currencyId,
                             currencyName:patient.currency?patient.currency.name:'',
-                            insuranceCoverageAmount:0
                         });
                     }
                    }
@@ -380,7 +381,6 @@ sequence:[''],
                         insurancePlanName:'',
                         currencyId:null,
                         currencyName:'',
-                        insuranceCoverageAmount:0
                     });
                    }
                 
@@ -394,11 +394,10 @@ sequence:[''],
             if(val && val>0){
                 const product= this.products.find(x=>x.id==val);
                 this.itemForm.patchValue({
-                    insuranceCoverageAmount:0,
-                    beforeTaxesAmount:product.price,
-                    totalAmount:0,
-                    taxesAmount:0,
-                    productPrice:product.price,
+                  
+                    beforeTaxesAmount:product?product.price:0,
+                   
+                    productPrice:product?product.price:0,
                 })
             
                 this.productTaxes=[];

@@ -15,8 +15,49 @@ namespace PointOfSalesV2.Repository
         {
         }
 
+        public override Result<Appointment> Get(long id)
+        {
+            var item= this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
+                 .Include(x => x.Insurance).Include(x => x.Product).Include(x => x.Patient).Include(x => x.InsurancePlan)
+                 .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && x.Id==id
+                   )
+                 .Select(x => new Appointment()
+                 {
+                     Active = x.Active,
+                     BeforeTaxesAmount = x.BeforeTaxesAmount,
+                     InsuranceCoverageAmount = x.InsuranceCoverageAmount,
+                     PatientPaymentAmount = x.PatientPaymentAmount,
+                     TaxesAmount = x.TaxesAmount,
+                     TotalAmount = x.TotalAmount,
+                     CurrencyId = x.CurrencyId,
+                     Date = x.Date,
+                     DoctorName = $"{x.Doctor.Name ?? ""} ${x.Doctor.LastName ?? ""}",
+                     DoctorId = x.DoctorId,
+                     HospitalId = x.HospitalId,
+                     Id = x.Id,
+                     InsuranceId = x.InsuranceId,
+                     InsuranceName = x.InsuranceId.HasValue ? x.Insurance.Name ?? "" : "",
+                     InsurancePlanId = x.InsurancePlanId,
+                     InsurancePlanName = x.InsurancePlanId.HasValue ? x.InsurancePlan.Name ?? "" : "",
+                     MedicalSpecialityId = x.MedicalSpecialityId,
+                     MedicalSpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
+                     SpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
+                     CurrencyName = x.Currency.Name,
+                     HospitalName = x.Hospital.Name,
+                     PatientName = x.Patient.Name,
+                     ProductName = x.Product.Name,
+                     State = x.State,
+                     ProductId = x.ProductId,
+                     PatientId = x.PatientId,
+                 })
+                 .FirstOrDefault();
+
+            return new Result<Appointment>(item.Id, 0, "ok_msg", new List<Appointment>() { item });
+        }
+
         public override Result<Appointment> Add(Appointment entity)
         {
+            entity.Active = true;
             entity.State = (char)AppointmentStates.Scheduled;
             entity.TotalAmount = entity.BeforeTaxesAmount + entity.TaxesAmount;
             entity.PatientPaymentAmount = entity.TotalAmount - entity.InsuranceCoverageAmount;
@@ -29,6 +70,15 @@ namespace PointOfSalesV2.Repository
 
         public override Result<Appointment> Update(Appointment entity, bool getFromDb = true)
         {
+            entity.Active = true;
+            entity.State = (char)AppointmentStates.Scheduled;
+            entity.TotalAmount = entity.BeforeTaxesAmount + entity.TaxesAmount;
+            entity.PatientPaymentAmount = entity.TotalAmount - entity.InsuranceCoverageAmount;
+            var exists = _Context.Appointment.Any(x => x.Active == true && x.DoctorId == entity.DoctorId &&
+            x.State != (char)AppointmentStates.Nulled && x.Date == entity.Date && x.Id != entity.Id);
+            if (exists)
+                return new Result<Appointment>(-1, -1, "appointmentExist_msg");
+            
             return base.Update(entity, getFromDb);
         }
 
@@ -75,7 +125,7 @@ namespace PointOfSalesV2.Repository
                      State = x.State,
                      ProductId = x.ProductId,
                      PatientId = x.PatientId,
-                 })
+                 }).OrderBy(x=>x.Date)
                  .ToListAsync();
         }
 
@@ -117,7 +167,7 @@ namespace PointOfSalesV2.Repository
                      State = x.State,
                      ProductId = x.ProductId,
                      PatientId = x.PatientId,
-                 })
+                 }).OrderBy(x => x.Date)
                  .ToListAsync();
         }
     }

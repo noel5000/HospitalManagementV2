@@ -74,6 +74,7 @@ import { insuranceCoverageFormComponent } from './insuranceCoverage/form/insuran
 import { insuranceCoverageIndexComponent } from './insuranceCoverage/index/insuranceCoverageIndex.component';
 import { appointmentIndexComponent } from './appointment/index/appointmentIndex.component';
 import { appointmentFormComponent } from './appointment/form/appointmentForm.component';
+import { appointmentEditFormComponent } from './appointment/form/appointmentEditForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -487,7 +488,7 @@ component: AccountStateIndexComponent
 },
 {
   path: 'appointment/edit/:id',
-  component: appointmentFormComponent
+  component: appointmentEditFormComponent
 },
   ],
 }];
