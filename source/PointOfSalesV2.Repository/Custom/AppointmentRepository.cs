@@ -84,7 +84,12 @@ namespace PointOfSalesV2.Repository
 
         public override Result<Appointment> Remove(long id)
         {
-            return base.Remove(id);
+            var appointment = this.Get(id).Data.FirstOrDefault();
+            if (appointment.State != (char)AppointmentStates.Scheduled)
+                return new Result<Appointment>(-1, -1, "AppointmentIsProcess_msg");
+
+            appointment.State = (char)AppointmentStates.Nulled;
+            return base.Update(appointment,true);
         }
 
         public async Task<List<Appointment>> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
