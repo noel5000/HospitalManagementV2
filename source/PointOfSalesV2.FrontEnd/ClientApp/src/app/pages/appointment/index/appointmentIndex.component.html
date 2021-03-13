@@ -116,7 +116,7 @@
  
     
     <div class="table-responsive scrollTableMobile">
-      <div class="row" *ngIf="selectedDate">
+      <div class="row" *ngIf="selectedDate && selectedDate>=today">
         <a class="btn btn-lg btn-info col-4" (click)="addNew()">{{'add_btn' |translate}}</a>
         <h5 class="col-4">{{'selectedDate_lbl'}} {{getSelectedDateFormatted()}}</h5>
       </div>

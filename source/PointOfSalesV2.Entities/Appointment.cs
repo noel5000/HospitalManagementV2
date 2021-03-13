@@ -29,6 +29,7 @@ namespace PointOfSalesV2.Entities
         public decimal InsuranceCoverageAmount { get; set; }
         public decimal TotalAmount { get; set; }
         public char State { get; set; }
+        public char Type { get; set; } = 'C';
 
         [NotMapped]
         public AppointmentStates AppointmentState 
@@ -36,6 +37,15 @@ namespace PointOfSalesV2.Entities
             get 
             {
                 return (AppointmentStates)this.State;
+            }
+        }
+
+        [NotMapped]
+        public AppointmentTypes AppointmentType
+        {
+            get
+            {
+                return (AppointmentTypes)this.Type;
             }
         }
         public DateTime Date { get; set; }

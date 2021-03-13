@@ -95,6 +95,9 @@ public class MainDataContext : DbContext
     public virtual DbSet<UserRole> UserRoles { get; set; }
     public virtual DbSet<InsuranceServiceCoverage> InsuranceServiceCoverages { get; set; }
     public virtual DbSet<Appointment> Appointment { get; set; }
+    public virtual DbSet<PatientCheckup> PatientCheckups { get; set; }
+    public virtual DbSet<CheckupPrescription> CheckupPrescriptions { get; set; }
+
 
 
 
@@ -119,6 +122,14 @@ public class MainDataContext : DbContext
         modelBuilder.Entity<Insurance>()
          .HasMany(p => p.InsurancePlans)
          .WithOne(d => d.Insurance).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<PatientCheckup>()
+        .HasMany(p => p.CheckupPrescriptions)
+        .WithOne(d => d.PatientCheckup).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<CheckupPrescription>()
+        .HasOne(p => p.PatientCheckup)
+        .WithMany(d => d.CheckupPrescriptions).OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Insurance>()
         .HasMany(p => p.Affiliates)

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using PointOfSalesV2.Entities;
 using static PointOfSalesV2.Common.Enums;
+using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -23,7 +24,7 @@ namespace PointOfSalesV2.Repository
             _DbSet = _Context.Set<T>();
           
         }
-
+        #region Synched Methods
         public virtual Result<T> Add(T entity)
         {
             try
@@ -61,8 +62,6 @@ namespace PointOfSalesV2.Repository
 
             _Context.SaveChanges();
         }
-
-
 
         public virtual Result<T> Remove(T entity)
         {
@@ -147,9 +146,6 @@ namespace PointOfSalesV2.Repository
         {
             return new PagedList<T>(_DbSet.AsNoTracking().Where(x=>x.Active==true), startRowIndex, pageSize);
         }
-
-
-       
 
         public virtual Result<T> GetAll(Func<IQueryable<T>, IQueryable<T>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null)
         {
@@ -258,5 +254,205 @@ namespace PointOfSalesV2.Repository
 
             return result.Any();
         }
+
+        #endregion
+
+        #region Async Methods
+        public virtual async  Task<Result<T>> AddAsync(T entity)
+        {
+            try
+            {
+                var translation = entity as IEntityTranslate;
+                if (translation != null)
+                {
+                    languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
+                    entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
+
+                }
+                _Context.Set<T>().Add(entity);
+
+             await   _Context.SaveChangesAsync();
+
+                return new Result<T>(entity.Id, 0, "OK", new List<T>() { entity }); ;
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+        }
+
+        public virtual async Task AddRangeAsync(IEnumerable<T> entities)
+        {
+          await  _Context.Set<T>().AddRangeAsync(entities);
+
+          await  _Context.SaveChangesAsync();
+        }
+        public virtual async void RemoveRangeAsync(IEnumerable<T> entities)
+        {
+            _Context.Set<T>().RemoveRange(entities);
+
+          await  _Context.SaveChangesAsync();
+        }
+
+        public virtual async Task<Result<T>> RemoveAsync(T entity)
+        {
+            try
+            {
+                _DbSet.Attach(entity);
+                _Context.Entry<T>(entity).State = EntityState.Deleted;
+
+              await  _Context.SaveChangesAsync();
+                return new Result<T>(0, 0, "OK");
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+
+
+        }
+
+        public virtual async Task<Result<T>> RemoveAsync(long id)
+        {
+            try
+            {
+                var entity = await _DbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && x.Active == true);
+                _Context.Entry<T>(entity).State = EntityState.Deleted;
+              await  _Context.SaveChangesAsync();
+                return new Result<T>(0, 0, "OK");
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+
+        }
+
+        public virtual async Task<Result<T>> UpdateAsync(T entity, bool getFromDb = true)
+        {
+            try
+            {
+                var dbEntity = getFromDb ? await _DbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id && x.Active == true) : entity;
+                var translation = dbEntity as IEntityTranslate;
+                if (translation != null)
+                {
+                    languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
+                    entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
+
+                }
+                if (!getFromDb)
+                {
+                    _DbSet.Update(entity);
+                }
+                else
+                {
+                    _DbSet.Attach(entity);
+                    _Context.Entry<T>(entity).State = EntityState.Modified;
+                }
+
+
+                await _Context.SaveChangesAsync();
+
+                return new Result<T>(entity.Id, 0, "OK", new List<T>() { entity });
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+        }
+
+        public virtual async Task<Result<T>> GetAllAsync(string sortExpression = null)
+        {
+            return new Result<T>(0, 0, "OK", await _DbSet.AsNoTracking().OrderBy(sortExpression).ToListAsync());
+        }
+
+       
+
+        public virtual async Task<Result<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null)
+        {
+
+            var query = filter == null ? _DbSet.AsNoTracking().OrderBy(sortExpression) : _DbSet.AsNoTracking().Where(filter).OrderBy(sortExpression);
+
+            var notSortedResults = transform(query);
+
+            var sortedResults = sortExpression == null ? notSortedResults : notSortedResults.OrderBy(sortExpression);
+
+            return new Result<T>(0, 0, "OK", (await sortedResults.ToArrayAsync()).ToList());
+        }
+
+        
+
+        public virtual async Task<int> GetCountAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null)
+        {
+            var query = filter == null ? _DbSet.AsNoTracking() : _DbSet.AsNoTracking().Where(filter);
+
+            return await transform(query).CountAsync();
+        }
+
+
+        public virtual async Task<Result<T>> GetAsync(long id)
+        {
+            try
+            {
+                var entity = await _DbSet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id && x.Active == true);
+                //TranslateUtility.Translate(entity, entity.TranslationData);
+                return new Result<T>(0, 0, "OK", new List<T>() { entity });
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+        }
+
+        public virtual async Task<Result<T>> GetAsync(Guid id)
+        {
+            try
+            {
+                var entity = await _DbSet.FindAsync(id);
+                _Context.Entry<T>(entity).State = EntityState.Detached;
+                return new Result<T>(0, 0, "OK", new List<T>() { entity });
+            }
+
+            catch (Exception ex)
+            {
+                return new Result<T>(-1, -1, ex.Message, null, ex);
+            }
+
+        }
+
+        public virtual async Task<TResult> GetAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null)
+        {
+            var query = filter == null ? _DbSet.AsNoTracking() : _DbSet.AsNoTracking().Where(filter);
+
+            var notSortedResults = transform(query);
+
+            var sortedResults = sortExpression == null ? notSortedResults : notSortedResults.OrderBy(sortExpression);
+
+            return await sortedResults.FirstOrDefaultAsync();
+        }
+        public virtual async Task<bool> ExistsAsync(long id)
+        {
+            return await _DbSet.AsNoTracking().AnyAsync(x => x.Id == id && x.Active == true);
+        }
+
+        public virtual async Task<bool> ExistsAsync(Func<IQueryable<T>, IQueryable<T>> selector, Expression<Func<T, bool>> filter = null)
+        {
+            var query = filter == null ? _DbSet.AsNoTracking() : _DbSet.AsNoTracking().Where(filter);
+
+            var result = selector(query);
+
+            return await result.AnyAsync();
+        }
+        #endregion
     }
 }

@@ -25,44 +25,44 @@ export enum CashRegisterOpeningStates
 
 export const BillingStatesColors={
     B :{
-        primary: '#7CFC00',
-        secondary: '#7CFC00',
+        primary: '#4d4dff',
+        secondary: '#4d4dff',
       },
     N :{
         primary: '#FF0000',
         secondary: '#FF0000',
       },
     P :{
-        primary: '#228B22',
-        secondary: '#228B22',
+        primary: '#00ff00',
+        secondary: '#00ff00',
       },
     Q :{
-        primary: '#FFFF00',
-        secondary: '#FFFF00',
+        primary: '#ff99ff',
+        secondary: '#ff99ff',
       },
     C :{
-        primary: '#228B22',
-        secondary: '#228B22',
+        primary: '#999966',
+        secondary: '#999966',
       },
     G:{
-        primary: '#7CFC00',
-        secondary: '#7CFC00',
+        primary: '#ff9933',
+        secondary: '#ff9933',
       },
     J:{
-        primary: '#FFFF00',
-        secondary: '#FFFF00',
+        primary: '#804d00',
+        secondary: '#804d00',
       },
     D:{
-        primary: '#228B22',
-        secondary: '#228B22',
+        primary: '#666699',
+        secondary: '#666699',
       },
     E:{
-        primary: '#C0C0C0',
-        secondary: '#C0C0C0',
+        primary: '#737373',
+        secondary: '#737373',
       },
     I:{
-        primary: '#FF0000',
-        secondary: '#FF0000',
+        primary: '#cccccc',
+        secondary: '#cccccc',
       },
     M:{
         primary: '#9400D3',
@@ -77,12 +77,12 @@ export const BillingStatesColors={
         secondary: '#98FB98',
     },
     S:{
-      primary: '#98FB98',
-      secondary: '#98FB98',
+      primary: '#80bfff',
+      secondary: '#80bfff',
   },
   R:{
-    primary: '#228B22',
-    secondary: '#228B22',
+    primary: '#339966',
+    secondary: '#339966',
 },
 }
 

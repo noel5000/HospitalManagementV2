@@ -72,6 +72,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     doctors:any[]=[];
     patients:any[]=[];
     selectedDate:Date=null;
+    today:Date=null;
     selectedAppointments:any[]=[];
     appointments:any[]=[];
     view: CalendarView = CalendarView.Month;
@@ -109,7 +110,9 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
         doctorId: ["null"],
         medicalSpecialityId:[0],
         patientId:[0]        
-    });     
+    });
+    const dateRef=new Date()
+    this.today= new Date(dateRef.getFullYear(),(dateRef.getMonth()),dateRef.getDate());
     }
     async getHospitals(){
       this.hospitalService.getAll().subscribe(r=>{
@@ -221,6 +224,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
           const {medicalSpecialityId}=this.itemForm.getRawValue();
           this.getDoctors(medicalSpecialityId,val);
           this.changes.detectChanges();
+          this.getMonthAppointments();
         }
         
         
@@ -230,13 +234,16 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
           const {branchOfficeId}=this.itemForm.getRawValue();
           this.getDoctors(val,branchOfficeId);
           this.changes.detectChanges();
+          this.getMonthAppointments();
         }
           });
       this.itemForm.get('doctorId').valueChanges.subscribe(val => {
         this.changes.detectChanges();
+        this.getMonthAppointments();
           });
       this.itemForm.get('patientId').valueChanges.subscribe(val => {
         this.changes.detectChanges();
+        this.getMonthAppointments();
           });
   }
   

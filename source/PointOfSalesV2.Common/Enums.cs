@@ -48,10 +48,18 @@ namespace PointOfSalesV2.Common
             InProgress = 'F',
             Billed = 'B',
             Nulled = 'N',
-            FullPaid = 'R'
+            FullPaid = 'R',
+            Expired='E'
         }
 
+        public enum AppointmentTypes 
+        {
+        Consultation='C',
+        Laboratory='L',
+        EspecializedImages='E'
+        }
 
+       
 
         public enum CashRegisterOpeningType
         {

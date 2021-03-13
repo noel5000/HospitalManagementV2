@@ -42,7 +42,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     itemForm: FormGroup;
     item: any;
     medicalSpecialities:any[]=[];
-    doctorId:number=0;
+    doctorId:number=null;
     hospitals:BranchOffice[]=[];
     patientId:number=0;
     customers:Customer[]=[];
@@ -50,6 +50,20 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     warehouseId:number=0;
     currentDate:string='';
     _route:ActivatedRoute;
+    types:any[]=[
+        {
+            id:'C',
+            name:this.lang.getValueByKey('medicalConsultation_lbl')
+        },
+        {
+            id:'L',
+            name:this.lang.getValueByKey('laboratory_lbl')
+        },
+        {
+            id:'E',
+            name:this.lang.getValueByKey('especializedImages_lbl')
+        }
+    ];
     products:Product[]=[];//
     productUnits:any[]=[];//
     productTaxes:any[]=[];//
@@ -85,7 +99,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
             super(route, langService, AppSections.Users,modalService);
             this._route=router;
           
-            this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):0;
+            this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):null;
             this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
             const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
             let month= (dateFromUrl.getMonth()+1).toString();
@@ -98,7 +112,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
 id: [0],
 date:[this.currentDate,[Validators.required]],
 medicalSpecialityId:[null,[ Validators.required,Validators.min(1)]],
-doctorId:[this.doctorId,[ Validators.required,Validators.min(1)]],
+doctorId:[this.doctorId],
 patientId:[this.patientId,[ Validators.required,Validators.min(1)]],
 productId:[null,[ Validators.required,Validators.min(1)]],
 insuranceId:[null],
@@ -115,6 +129,7 @@ patientPaymentAmount:[0],
 currencyId:[null,[Validators.required, Validators.min(1)]],
 hospitalId:[null,[Validators.required, Validators.min(1)]],
 currencyName:[''],
+type:[null,[Validators.required]],
 sequence:[''],
         });
     }

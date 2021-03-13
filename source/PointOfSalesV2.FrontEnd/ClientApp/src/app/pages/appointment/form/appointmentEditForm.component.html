@@ -57,6 +57,26 @@
                         <div *ngIf="form.doctorId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
+
+                
+                
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'appointmentType_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.type.errors }"
+                    formControlName="type"
+                    required
+                    >
+                    <option *ngFor="let type of types"
+                     [value]="type.id"
+                     >{{type.name}}</option>
+                    </select>
+                    <div *ngIf="form.type.errors" class="invalid-feedback">
+                        <div *ngIf="form.type.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'patient_lbl' | translate}}</label>
                     <select class="form-control"

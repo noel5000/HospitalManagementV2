@@ -17,9 +17,9 @@ namespace PointOfSalesV2.Repository
 
         public override Result<Appointment> Get(long id)
         {
-            var item= this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
+            var item = this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
                  .Include(x => x.Insurance).Include(x => x.Product).Include(x => x.Patient).Include(x => x.InsurancePlan)
-                 .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && x.Id==id
+                 .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && x.Id == id
                    )
                  .Select(x => new Appointment()
                  {
@@ -47,6 +47,7 @@ namespace PointOfSalesV2.Repository
                      PatientName = x.Patient.Name,
                      ProductName = x.Product.Name,
                      State = x.State,
+                     Type=x.Type,
                      ProductId = x.ProductId,
                      PatientId = x.PatientId,
                  })
@@ -78,7 +79,7 @@ namespace PointOfSalesV2.Repository
             x.State != (char)AppointmentStates.Nulled && x.Date == entity.Date && x.Id != entity.Id);
             if (exists)
                 return new Result<Appointment>(-1, -1, "appointmentExist_msg");
-            
+
             return base.Update(entity, getFromDb);
         }
 
@@ -89,11 +90,12 @@ namespace PointOfSalesV2.Repository
                 return new Result<Appointment>(-1, -1, "AppointmentIsProcess_msg");
 
             appointment.State = (char)AppointmentStates.Nulled;
-            return base.Update(appointment,true);
+            return base.Update(appointment, true);
         }
 
         public async Task<List<Appointment>> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
         {
+        
             return await this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
                  .Include(x => x.Insurance).Include(x => x.Product).Include(x => x.Patient).Include(x => x.InsurancePlan)
                  .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && (hospitalId > 0 ? x.HospitalId == hospitalId : x.HospitalId > 0) &&
@@ -110,48 +112,7 @@ namespace PointOfSalesV2.Repository
                      PatientPaymentAmount = x.PatientPaymentAmount,
                      TaxesAmount = x.TaxesAmount,
                      TotalAmount = x.TotalAmount,
-                     CurrencyId = x.CurrencyId,
-                     Date = x.Date,
-                     DoctorName = $"{x.Doctor.Name ?? ""} ${x.Doctor.LastName ?? ""}",
-                     DoctorId = x.DoctorId,
-                     HospitalId = x.HospitalId,
-                     Id = x.Id,
-                     InsuranceId = x.InsuranceId,
-                     InsuranceName = x.InsuranceId.HasValue ? x.Insurance.Name ?? "" : "",
-                     InsurancePlanId = x.InsurancePlanId,
-                     InsurancePlanName = x.InsurancePlanId.HasValue ? x.InsurancePlan.Name ?? "" : "",
-                     MedicalSpecialityId = x.MedicalSpecialityId,
-                     MedicalSpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
-                     SpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
-                     CurrencyName = x.Currency.Name,
-                     HospitalName = x.Hospital.Name,
-                     PatientName = x.Patient.Name,
-                     ProductName = x.Product.Name,
-                     State = x.State,
-                     ProductId = x.ProductId,
-                     PatientId = x.PatientId,
-                 }).OrderBy(x=>x.Date)
-                 .ToListAsync();
-        }
-
-        public async Task<List<Appointment>> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
-        {
-            return await this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
-                 .Include(x => x.Insurance).Include(x => x.Product).Include(x => x.Patient).Include(x => x.InsurancePlan)
-                 .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && (hospitalId>0?x.HospitalId == hospitalId:x.HospitalId>0) &&
-                          (medicalSpeciality.HasValue && medicalSpeciality.Value > 0 ? x.MedicalSpecialityId == medicalSpeciality : x.MedicalSpecialityId > 0) &&
-                       (patientId.HasValue && patientId.Value > 0 ? x.PatientId == patientId : x.PatientId > 0) &&
-                       (!string.IsNullOrEmpty(doctorId) ? x.DoctorId == (new Guid(doctorId)) : x.DoctorId != new Guid("00000000-0000-0000-0000-000000000000")) &&
-                       (x.Date.Month == date.Month) && x.Date.Year == date.Year
-                   )
-                 .Select(x => new Appointment()
-                 {
-                     Active = x.Active,
-                     BeforeTaxesAmount = x.BeforeTaxesAmount,
-                     InsuranceCoverageAmount = x.InsuranceCoverageAmount,
-                     PatientPaymentAmount = x.PatientPaymentAmount,
-                     TaxesAmount = x.TaxesAmount,
-                     TotalAmount = x.TotalAmount,
+                     Type = x.Type,
                      CurrencyId = x.CurrencyId,
                      Date = x.Date,
                      DoctorName = $"{x.Doctor.Name ?? ""} ${x.Doctor.LastName ?? ""}",
@@ -174,6 +135,70 @@ namespace PointOfSalesV2.Repository
                      PatientId = x.PatientId,
                  }).OrderBy(x => x.Date)
                  .ToListAsync();
+        }
+
+        public async Task<List<Appointment>> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        {
+            if(date>=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day))
+           await UpdateExpiredAppointments();
+
+            return await this._Context.Appointment.AsNoTracking().Include(x => x.MedicalSpeciality).Include(x => x.Hospital)
+                 .Include(x => x.Insurance).Include(x => x.Product).Include(x => x.Patient).Include(x => x.InsurancePlan)
+                 .Include(x => x.Doctor).Include(x => x.Currency).Where(x => x.Active == true && (hospitalId > 0 ? x.HospitalId == hospitalId : x.HospitalId > 0) &&
+                          (medicalSpeciality.HasValue && medicalSpeciality.Value > 0 ? x.MedicalSpecialityId == medicalSpeciality : x.MedicalSpecialityId > 0) &&
+                       (patientId.HasValue && patientId.Value > 0 ? x.PatientId == patientId : x.PatientId > 0) &&
+                       (!string.IsNullOrEmpty(doctorId) ? x.DoctorId == (new Guid(doctorId)) : x.DoctorId != new Guid("00000000-0000-0000-0000-000000000000")) &&
+                       (x.Date.Month == date.Month) && x.Date.Year == date.Year
+                   )
+                 .Select(x => new Appointment()
+                 {
+                     Active = x.Active,
+                     BeforeTaxesAmount = x.BeforeTaxesAmount,
+                     InsuranceCoverageAmount = x.InsuranceCoverageAmount,
+                     PatientPaymentAmount = x.PatientPaymentAmount,
+                     TaxesAmount = x.TaxesAmount,
+                     TotalAmount = x.TotalAmount,
+                     CurrencyId = x.CurrencyId,
+                     Date = x.Date,
+                     DoctorName = $"{x.Doctor.Name ?? ""} ${x.Doctor.LastName ?? ""}",
+                     DoctorId = x.DoctorId,
+                     HospitalId = x.HospitalId,
+                     Id = x.Id,
+                     InsuranceId = x.InsuranceId,
+                     Type = x.Type,
+                     InsuranceName = x.InsuranceId.HasValue ? x.Insurance.Name ?? "" : "",
+                     InsurancePlanId = x.InsurancePlanId,
+                     InsurancePlanName = x.InsurancePlanId.HasValue ? x.InsurancePlan.Name ?? "" : "",
+                     MedicalSpecialityId = x.MedicalSpecialityId,
+                     MedicalSpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
+                     SpecialityName = x.MedicalSpecialityId.HasValue ? x.MedicalSpeciality.Name ?? "" : "",
+                     CurrencyName = x.Currency.Name,
+                     HospitalName = x.Hospital.Name,
+                     PatientName = x.Patient.Name,
+                     ProductName = x.Product.Name,
+                     State = x.State,
+                     ProductId = x.ProductId,
+                     PatientId = x.PatientId,
+                 }).OrderBy(x => x.Date)
+                 .ToListAsync();
+        }
+
+        private async Task UpdateExpiredAppointments()
+        {
+            DateTime todayStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+            var expiredAppointments = await this._Context.Appointment.AsNoTracking().Where(x => x.Active == true && x.State == (char)AppointmentStates.Scheduled && x.Date <= todayStart).ToListAsync();
+            
+            for (int i = 0; i < expiredAppointments.Count; i++) 
+            {
+                expiredAppointments[i].State = (char)AppointmentStates.Expired;
+            }
+
+            if (expiredAppointments.Count > 0) 
+            {
+                _Context.Appointment.UpdateRange(expiredAppointments);
+                await _Context.SaveChangesAsync();
+            }
         }
     }
 }

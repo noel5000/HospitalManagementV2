@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210311213848_ProductType")]
+    partial class ProductType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -403,70 +405,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("CashRegisterOpeningId");
 
                     b.ToTable("CashRegisterOpeningDetails");
-                });
-
-            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupPrescription", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("AdditionalData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EmptyStomach")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("PatientCheckupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("TranslationData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1)");
-
-                    b.Property<string>("WhenToTake")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientCheckupId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CheckupPrescriptions");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
@@ -9782,75 +9720,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""MOVIMIENTOS DE PRODUCTO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""PRODUCT MOVEMENTS""}]}
 "
                         });
-                });
-
-            modelBuilder.Entity("PointOfSalesV2.Entities.PatientCheckup", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("AppointmentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Diagnoses")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("DoctorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long?>("InsuranceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("InsurancePlanId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("PatientId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Symptoms")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TranslationData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppointmentId");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("InsuranceId");
-
-                    b.HasIndex("InsurancePlanId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("PatientCheckups");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Payment", b =>
@@ -23572,21 +23441,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupPrescription", b =>
-                {
-                    b.HasOne("PointOfSalesV2.Entities.PatientCheckup", "PatientCheckup")
-                        .WithMany("CheckupPrescriptions")
-                        .HasForeignKey("PatientCheckupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PointOfSalesV2.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
                 {
                     b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
@@ -24120,35 +23974,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId");
-                });
-
-            modelBuilder.Entity("PointOfSalesV2.Entities.PatientCheckup", b =>
-                {
-                    b.HasOne("PointOfSalesV2.Entities.Appointment", "Appointment")
-                        .WithMany()
-                        .HasForeignKey("AppointmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PointOfSalesV2.Entities.User", "Doctor")
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
-                        .WithMany()
-                        .HasForeignKey("InsuranceId");
-
-                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
-                        .WithMany()
-                        .HasForeignKey("InsurancePlanId");
-
-                    b.HasOne("PointOfSalesV2.Entities.Customer", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Payment", b =>

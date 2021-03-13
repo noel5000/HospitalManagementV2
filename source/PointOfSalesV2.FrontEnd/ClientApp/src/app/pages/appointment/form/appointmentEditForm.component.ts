@@ -43,7 +43,7 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
     itemForm: FormGroup;
     item: any;
     medicalSpecialities:any[]=[];
-    doctorId:number=0;
+    doctorId:number=null;
     hospitals:BranchOffice[]=[];
     patientId:number=0;
     customers:Customer[]=[];
@@ -53,6 +53,20 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
     _route:ActivatedRoute;
     products:Product[]=[];//
     productUnits:any[]=[];//
+    types:any[]=[
+        {
+            id:'C',
+            name:this.lang.getValueByKey('medicalConsultation_lbl')
+        },
+        {
+            id:'L',
+            name:this.lang.getValueByKey('laboratory_lbl')
+        },
+        {
+            id:'E',
+            name:this.lang.getValueByKey('especializedImages_lbl')
+        }
+    ];
     productTaxes:any[]=[];//
     doctors:any[]=[];
     patients:any[]=[];
@@ -93,7 +107,7 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
 id: [this.id],
 date:[this.currentDate,[Validators.required]],
 medicalSpecialityId:[null,[ Validators.required,Validators.min(1)]],
-doctorId:[this.doctorId,[ Validators.required,Validators.min(1)]],
+doctorId:[this.doctorId],
 patientId:[this.patientId,[ Validators.required,Validators.min(1)]],
 productId:[null,[ Validators.required,Validators.min(1)]],
 insuranceId:[null],
@@ -110,6 +124,7 @@ patientPaymentAmount:[0],
 currencyId:[null,[Validators.required, Validators.min(1)]],
 hospitalId:[null,[Validators.required, Validators.min(1)]],
 currencyName:[''],
+type:[null,[Validators.required]],
 sequence:[''],
         });
     }

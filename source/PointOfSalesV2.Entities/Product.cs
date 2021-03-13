@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Entities
 {
@@ -24,6 +25,16 @@ namespace PointOfSalesV2.Entities
         [MaxLength(50)]
         [Export(Order = 3)]
         public string Code { get; set; }
+        public char Type { get; set; } = 'C';
+
+        [NotMapped]
+        public AppointmentTypes ProductType 
+        {
+            get 
+            {
+                return (AppointmentTypes)this.Type;
+            }
+        }
 
         public long? MedicalSpecialityId { get; set; }
         public string DetailsClass { get; set; }

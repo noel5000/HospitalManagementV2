@@ -18,6 +18,17 @@ namespace PointOfSalesV2.Common
             return Convert.ToBase64String(byt);
         }
 
+        public static Dictionary<int, string> WhenToTake = new Dictionary<int, string>()
+        {
+            {1,"1-0-0" },
+            {2,"0-1-0" },
+            {3,"0-0-1" },
+            {4,"1-1-0" },
+            {5,"1-0-1" },
+            {6,"1-1-1" },
+            {7,"0-1-1" },
+        };
+
         public static string Serialize<T>(this T value)
         {
             if (value == null)
@@ -41,5 +52,5 @@ namespace PointOfSalesV2.Common
         }
     }
 
-
+  
 }
