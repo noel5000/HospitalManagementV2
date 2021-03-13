@@ -98,6 +98,7 @@ namespace PointOfSalesV2.Api
             services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDataRepositoryFactory, DataRepositoriesFactory>();
+            services.AddScoped<IPatientCheckupRepository, PatientCheckupRepository>();
 
             //New instance for injection
             services.AddTransient(typeof(IBase<>), typeof(Repository<>));
