@@ -189,7 +189,8 @@ export enum AppSections {
     CompanyPayments=48,
     Menu=49,
     Insurance=53,
-    InsurancePlan=54
+    InsurancePlan=54,
+    PatientCheckup=55
 
 }
 export enum MovementTypes {

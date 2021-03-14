@@ -398,4 +398,8 @@ editAppointment(appointment:any) {
   this.router.navigateByUrl(`pages/appointment/edit/${appointment.id}`);
 }
 
+attendAppointment(appointment:any) {
+  this.router.navigateByUrl(`pages/patientcheckup/${appointment.patientId}/${appointment.id}`);
+}
+
 }

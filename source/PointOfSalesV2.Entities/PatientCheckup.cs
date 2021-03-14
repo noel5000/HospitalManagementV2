@@ -20,7 +20,16 @@ namespace PointOfSalesV2.Entities
         public string Symptoms { get; set; }
         public string Diagnoses { get; set; }
 
+        public DateTime Date { get; set; }
 
+        [NotMapped]
+        public string DateFormatted
+        {
+            get
+            {
+                return Date.ToString("yyyy-MM-dd hh:mm tt");
+            }
+        }
 
 
         [ForeignKey("PatientId")]

@@ -56,6 +56,7 @@ import { InsuranceModule } from './insurance/insurance.module';
 import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.module';
 import { appointmentsModule } from './appointment/appointment.module';
 import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.module';
+import { PatientCheckupModule } from './patientCheckup/patientCheckup.module';
 
 @NgModule({
   imports: [
@@ -105,7 +106,8 @@ import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.m
     ComissionsReportModule,
     medicalSpecialityModule,
     appointmentsModule,
-    insuranceCoverageModule
+    insuranceCoverageModule,
+    PatientCheckupModule
   ],
   declarations: [
     PagesComponent,

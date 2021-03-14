@@ -15,6 +15,17 @@ namespace PointOfSalesV2.Repository
         {
         }
 
+        public override Result<PatientCheckup> Get(long id)
+        {
+            var entity = _Context.PatientCheckups.AsNoTracking().Include(x=>x.Doctor)
+                .Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x=>x.Patient).Include(x=>x.CheckupPrescriptions).ThenInclude(d=>d.Product).FirstOrDefault(x=>x.Active==true && x.Id==id);
+            if (entity == null)
+                return new Result<PatientCheckup>(-1, -1, "notFound_msg");
+            entity.CheckupPrescriptions = entity.CheckupPrescriptions.Where(s => s.Active == true).ToList();
+
+            return new Result<PatientCheckup>(entity.Id, 0, "ok_msg", new List<PatientCheckup>() { entity });
+        }
+
         public override Result<PatientCheckup> Add(PatientCheckup entity)
         {
             Result<PatientCheckup> result = new Result<PatientCheckup>(-1, -1, "error_msg");
@@ -186,6 +197,13 @@ namespace PointOfSalesV2.Repository
                 prescriptions[i].Quantity = prescriptions[i].Quantity <= 0 ? 1 : prescriptions[i].Quantity;
             }
             return prescriptions;
+        }
+
+        public async Task<List<PatientCheckup>> GetPatientHistory(long patientId)
+        {
+            var entities = await _Context.PatientCheckups.AsNoTracking().Include(x => x.Doctor)
+                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).Include(x => x.CheckupPrescriptions).ThenInclude(d => d.Product).Where(x => x.Active == true && x.PatientId == patientId).ToListAsync();
+            return entities;
         }
     }
 }

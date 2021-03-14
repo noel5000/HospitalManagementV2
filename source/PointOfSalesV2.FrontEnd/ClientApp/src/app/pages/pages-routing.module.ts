@@ -75,6 +75,8 @@ import { insuranceCoverageIndexComponent } from './insuranceCoverage/index/insur
 import { appointmentIndexComponent } from './appointment/index/appointmentIndex.component';
 import { appointmentFormComponent } from './appointment/form/appointmentForm.component';
 import { appointmentEditFormComponent } from './appointment/form/appointmentEditForm.component';
+import { patientCheckupIndexComponent } from './patientCheckup/index/patientCheckupIndex.component';
+import { patientCheckupFormComponent } from './patientCheckup/form/patientCheckupForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -489,6 +491,18 @@ component: AccountStateIndexComponent
 {
   path: 'appointment/edit/:id',
   component: appointmentEditFormComponent
+},
+{
+  path: 'patientcheckup/:patientid/:appointmentid',
+  component: patientCheckupIndexComponent
+},
+{
+  path: 'patientcheckup/add/:patientid/:appointmentid',
+  component: patientCheckupFormComponent
+},
+{
+  path: 'patientcheckup/edit/:id',
+  component: patientCheckupFormComponent
 },
   ],
 }];
