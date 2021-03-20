@@ -12,6 +12,9 @@ import { ModalService } from '../../@core/services/modal.service';
 import { ZoneService } from '../../@core/services/zoneService';
 import { patientCheckupIndexComponent } from './index/patientCheckupIndex.component';
 import { patientCheckupFormComponent } from './form/patientCheckupForm.component';
+import { ProductService } from '../../@core/services/ProductService';
+import { CustomerService } from '../../@core/services/CustomerService';
+import { UserService } from '../../@core/mock/users.service';
 
 
 const routes: Routes = [
@@ -39,7 +42,9 @@ const routes: Routes = [
         LanguageService,
         SecurityService,
         ModalService,
-        ZoneService
+        ProductService,
+        CustomerService,
+        UserService
     ],
     imports: [
         NbCardModule,

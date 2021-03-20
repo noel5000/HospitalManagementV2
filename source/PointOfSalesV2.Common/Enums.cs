@@ -56,6 +56,7 @@ namespace PointOfSalesV2.Common
         {
         Consultation='C',
         Laboratory='L',
+        Medication='M',
         EspecializedImages='E'
         }
 

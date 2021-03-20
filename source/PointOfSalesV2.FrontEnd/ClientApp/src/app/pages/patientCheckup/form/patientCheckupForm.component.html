@@ -6,7 +6,7 @@
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'doctor_lbl' | translate}}</label>
                     <input type="text" formControlName="doctorName" maxlength="50" minlength="3" required 
-                    disabled class="form-control" [ngClass]="{ 'is-invalid': form.doctorName.errors }" />
+                    disabled class="form-control" [ngClass]="{ 'is-invalid':form.doctorName && form.doctorName.errors }" />
                     <div *ngIf="form.doctorName.errors" class="invalid-feedback">
                         <div *ngIf="form.doctorName.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'symptoms_lbl' | translate}}</label>
+                    <label>{{'diagnoses_lbl' | translate}}</label>
                     <textarea formControlName="diagnoses" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.diagnoses.errors }"></textarea>
                     <div *ngIf="form.diagnoses.errors" class="invalid-feedback">
                         <div *ngIf="form.diagnoses.required">{{'required_lbl' | translate}}</div>
@@ -50,15 +50,15 @@
             
              
         </div>
-        <div *ngIf="true">
+        <div *ngIf="prescriptionType">
             <div class="row">
-                <div class="form-group col-md-3 col-xs-12">
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
                     <label>{{'medication_lbl' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.medicineId.errors }"
                     formControlName="medicineId"
                     >
-                    <option *ngFor="let medicine of medicines"
+                    <option *ngFor="let medicine of products"
                      [value]="medicine.id"
                      >{{medicine.name}}</option>
                     </select>
@@ -66,13 +66,27 @@
                         <div *ngIf="form.medicineId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-group col-md-3 col-xs-12">
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='C'">
+                    <label>{{'medicalSpeciality_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
+                    formControlName="medicalSpecialityId"
+                    >
+                    <option *ngFor="let medicalSpeciality of medicalSpecialities"
+                     [value]="medicalSpeciality.id"
+                     >{{medicalSpeciality.name}}</option>
+                    </select>
+                    <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
+                        <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='E'">
                     <label>{{'EspecializedImages_lbl' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.especializedImageId.errors }"
                     formControlName="especializedImageId"
                     >
-                    <option *ngFor="let image of images"
+                    <option *ngFor="let image of products"
                      [value]="image.id"
                      >{{image.name}}</option>
                     </select>
@@ -80,7 +94,21 @@
                         <div *ngIf="form.especializedImageId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-group col-md-6 col-xs-12">
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='L'">
+                    <label>{{'labTest_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.labTestId.errors }"
+                    formControlName="labTestId"
+                    >
+                    <option *ngFor="let labTest of products"
+                     [value]="labTest.id"
+                     >{{labTest.name}}</option>
+                    </select>
+                    <div *ngIf="form.labTestId.errors" class="invalid-feedback">
+                        <div *ngIf="form.labTestId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
                     <label>{{'quantity_lbl' | translate}}</label>
                     <input type="number" formControlName="quantity" min="1"  
                      class="form-control" [ngClass]="{ 'is-invalid': form.quantity.errors }" />
@@ -88,7 +116,7 @@
                         <div *ngIf="form.quantity.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-group col-md-3 col-xs-12">
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
                     <label>{{'whenToTake_lbl' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.whenToTake.errors }"
@@ -102,7 +130,7 @@
                         <div *ngIf="form.whenToTake.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-check col-md-3  col-xs-12 my-4">
+                <div class="form-check col-md-4  col-xs-12 my-4" *ngIf="prescriptionType=='M'">
                     <input class="form-check-input" type="checkbox"  formControlName="emptyStomach"   >
                     <label class="form-check-label" for="defaultCheck2">
                         {{'emptyStomach_lbl' | translate}}

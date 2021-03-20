@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { ZoneService } from '../../../@core/services/zoneService';
@@ -13,6 +13,11 @@ import { Zone } from '../../../@core/data/zoneModel';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { CustomerService } from '../../../@core/services/CustomerService';
+import { UserService } from '../../../@core/mock/users.service';
+import { ProductService } from '../../../@core/services/ProductService';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+import { Product } from '../../../@core/data/product';
 
 
 declare const $: any;
@@ -29,8 +34,44 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     patient:any={};
     doctor:any={};
     appointment:any={};
-    
+    selectedMedicines:any[]=[];
+    selectedImages:any[]=[];
+    medicalSpecialities:any[]=[];
+    whentoTakeSelections:any[]=[
+        '1-0-0',
+        '0-1-0',
+        '0-0-1',
+        '1-1-0',
+        '1-0-1',
+        '0-1-1',
+        '1-1-1',
+        
+    ];
+    products:Product[]=[];
+    prescriptionType:string='';
+    prescriptionTypes:any[]=[
+        {
+            id:'M',
+            name:this.lang.getValueByKey('medicine_lbl')
+        },
+        {
+            id:'C',
+            name:this.lang.getValueByKey('Consultation_lbl')
+        },
+        {
+            id:'L',
+            name:this.lang.getValueByKey('laboratory_lbl')
+        },
+        {
+            id:'E',
+            name:this.lang.getValueByKey('especicializedImage_lbl')
+        }
+    ];
+
+
     service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
+    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
     constructor(
         private formBuilder: FormBuilder,
@@ -39,6 +80,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         langService: LanguageService,
         private zoneService:ZoneService,
         private modals:NgbModal,
+        private patientService:CustomerService,
+        private doctorService:UserService,
+        private productService:ProductService,
         private  http: HttpClient,
        modalService:ModalService
         ){
@@ -46,16 +90,26 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             super(route, langService, AppSections.PatientCheckup,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
-            name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],
-            phoneNumber: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
-            cardId: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
-            address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
-            code: [''],
-            zoneId: [0,[ Validators.required]],
-            comissionRate: [0],
-            comissionByProduct: [false],
-            fixedComission: [false],
-            id: [0]
+            doctorName: [''],
+            patientName:[''],
+            appointmentId:[null,Validators.required],
+            symptoms:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
+            diagnoses:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
+            prescriptionType: ['',[ Validators.required]],
+            doctorId: [0,[ Validators.required, Validators.min(1)]],
+            patientId: [0,[ Validators.required, Validators.min(1)]],
+            medicineId: [0],
+            especializedImageId:[0],
+            quantity:[1],
+            whenToTake:[''],
+            medicalSpecialityId:[null],
+            emptyStomach:[false],
+            additionalData:['',Validators.maxLength(500)],
+            id: [0],
+            hospitalId:[0],
+            insuranceId:[null],
+            insurancePlanId:[null],
+            currencyId:[0],
         });
     }
     ngOnInit(): void {
@@ -68,9 +122,86 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
      }
      else
      this.validateFormData();
-     
+
+     if(this.appointmentId && this.appointmentId>0)
+        this.getAppointment(this.appointmentId);
+        else
+        this.modalService.showError('appointmentNotValid_msg');
         this.verifyUser();
-        this.getZones();
+        this.getMedicalSpecialities();
+        this.onChanges();
+    }
+    async getMedicalSpecialities(){
+        this.medicalSpecialityService.getAll().subscribe(r=>{
+            this.medicalSpecialities=r;
+        })
+    }
+
+    onChanges(){
+        this.itemForm.get('prescriptionType').valueChanges.subscribe(val => {
+               this.prescriptionType=val;
+               this.itemForm.patchValue({
+                medicalSpecialityId:null,
+                medicineId:null,
+                especializedImageId:null,
+                additionalData:'',
+                quantity:1,
+                emptyStomach:false,
+                whenToTake:'',
+               });
+
+               if(val)
+               this.getProducts(val);
+        });
+       
+    }
+    async getProducts(type:string){
+        const filter = [
+        {
+            property: "Currency",
+            value: "Id,Name,Code,ExchangeRate",
+            type: ObjectTypes.ChildObject,
+            isTranslated: false
+        } as QueryFilter,
+        {
+            property: "IsService",
+            value: "true",
+            type: ObjectTypes.Boolean,
+            isTranslated: false,
+            comparer: ODataComparers.equals
+        } as QueryFilter,
+        {
+            property: "Type",
+            value: type,
+            type: ObjectTypes.String,
+            isTranslated: false,
+            comparer: ODataComparers.equals
+        } as QueryFilter
+    ]
+        this.productService.getAllFiltered(filter).subscribe(r=>{
+            this.products=[{id:0, name:''} as Product];
+            this.products=this.products.concat( r['value']);
+        });
+    }
+    async getAppointment(id:number){
+        this.appointmentService.getById(id).subscribe(r=>{
+            this.appointment=r.data[0];
+            if(!this.appointment)
+            this.modalService.showError('appointmentNotValid_msg');
+            else
+            this.itemForm.patchValue({
+                appointmentId:this.appointment.id,
+                doctorId:this.appointment.doctorId,
+                hospitalId:this.appointment.hospitalId,
+                patientId:this.appointment.patientId,
+                insuranceId:this.appointment.insuranceId,
+                insurancePlanId:this.appointment.insurancePlanId,
+                doctorName:this.appointment.doctorName,
+                patientName:this.appointment.patientName,
+                currencyId:this.appointment.currencyId,
+
+            })
+        })
     }
 
    async getItem(id:number){
@@ -78,16 +209,26 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         if(r.status>=0){
             this.item=r.data[0];
             this.itemForm.patchValue({
-                name: this.item.name,
-            phoneNumber: this.item.phoneNumber,
-            cardId: this.item.cardId,
-            address: this.item.address,
-            code: this.item.code,
-            zoneId: this.item.zoneId,
-            comissionRate:this.item.comissionRate,
-            comissionByProduct: this.item.comissionByProduct,
-            fixedComission: this.item.fixedComission,
-            id: this.item.id
+                doctorName: this.item.doctorName,
+                appointmentId:this.item.appointmentId,
+                patientName:this.item.patientName,
+                symptoms:this.item.symptoms,
+                diagnoses:this.item.diagnoses,
+                prescriptionType: '',
+                doctorId: this.item.doctorId,
+                patientId: this.item.patientId,
+                medicineId: 0,
+                especializedImageId:0,
+                quantity:0,
+                whenToTake:'',
+                medicalSpecialityId:null,
+                emptyStomach:false,
+                additionalData:'',
+                id: this.item.id,
+                hospitalId:this.item.hospitalId,
+                insuranceId:this.item.insuranceId,
+                insurancePlanId:this.item.insurancePlanId,
+                currencyId:this.item.currencyId,
             });
 
         }
@@ -95,9 +236,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     })
     }
 
-    async getZones(){
-        this.zoneService.getAll().subscribe(r=>{this.zones=r})
-    }
+ 
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
@@ -108,7 +247,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
-           this.item.zoneId=parseInt(this.item.zoneId.toString());
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
