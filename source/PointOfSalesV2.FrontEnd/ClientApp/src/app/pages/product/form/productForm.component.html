@@ -43,13 +43,25 @@
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'medicalSpeciality_lbl' | translate}}</label>
                     <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
                     formControlName="medicalSpecialityId"
-                    required
+                    
                     >
                     <option *ngFor="let medicalSpeciality of medicalSpecialities"
                      [value]="medicalSpeciality.id"
                      >{{medicalSpeciality.name}}</option>
+                    </select>
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'type_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.type.errors }"
+                    formControlName="type"
+                    required
+                    >
+                    <option *ngFor="let type of types"
+                     [value]="type.id"
+                     >{{type.name}}</option>
                     </select>
                    
                 </div>

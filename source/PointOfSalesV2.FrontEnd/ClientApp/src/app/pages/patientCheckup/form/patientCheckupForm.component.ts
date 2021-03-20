@@ -36,6 +36,8 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     appointment:any={};
     selectedMedicines:any[]=[];
     selectedImages:any[]=[];
+    selectedConsultations:any[]=[];
+    selectedLabTests:any[]=[];
     medicalSpecialities:any[]=[];
     whentoTakeSelections:any[]=[
         '1-0-0',
@@ -64,7 +66,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         },
         {
             id:'E',
-            name:this.lang.getValueByKey('especicializedImage_lbl')
+            name:this.lang.getValueByKey('especializedImage_lbl')
         }
     ];
 
@@ -98,8 +100,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             prescriptionType: ['',[ Validators.required]],
             doctorId: [0,[ Validators.required, Validators.min(1)]],
             patientId: [0,[ Validators.required, Validators.min(1)]],
-            medicineId: [0],
-            especializedImageId:[0],
+            productId: [null],
             quantity:[1],
             whenToTake:[''],
             medicalSpecialityId:[null],
@@ -142,8 +143,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                this.prescriptionType=val;
                this.itemForm.patchValue({
                 medicalSpecialityId:null,
-                medicineId:null,
-                especializedImageId:null,
+                productId:null,
                 additionalData:'',
                 quantity:1,
                 emptyStomach:false,
@@ -217,8 +217,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 prescriptionType: '',
                 doctorId: this.item.doctorId,
                 patientId: this.item.patientId,
-                medicineId: 0,
-                especializedImageId:0,
+                productId:null,
                 quantity:0,
                 whenToTake:'',
                 medicalSpecialityId:null,
@@ -247,6 +246,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
+           this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -257,6 +257,77 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                else
                this.modalService.showError(r.message);
            })
+    }
+   async addPrescription(){
+    const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+    let prescription={
+       productId,
+       medicalSpecialityId,
+       quantity,
+       additionalData,
+       whenToTake,
+       emptyStomach,
+        type:prescriptionType,
+        product:this.products.find(x=>x.id==productId),
+        medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
+    };
+    if(prescription.quantity && prescription.quantity>0){
+        let index =0;
+        switch(prescription.type){
+            case "E":
+                if(prescription.productId && prescription.productId>0){
+                    index = this.selectedImages.findIndex(x=>x.productId==prescription.productId);
+                    if(index>=0)
+                    this.selectedImages[index]=prescription
+                    else
+                    this.selectedImages.push(prescription);
+                }
+             
+            break;
+            case "L":
+                if(prescription.productId && prescription.productId>0){
+                index = this.selectedLabTests.findIndex(x=>x.productId==prescription.productId);
+                if(index>=0)
+                this.selectedLabTests[index]=prescription
+                else
+                this.selectedLabTests.push(prescription);
+            }
+            break;
+            case "M":
+                if(prescription.productId && prescription.productId>0){
+                index = this.selectedMedicines.findIndex(x=>x.productId==prescription.productId);
+                if(index>=0)
+                this.selectedMedicines[index]=prescription
+                else
+                this.selectedMedicines.push(prescription);
+                }
+            break;
+            case "C":
+                if(prescription.medicalSpecialityId && prescription.medicalSpecialityId>0){
+                index = this.selectedConsultations.findIndex(x=>x.productId==prescription.productId);
+                if(index>=0)
+                this.selectedConsultations[index]=prescription
+                else
+                this.selectedConsultations.push(prescription);
+                }
+            break;
+        }
+    }
+    }
+  async  deleteSelectedLabTests(index:number){
+        this.selectedLabTests.splice(index,1);
+    }
+
+    async  deleteSelectedConsultation(index:number){
+        this.selectedConsultations.splice(index,1);
+    }
+
+    async  deleteSelectedImage(index:number){
+        this.selectedImages.splice(index,1);
+    }
+
+    async  deleteSelectedMedicine(index:number){
+        this.selectedMedicines.splice(index,1);
     }
 
     cancel(){

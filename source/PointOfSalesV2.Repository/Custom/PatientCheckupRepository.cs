@@ -18,7 +18,8 @@ namespace PointOfSalesV2.Repository
         public override Result<PatientCheckup> Get(long id)
         {
             var entity = _Context.PatientCheckups.AsNoTracking().Include(x=>x.Doctor)
-                .Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x=>x.Patient).Include(x=>x.CheckupPrescriptions).ThenInclude(d=>d.Product).FirstOrDefault(x=>x.Active==true && x.Id==id);
+                .Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x=>x.Patient).Include(x=>x.CheckupPrescriptions).ThenInclude(x=>x.MedicalSpeciality)
+                .Include(x=>x.CheckupPrescriptions).ThenInclude(d=>d.Product).FirstOrDefault(x=>x.Active==true && x.Id==id);
             if (entity == null)
                 return new Result<PatientCheckup>(-1, -1, "notFound_msg");
             entity.CheckupPrescriptions = entity.CheckupPrescriptions.Where(s => s.Active == true).ToList();
@@ -37,18 +38,25 @@ namespace PointOfSalesV2.Repository
                     var prescriptions = SetEntity(entity);
                     var appointment = _Context.Appointment.Find(entity.AppointmentId);
                     _Context.Entry<Appointment>(appointment).State = EntityState.Detached;
+                    if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled) 
+                    {
+                        transaction.Rollback();
+                        return new Result<PatientCheckup>(-1, -1, "appointmentNotValid_msg");
+                    }
+                    entity.Date = appointment.Date;
+                    entity.InsuranceId = appointment.InsuranceId;
+                    entity.InsurancePlanId = appointment.InsurancePlanId;
+                    appointment.MedicalSpecialityId = appointment.MedicalSpecialityId;
+                    entity.DoctorId = appointment.DoctorId.HasValue?appointment.DoctorId.Value:entity.DoctorId;
+                    entity.PatientId = appointment.PatientId;
                     result = base.Add(entity);
                     if (result.Status < 0) 
                     {
+                        
                         transaction.Rollback();
                         return result;
                     }
-                    if (appointment.AppointmentState== AppointmentStates.Nulled )
-                    {
-                        transaction.Dispose();
-                        result = new Result<PatientCheckup>(-1, -1, "appointmentNulled_msg");
-                        return result;
-                    }
+                  
 
 
                     appointment.State = appointment.AppointmentState == AppointmentStates.Scheduled ? (char)AppointmentStates.InProgress : appointment.State;
@@ -192,6 +200,7 @@ namespace PointOfSalesV2.Repository
             for (int i = 0; i < prescriptions.Count; i++)
             {
                 prescriptions[i].Product = null;
+                prescriptions[i].MedicalSpeciality = null;
                 prescriptions[i].Active = true;
                 prescriptions[i].PatientCheckup = null;
                 prescriptions[i].Quantity = prescriptions[i].Quantity <= 0 ? 1 : prescriptions[i].Quantity;

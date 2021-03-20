@@ -33,7 +33,24 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
 
     isServiceFlag:boolean=false;
     isCompositeFlag:boolean=false;
-
+    types:any[]=[
+        {
+            id:'C',
+            name:this.lang.getValueByKey('medicalConsultation_lbl')
+        },
+        {
+            id:'L',
+            name:this.lang.getValueByKey('laboratory_lbl')
+        },
+        {
+            id:'E',
+            name:this.lang.getValueByKey('especializedImages_lbl')
+        },
+        {
+            id:'M',
+            name:this.lang.getValueByKey('medicine_lbl')
+        }
+    ];
     _route:ActivatedRoute;
     currencies:Currency[]=[];//
     units:Unit[]=[];//
@@ -95,7 +112,8 @@ baseProductId:[0],
 baseUnitId:[null],
 medicalSpecialityId:[null],
 quantity:[0],
-taxId:0
+taxId:0,
+type:['C']
         });
     }
     ngOnInit(): void {
@@ -288,6 +306,7 @@ async getSuppliers(){
                 equivalence:0,
                 isPrimary:false,
                 supplierId:0,
+                type:this.item.type,
                 supplierCost:0,
                 baseProductId:0,
                 baseUnitId:0,
@@ -326,6 +345,7 @@ async getSuppliers(){
            if(!this.item)
            this.item = new Product();
            this.item=  this.updateModel<Product>(formValue,this.item);
+           this.item.medicalSpecialityId=isNaN(this.item.medicalSpecialityId)?null:this.item.medicalSpecialityId;
            this.item.currencyId=parseInt(this.item.currencyId.toString());
            this.setProductChildren();
           

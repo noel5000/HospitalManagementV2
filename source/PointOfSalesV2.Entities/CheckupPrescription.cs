@@ -13,7 +13,8 @@ namespace PointOfSalesV2.Entities
 
     public class CheckupPrescription: CommonData
     {
-        public long ProductId { get; set; }
+        public long? ProductId { get; set; }
+        public long? MedicalSpecialityId { get; set; }
         public decimal Quantity { get; set; }
         public char Type { get; set; }
 
@@ -32,6 +33,8 @@ namespace PointOfSalesV2.Entities
 
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
+        [ForeignKey("MedicalSpecialityId")]
+        public MedicalSpeciality MedicalSpeciality { get; set; }
         [ForeignKey("PatientCheckupId")]
         public PatientCheckup PatientCheckup { get; set; }
     }

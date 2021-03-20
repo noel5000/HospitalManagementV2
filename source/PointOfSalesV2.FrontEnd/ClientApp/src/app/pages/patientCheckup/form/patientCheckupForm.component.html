@@ -52,18 +52,20 @@
         </div>
         <div *ngIf="prescriptionType">
             <div class="row">
-                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
-                    <label>{{'medication_lbl' | translate}}</label>
+                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType!='C'">
+                    <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
+                    <label *ngIf="prescriptionType=='E'">{{'EspecializedImages_lbl' | translate}}</label>
+                    <label *ngIf="prescriptionType=='L'">{{'labTest_lbl' | translate}}</label>
                     <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.medicineId.errors }"
-                    formControlName="medicineId"
+                    [ngClass]="{ 'is-invalid': form.productId.errors }"
+                    formControlName="productId"
                     >
                     <option *ngFor="let medicine of products"
                      [value]="medicine.id"
                      >{{medicine.name}}</option>
                     </select>
-                    <div *ngIf="form.medicineId.errors" class="invalid-feedback">
-                        <div *ngIf="form.medicineId.errors.required">{{'required_lbl' | translate}}</div>
+                    <div *ngIf="form.productId.errors" class="invalid-feedback">
+                        <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
                 <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='C'">
@@ -80,34 +82,8 @@
                         <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='E'">
-                    <label>{{'EspecializedImages_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.especializedImageId.errors }"
-                    formControlName="especializedImageId"
-                    >
-                    <option *ngFor="let image of products"
-                     [value]="image.id"
-                     >{{image.name}}</option>
-                    </select>
-                    <div *ngIf="form.especializedImageId.errors" class="invalid-feedback">
-                        <div *ngIf="form.especializedImageId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='L'">
-                    <label>{{'labTest_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.labTestId.errors }"
-                    formControlName="labTestId"
-                    >
-                    <option *ngFor="let labTest of products"
-                     [value]="labTest.id"
-                     >{{labTest.name}}</option>
-                    </select>
-                    <div *ngIf="form.labTestId.errors" class="invalid-feedback">
-                        <div *ngIf="form.labTestId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
+               
+              
                 <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
                     <label>{{'quantity_lbl' | translate}}</label>
                     <input type="number" formControlName="quantity" min="1"  
@@ -151,7 +127,7 @@
             <table class="table" >
                 <thead>
                     <tr>
-                        <th>{{'medication_lbl' | translate}}</th>
+                        <th>{{'name_lbl' | translate}}</th>
                         <th>{{'quantity_lbl' | translate}}</th>
                         <th>{{'whenToTake_lbl' | translate}}</th>
                         <th>{{'emptyStomach_lbl' | translate}}</th>
@@ -175,7 +151,7 @@
             <table class="table" >
                 <thead>
                     <tr>
-                        <th>{{'specializedImage_lbl' | translate}}</th>
+                        <th>{{'name_lbl' | translate}}</th>
                         <th>{{'additionalInfo_lbl' | translate}}</th>
                         <th></th>
                     </tr>
@@ -185,6 +161,44 @@
                         <td>{{selectedImage.product.name}}</td>
                         <td>{{selectedImage.additionalData}}</td>
                         <td><i class="btn btn-danger" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="scrollTableMobile" *ngIf="selectedConsultations.length>0">
+            <h4>{{'consultations_lbl' | translate}}</h4>
+            <table class="table" >
+                <thead>
+                    <tr>
+                        <th>{{'name_lbl' | translate}}</th>
+                        <th>{{'additionalInfo_lbl' | translate}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let selectedConsultation of selectedConsultations; let i=index">
+                        <td>{{selectedConsultation.medicalSpeciality.name}}</td>
+                        <td>{{selectedConsultation.additionalData}}</td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="scrollTableMobile" *ngIf="selectedLabTests.length>0">
+            <h4>{{'labTests_lbl' | translate}}</h4>
+            <table class="table" >
+                <thead>
+                    <tr>
+                        <th>{{'name_lbl' | translate}}</th>
+                        <th>{{'additionalInfo_lbl' | translate}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let selectedLabTest of selectedLabTests; let i=index">
+                        <td>{{selectedLabTest.product.name}}</td>
+                        <td>{{selectedLabTest.additionalData}}</td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>

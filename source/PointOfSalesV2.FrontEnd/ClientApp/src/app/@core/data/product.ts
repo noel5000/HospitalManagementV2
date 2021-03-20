@@ -22,6 +22,7 @@ export class Product extends BaseModel {
     currency :Currency
     medicalSpecialityId:number=null;
     taxes:any[];
+    type:string;
     medicalSpeciality:any;
     productUnits:any[];
     baseCompositeProducts:any[];
