@@ -18,8 +18,26 @@ namespace PointOfSalesV2.Repository
             this._appSettings = appSettings;
         }
 
-      
-      
+        public override Result<Customer> Get(long id)
+        {
+            var result = new Result<Customer>(-1, -1, "error_msg");
+            try
+            {
+                var entity = _Context.Customers.AsNoTracking().Include(x => x.Currency).Include(x => x.TRNControl).Include(x => x.Zone).Include(x => x.Insurance)
+                    .Include(x => x.InsurancePlan).FirstOrDefault(x => x.Active == true && x.Id == id);
+                if (entity == null)
+                    result = new Result<Customer>(-1, -1, "notFound_msg");
+                else
+                    result = new Result<Customer>(id, 0, "ok_msg", new List<Customer>() { entity });
+            }
+            catch (Exception ex) 
+            {
+                result = new Result<Customer>(-1, -1, ex.Message, null, ex);
+
+            }
+            return result;
+        }
+
 
         public override Result<Customer> Add(Customer entity)
         {

@@ -18,6 +18,16 @@ namespace PointOfSalesV2.Entities
         [Export(Order = 4)]
         public string PhoneNumber { get; set; }
 
+        [NotMapped]
+        public int Age 
+        {
+            get 
+            {
+                return Convert.ToInt32((DateTime.Now - this.BirthDate).TotalDays / 365);
+            }
+        }
+        public DateTime BirthDate { get; set; }
+
         public long CurrencyId { get; set; }
         public long TRNControlId { get; set; }
 

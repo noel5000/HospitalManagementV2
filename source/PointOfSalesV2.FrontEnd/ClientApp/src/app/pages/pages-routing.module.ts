@@ -77,6 +77,7 @@ import { appointmentFormComponent } from './appointment/form/appointmentForm.com
 import { appointmentEditFormComponent } from './appointment/form/appointmentEditForm.component';
 import { patientCheckupIndexComponent } from './patientCheckup/index/patientCheckupIndex.component';
 import { patientCheckupFormComponent } from './patientCheckup/form/patientCheckupForm.component';
+import { patientCheckupEditFormComponent } from './patientCheckup/edit/patientCheckupEditForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -501,8 +502,8 @@ component: AccountStateIndexComponent
   component: patientCheckupFormComponent
 },
 {
-  path: 'patientcheckup/edit/:id',
-  component: patientCheckupFormComponent
+  path: "patientcheckup/edit/:patientid/:appointmentid/:checkupid",
+  component: patientCheckupEditFormComponent
 },
   ],
 }];

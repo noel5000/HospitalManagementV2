@@ -211,7 +211,8 @@ namespace PointOfSalesV2.Repository
         public async Task<List<PatientCheckup>> GetPatientHistory(long patientId)
         {
             var entities = await _Context.PatientCheckups.AsNoTracking().Include(x => x.Doctor)
-                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).Include(x => x.CheckupPrescriptions).ThenInclude(d => d.Product).Where(x => x.Active == true && x.PatientId == patientId).ToListAsync();
+                .Include(x=>x.Appointment)
+                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).Where(x => x.Active == true && x.PatientId == patientId).ToListAsync();
             return entities;
         }
     }

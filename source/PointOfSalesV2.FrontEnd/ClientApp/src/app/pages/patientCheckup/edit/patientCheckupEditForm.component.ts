@@ -22,11 +22,11 @@ import { Product } from '../../../@core/data/product';
 
 declare const $: any;
 @Component({
-    selector: "patientCheckup-form",
-    templateUrl: "./patientCheckupForm.component.html",
+    selector: "patienteditcheckup-form",
+    templateUrl: "./patientCheckupEditForm.component.html",
     styleUrls: ["../patientCheckupStyles.component.scss"]
 })
-export class patientCheckupFormComponent extends BaseComponent implements OnInit {
+export class patientCheckupEditFormComponent extends BaseComponent implements OnInit {
  
     _route:ActivatedRoute;
     appointmentId:number=0;
@@ -95,9 +95,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             doctorName: [''],
             patientName:[''],
             appointmentId:[null,Validators.required],
-            symptoms:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
-            diagnoses:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
-            prescriptionType: ['',[ Validators.required]],
+            symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
+            diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
+            prescriptionType: [''],
             doctorId: [0,[ Validators.required, Validators.min(1)]],
             patientId: [0,[ Validators.required, Validators.min(1)]],
             productId: [null],
@@ -112,22 +112,18 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insurancePlanId:[null],
             currencyId:[0],
         });
+        const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
+        if(!isNaN(urlId)){
+           this.id=urlId;
+           this.getItem(urlId);
+        }
+        else
+        this.validateFormData();
     }
     ngOnInit(): void {
-     const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
-      this.patientId= parseInt( this._route.snapshot.paramMap.get('patientid'));
-     this.appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
-     if(!isNaN(urlId)){
-        this.id=urlId;
-        this.getItem(urlId);
-     }
-     else
-     this.validateFormData();
+    
 
-     if(this.appointmentId && this.appointmentId>0)
-        this.getAppointment(this.appointmentId);
-        else
-        this.modalService.showError('appointmentNotValid_msg');
+    
         this.verifyUser();
         this.getMedicalSpecialities();
         this.onChanges();
@@ -206,32 +202,49 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
-        if(r.status>=0){
-            this.item=r.data[0];
-            this.itemForm.patchValue({
-                doctorName: this.item.doctorName,
-                appointmentId:this.item.appointmentId,
-                patientName:this.item.patientName,
-                symptoms:this.item.symptoms,
-                diagnoses:this.item.diagnoses,
-                prescriptionType: '',
-                doctorId: this.item.doctorId,
-                patientId: this.item.patientId,
-                productId:null,
-                quantity:0,
-                whenToTake:'',
-                medicalSpecialityId:null,
-                emptyStomach:false,
-                additionalData:'',
-                id: this.item.id,
-                hospitalId:this.item.hospitalId,
-                insuranceId:this.item.insuranceId,
-                insurancePlanId:this.item.insurancePlanId,
-                currencyId:this.item.currencyId,
-            });
+        try{
+            if(r.status>=0){
+                this.item=r.data[0];
+                this.selectedMedicines=this.item.checkupPrescriptions.filter(x=>x.type=="M");
+                this.selectedLabTests=this.item.checkupPrescriptions.filter(x=>x.type=="L");
+                this.selectedConsultations=this.item.checkupPrescriptions.filter(x=>x.type=="C");
+                this.selectedImages=this.item.checkupPrescriptions.filter(x=>x.type=="E");
+                this.appointmentId=this.item.appointmentId;
+                this.patientId=this.item.patientId;
+                if(this.appointmentId && this.appointmentId>0)
+                this.getAppointment(this.appointmentId);
+                else
+                this.modalService.showError('appointmentNotValid_msg');
+                 this.itemForm.patchValue({
+                     doctorName: this.item.doctor.fullName,
+                     appointmentId:this.item.appointmentId,
+                     patientName:this.item.patient.name,
+                     symptoms:this.item.symptoms,
+                    diagnoses:this.item.diagnoses,
+                     prescriptionType: '',
+                     doctorId: this.item.doctorId,
+                     patientId: this.item.patientId,
+                     productId:null,
+                     quantity:1,
+                     whenToTake:'',
+                     medicalSpecialityId:null,
+                     emptyStomach:false,
+                     additionalData:'',
+                     id: this.item.id,
+                     hospitalId:this.item.doctor.branchOfficeId,
+                     insuranceId:this.item.insuranceId?this.item.insuranceId:null,
+                     insurancePlanId:this.item.insurancePlanId?this.item.insurancePlanId:null,
+                     currencyId:this.item.patient.currencyId,
+                });
 
+                
+            }
+            this.validateFormData();
         }
-        this.validateFormData();
+        catch(ex){
+console.log(ex);
+        }
+
     })
     }
 

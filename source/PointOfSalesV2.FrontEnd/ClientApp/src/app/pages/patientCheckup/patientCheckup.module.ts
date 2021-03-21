@@ -15,9 +15,11 @@ import { patientCheckupFormComponent } from './form/patientCheckupForm.component
 import { ProductService } from '../../@core/services/ProductService';
 import { CustomerService } from '../../@core/services/CustomerService';
 import { UserService } from '../../@core/mock/users.service';
+import { patientCheckupEditFormComponent } from './edit/patientCheckupEditForm.component';
 
 
 const routes: Routes = [
+   
     {
         path: ":patientid/:appointmentid",
         component: patientCheckupIndexComponent,
@@ -27,16 +29,15 @@ const routes: Routes = [
     {
         path: "add/:patientid/:appointmentid",
         component: patientCheckupFormComponent
-    },
-    {
-        path: "edit/:id",
-        component: patientCheckupFormComponent
+    }, {
+        path: "edit/:patientid/:appointmentid/:checkupid",
+        component: patientCheckupEditFormComponent
     },
 ];
 
 @NgModule({
 
-    declarations: [patientCheckupFormComponent, patientCheckupIndexComponent],
+    declarations: [patientCheckupFormComponent, patientCheckupIndexComponent,patientCheckupEditFormComponent],
     bootstrap: [],
     providers: [
         LanguageService,

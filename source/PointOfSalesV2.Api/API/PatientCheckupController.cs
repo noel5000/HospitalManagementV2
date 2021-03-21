@@ -25,9 +25,11 @@ namespace PointOfSalesV2.Api.Controllers
     {
         
         readonly ISequenceManagerRepository sequence;
+        readonly IPatientCheckupRepository patientCheckupRepository;
         public PatientCheckupController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IPatientCheckupRepository>())
         {
             this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
+            this.patientCheckupRepository = this._repositoryFactory.GetCustomDataRepositories<IPatientCheckupRepository>();
         }
 
         [HttpGet]
@@ -43,6 +45,23 @@ namespace PointOfSalesV2.Api.Controllers
                  , y => y.Active == true);
                 return Ok(data);
                
+            }
+
+            catch (Exception ex)
+            {
+                return Ok(new { status = -1, message = ex.Message });
+            }
+        }
+        [HttpGet("GetPatientHistory/{patientId:long}")]
+        [ActionAuthorize(Operations.READALL)]
+        [EnableCors("AllowAllOrigins")]
+        public async Task<IActionResult> GetPatientHistory(long patientId) 
+        {
+            try
+            {
+                var data = await patientCheckupRepository.GetPatientHistory(patientId);
+                return Ok(new {status=0,message="ok_msg", data });
+
             }
 
             catch (Exception ex)
