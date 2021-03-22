@@ -198,8 +198,8 @@ sequence:[''],
         this.refreshAmounts();
     }
 
-    async getProducts(medicalSpecialityId:number){
-        const filter = [
+    async getProducts(medicalSpecialityId:number, type:string='C'){
+        let filter = [
         {
             property: "Currency",
             value: "Id,Name,Code,ExchangeRate",
@@ -213,14 +213,26 @@ sequence:[''],
             isTranslated: false,
             comparer: ODataComparers.equals
         } as QueryFilter,
+        
+    ]
+    if(medicalSpecialityId && medicalSpecialityId>0)
+    filter.push({
+        property: "MedicalSpecialityId",
+        value: medicalSpecialityId.toString(),
+        type: ObjectTypes.Number,
+        isTranslated: false,
+        comparer: ODataComparers.equals
+    } as QueryFilter);
+    if(type)
+    filter.push(
+    
         {
-            property: "MedicalSpecialityId",
-            value: medicalSpecialityId.toString(),
-            type: ObjectTypes.Number,
+            property: "Type",
+            value: type,
+            type: ObjectTypes.String,
             isTranslated: false,
             comparer: ODataComparers.equals
-        } as QueryFilter
-    ]
+        } as QueryFilter)
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
@@ -361,10 +373,21 @@ sequence:[''],
 
                 this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
                
-                    const {hospitalId} = this.itemForm.getRawValue();
-                    if(val && val>0 && hospitalId && hospitalId>0 ){
-                        this.getProducts(val);
+                    const {hospitalId,type} = this.itemForm.getRawValue();
+                    if(hospitalId && hospitalId>0 ){
+                        this.getProducts(val,type?type:'C');
                         this.getDoctors(val,hospitalId);
+                    }
+                    
+        
+                
+                });
+
+                this.itemForm.get('type').valueChanges.subscribe(val => {
+               
+                    const {hospitalId,medicalSpecialityId} = this.itemForm.getRawValue();
+                    if( hospitalId && hospitalId>0 ){
+                        this.getProducts(medicalSpecialityId,val);
                     }
                     
         

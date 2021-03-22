@@ -177,6 +177,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
+      
         });
     }
     async getAppointment(id:number){
@@ -199,7 +200,38 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             })
         })
     }
-
+    async labTestSelection(index:number){
+        this.products[index].selected=!this.products[index].selected;
+        const labTest = this.products[index];
+        const selectedIndex = this.selectedLabTests.findIndex(x=>x.productId==labTest.id);
+        if(labTest.selected){
+            const {medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+                let prescription={
+                   productId:labTest.id,
+                   medicalSpecialityId,
+                   quantity,
+                   additionalData,
+                   whenToTake,
+                   emptyStomach,
+                    type:prescriptionType,
+                    product:labTest,
+                    medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
+                };
+            if(selectedIndex<0){
+                
+                this.selectedLabTests.push(
+                    prescription
+                );
+            }
+           
+            else
+            this.selectedLabTests[selectedIndex]=prescription;
+        }
+        else{
+            if(selectedIndex>=0)
+            this.selectedLabTests.splice(selectedIndex,1);
+        }
+    }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         try{

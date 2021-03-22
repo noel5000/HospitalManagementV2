@@ -24,6 +24,7 @@ export class Product extends BaseModel {
     taxes:any[];
     type:string;
     medicalSpeciality:any;
+    selected:boolean=false;
     productUnits:any[];
     baseCompositeProducts:any[];
     suppliersCosts:any[]=[];
