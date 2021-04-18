@@ -36,14 +36,28 @@
                 </div>
 
            </div>
-           <div class="row">
+           <div class="my-3">
+               <h3>{{'attachments_lbl' | translate}}</h3>
+               <div class="row my-1" *ngFor="let attachment of attachments; let i=index">
+                <div class="col-md-6 col-xs-6">
+                 <a  [href]="setLink(attachment)" target="_blank">{{attachment.fileAttachment.fileName}}</a>
+                </div>
+                <div class="col-md-6 col-xs-6">
+                 <button type="button" (click)="removeAttachment(attachment.id)" class="btn btn-danger">{{'delete_btn' | translate}}</button>
+                </div> 
+            </div>
+           </div>
+         
+           <div class="row my-1">
                <div class="col-md-6 col-xs-12">
                 <input type="file" class="form-control" name="file" ng2FileSelect [uploader]="uploader" />
                </div>
                <div class="col-md-6 col-xs-12">
-                <i class="btn btn-primary mr-1  my-4"
-                 (click)="uploader.uploadAll()"
-                 >{{'upload_btn' | translate}}</i>
+                   <button type="button" class="btn btn-primary"
+                   (click)="uploader.uploadAll()"
+                   [disabled]="!uploader.getNotUploadedItems().length"
+                   >{{'upload_btn' | translate}}</button>
+                
             </div>
            </div>
            <div class="row">

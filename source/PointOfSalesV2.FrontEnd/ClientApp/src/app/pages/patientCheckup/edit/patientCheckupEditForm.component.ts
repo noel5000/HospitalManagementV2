@@ -152,7 +152,7 @@ this.attachmentsService.getAllFiltered([
         this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
          console.log('FileUpload:uploaded successfully:', item, status, response);
-         alert('Your file has been uploaded successfully');
+         this.modalService.showSuccess('ok_msg');
          this.getAttachments(this.id);
     };
     }
@@ -160,6 +160,16 @@ this.attachmentsService.getAllFiltered([
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=r;
         })
+    }
+
+    setLink(attachment:any){
+        return `${endpointViewsUrl}Files/${attachment.fileAttachment.fileName}`
+    }
+
+    removeAttachment(id:number){
+        this.attachmentsService.delete(id).subscribe(r=>{
+            this.getAttachments(this.id);
+        });
     }
 
     onChanges(){
