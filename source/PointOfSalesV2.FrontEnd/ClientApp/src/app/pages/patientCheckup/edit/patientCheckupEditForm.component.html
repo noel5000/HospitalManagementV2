@@ -43,7 +43,7 @@
                  <a  [href]="setLink(attachment)" target="_blank">{{attachment.fileAttachment.fileName}}</a>
                 </div>
                 <div class="col-md-6 col-xs-6">
-                 <button type="button" (click)="removeAttachment(attachment.id)" class="btn btn-danger">{{'delete_btn' | translate}}</button>
+                 <button type="button" (click)="removeAttachment(attachment.id)"  [disabled]="(!editing || editing<1)" class="btn btn-danger">{{'delete_btn' | translate}}</button>
                 </div> 
             </div>
            </div>
@@ -55,7 +55,7 @@
                <div class="col-md-6 col-xs-12">
                    <button type="button" class="btn btn-primary"
                    (click)="uploader.uploadAll()"
-                   [disabled]="!uploader.getNotUploadedItems().length"
+                   [disabled]="(!editing || editing<1) || !uploader.getNotUploadedItems().length"
                    >{{'upload_btn' | translate}}</button>
                 
             </div>
@@ -141,7 +141,7 @@
                      class="form-control" />
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <i class="btn btn-primary mr-1  my-4" (click)="addPrescription()">{{'addMedicine_btn' | translate}}</i>
+                  <button type="button" class="btn btn-primary mr-1  my-4" [disabled]="!editing || editing<1" (click)="addPrescription()">{{'addMedicine_btn' | translate}}</button>             
                 </div>
             </div>
         </div>
@@ -177,7 +177,7 @@
                         <td>{{selectedMedicine.quantity}}</td>
                         <td>{{selectedMedicine.whenToTake}}</td>
                         <td>{{selectedMedicine.emptyStomach?('yes_lbl' | translate):('no_lbl' | translate)}}</td>
-                        <td><i class="btn btn-danger" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</i></td>
+                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -197,7 +197,7 @@
                     <tr *ngFor="let selectedImage of selectedImages; let i=index">
                         <td>{{selectedImage.product.name}}</td>
                         <td>{{selectedImage.additionalData}}</td>
-                        <td><i class="btn btn-danger" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</i></td>
+                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -216,7 +216,8 @@
                     <tr *ngFor="let selectedConsultation of selectedConsultations; let i=index">
                         <td>{{selectedConsultation.medicalSpeciality.name}}</td>
                         <td>{{selectedConsultation.additionalData}}</td>
-                        <td><i class="btn btn-danger" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</i></td>
+                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</button></td>
+                       >
                     </tr>
                 </tbody>
             </table>
@@ -234,7 +235,7 @@
                 <tbody>
                     <tr *ngFor="let selectedLabTest of selectedLabTests; let i=index">
                         <td>{{selectedLabTest.product.name}}</td>
-                        <td><i class="btn btn-danger" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</i></td>
+                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -242,7 +243,7 @@
            <br>
             
             <div class="text-center">
-                <button class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
+                <button class="btn btn-primary mr-1" [disabled]="!editing || editing<1">{{'save_btn' | translate}}</button>
                 <button class="btn btn-secondary" type="reset" (click)="cancel()">{{'cancel_btn' | translate}}</button>
             </div>
         </form>

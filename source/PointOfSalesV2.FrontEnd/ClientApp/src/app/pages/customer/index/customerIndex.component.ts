@@ -151,6 +151,12 @@ this.actions=[
         class:'btn btn-danger',
         icon:'',
         id:'delete'
+    },
+    {
+        title:scope.lang.getValueByKey('history_btn'),
+        class:'btn btn-info',
+        icon:'',
+        id:'history'
     }
 ];
        
@@ -165,6 +171,9 @@ this.actions=[
                 case 'delete':
                     this.onDeleteConfirm(e.item);
                     break;
+                case 'history':
+                        this.goToHistory(e.item);
+                        break;
             }
         }
     }
@@ -272,6 +281,10 @@ else{
     }
     edit(e:Customer) {
         this.router.navigateByUrl(`pages/customer/edit/${e.id}`);
+    }
+
+    goToHistory(e:Customer) {
+        this.router.navigateByUrl(`pages/patientcheckup/${e.id}/0`);
     }
     source:any={};
     onDeleteConfirm(event:Customer): void {

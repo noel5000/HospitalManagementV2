@@ -502,7 +502,7 @@ component: AccountStateIndexComponent
   component: patientCheckupFormComponent
 },
 {
-  path: "patientcheckup/edit/:patientid/:appointmentid/:checkupid",
+  path: "patientcheckup/edit/:patientid/:appointmentid/:checkupid/:editing",
   component: patientCheckupEditFormComponent
 },
   ],

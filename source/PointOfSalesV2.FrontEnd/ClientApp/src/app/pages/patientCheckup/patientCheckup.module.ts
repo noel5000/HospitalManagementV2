@@ -31,7 +31,7 @@ const routes: Routes = [
         path: "add/:patientid/:appointmentid",
         component: patientCheckupFormComponent
     }, {
-        path: "edit/:patientid/:appointmentid/:checkupid",
+        path: "edit/:patientid/:appointmentid/:checkupid/:editing",
         component: patientCheckupEditFormComponent
     },
 ];

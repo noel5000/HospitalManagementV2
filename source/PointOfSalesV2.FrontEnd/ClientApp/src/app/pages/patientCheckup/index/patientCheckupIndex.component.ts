@@ -131,10 +131,10 @@ console.log(ex);
         this.router.navigateByUrl(`pages/patientcheckup/add/${this.patientId}/${this.appointmentId}`);
     }
     getCheckupDetails(e:any) {
-        this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${e.appointmentId}/${e.id}`);
+        this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${this.appointmentId}/${e.id}/0`);
     }
     editCheckup(e:any) {
-        this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${e.appointmentId}/${e.id}`);
+        this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${e.appointmentId}/${e.id}/1`);
     }
     source:any={};
     onDeleteConfirm(event:any): void {

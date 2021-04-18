@@ -19,6 +19,7 @@ import { ProductService } from '../../../@core/services/ProductService';
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Product } from '../../../@core/data/product';
 import { FileUploader } from 'ng2-file-upload';
+import { appointmentIndexComponent } from '../../appointment/index/appointmentIndex.component';
 
 
 declare const $: any;
@@ -32,6 +33,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     _route:ActivatedRoute;
     appointmentId:number=0;
     patientId:number=0;
+    editing:number=1;
     patient:any={};
     doctor:any={};
     appointment:any={};
@@ -117,6 +119,14 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             currencyId:[0],
         });
         const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
+        const appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
+        const editing= parseInt( this._route.snapshot.paramMap.get('editing'));
+        if(!isNaN(appointmentId))
+        this.appointmentId=appointmentId;
+
+        if(!isNaN(editing))
+        this.editing=editing;
+
         if(!isNaN(urlId)){
            this.id=urlId;
            this.getItem(urlId);
@@ -225,7 +235,7 @@ this.attachmentsService.getAllFiltered([
             this.modalService.showError('appointmentNotValid_msg');
             else
             this.itemForm.patchValue({
-                appointmentId:this.appointment.id,
+                appointmentId:id,
                 doctorId:this.appointment.doctorId,
                 hospitalId:this.appointment.hospitalId,
                 patientId:this.appointment.patientId,
@@ -279,7 +289,7 @@ this.attachmentsService.getAllFiltered([
                 this.selectedLabTests=this.item.checkupPrescriptions.filter(x=>x.type=="L");
                 this.selectedConsultations=this.item.checkupPrescriptions.filter(x=>x.type=="C");
                 this.selectedImages=this.item.checkupPrescriptions.filter(x=>x.type=="E");
-                this.appointmentId=this.item.appointmentId;
+           
                 this.patientId=this.item.patientId;
                 if(this.appointmentId && this.appointmentId>0)
                 this.getAppointment(this.appointmentId);
@@ -287,7 +297,7 @@ this.attachmentsService.getAllFiltered([
                 this.modalService.showError('appointmentNotValid_msg');
                  this.itemForm.patchValue({
                      doctorName: this.item.doctor.fullName,
-                     appointmentId:this.item.appointmentId,
+                     appointmentId:this.appointmentId,
                      patientName:this.item.patient.name,
                      symptoms:this.item.symptoms,
                     diagnoses:this.item.diagnoses,
@@ -315,7 +325,7 @@ this.attachmentsService.getAllFiltered([
 console.log(ex);
         }
 
-    })
+    });
     }
 
  

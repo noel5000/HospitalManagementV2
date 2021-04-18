@@ -215,18 +215,20 @@
                                                 <th class="text-left" style="border: 1px solid black;">@(languageKeys.FirstOrDefault(x => x.Key == "quantity_lbl")?.Value?? "quantity_lbl")</th>
                                                 <th class="text-center" style="border: 1px solid black;">@(languageKeys.FirstOrDefault(x => x.Key == "whenToTake_lbl")?.Value?? "whenToTake_lbl") </th>
                                                 <th class="text-center" style="border: 1px solid black;">@(languageKeys.FirstOrDefault(x => x.Key == "emptyStomach_lbl")?.Value?? "emptyStomach_lbl") </th>
+                                                <th class="text-center" style="border: 1px solid black;">@(languageKeys.FirstOrDefault(x => x.Key == "observations_lbl")?.Value?? "observations_lbl") </th>
                                             </tr>
                                         </thead>
                                         <tbody class="filas">
                                             @for (int i = 0; i < checkup.CheckupPrescriptions.Count; i++)
                                             {
-                                                <tr>
+                                            <tr>
 
-                                                    <td class="text-left">@checkup.CheckupPrescriptions[i].Product?.Name</td>
-                                                    <td class="text-left">@checkup.CheckupPrescriptions[i].Quantity</td>
-                                                    <td class="text-center"> @checkup.CheckupPrescriptions[i].WhenToTake</td>
-                                                    <td class="text-center"> @(checkup.CheckupPrescriptions[i].EmptyStomach? languageKeys.FirstOrDefault(x => x.Key == "yes_lbl")?.Value: languageKeys.FirstOrDefault(x => x.Key == "no_lbl")?.Value)</td>
-                                                </tr>
+                                                <td class="text-left">@checkup.CheckupPrescriptions[i].Product?.Name</td>
+                                                <td class="text-left">@checkup.CheckupPrescriptions[i].Quantity</td>
+                                                <td class="text-center"> @checkup.CheckupPrescriptions[i].WhenToTake</td>
+                                                <td class="text-center"> @(checkup.CheckupPrescriptions[i].EmptyStomach? languageKeys.FirstOrDefault(x => x.Key == "yes_lbl")?.Value: languageKeys.FirstOrDefault(x => x.Key == "no_lbl")?.Value)</td>
+                                                <td class="text-center"> @checkup.CheckupPrescriptions[i].AdditionalData</td>
+                                            </tr>
                                             }
 
 
