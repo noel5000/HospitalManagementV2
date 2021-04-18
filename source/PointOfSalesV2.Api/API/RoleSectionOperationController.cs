@@ -22,7 +22,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class RoleSectionOperationController : BaseController<RoleSectionOperation>
     {
         readonly IRoleSectionOperationRepository _repo;
-        public RoleSectionOperationController(IRoleSectionOperationRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public RoleSectionOperationController(IRoleSectionOperationRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.Roles)
         {
             this._repo = repo;
         }
@@ -41,6 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

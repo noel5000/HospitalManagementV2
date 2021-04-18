@@ -17,7 +17,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.Customers)]
     public class CustomerBalanceController : BaseController<CustomerBalance>
     {
-        public CustomerBalanceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public CustomerBalanceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Common.Enums.AppSections.Customers)
         {
         }
     }

@@ -18,7 +18,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ApiController]
     public class ProductCompositeController : BaseController<CompositeProduct>
     {
-        public ProductCompositeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public ProductCompositeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Common.Enums.AppSections.Products)
         {
         }
 

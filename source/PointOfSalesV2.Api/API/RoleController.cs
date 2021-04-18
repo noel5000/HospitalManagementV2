@@ -17,7 +17,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ApiController]
     public class RoleController : BaseController<Role>
     {
-        public RoleController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public RoleController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Common.Enums.AppSections.Roles)
         {
         }
     }

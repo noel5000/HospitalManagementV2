@@ -25,7 +25,7 @@ namespace PointOfSalesV2.Api.Controllers
     {
         readonly ISequenceManagerRepository sequence;
         public CustomerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) 
-            : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<ICustomerRepository>())
+            : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<ICustomerRepository>(), AppSections.Customers)
         {
             this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
         }
@@ -50,6 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -76,6 +77,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -111,6 +113,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -143,6 +146,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -160,6 +164,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

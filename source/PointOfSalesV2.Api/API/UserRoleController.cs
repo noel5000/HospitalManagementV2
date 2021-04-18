@@ -21,7 +21,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.UserRoles)]
     public class UserRoleController : BaseController<UserRole>
     {
-        public UserRoleController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public UserRoleController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,AppSections.UserRoles)
         {
         }
 
@@ -39,6 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

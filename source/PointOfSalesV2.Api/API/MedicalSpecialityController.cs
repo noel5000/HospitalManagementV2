@@ -17,7 +17,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.Users)]
     public class MedicalSpecialityController : BaseController<MedicalSpeciality>
     {
-        public MedicalSpecialityController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public MedicalSpecialityController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Common.Enums.AppSections.Users)
         {
         }
     }

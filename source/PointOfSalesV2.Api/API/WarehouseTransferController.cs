@@ -24,7 +24,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class WarehouseTransferController : BaseController<WarehouseTransfer>
     {
         readonly IWarehouseTransferRepository repo;
-        public WarehouseTransferController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IWarehouseTransferRepository repo) : base(appSettings, repositoryFactory,cache, repo)
+        public WarehouseTransferController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IWarehouseTransferRepository repo) : base(appSettings, repositoryFactory,cache, repo, Common.Enums.AppSections.WarehouseTransfers)
         {
             this.repo = repositoryFactory.GetCustomDataRepositories<IWarehouseTransferRepository>();
         }
@@ -50,6 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,6 +68,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -85,6 +87,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

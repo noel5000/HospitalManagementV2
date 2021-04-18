@@ -21,7 +21,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.Expenses)]
     public class ExpenseTaxController : BaseController<ExpenseTax>
     {
-        public ExpenseTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public ExpenseTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.Expenses)
         {
         }
 
@@ -41,6 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

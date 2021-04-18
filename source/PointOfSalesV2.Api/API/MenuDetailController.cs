@@ -23,7 +23,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class MenuDetailController : BaseController<MenuDetail>
     {
       
-        public MenuDetailController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public MenuDetailController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.SchoolMenu)
         {
   
         }
@@ -45,6 +45,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

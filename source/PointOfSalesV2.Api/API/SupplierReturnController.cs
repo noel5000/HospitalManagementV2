@@ -23,7 +23,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class SupplierReturnController : BaseController<SupplierReturn>
     {
         ISupplierReturnRepository repo;
-        public SupplierReturnController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>())
+        public SupplierReturnController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>(), AppSections.SuppliersReturns)
         {
             this.repo = repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>();
         }

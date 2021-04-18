@@ -16,6 +16,7 @@ import { ProductService } from '../../@core/services/ProductService';
 import { CustomerService } from '../../@core/services/CustomerService';
 import { UserService } from '../../@core/mock/users.service';
 import { patientCheckupEditFormComponent } from './edit/patientCheckupEditForm.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 const routes: Routes = [
@@ -59,6 +60,8 @@ const routes: Routes = [
         ReactiveFormsModule,
         FormsModule,
         TranslateModule,
+        FormsModule,
+        FileUploadModule,
     ],
 })
 

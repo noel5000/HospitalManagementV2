@@ -121,6 +121,19 @@
                 </div>
             </div>
         </div>
+        <div class="scrollTableMobile" id="labTestSelection" *ngIf="prescriptionType=='L'">
+            <h4>{{'labTests_lbl' | translate}}</h4>
+            <div class="row">
+                <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
+                    <div *ngIf="selectedLabTest.id && selectedLabTest.id>0">
+                        <label for="vehicle1">{{selectedLabTest.name}}</label><br>
+                        <input type="checkbox"   (click)="labTestSelection(i)">
+                    </div>
+                  
+                </div>
+            </div>
+           
+        </div>
         <div class="scrollTableMobile" *ngIf="selectedMedicines.length>0">
             <h4>{{'medications_lbl' | translate}}</h4>
             <table class="table" >
@@ -183,19 +196,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="scrollTableMobile" id="labTestSelection" *ngIf="prescriptionType=='L'">
-            <h4>{{'labTests_lbl' | translate}}</h4>
-            <div class="row">
-                <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
-                    <div *ngIf="selectedLabTest.id && selectedLabTest.id>0">
-                        <label for="vehicle1">{{selectedLabTest.name}}</label><br>
-                        <input type="checkbox"   (click)="labTestSelection(i)">
-                    </div>
-                  
-                </div>
-            </div>
-           
-        </div>
+       
 
         <div class="scrollTableMobile" id="selectedLabTestTable" *ngIf="selectedLabTests.length>0">
             <h4>{{'selectedlabTests_lbl' | translate}}</h4>

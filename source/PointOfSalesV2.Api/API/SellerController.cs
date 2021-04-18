@@ -20,7 +20,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.Sellers)]
     public class SellerController : BaseController<Seller>
     {
-        public SellerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, ISellerRepository sellerRepo) : base(appSettings, repositoryFactory,cache,sellerRepo)
+        public SellerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, ISellerRepository sellerRepo) : base(appSettings, repositoryFactory,cache,sellerRepo, AppSections.Sellers)
         {
         }
 
@@ -39,6 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -83,6 +84,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 

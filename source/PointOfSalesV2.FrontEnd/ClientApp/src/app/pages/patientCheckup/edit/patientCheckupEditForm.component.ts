@@ -11,13 +11,14 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
 import { BaseService } from '../../../@core/services/baseService';
-import { endpointUrl } from '../../../@core/common/constants';
+import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { UserService } from '../../../@core/mock/users.service';
 import { ProductService } from '../../../@core/services/ProductService';
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Product } from '../../../@core/data/product';
+import { FileUploader } from 'ng2-file-upload';
 
 
 declare const $: any;
@@ -71,10 +72,13 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     ];
 
 
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckup`);
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
     appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
     medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
+    attachments:any[]=[];
+    public uploader: FileUploader;
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
@@ -119,14 +123,38 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         }
         else
         this.validateFormData();
-    }
-    ngOnInit(): void {
-    
 
-    
+        this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`, itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
+    }
+
+    async getAttachments(id:number){
+this.attachmentsService.getAllFiltered([
+    {
+    property:"PatientChekupId",
+    value: id.toString(),
+    type: ObjectTypes.Number,
+    comparer:ODataComparers.equals,
+    } as QueryFilter,
+    {
+        property:"FileAttachment",
+        value:"Id,FileName",
+        type: ObjectTypes.ChildObject,
+        } as QueryFilter
+]).subscribe(r=>{
+    this.attachments= r['value'];
+})
+    }
+    ngOnInit(): void {    
         this.verifyUser();
         this.getMedicalSpecialities();
         this.onChanges();
+
+        this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+         console.log('FileUpload:uploaded successfully:', item, status, response);
+         alert('Your file has been uploaded successfully');
+         this.getAttachments(this.id);
+    };
     }
     async getMedicalSpecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
@@ -269,7 +297,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                      currencyId:this.item.patient.currencyId,
                 });
 
-                
+                this.getAttachments(id);
             }
             this.validateFormData();
         }

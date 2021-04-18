@@ -49,6 +49,8 @@ namespace PointOfSalesV2.Entities
 
         public virtual List<CheckupPrescription> CheckupPrescriptions { get; set; }
 
+        public virtual List<CheckupAttachment> Attachments { get; set; }
+
 
     }
 }

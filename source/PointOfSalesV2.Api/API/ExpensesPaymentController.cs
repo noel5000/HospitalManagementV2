@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PointOfSalesV2.Api.Models;
 using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
+using PointOfSalesV2.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using static PointOfSalesV2.Common.Enums;
@@ -23,7 +24,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class ExpensesPaymentController : BaseController<ExpensesPayment>
     {
         readonly IExpensesPaymentRepository _repo;
-        public ExpensesPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public ExpensesPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, null, AppSections.ExpensesPayments)
         {
             this._repo = _repositoryFactory.GetCustomDataRepositories<IExpensesPaymentRepository>();
         }
@@ -41,7 +42,7 @@ namespace PointOfSalesV2.Api.Controllers
                 .Include(x => x.Supplier)
                 .Include(x => x.Currency)
                 .Include(x => x.ExpenseCurrency)
-                .Include(x=>x.Expense)
+                .Include(x => x.Expense)
                 .Include(x => x.PaymentType)
                 .Where(y => y.Active == true));
                 return Ok(data);
@@ -49,6 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,6 +69,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -91,6 +94,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -99,19 +103,20 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AddPayments")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public  IActionResult AddPayments([FromBody] ExpensesPaymentModel model)
+        public IActionResult AddPayments([FromBody] ExpensesPaymentModel model)
         {
             try
             {
                 if (model.Expenses == null || model.Expenses.Count == 0)
                     throw new Exception("error_msg");
-                var result = _repo.AddPayment(model.Payment,model.Expenses);
+                var result = _repo.AddPayment(model.Payment, model.Expenses);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -130,6 +135,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -142,14 +148,14 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-             var result=   _repo.Remove(id);
-                return
-                    Ok(result);
+                var result = _repo.Remove(id);
+                return Ok(result);
 
             }
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

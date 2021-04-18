@@ -21,7 +21,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.CompanyPayments)]
     public class CompanyPaymentController : BaseController<CompanyPayments>
     {
-        public CompanyPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, ICompanyPaymentRepository _repo, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,_repo)
+        public CompanyPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, ICompanyPaymentRepository _repo, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,_repo, AppSections.CompanyPayments)
         {
         }
 
@@ -41,6 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

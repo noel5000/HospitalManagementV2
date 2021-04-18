@@ -33,8 +33,10 @@ namespace PointOfSalesV2.Api.Controllers
         protected readonly IBase<T> _baseRepo;
         protected readonly IMemoryCache _cache;
         protected readonly IBase<LanguageKey> languageKeysRepo;
+        protected readonly IBase<ExceptionLog> exceptionsRepo;
         protected IEnumerable<LanguageKey> languageKeys;
-        public BaseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory,IMemoryCache cache, IBase<T> customRepo = null)
+        protected readonly AppSections section;
+        public BaseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory,IMemoryCache cache, IBase<T> customRepo = null, AppSections appSections= AppSections.NotSpecified)
         {
             this._cache = cache;
             _appSettings = appSettings;
@@ -47,6 +49,8 @@ namespace PointOfSalesV2.Api.Controllers
                 this._cache.Set("languageKeysMem", this.languageKeys,DateTime.Now.AddHours(24));
             }
             this._baseRepo=customRepo?? _repositoryFactory.GetDataRepositories<T>();
+            this.exceptionsRepo = this._repositoryFactory.GetDataRepositories<ExceptionLog>();
+            this.section = appSections;
         }
 
         [HttpGet]
@@ -63,8 +67,21 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
+        }
+
+        protected void SaveException(Exception ex) 
+        {
+            this.exceptionsRepo.Add(new ExceptionLog()
+            {
+                Code = ex.HResult.ToString(),
+                Active = true,
+                Message=ex.Message.Length>500?ex.Message.Substring(0,499):ex.Message,
+                Section=(int)this.section,
+                SectionName= this.section.ToString()
+            });
         }
 
         [HttpGet("ExportToExcel")]
@@ -97,6 +114,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -115,6 +133,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -135,6 +154,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -164,6 +184,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -182,6 +203,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -200,6 +222,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

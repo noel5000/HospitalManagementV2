@@ -24,7 +24,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class MenuController : BaseController<Menu>
     {
         readonly IMenuRepository menuRepository;
-        public MenuController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<IMenuRepository>())
+        public MenuController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<IMenuRepository>(), AppSections.SchoolMenu)
         {
             menuRepository = this._repositoryFactory.GetCustomDataRepositories<IMenuRepository>();
         }

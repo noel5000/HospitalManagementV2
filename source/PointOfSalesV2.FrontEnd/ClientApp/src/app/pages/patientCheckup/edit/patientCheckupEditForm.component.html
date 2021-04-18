@@ -37,6 +37,16 @@
 
            </div>
            <div class="row">
+               <div class="col-md-6 col-xs-12">
+                <input type="file" class="form-control" name="file" ng2FileSelect [uploader]="uploader" />
+               </div>
+               <div class="col-md-6 col-xs-12">
+                <i class="btn btn-primary mr-1  my-4"
+                 (click)="uploader.uploadAll()"
+                 >{{'upload_btn' | translate}}</i>
+            </div>
+           </div>
+           <div class="row">
             <div class="form-group col-md-3 col-xs-12">
                 <label>{{'prescriptionTypes_lbl' | translate}}</label>
                 <select class="form-control"
@@ -121,6 +131,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="scrollTableMobile" id="labTestSelection" *ngIf="prescriptionType=='L'">
+            <h4>{{'labTests_lbl' | translate}}</h4>
+            <div class="row">
+                <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
+                    <div *ngIf="selectedLabTest.id && selectedLabTest.id>0">
+                        <label for="vehicle1">{{selectedLabTest.name}}</label><br>
+                        <input type="checkbox"   (click)="labTestSelection(i)">
+                    </div>
+                  
+                </div>
+            </div>
+           
+        </div>
         <div class="scrollTableMobile" *ngIf="selectedMedicines.length>0">
             <h4>{{'medications_lbl' | translate}}</h4>
             <table class="table" >
@@ -182,19 +206,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-        <div class="scrollTableMobile" id="labTestSelection" *ngIf="prescriptionType=='L'">
-            <h4>{{'labTests_lbl' | translate}}</h4>
-            <div class="row">
-                <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
-                    <div *ngIf="selectedLabTest.id && selectedLabTest.id>0">
-                        <label for="vehicle1">{{selectedLabTest.name}}</label><br>
-                        <input type="checkbox"   (click)="labTestSelection(i)">
-                    </div>
-                  
-                </div>
-            </div>
-           
         </div>
 
         <div class="scrollTableMobile" id="selectedLabTestTable" *ngIf="selectedLabTests.length>0">

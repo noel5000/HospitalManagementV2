@@ -39,6 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -56,8 +57,9 @@ namespace PointOfSalesV2.Api.Controllers
                 var result = languageKeyRepository.UploadI18nDictionaries(path, folderType);
                 return Ok(result);
             }
-            catch
+            catch(Exception ex)
             {
+                SaveException(ex);
                 return Ok(new Result<object>(-1, -1, "errorDictionary_msg"));
             }
         }
@@ -79,6 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -97,6 +100,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

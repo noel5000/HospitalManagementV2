@@ -163,6 +163,7 @@ namespace PointOfSalesV2.Common
 
         public enum AppSections
         {
+            NotSpecified=0,
             Permissions = 1,
             CustomerRates = 2,
             Products = 3,
@@ -218,7 +219,8 @@ namespace PointOfSalesV2.Common
             Insurance = 53,
             InsurancePlan = 54,
             InsuranceCoverage = 55,
-            Appointment = 56
+            Appointment = 56,
+            PatientCheckup=57
 
         }
         public enum MovementTypes
@@ -236,6 +238,7 @@ namespace PointOfSalesV2.Common
         }
         public static Dictionary<AppSections, string> SectionsControllers = new Dictionary<AppSections, string>()
         {
+            { AppSections.NotSpecified,""},
             {AppSections.Permissions,"User,UserClaims,Role,RoleSection,Section,SectionOperation" },
             {AppSections.CustomerRates,"Customer,CustomerRate" },
             {AppSections.Products,"Product,ProductTax" },
@@ -290,6 +293,7 @@ namespace PointOfSalesV2.Common
             {AppSections.Menu,"" },
            { AppSections.School,"School,BranchOffice,Zone,Customer"},
             {AppSections.Appointment,"" },
+            {AppSections.PatientCheckup,"" },
         };
         public enum Gender
         {

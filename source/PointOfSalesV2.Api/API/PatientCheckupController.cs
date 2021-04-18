@@ -20,13 +20,13 @@ namespace PointOfSalesV2.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Insurance)]
+    [ControllerAuthorize(Common.Enums.AppSections.PatientCheckup)]
     public class PatientCheckupController : BaseController<PatientCheckup>
     {
         
         readonly ISequenceManagerRepository sequence;
         readonly IPatientCheckupRepository patientCheckupRepository;
-        public PatientCheckupController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IPatientCheckupRepository>())
+        public PatientCheckupController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IPatientCheckupRepository>(), AppSections.PatientCheckup)
         {
             this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
             this.patientCheckupRepository = this._repositoryFactory.GetCustomDataRepositories<IPatientCheckupRepository>();
@@ -49,6 +49,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -66,6 +67,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -100,6 +102,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

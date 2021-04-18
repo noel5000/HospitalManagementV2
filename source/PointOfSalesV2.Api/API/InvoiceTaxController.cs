@@ -22,7 +22,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class InvoiceTaxController : BaseController<InvoiceTax>
     {
         readonly IBusinessStateRepository businessStateRepository;
-        public InvoiceTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBusinessStateRepository businessState) : base(appSettings, repositoryFactory,cache)
+        public InvoiceTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBusinessStateRepository businessState) : base(appSettings, repositoryFactory,cache,null, AppSections.Invoices)
         {
             this.businessStateRepository = businessState;
         }
@@ -47,6 +47,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -85,6 +86,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

@@ -12,6 +12,7 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing.module';
+import { FileUploadModule } from 'ng2-file-upload';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -33,6 +34,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrModule } from 'ngx-toastr';
 import { NotFoundComponent } from './not-found.component';
 import { httpInterceptorProviders } from './@core/services/baseService';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -50,7 +52,9 @@ import { httpInterceptorProviders } from './@core/services/baseService';
     HttpClientModule,
     ToastrModule.forRoot(),
     AppRoutingModule,
-
+    FormsModule,
+    FileUploadModule,
+    
     ThemeModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

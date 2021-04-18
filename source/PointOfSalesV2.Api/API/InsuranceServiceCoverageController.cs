@@ -24,7 +24,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class InsuranceServiceCoverageController : BaseController<InsuranceServiceCoverage>
     {
         readonly IInsuranceRepository _customRepo;
-        public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.InsurancePlan)
         {
             _customRepo = repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>();
         }
@@ -46,6 +46,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -65,6 +66,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -103,6 +105,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

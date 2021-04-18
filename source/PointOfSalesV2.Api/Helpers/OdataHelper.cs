@@ -138,6 +138,7 @@ namespace PointOfSalesV2.Api.Helpers
             builder.EntitySet<PatientCheckup>("PatientCheckup").HasOptionalBinding(x => x.Patient, "Patient");
             builder.EntitySet<PatientCheckup>("PatientCheckup").HasOptionalBinding(x => x.InsurancePlan, "InsurancePlan");
             builder.EntitySet<PatientCheckup>("PatientCheckup").HasOptionalBinding(x => x.Doctor, "Doctor");
+            builder.EntitySet<CheckupAttachment>("CheckupAttachment").HasOptionalBinding(x => x.FileAttachment, "FileAttachment");
 
             return builder.GetEdmModel();
         }

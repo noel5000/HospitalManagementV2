@@ -21,7 +21,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ApiController]
     public class ProductCostController : BaseController<ProductSupplierCost>
     {
-        public ProductCostController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public ProductCostController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.Products)
         {
         }
 
@@ -41,6 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

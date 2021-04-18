@@ -22,7 +22,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.Inventories)]
     public class InventoryController : BaseController<Inventory>
     {
-        public InventoryController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public InventoryController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.Inventories)
         {
         }
 
@@ -78,8 +78,9 @@ namespace PointOfSalesV2.Api.Controllers
 
                     return Ok(new { id = 0, status = 0, message = "ok_msg", data = result });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { id = -1, status = -1, message = "error_msg" });
             }
         }
@@ -119,6 +120,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

@@ -17,7 +17,7 @@ namespace PointOfSalesV2.Api.Controllers
     [ApiController]
     public class ZoneController : BaseController<Zone>
     {
-        public ZoneController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        public ZoneController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,Common.Enums.AppSections.Zones)
         {
         }
     }

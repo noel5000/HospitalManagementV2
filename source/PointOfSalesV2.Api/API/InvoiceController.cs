@@ -23,7 +23,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class InvoiceController : BaseController<Invoice>
     {
         IInvoiceRepository _customRepo;
-        public InvoiceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>())
+        public InvoiceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>(), AppSections.Invoices)
         {
             this._customRepo = repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>();
         }
@@ -47,6 +47,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -78,6 +79,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -102,6 +104,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -125,6 +128,7 @@ namespace PointOfSalesV2.Api.Controllers
                     }
                     catch (Exception ex)
                     {
+                        SaveException(ex);
                         return Ok(new { status = -1, message = ex.Message });
                     }
                    
@@ -152,6 +156,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -198,6 +203,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -225,6 +231,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -271,6 +278,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
