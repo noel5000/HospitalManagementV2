@@ -45,11 +45,104 @@ namespace PointOfSalesV2.Api.Controllers
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
             var invoice = invoiceRepo.Get(x => x.Include(i => i.Customer).Include(i => i.Seller)
-            .Include(i => i.Currency).Include(i => i.InvoiceDetails).ThenInclude(d => d.Product).Include(i=>i.InvoiceDetails).ThenInclude(x=>x.Unit), y => y.Active == true && y.Id == id);
+            .Include(i => i.Currency).Include(i => i.InvoiceDetails).ThenInclude(d => d.Product).Include(i=>i.InvoiceDetails).ThenInclude(x=>x.Unit), y => y.Active == true && y.Id == id)?? new Invoice();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Invoice = invoice;
+            ViewBag.CurrentLanguage = language;
+            return View();
+        }
+
+        public ActionResult AppointmentPrint(long id, string language = "es")
+        {
+            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+
+            var appointmentRepo = dataRepository.GetDataRepositories<Appointment>();
+            var appointment = appointmentRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Hospital)
+           .Include(t=>t.Currency).Include(t=>t.Product)
+            , y => y.Active == true && y.Id == id)??new Appointment();
+            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+          
+            ViewBag.LanguageKeys = selectedLanguageKeys;
+            ViewBag.Appointment = appointment;
+            ViewBag.CurrentLanguage = language;
+            return View();
+        }
+
+        public ActionResult CheckupMedicationsPrint(long id, string language = "es")
+        {
+            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+
+            var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
+            var checkup = checkupRepo.Get(x => x.Include(t=>t.Doctor).ThenInclude(t=>t.MedicalSpeciality)
+            .Include(t=>t.Patient).Include(t=>t.Insurance).Include(t=>t.Insurance).Include(t=>t.Appointment).ThenInclude(x=>x.Hospital)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
+            , y => y.Active == true && y.Id == id)?? new PatientCheckup();
+            checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type=='M').ToList();
+            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            
+            ViewBag.LanguageKeys = selectedLanguageKeys;
+            ViewBag.Checkup = checkup;
+            ViewBag.CurrentLanguage = language;
+            return View();
+        }
+
+        public ActionResult CheckupSpecializedImagesPrint(long id, string language = "es")
+        {
+            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+
+            var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
+            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
+            , y => y.Active == true && y.Id == id)?? new PatientCheckup();
+            checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'E').ToList();
+            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+
+            ViewBag.LanguageKeys = selectedLanguageKeys;
+            ViewBag.Checkup = checkup;
+            ViewBag.CurrentLanguage = language;
+            return View();
+        }
+
+        public ActionResult CheckupConsultationsPrint(long id, string language = "es")
+        {
+            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+
+            var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
+            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
+            , y => y.Active == true && y.Id == id)?? new PatientCheckup();
+            checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'C').ToList();
+            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+
+            ViewBag.LanguageKeys = selectedLanguageKeys;
+            ViewBag.Checkup = checkup;
+            ViewBag.CurrentLanguage = language;
+            return View();
+        }
+
+        public ActionResult CheckupLabTestsPrint(long id, string language = "es")
+        {
+            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+
+            var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
+            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
+            .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
+            , y => y.Active == true && y.Id == id)?? new PatientCheckup();
+            checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'L').ToList();
+            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+
+            ViewBag.LanguageKeys = selectedLanguageKeys;
+            ViewBag.Checkup = checkup;
             ViewBag.CurrentLanguage = language;
             return View();
         }
@@ -59,7 +152,7 @@ namespace PointOfSalesV2.Api.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id);
+            var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id)?? new Expense();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Expense = invoice;

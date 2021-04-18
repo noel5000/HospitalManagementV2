@@ -9,7 +9,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
-import { endpointUrl } from '../../../@core/common/constants';
+import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
@@ -89,6 +89,41 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
             this.modalService.showError(r.message);
         })
     }
+   }
+
+   async printCheckup(id:number){
+    this.service.getById(id).subscribe(r=>{
+        try{
+            if(r.status>=0){
+                const checkup=r.data[0];
+                const selectedMedicines=checkup.checkupPrescriptions.filter(x=>x.type=="M");
+                const selectedLabTests=checkup.checkupPrescriptions.filter(x=>x.type=="L");
+                const selectedConsultations=checkup.checkupPrescriptions.filter(x=>x.type=="C");
+                const selectedImages=checkup.checkupPrescriptions.filter(x=>x.type=="E");
+                const user = JSON.parse(localStorage.getItem("currentUser"));
+               
+                if(selectedMedicines && selectedMedicines.length>0)
+                window.open(`${endpointViewsUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               
+
+               if(selectedLabTests && selectedLabTests.length>0)
+               window.open(`${endpointViewsUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+              
+
+               if(selectedConsultations && selectedConsultations.length>0)
+               window.open(`${endpointViewsUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+             
+
+               if(selectedImages && selectedImages.length>0)
+               window.open(`${endpointViewsUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+
+            }
+        }
+        catch(ex){
+console.log(ex);
+        }
+
+    });
    }
    
 
