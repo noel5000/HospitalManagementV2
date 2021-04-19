@@ -58,6 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
+                doctorId = !string.IsNullOrEmpty(doctorId) && doctorId != "null" ? doctorId : null;
                 var appointments = await appointmentRepository.GetAppointmentsByDay(date, hospitalId,doctorId, medicalSpeciality,patientId);
                 var data = new Result<Appointment>(0, 0, "ok_msg", appointments);
                 return Ok(data);

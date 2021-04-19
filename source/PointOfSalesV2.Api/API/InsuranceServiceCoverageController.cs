@@ -52,14 +52,18 @@ namespace PointOfSalesV2.Api.Controllers
         }
 
 
-        [HttpGet("GetInsuranceCoverage/{productId:long}/{insuranceId:long?}/{insurancePlanId:long?}")]
+        [HttpGet("GetInsuranceCoverage/{productId:long}/{insuranceId}/{insurancePlanId}")]
         [ActionAuthorize(Operations.READALL)]
         [EnableCors("AllowAllOrigins")]
-        public async Task<IActionResult> GetInsuranceCoverage(long productId, long?insuranceId=null, long? insurancePlanId=null)
+        public async Task<IActionResult> GetInsuranceCoverage(long productId, string insuranceId=null, string insurancePlanId=null)
         {
             try
             {
-                var data = await this._customRepo.GetInsuranceCoverage(productId, insuranceId, insurancePlanId);
+                long insurance = 0;
+                long plan = 0;
+                long.TryParse(insuranceId, out insurance);
+                long.TryParse(insurancePlanId, out plan);
+                var data = await this._customRepo.GetInsuranceCoverage(productId, insurance, plan);
                 return Ok(new {id=0, status=0, data =new InsuranceServiceCoverage[] {data } });
 
             }

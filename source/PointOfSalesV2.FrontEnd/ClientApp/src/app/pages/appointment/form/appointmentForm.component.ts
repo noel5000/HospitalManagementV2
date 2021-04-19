@@ -409,6 +409,9 @@ sequence:[''],
                             insuranceCoverageAmount:0
                         });
                     }
+
+                    const form = this.itemForm.getRawValue();
+                    this.getInsuranceCoverage(form.productId,form.insuranceId,form.insurancePlanId);
                    }
                    else{
                     this.itemForm.patchValue({
@@ -454,6 +457,8 @@ sequence:[''],
     get form() { return this.itemForm.controls; }
 
     getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
+        const form = this.itemForm.getRawValue();
+        if(form.insuranceId || form.InsurancePlanId)
         this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
         .subscribe(r=>{
             if(r.status>=0){
@@ -463,7 +468,13 @@ sequence:[''],
             }
             else
             this.modalService.showError('error_msg');
-        })
+        });
+        else
+        {
+            this.itemForm.patchValue({insuranceCoverageAmount:0});
+            this.refreshAmounts(false);
+        }
+
     }
 
     verifyTotalAmount(){

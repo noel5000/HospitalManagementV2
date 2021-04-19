@@ -20,7 +20,7 @@ namespace PointOfSalesV2.Entities
         public string PhoneNumber { get; set; }
         [MaxLength(50)]
         public string NRC { get; set; }
-        [MaxLength(50)]
+        [MaxLength(100)]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 

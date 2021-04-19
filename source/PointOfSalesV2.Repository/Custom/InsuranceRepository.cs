@@ -37,6 +37,8 @@ namespace PointOfSalesV2.Repository
 
         public async Task<InsuranceServiceCoverage> GetInsuranceCoverage(long productId, long? insuranceId, long? insurancePlanId)
         {
+            insurancePlanId = insurancePlanId <= 0 ? null : insurancePlanId;
+            insuranceId = insuranceId <= 0 ? null : insuranceId;
             var result = new List<InsuranceServiceCoverage>();
             InsuranceServiceCoverage selected = null;
             result = await _Context.InsuranceServiceCoverages.AsNoTracking().Where(x => x.Active == true && x.ProductId == productId).ToListAsync();

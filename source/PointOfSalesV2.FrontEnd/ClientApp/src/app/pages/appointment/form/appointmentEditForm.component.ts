@@ -386,6 +386,8 @@ async getItem(){
                             currencyId:patient.currencyId,
                             currencyName:patient.currency?patient.currency.name:'',
                         });
+                        const form = this.itemForm.getRawValue();
+                        this.getInsuranceCoverage(form.productId,form.insuranceId,form.insurancePlanId);
                     }
                    }
                    else{
@@ -430,6 +432,8 @@ async getItem(){
     get form() { return this.itemForm.controls; }
 
     getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
+        const form = this.itemForm.getRawValue();
+        if(form.insuranceId || form.InsurancePlanId)
         this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
         .subscribe(r=>{
             if(r.status>=0){
@@ -439,7 +443,13 @@ async getItem(){
             }
             else
             this.modalService.showError('error_msg');
-        })
+        });
+        else
+        {
+            this.itemForm.patchValue({insuranceCoverageAmount:0});
+            this.refreshAmounts(false);
+        }
+
     }
 
     verifyTotalAmount(){

@@ -67,7 +67,51 @@ export class BranchOfficeIndexComponent extends BaseComponent implements OnInit 
     toSort:false,
     objectType:ObjectTypes.String,
     filterIsActive:true
-  }
+  },
+  {
+      visible:true,
+      id:'address',
+      type:'text',
+      isTranslated:true,
+      name:this.lang.getValueByKey('address_lbl'),
+      sorting:'desc',
+      toSort:false,
+      objectType:ObjectTypes.String,
+      filterIsActive:true
+    },
+    {
+        visible:true,
+        id:'nrc',
+        type:'text',
+        isTranslated:true,
+        name:this.lang.getValueByKey('nrc_lbl'),
+        sorting:'desc',
+        toSort:false,
+        objectType:ObjectTypes.String,
+        filterIsActive:true
+      },
+      {
+          visible:true,
+          id:'email',
+          type:'text',
+          isTranslated:true,
+          name:this.lang.getValueByKey('email_lbl'),
+          sorting:'desc',
+          toSort:false,
+          objectType:ObjectTypes.String,
+          filterIsActive:true
+        },
+        {
+            visible:true,
+            id:'phoneNumber',
+            type:'text',
+            isTranslated:true,
+            name:this.lang.getValueByKey('phoneNumber_lbl'),
+            sorting:'desc',
+            toSort:false,
+            objectType:ObjectTypes.String,
+            filterIsActive:true
+          }
         ];
 this.actions=[
     {

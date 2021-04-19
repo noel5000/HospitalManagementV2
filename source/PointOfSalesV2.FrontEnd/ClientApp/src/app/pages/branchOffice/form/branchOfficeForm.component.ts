@@ -35,7 +35,11 @@ export class BranchOfficeFormComponent extends BaseComponent implements OnInit {
             super(route, langService, AppSections.BranchOffices,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
-            name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],
+            name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(100)]],
+            address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
+            phoneNumber: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],
+            nrc: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],
+            email: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(100)]],
             id: [0]
         });
     }
