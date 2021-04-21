@@ -54,13 +54,13 @@ namespace PointOfSalesV2.Api.Controllers
             }
         }
         [EnableCors("AllowAllOrigins")]
-        [HttpGet("GetAppointmentsByDay/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
-        public async Task<IActionResult> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        [HttpGet("GetAppointmentsByDay/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}/{type}")]
+        public async Task<IActionResult> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId,string type)
         {
             try
             {
                 doctorId = !string.IsNullOrEmpty(doctorId) && doctorId != "null" ? doctorId : null;
-                var appointments = await appointmentRepository.GetAppointmentsByDay(date, hospitalId, doctorId, medicalSpeciality, patientId);
+                var appointments = await appointmentRepository.GetAppointmentsByDay(date, hospitalId, doctorId, medicalSpeciality, patientId,type);
                 var data = new Result<Appointment>(0, 0, "ok_msg", appointments);
                 return Ok(data);
             }
@@ -72,13 +72,13 @@ namespace PointOfSalesV2.Api.Controllers
             }
         }
         [EnableCors("AllowAllOrigins")]
-        [HttpGet("GetAppointmentsByMonth/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
-        public async Task<IActionResult> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        [HttpGet("GetAppointmentsByMonth/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}/{type}")]
+        public async Task<IActionResult> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId, string type)
         {
             try
             {
                 doctorId = doctorId != null && doctorId == "null" ? "" : doctorId;
-                var appointments = await appointmentRepository.GetAppointmentsByMonth(date, hospitalId, doctorId, medicalSpeciality, patientId);
+                var appointments = await appointmentRepository.GetAppointmentsByMonth(date, hospitalId, doctorId, medicalSpeciality, patientId,type);
                 var data = new Result<Appointment>(0, 0, "ok_msg", appointments);
                 return Ok(data);
             }

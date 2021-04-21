@@ -87,7 +87,20 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       event: CalendarEvent;
     };
 
- 
+    types:any[]=[
+      {
+          id:'C',
+          name:this.lang.getValueByKey('medicalConsultation_lbl')
+      },
+      {
+          id:'L',
+          name:this.lang.getValueByKey('laboratory_lbl')
+      },
+      {
+          id:'E',
+          name:this.lang.getValueByKey('especializedImages_lbl')
+      }
+  ];
       refresh: Subject<any> = new Subject();
 
       events: CalendarEvent[] = [];
@@ -108,6 +121,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       this.itemForm = this.formBuilder.group({
         branchOfficeId: [0],
         doctorId: ["null"],
+        type:[null],
         medicalSpecialityId:[0],
         patientId:[0]        
     });
@@ -249,6 +263,12 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
         this.changes.detectChanges();
         this.getMonthAppointments();
           });
+
+          this.itemForm.get('type').valueChanges.subscribe(val => {
+            this.selectedAppointments=[];
+            this.changes.detectChanges();
+            this.getMonthAppointments();
+              });
   }
   
 
@@ -296,7 +316,7 @@ print(e: any) {
     const form = this.itemForm.getRawValue();
     const dateFormatted=`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
     this.service.getByUrlParameters(['GetAppointmentsByDay',dateFormatted,form.branchOfficeId.toString(),
-    form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString()]).subscribe(r=>{
+    form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString(),!form.type?'NA':form.type]).subscribe(r=>{
      this.selectedAppointments=r.data;
      this.changes.detectChanges();
     });
@@ -307,7 +327,7 @@ print(e: any) {
     const form = this.itemForm.getRawValue();
     const dateFormatted=`${this.viewDate.getFullYear()}-${this.viewDate.getMonth()+1}-${this.viewDate.getDate()}`;
      this.service.getByUrlParameters(['GetAppointmentsByMonth',dateFormatted,form.branchOfficeId.toString(),
-     form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString()]).subscribe(r=>{
+     form.doctorId.toString(),form.medicalSpecialityId.toString(), form.patientId.toString(),!form.type?'NA':form.type]).subscribe(r=>{
       this.appointments=r.data;
       this.events=[];
       this.appointments.forEach(d=>{

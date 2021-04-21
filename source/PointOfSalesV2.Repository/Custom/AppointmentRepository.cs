@@ -238,7 +238,7 @@ namespace PointOfSalesV2.Repository
             return base.Update(appointment, true);
         }
 
-        public async Task<List<Appointment>> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        public async Task<List<Appointment>> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId,string type=null)
         {
         
             return await this._Context.AppointmentDetails.AsNoTracking().Include(x => x.MedicalSpeciality)
@@ -253,6 +253,7 @@ namespace PointOfSalesV2.Repository
                        (medicalSpeciality.HasValue && medicalSpeciality.Value > 0 ? x.MedicalSpecialityId == medicalSpeciality : x.Id > 0) &&
                        (patientId.HasValue && patientId.Value > 0 ? x.Appointment.PatientId == patientId : x.Appointment.PatientId > 0) &&
                        (!string.IsNullOrEmpty(doctorId) ? x.DoctorId == (new Guid(doctorId)) : x.Id>0) &&
+                       (!string.IsNullOrEmpty(type) && type.Length==1?x.Type==type[0]:x.Id>0) &&
                        (x.Date.Year == date.Year) && x.Date.Month == date.Month && x.Date.Day == date.Day
                    )
                  .Select(x => new Appointment()
@@ -289,7 +290,7 @@ namespace PointOfSalesV2.Repository
                  .ToListAsync();
         }
 
-        public async Task<List<Appointment>> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        public async Task<List<Appointment>> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId, string type=null)
         {
             if(date>=new DateTime(DateTime.Now.Year,DateTime.Now.Month,DateTime.Now.Day))
            await UpdateExpiredAppointments();
@@ -304,6 +305,7 @@ namespace PointOfSalesV2.Repository
                           (medicalSpeciality.HasValue && medicalSpeciality.Value > 0 ? x.MedicalSpecialityId == medicalSpeciality : x.Id > 0) &&
                        (patientId.HasValue && patientId.Value > 0 ? x.Appointment.PatientId == patientId : x.Appointment.PatientId > 0) &&
                        (!string.IsNullOrEmpty(doctorId) ? x.DoctorId == (new Guid(doctorId)) : x.Id>0) &&
+                       (!string.IsNullOrEmpty(type) && type.Length == 1 ? x.Type == type[0] : x.Id > 0) &&
                      (  (x.Date.Month == date.Month) && x.Date.Year == date.Year))
                  .Select(x => new Appointment()
                  {

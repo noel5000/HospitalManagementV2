@@ -18,6 +18,16 @@
       </select>
   </div>
   <div class="form-group col-md-6 col-xs-12">
+    <label>{{'consultationType_lbl' | translate}}</label>
+    <select class="form-control"
+    formControlName="type"
+    >
+    <option *ngFor="let typeObj of types"
+     [value]="typeObj.id"
+     >{{typeObj.name}}</option>
+    </select>
+</div>
+  <div class="form-group col-md-6 col-xs-12">
     <label>{{'medicalSpecialty_lbl' | translate}}</label>
     <select class="form-control"
     formControlName="medicalSpecialityId"
