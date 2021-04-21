@@ -419,7 +419,7 @@ print(e: any) {
 }
 
 editAppointment(appointment:any) {
-  this.router.navigateByUrl(`pages/appointment/edit/${appointment.id}`);
+  this.router.navigateByUrl(`pages/appointment/edit/${appointment.id}/0`);
 }
 
 attendAppointment(appointment:any) {

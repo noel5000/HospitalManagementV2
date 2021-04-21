@@ -175,8 +175,8 @@
             <td>
               <button mat-button [matMenuTriggerFor]="menu">{{'actions_lbl' | translate}}</button>
 <mat-menu #menu="matMenu">
-  <button *ngIf="appointment.state=='S' && appointment.appointmentType=='C'" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
-  <button *ngIf="appointment.state=='S'" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
+  <button *ngIf="(appointment.state=='S' || appointment.state=='F') && appointment.appointmentType=='C'" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
+  <button *ngIf="appointment.state=='S' || appointment.state=='F'" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
   <button *ngIf="appointment.state=='S'" (click)="removeAppointment(appointment)"  mat-menu-item>{{'delete_btn' | translate}}</button>
   <button (click)="printAppointment(appointment)" mat-menu-item>{{'print_lbl' | translate}}</button>
 </mat-menu>

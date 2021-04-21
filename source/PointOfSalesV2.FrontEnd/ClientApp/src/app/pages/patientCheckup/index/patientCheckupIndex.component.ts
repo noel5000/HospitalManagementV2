@@ -130,12 +130,17 @@ console.log(ex);
     addNew() {
         this.router.navigateByUrl(`pages/patientcheckup/add/${this.patientId}/${this.appointmentId}`);
     }
+
+    editAppointment() {
+        this.router.navigateByUrl(`pages/appointment/edit/${this.appointmentId}/1`);
+    }
     getCheckupDetails(e:any) {
         this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${this.appointmentId}/${e.id}/0`);
     }
     editCheckup(e:any) {
         this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${e.appointmentId}/${e.id}/1`);
     }
+    
     source:any={};
     onDeleteConfirm(event:any): void {
  var result =       this.modalService.confirmationModal({

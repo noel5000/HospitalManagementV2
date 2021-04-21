@@ -153,8 +153,8 @@ namespace PointOfSalesV2.Repository
         public override Result<Appointment> Update(Appointment entity, bool getFromDb = true)
         {
             entity.Active = true;
-            
-            if (entity.State != (char)AppointmentStates.Scheduled)
+            var validStates = new char[] { (char)AppointmentStates.Scheduled, (char)AppointmentStates.InProgress };
+            if (!validStates.Contains( entity.State))
                 return new Result<Appointment>(-1, -1, "appointmentAlreadyProcessed_msg");
 
 
@@ -180,7 +180,7 @@ namespace PointOfSalesV2.Repository
                 return new Result<Appointment>(-1, -1, "onlyOneConsultationPerAppointment_msg");
 
             entity.Active = true;
-            entity.State = (char)AppointmentStates.Scheduled;
+           // entity.State = (char)AppointmentStates.Scheduled;
             entity.BeforeTaxesAmount = entity.Details.Sum(x => x.BeforeTaxesAmount);
             entity.TaxesAmount = entity.Details.Sum(x => x.TaxesAmount);
             entity.InsuranceCoverageAmount = entity.Details.Sum(x => x.InsuranceCoverageAmount);
@@ -213,6 +213,13 @@ namespace PointOfSalesV2.Repository
                 _Context.SaveChanges();
 
                 var newDetails = details.Where(x => x.Id == 0).ToList();
+                newDetails.ForEach(d =>
+                {
+                    d.Active = true;
+                    d.AppointmentId = entity.Id;
+                    d.CurrencyId = entity.CurrencyId;
+                    d.Date = entity.Date;
+                });
                 _Context.AppointmentDetails.AddRange(newDetails);
                 _Context.SaveChanges();
 

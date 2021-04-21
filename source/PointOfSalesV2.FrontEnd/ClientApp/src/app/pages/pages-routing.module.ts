@@ -490,7 +490,7 @@ component: AccountStateIndexComponent
   component: appointmentFormComponent
 },
 {
-  path: 'appointment/edit/:id',
+  path: 'appointment/edit/:id/:fromcheckup',
   component: appointmentEditFormComponent
 },
 {

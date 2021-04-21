@@ -49,6 +49,7 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
     branchOfficeId:number=0;
     warehouseId:number=0;
     currentDate:string='';
+    fromCheckup:number=0;
     _route:ActivatedRoute;
     types:any[]=[
         {
@@ -104,6 +105,7 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
             this.getItem();
             this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):null;
             this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
+            this.fromCheckup =parseInt( this._route.snapshot.paramMap.get('fromcheckup'))>0?parseInt( this._route.snapshot.paramMap.get('fromcheckup')):0;
             const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
             let month= (dateFromUrl.getMonth()+1).toString();
             month=month.length>1?month:`0${month}`;
@@ -669,7 +671,7 @@ grandPatientPaymentAmount:  [0],
             subscription.subscribe(r=>{
                if(r.status>=0){
                 this.modalService.showSuccess(this.lang.getValueByKey('success_msg'));
-                this.router.navigateByUrl('pages/appointment');
+                this.router.navigateByUrl(this.fromCheckup>0?`pages/patientcheckup/${form.patientId}/${form.id}`:'pages/appointment');
                }
                else
                this.modalService.showError(r.message);
@@ -679,7 +681,8 @@ grandPatientPaymentAmount:  [0],
   
 
     cancel(){
-    this.router.navigateByUrl('pages/appointment');
+        const form=this.itemForm.getRawValue();
+    this.router.navigateByUrl(this.fromCheckup>0?`pages/patientcheckup/${form.patientId}/${form.id}`:'pages/appointment');
     }
 
   
