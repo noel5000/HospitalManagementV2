@@ -231,21 +231,31 @@ this.attachmentsService.getAllFiltered([
     async getAppointment(id:number){
         this.appointmentService.getById(id).subscribe(r=>{
             this.appointment=r.data[0];
+          
             if(!this.appointment)
             this.modalService.showError('appointmentNotValid_msg');
-            else
-            this.itemForm.patchValue({
-                appointmentId:id,
-                doctorId:this.appointment.doctorId,
-                hospitalId:this.appointment.hospitalId,
-                patientId:this.appointment.patientId,
-                insuranceId:this.appointment.insuranceId,
-                insurancePlanId:this.appointment.insurancePlanId,
-                doctorName:this.appointment.doctorName,
-                patientName:this.appointment.patientName,
-                currencyId:this.appointment.currencyId,
-
-            })
+            else{
+                const consultationDetail= this.appointment.details.find(x=>x.type=='C');
+                if(!consultationDetail)
+                this.modalService.showError('invalidConsultationAppointment_msg');
+                else{
+                    this.appointment.doctorName=consultationDetail.doctor.fullName;
+                    this.appointment.doctorId=consultationDetail.doctorId;
+                    
+                }
+                this.itemForm.patchValue({
+                    appointmentId:this.appointment.id,
+                    doctorId:this.appointment.doctorId,
+                    hospitalId:this.appointment.hospitalId,
+                    patientId:this.appointment.patientId,
+                    insuranceId:this.appointment.insuranceId,
+                    insurancePlanId:this.appointment.insurancePlanId,
+                    doctorName:this.appointment.doctorName,
+                    patientName:this.appointment.patientName,
+                    currencyId:this.appointment.currencyId,
+    
+                })
+            }
         })
     }
     async labTestSelection(index:number){
