@@ -117,8 +117,21 @@
     
     <div class="table-responsive scrollTableMobile">
       <div class="row" *ngIf="selectedDate && selectedDate>=today">
-        <a class="btn btn-lg btn-info col-4" (click)="addNew()">{{'add_btn' |translate}}</a>
-        <h5 class="col-4">{{'selectedDate_lbl'}} {{getSelectedDateFormatted()}}</h5>
+        <div class=" col-4">
+          <button type="button" class="btn btn-primary"  (click)="addNew()"><i>{{'add_btn' |translate}}</i></button>
+        </div>
+       <div class="col-6">
+         <div class="row">
+           <div class="col-6">
+            <p>{{'selectedDate_lbl'}}: </p>
+           </div>
+           <div class="col-6">
+            <h6>{{getSelectedDateFormatted()}}</h6>
+          </div>
+         </div>
+          
+       </div>
+        
       </div>
       
       <br /><br />
@@ -152,7 +165,7 @@
             <td>
               <button mat-button [matMenuTriggerFor]="menu">{{'actions_lbl' | translate}}</button>
 <mat-menu #menu="matMenu">
-  <button *ngIf="appointment.state=='S'" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
+  <button *ngIf="appointment.state=='S' && appointment.appointmentType=='C'" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
   <button *ngIf="appointment.state=='S'" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
   <button *ngIf="appointment.state=='S'" (click)="removeAppointment(appointment)"  mat-menu-item>{{'delete_btn' | translate}}</button>
   <button (click)="printAppointment(appointment)" mat-menu-item>{{'print_lbl' | translate}}</button>

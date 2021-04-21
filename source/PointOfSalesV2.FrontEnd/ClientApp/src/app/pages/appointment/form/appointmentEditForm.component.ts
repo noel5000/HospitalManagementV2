@@ -30,12 +30,11 @@ import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Customer } from '../../../@core/data/customer';
-import { appointmentFormComponent } from './appointmentForm.component';
 
 
 declare const $: any;
 @Component({
-    selector: "invoice-lead-editform",
+    selector: "invoice-leadedit-form",
     templateUrl: "./appointmentEditForm.component.html",
     styleUrls: ["../appointmentStyles.component.scss"]
 })
@@ -51,8 +50,6 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
     warehouseId:number=0;
     currentDate:string='';
     _route:ActivatedRoute;
-    products:Product[]=[];//
-    productUnits:any[]=[];//
     types:any[]=[
         {
             id:'C',
@@ -67,9 +64,12 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
             name:this.lang.getValueByKey('especializedImages_lbl')
         }
     ];
+    products:Product[]=[];//
+    productUnits:any[]=[];//
     productTaxes:any[]=[];//
     doctors:any[]=[];
     patients:any[]=[];
+    details:any[]=[];
     defaulttaxesAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
     currentProductCost:any={cost:0};
@@ -99,14 +99,25 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
            
             super(route, langService, AppSections.Users,modalService);
             this._route=router;
-          
             this.id =parseInt( this._route.snapshot.paramMap.get('id'))>0?parseInt( this._route.snapshot.paramMap.get('id')):0;
-         if(this.id>0)
-         this.getItem();
+            if(this.id>0)
+            this.getItem();
+            this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):null;
+            this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
+            const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
+            let month= (dateFromUrl.getMonth()+1).toString();
+            month=month.length>1?month:`0${month}`;
+            let day= (dateFromUrl.getDate()).toString();
+            day=day.length>1?day:`0${day}`;
+            this.currentDate = `${dateFromUrl.getFullYear()}-${month}-${day}T00:00:00`;
+         
         this.itemForm = this.formBuilder.group({
 id: [this.id],
+state:[''],
+active:[false],
+
 date:[this.currentDate,[Validators.required]],
-medicalSpecialityId:[null,[ Validators.required,Validators.min(1)]],
+medicalSpecialityId:[null],
 doctorId:[this.doctorId],
 patientId:[this.patientId,[ Validators.required,Validators.min(1)]],
 productId:[null,[ Validators.required,Validators.min(1)]],
@@ -126,6 +137,11 @@ hospitalId:[null,[Validators.required, Validators.min(1)]],
 currencyName:[''],
 type:[null,[Validators.required]],
 sequence:[''],
+grandBeforeTaxesAmount:   [0],
+grandTaxesAmount: [0],
+grandTotalAmount:  [0],
+grandInsuranceCoverageAmount:  [0],
+grandPatientPaymentAmount:  [0], 
         });
     }
     ngOnInit(): void {
@@ -136,14 +152,28 @@ sequence:[''],
         this.getPatients();
         this.getHospitals();
     }
-async getItem(){
-    this.appointmentService.getById(this.id).subscribe(r=>{
-        const appointment = r.data[0];
-        this.itemForm.patchValue(appointment);
-        this.GetProductTaxes(appointment.productId)
-    });
-}
 
+    async getItem(){
+        this.appointmentService.getById(this.id).subscribe(r=>{
+            let appointment = r.data[0];
+           
+            appointment.grandBeforeTaxesAmount=appointment.beforeTaxesAmount;
+            appointment.grandTaxesAmount=appointment.taxesAmount;
+            appointment.grandTotalAmount=appointment.totalAmount;
+            appointment.grandInsuranceCoverageAmount=appointment.insuranceCoverageAmount;
+            appointment.grandPatientPaymentAmount=appointment.patientPaymentAmount;
+
+            appointment.beforeTaxesAmount=0;
+            appointment.taxesAmount=0;
+            appointment.totalAmount=0;
+            appointment.insuranceCoverageAmount=0;
+            appointment.patientPaymentAmount=0;
+            this.itemForm.patchValue(appointment);
+            this.details=appointment.details;
+            if(appointment.productId)
+            this.GetProductTaxes(appointment.productId)
+        });
+    }
     async GetProductUnits(id:number){
         const filter = [{
             property: 'ProductId',
@@ -187,20 +217,20 @@ async getItem(){
     }
 
     CalculateProductTax():number{
-        const {beforeTaxesAmount}= this.itemForm.getRawValue();
-        return this.productTaxes.length<=0?0:this.productTaxes.reduce(function(a,b){return a+(b.tax.rate*beforeTaxesAmount)},0);
+        const {productPrice}= this.itemForm.getRawValue();
+        return this.productTaxes.length<=0?0:this.productTaxes.reduce(function(a,b){return a+(b.tax.rate*productPrice)},0);
     }
 
     async GetProductCost(productId:number){
         const currentProduct = this.products.find(x=>x.id==productId);
         this.currentProductCost.cost=currentProduct.cost;
         const {unitId} = this.itemForm.getRawValue();
-        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice:currentProduct? currentProduct.price:0;
+        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice: currentProduct.price;
         this.refreshAmounts();
     }
 
-    async getProducts(medicalSpecialityId:number){
-        const filter = [
+    async getProducts(medicalSpecialityId:number, type:string='C'){
+        let filter = [
         {
             property: "Currency",
             value: "Id,Name,Code,ExchangeRate",
@@ -214,14 +244,26 @@ async getItem(){
             isTranslated: false,
             comparer: ODataComparers.equals
         } as QueryFilter,
+        
+    ]
+    if(medicalSpecialityId && medicalSpecialityId>0)
+    filter.push({
+        property: "MedicalSpecialityId",
+        value: medicalSpecialityId.toString(),
+        type: ObjectTypes.Number,
+        isTranslated: false,
+        comparer: ODataComparers.equals
+    } as QueryFilter);
+    if(type)
+    filter.push(
+    
         {
-            property: "MedicalSpecialityId",
-            value: medicalSpecialityId.toString(),
-            type: ObjectTypes.Number,
+            property: "Type",
+            value: type,
+            type: ObjectTypes.String,
             isTranslated: false,
             comparer: ODataComparers.equals
-        } as QueryFilter
-    ]
+        } as QueryFilter)
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
@@ -312,6 +354,7 @@ async getItem(){
                         insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
                         currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
                         currencyId:r["value"][0].currencyId,
+                        insuranceCoverageAmount:0
                     });
                 }
             });
@@ -335,24 +378,22 @@ async getItem(){
       
 
          
-            this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
+        this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
                
-                    this.refreshAmounts(true);
-                    this.changes.detectChanges();
-                
-                });
-            this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
-               
-                    this.refreshAmounts(true);
-                    this.changes.detectChanges();
-                
-                });
-            this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
-               
-                    this.refreshAmounts(true);
-                    this.changes.detectChanges();
-                
-                });
+            this.refreshAmounts(true);
+        
+        });
+    this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
+       
+            this.refreshAmounts(true);
+        
+        });
+    this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
+       
+            this.refreshAmounts(true);
+        
+        });
+
                 this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
                
                     const {medicalSpecialityId} = this.itemForm.getRawValue();
@@ -363,10 +404,41 @@ async getItem(){
 
                 this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
                
-                    const {hospitalId} = this.itemForm.getRawValue();
-                    if(val && val>0 && hospitalId && hospitalId>0 ){
-                        this.getProducts(val);
+                    const {hospitalId,type} = this.itemForm.getRawValue();
+                    if(hospitalId && hospitalId>0 ){
+                        this.getProducts(val,type?type:'C');
                         this.getDoctors(val,hospitalId);
+                    }
+                });
+
+                this.itemForm.get('type').valueChanges.subscribe(val => {
+                    this.products=[];
+                    this.doctors=[];
+                    const {hospitalId,medicalSpecialityId} = this.itemForm.getRawValue();
+                    this.itemForm.patchValue({productId:null,medicalSpecialityId:null,doctorId:null});
+                    if(val=="C"){
+                        if(this.itemForm.contains("doctorId"))
+                        this.itemForm.removeControl("doctorId");
+                        
+                        this.itemForm.addControl(`doctorId`,new FormControl(null,[ Validators.required]));
+
+                        if(this.itemForm.contains("medicalSpecialityId")){
+                            this.itemForm.removeControl("medicalSpecialityId");
+                            this.itemForm.addControl(`medicalSpecialityId`,new FormControl(null,[ Validators.required, Validators.min(1)]));
+                            this.setMedicalSpecialityChanges();
+                        }
+                       
+                    }
+                    else{
+                        this.itemForm.removeControl("doctorId");
+                        if(this.itemForm.contains("medicalSpecialityId")){
+                            this.itemForm.removeControl("medicalSpecialityId");
+                            this.itemForm.addControl(`medicalSpecialityId`,new FormControl(null));
+                            this.setMedicalSpecialityChanges();
+                        }
+                    }
+                    if( hospitalId && hospitalId>0 ){
+                        this.getProducts(medicalSpecialityId,val);
                     }
                     
         
@@ -374,7 +446,14 @@ async getItem(){
                 });
 
                 this.itemForm.get('patientId').valueChanges.subscribe(val => {
-               
+                    this.details=[];
+                    this.itemForm.patchValue({
+                        grandBeforeTaxesAmount:  0,
+                        grandTaxesAmount:  0,
+                        grandTotalAmount:  0,
+                        grandInsuranceCoverageAmount:  0,
+                        grandPatientPaymentAmount:  0, 
+                    });
                    if(val && val>0){
                     const patient = this.customers.find(x=>x.id==val);
                     if(patient){
@@ -385,10 +464,12 @@ async getItem(){
                             insurancePlanName:patient.insurancePlan?patient.insurancePlan.name:'',
                             currencyId:patient.currencyId,
                             currencyName:patient.currency?patient.currency.name:'',
+                            insuranceCoverageAmount:0
                         });
-                        const form = this.itemForm.getRawValue();
-                        this.getInsuranceCoverage(form.productId,form.insuranceId,form.insurancePlanId);
                     }
+
+                    const form = this.itemForm.getRawValue();
+                    this.getInsuranceCoverage(form.productId,form.insuranceId,form.insurancePlanId);
                    }
                    else{
                     this.itemForm.patchValue({
@@ -398,6 +479,7 @@ async getItem(){
                         insurancePlanName:'',
                         currencyId:null,
                         currencyName:'',
+                        insuranceCoverageAmount:0
                     });
                    }
                 
@@ -411,10 +493,11 @@ async getItem(){
             if(val && val>0){
                 const product= this.products.find(x=>x.id==val);
                 this.itemForm.patchValue({
-                  
-                    beforeTaxesAmount:product?product.price:0,
-                   
-                    productPrice:product?product.price:0,
+                    insuranceCoverageAmount:0,
+                    beforeTaxesAmount:product.price,
+                    totalAmount:0,
+                    taxesAmount:0,
+                    productPrice:product.price,
                 })
             
                 this.productTaxes=[];
@@ -429,7 +512,118 @@ async getItem(){
       
       }
     
+
+      setMedicalSpecialityChanges(){
+        this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+               
+            const {hospitalId,type} = this.itemForm.getRawValue();
+            if(hospitalId && hospitalId>0 ){
+                this.getProducts(val,type?type:'C');
+                this.getDoctors(val,hospitalId);
+            }
+        });
+      }
     get form() { return this.itemForm.controls; }
+
+    get formValues() {return this.itemForm.getRawValue()}
+
+    async addDetail(){
+        let form = this.itemForm.getRawValue();
+        if(this.itemForm.invalid){
+            this.modalService.showError('fieldsRequired_msg');
+            return;
+        }
+        if(form.type && form.type=='C' && !form.doctorId){
+            this.modalService.showError('doctorRequired_msg');
+            return;
+        }
+
+        const detail={
+           productId: form.productId,
+           type:form.type,
+           doctorId:form.doctorId,
+           medicalSpecialityId:form.medicalSpecialityId,
+           product:form.productId?this.products.find(x=>x.id==form.productId):null,
+           doctor:form.doctorId?this.doctors.find(x=>x.userId==form.doctorId):null,
+           typeObj:form.type?this.types.find(x=>x.id==form.type):null,
+           medicalSpeciality:form.medicalSpecialityId?this.medicalSpecialities.find(x=>x.id==form.medicalSpecialityId):null,
+           beforeTaxesAmount:form.beforeTaxesAmount,
+           taxesAmount:form.taxesAmount,
+           totalAmount:form.totalAmount,
+           insuranceCoverageAmount:form.insuranceCoverageAmount,
+           patientPaymentAmount:form.patientPaymentAmount,
+           currencyId:form.CurrencyId
+        };
+        const index = this.details.findIndex(x=>x.type==detail.type);
+
+        if(index>=0){
+            if(detail.doctorId  && detail.type==this.details[index].type && this.details[index].doctorId)
+            this.details[index]=detail;
+
+            if(detail.productId && detail.productId==this.details[index].productId && detail.type==this.details[index].type)
+            this.details[index]=detail;
+        }
+        else
+        this.details.push(detail);
+        form.grandBeforeTaxesAmount=0;
+        form.grandTaxesAmount=0;
+        form.grandTotalAmount=0;
+        form.grandInsuranceCoverageAmount=0;
+        form.grandPatientPaymentAmount=0;
+
+        this.details.forEach(d=>{
+        form.grandBeforeTaxesAmount+=d.beforeTaxesAmount;
+        form.grandTaxesAmount+=d.taxesAmount;
+        form.grandTotalAmount+=d.totalAmount;
+        form.grandInsuranceCoverageAmount+=d.insuranceCoverageAmount;
+        form.grandPatientPaymentAmount+=d.patientPaymentAmount; 
+        })
+
+        this.itemForm.patchValue({
+            productId:null,
+            type:null,
+            medicalSpecialityId:null,
+            doctorId:null,
+            beforeTaxesAmount:0,
+            taxesAmount:0,
+            totalAmount:0,
+            insuranceCoverageAmount:0,
+            patientPaymentAmount:0,
+            grandBeforeTaxesAmount:   form.grandBeforeTaxesAmount,
+            grandTaxesAmount:  form.grandTaxesAmount,
+            grandTotalAmount:  form.grandTotalAmount,
+            grandInsuranceCoverageAmount:  form.grandInsuranceCoverageAmount,
+            grandPatientPaymentAmount:  form.grandPatientPaymentAmount, 
+        });
+    }
+
+    deleteDetail(i:number){
+        let form = this.itemForm.getRawValue();
+        this.details.splice(i,1);
+        form.grandBeforeTaxesAmount=0;
+        form.grandTaxesAmount=0;
+        form.grandTotalAmount=0;
+        form.grandInsuranceCoverageAmount=0;
+        form.grandPatientPaymentAmount=0;
+
+        this.details.forEach(d=>{
+        form.grandBeforeTaxesAmount+=d.beforeTaxesAmount;
+        form.grandTaxesAmount+=d.taxesAmount;
+        form.grandTotalAmount+=d.totalAmount;
+        form.grandInsuranceCoverageAmount+=d.insuranceCoverageAmount;
+        form.grandPatientPaymentAmount+=d.patientPaymentAmount; 
+        })
+
+        this.itemForm.patchValue({
+          
+            grandBeforeTaxesAmount:   form.grandBeforeTaxesAmount,
+            grandTaxesAmount:  form.grandTaxesAmount,
+            grandTotalAmount:  form.grandTotalAmount,
+            grandInsuranceCoverageAmount:  form.grandInsuranceCoverageAmount,
+            grandPatientPaymentAmount:  form.grandPatientPaymentAmount, 
+        });
+
+    }
 
     getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
         const form = this.itemForm.getRawValue();
@@ -458,11 +652,19 @@ async getItem(){
       
     }
     save(){
-       
+       if(this.itemForm.invalid){
+          const controls = this.itemForm.controls;
+          for(const prop in  controls){
+              if(controls[prop].status=="INVALID" && (prop!="type" && prop!="productId"))
+              return;
+          }
+           
+       }
         let form = this.itemForm.getRawValue() as any;
            form.warehouseId=form.warehouseId==0?null:form.warehouseId;
          
            form.state=!form.state?(form.inventoryModified?BillingStates.Generated:BillingStates.GeneratedWithoutInventory):form.state;
+           form.details=this.details;
             const subscription =window.location.href.split('/').findIndex(x=>x.toLowerCase()=='add')>=0? this.appointmentService.post(form,"",""):this.appointmentService.put(form,"","");
             subscription.subscribe(r=>{
                if(r.status>=0){

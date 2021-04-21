@@ -18,12 +18,8 @@ namespace PointOfSalesV2.Repository
         public override Result<Appointment> Get(long id)
         {
             var item = this._Context.Appointments.AsNoTracking().Include(x => x.Hospital)
-                .Include(x=>x.Details).ThenInclude(x=>x.Product)
-                .Include(x => x.Details).ThenInclude(x => x.Doctor)
-                .Include(x => x.Details).ThenInclude(x => x.MedicalSpeciality)
                  .Include(x => x.Insurance).Include(x => x.Patient).Include(x => x.InsurancePlan)
-                 .Include(x => x.Currency).Where(x => x.Active == true && x.Id == id
-                   )
+                 .Include(x => x.Currency).Where(x => x.Active == true && x.Id == id)
                  .Select(x => new Appointment()
                  {
                      Active = x.Active,
@@ -37,48 +33,58 @@ namespace PointOfSalesV2.Repository
                      HospitalId = x.HospitalId,
                      Id = x.Id,
                      InsuranceId = x.InsuranceId,
-                     InsuranceName = x.InsuranceId.HasValue ? x.Insurance.Name ?? "" : "",
+                     InsuranceName = (x.InsuranceId.HasValue ? x.Insurance.Name : ""),
                      InsurancePlanId = x.InsurancePlanId,
-                     InsurancePlanName = x.InsurancePlanId.HasValue ? x.InsurancePlan.Name ?? "" : "",
+                     InsurancePlanName =( x.InsurancePlanId.HasValue ? x.InsurancePlan.Name  : ""),
                      CurrencyName = x.Currency.Name,
                      HospitalName = x.Hospital.Name,
                      PatientName = x.Patient.Name,
                      State = x.State,
                      PatientId = x.PatientId,
-                     Details=x.Details.Where(d=>d.Active==true).Select(d=>new AppointmentDetail() { 
-                     Active=d.Active,
-                     AppointmentId=d.AppointmentId,
-                     BeforeTaxesAmount=d.BeforeTaxesAmount,
-                     InsuranceCoverageAmount=d.InsuranceCoverageAmount,
-                     Id=d.Id,
-                     CurrencyId=d.CurrencyId,
-                     PatientPaymentAmount=d.PatientPaymentAmount,
-                     TaxesAmount=d.TaxesAmount,
-                     TotalAmount=d.TotalAmount,
-                     CreatedBy=d.CreatedBy,
-                     Date=d.Date,
-                     CreatedByName=d.CreatedByName,
-                     CreatedDate=d.CreatedDate,
+                     CreatedBy=x.CreatedBy,
                      Currency=x.Currency,
-                     DoctorName = $"{(d.Doctor!=null?d.Doctor.Name : "")} ${(d.Doctor!=null?d.Doctor.LastName : "")}",
-                     DoctorId = d.DoctorId,
-                     MedicalSpecialityId = d.MedicalSpecialityId,
-                     MedicalSpecialityName = d.MedicalSpecialityId.HasValue ? d.MedicalSpeciality.Name ?? "" : "",
-                     SpecialityName = d.MedicalSpecialityId.HasValue ? d.MedicalSpeciality.Name ?? "" : "",
-                     ProductName =d.Product!=null? d.Product.Name:"",
-                     Type=d.Type,
-                     ProductId = d.ProductId,
-                     CurrencyName=x.Currency.Name,
-                     Doctor=d.Doctor,
-                     MedicalSpeciality=d.MedicalSpeciality,
-                     ModifiedBy=d.ModifiedBy,
-                     ModifiedByName=d.ModifiedByName,
-                     ModifiedDate=d.ModifiedDate,
-                     Product=d.Product,
-                     }).ToList()
+                     Hospital=x.Hospital,
+                     Insurance=x.Insurance,
+                     InsurancePlan=x.InsurancePlan,
+                     Patient=x.Patient
                  })
                  .FirstOrDefault();
-
+            item.Details = _Context.AppointmentDetails.AsNoTracking()
+                .Include(x => x.Doctor)
+                .Include(x => x.Product)
+                .Include(x => x.MedicalSpeciality)
+                .Include(x => x.Currency).Where(x => x.Active == true && x.AppointmentId == id).Select(d => new AppointmentDetail()
+            {
+                Active = d.Active,
+                AppointmentId = d.AppointmentId,
+                BeforeTaxesAmount = d.BeforeTaxesAmount,
+                InsuranceCoverageAmount = d.InsuranceCoverageAmount,
+                Id = d.Id,
+                CurrencyId = d.CurrencyId,
+                PatientPaymentAmount = d.PatientPaymentAmount,
+                TaxesAmount = d.TaxesAmount,
+                TotalAmount = d.TotalAmount,
+                CreatedBy = d.CreatedBy,
+                Date = d.Date,
+                CreatedByName = d.CreatedByName,
+                CreatedDate = d.CreatedDate,
+                Currency = d.Currency,
+                DoctorName = $"{(d.Doctor != null ? d.Doctor.FullName : "")}",
+                DoctorId = d.DoctorId,
+                MedicalSpecialityId = d.MedicalSpecialityId,
+                MedicalSpecialityName = (d.MedicalSpecialityId.HasValue ? d.MedicalSpeciality.Name : ""),
+                SpecialityName = (d.MedicalSpecialityId.HasValue ? d.MedicalSpeciality.Name  : ""),
+                ProductName =( d.Product != null ? d.Product.Name : ""),
+                Type = d.Type,
+                ProductId = d.ProductId,
+                CurrencyName = d.Currency.Name,
+                Doctor = d.Doctor,
+                MedicalSpeciality = d.MedicalSpeciality,
+                ModifiedBy = d.ModifiedBy,
+                ModifiedByName = d.ModifiedByName,
+                ModifiedDate = d.ModifiedDate,
+                Product = d.Product,
+            }).ToList();
             return new Result<Appointment>(item.Id, 0, "ok_msg", new List<Appointment>() { item });
         }
 
@@ -160,10 +166,10 @@ namespace PointOfSalesV2.Repository
             entity.Details.ForEach(d => {
                 d.Product = null;
                 d.Doctor = null;
-                d.Active = true;
                 d.Currency = null;
                 d.Appointment = null;
-                d.AppointmentId = entity.Id;
+                d.Date = entity.Date;
+                d.Active = true;
                 d.MedicalSpeciality = null;
                 d.TotalAmount = d.BeforeTaxesAmount + d.TaxesAmount;
                 d.PatientPaymentAmount = d.TotalAmount - d.InsuranceCoverageAmount;
@@ -277,7 +283,8 @@ namespace PointOfSalesV2.Repository
                     State=x.Appointment.State,
                     DoctorName=x.Doctor!=null?$"{x.Doctor.FullName}":"",
                     MedicalSpecialityName=x.MedicalSpeciality!=null?x.MedicalSpeciality.Name:"",
-                    ProductName=x.Product!=null?x.Product.Name:""
+                    ProductName=x.Product!=null?x.Product.Name:"",
+                    AppointmentType=x.Type.ToString()
                  }).OrderBy(x => x.Date)
                  .ToListAsync();
         }
@@ -326,7 +333,8 @@ namespace PointOfSalesV2.Repository
                      State = x.Appointment.State,
                      DoctorName = x.Doctor != null ? $"{x.Doctor.FullName}" : "",
                      MedicalSpecialityName = x.MedicalSpeciality != null ? x.MedicalSpeciality.Name : "",
-                     ProductName = x.Product != null ? x.Product.Name : ""
+                     ProductName = x.Product != null ? x.Product.Name : "",
+                     AppointmentType = x.Type.ToString()
                  }).OrderBy(x => x.Date)
                  .ToListAsync();
         }

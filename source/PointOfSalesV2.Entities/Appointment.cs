@@ -96,6 +96,9 @@ namespace PointOfSalesV2.Entities
         [NotMapped]
         public string ProductName { get; set; }
 
+        [NotMapped]
+        public string AppointmentType { get; set; }
+
 
     }
 }
