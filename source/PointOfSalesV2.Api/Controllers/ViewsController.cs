@@ -59,9 +59,13 @@ namespace PointOfSalesV2.Api.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var appointmentRepo = dataRepository.GetDataRepositories<Appointment>();
-            var appointment = appointmentRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Hospital)
-           .Include(t=>t.Currency).Include(t=>t.Product)
+            var appointment = appointmentRepo.Get(x => 
+            x.Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Hospital)
+           .Include(t=>t.Currency)
+           .Include(t=>t.Details).ThenInclude(d=>d.Doctor)
+           .Include(t => t.Details).ThenInclude(d => d.Doctor)
+           .Include(t => t.Details).ThenInclude(d => d.Product)
+           .Include(t => t.Details).ThenInclude(d => d.MedicalSpeciality)
             , y => y.Active == true && y.Id == id)??new Appointment();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
           

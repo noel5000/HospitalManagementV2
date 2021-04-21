@@ -35,7 +35,7 @@
   >
   <option *ngFor="let doctor of doctors"
    [value]="doctor.userId"
-   >{{doctor.name}}</option>
+   >{{doctor.name}} {{doctor.lastName}}</option>
   </select>
 </div>
 
@@ -127,6 +127,7 @@
           <tr>
             <th>{{'doctor_lbl' | translate}}</th>
             <th>{{'medicalSpeciality_lbl' | translate}}</th>
+            <th>{{'consultation_lbl' | translate}}</th>
             <th>{{'patient_lbl' | translate}}</th>
             <th>{{'insurance_lbl' | translate}}</th>
             <th>{{'insurancePlan_lbl' | translate}}</th>
@@ -141,6 +142,7 @@
           <tr *ngFor="let appointment of selectedAppointments">
             <td>{{appointment.doctorName}}</td>
             <td>{{appointment.medicalSpecialityName}}</td>
+            <td>{{appointment.productName}}</td>
             <td>{{appointment.patientName}}</td>
             <td>{{appointment.insuranceName}}</td>
             <td>{{appointment.insurancePlanName}}</td>

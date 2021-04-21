@@ -94,7 +94,9 @@ public class MainDataContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
     public virtual DbSet<InsuranceServiceCoverage> InsuranceServiceCoverages { get; set; }
-    public virtual DbSet<Appointment> Appointment { get; set; }
+    public virtual DbSet<Appointment> Appointments { get; set; }
+
+    public virtual DbSet<AppointmentDetail> AppointmentDetails { get; set; }
     public virtual DbSet<PatientCheckup> PatientCheckups { get; set; }
     public virtual DbSet<CheckupPrescription> CheckupPrescriptions { get; set; }
 

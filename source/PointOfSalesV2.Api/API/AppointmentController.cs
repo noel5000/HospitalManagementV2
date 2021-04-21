@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
+using PointOfSalesV2.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class AppointmentController : BaseController<Appointment>
     {
         protected readonly IAppointmentRepository appointmentRepository;
-        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>(), AppSections.Appointment)
+        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>(), AppSections.Appointment)
         {
             this.appointmentRepository = this._repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>();
         }
@@ -34,15 +35,15 @@ namespace PointOfSalesV2.Api.Controllers
             try
             {
                 var data = _baseRepo.GetAll<Appointment>(x => x.AsNoTracking()
-                .Include(x=>x.Hospital)
-                .Include(x=>x.Doctor)
-                .Include(x=>x.Patient)
-                .Include(x=>x.MedicalSpeciality)
-                .Include(x=>x.Insurance)
-                .Include(x=>x.InsurancePlan)
-                .Include(x=>x.Currency)
-                .Include(x=>x.Product)
-                , y=>y.Active==true);
+                .Include(x => x.Hospital)
+                .Include(x => x.Patient)
+                .Include(x => x.Insurance)
+                .Include(x => x.InsurancePlan)
+                .Include(x => x.Currency)
+                .Include(x => x.Details).ThenInclude(x => x.Doctor)
+                .Include(x => x.Details).ThenInclude(x => x.Product)
+                .Include(x => x.Details).ThenInclude(x => x.MedicalSpeciality)
+                , y => y.Active == true);
                 return Ok(data);
             }
 
@@ -54,12 +55,12 @@ namespace PointOfSalesV2.Api.Controllers
         }
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetAppointmentsByDay/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
-        public async Task<IActionResult> GetAppointmentsByDay(DateTime date,long hospitalId, string doctorId, long? medicalSpeciality, long? patientId) 
+        public async Task<IActionResult> GetAppointmentsByDay(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
         {
             try
             {
                 doctorId = !string.IsNullOrEmpty(doctorId) && doctorId != "null" ? doctorId : null;
-                var appointments = await appointmentRepository.GetAppointmentsByDay(date, hospitalId,doctorId, medicalSpeciality,patientId);
+                var appointments = await appointmentRepository.GetAppointmentsByDay(date, hospitalId, doctorId, medicalSpeciality, patientId);
                 var data = new Result<Appointment>(0, 0, "ok_msg", appointments);
                 return Ok(data);
             }
@@ -72,7 +73,7 @@ namespace PointOfSalesV2.Api.Controllers
         }
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetAppointmentsByMonth/{date}/{hospitalId:long}/{doctorId}/{medicalSpeciality:long?}/{patientId:long?}")]
-        public async Task<IActionResult> GetAppointmentsByMonth(DateTime date,long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
+        public async Task<IActionResult> GetAppointmentsByMonth(DateTime date, long hospitalId, string doctorId, long? medicalSpeciality, long? patientId)
         {
             try
             {

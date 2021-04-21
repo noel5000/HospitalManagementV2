@@ -161,8 +161,8 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       } as QueryFilter
       )
       this.doctorService.getAllFiltered(filter).subscribe(r=>{
-    
-        this.doctors=r['value'];
+        this.doctors=[{userId:null,name:'', lastName:''}]
+        this.doctors=this.doctors.concat(r['value']);
         if(this.doctors.length==1)
         this.itemForm.patchValue({
           doctorId:this.doctors[0].userId
@@ -180,7 +180,8 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     async getSpecialtities(){
       this.medicalSpecialitiesService.getAll().subscribe(r=>{
       
-        this.medicalSpecialities=r;
+        this.medicalSpecialities=[{id:0, name:''}];
+        this.medicalSpecialities= this.medicalSpecialities.concat(r);
         if(this.medicalSpecialities.length==1)
         this.itemForm.patchValue({
           medicalSpecialityId:this.medicalSpecialities[0].id
@@ -219,7 +220,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   
     async OnChanges(){
       this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
-        
+        this.selectedAppointments=[];
         if(val && val>0){
           const {medicalSpecialityId}=this.itemForm.getRawValue();
           this.getDoctors(medicalSpecialityId,val);
@@ -230,18 +231,21 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
         
           });
       this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
-        if(val && val>0){
+        this.selectedAppointments=[];
+       
           const {branchOfficeId}=this.itemForm.getRawValue();
           this.getDoctors(val,branchOfficeId);
           this.changes.detectChanges();
           this.getMonthAppointments();
-        }
+        
           });
       this.itemForm.get('doctorId').valueChanges.subscribe(val => {
+        this.selectedAppointments=[];
         this.changes.detectChanges();
         this.getMonthAppointments();
           });
       this.itemForm.get('patientId').valueChanges.subscribe(val => {
+        this.selectedAppointments=[];
         this.changes.detectChanges();
         this.getMonthAppointments();
           });

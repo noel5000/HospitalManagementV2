@@ -433,7 +433,7 @@ async getItem(){
 
     getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
         const form = this.itemForm.getRawValue();
-        if(form.insuranceId || form.InsurancePlanId)
+        if((productId) && (form.insuranceId || form.InsurancePlanId) )
         this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
         .subscribe(r=>{
             if(r.status>=0){

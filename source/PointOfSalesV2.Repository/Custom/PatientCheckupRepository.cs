@@ -36,9 +36,10 @@ namespace PointOfSalesV2.Repository
                 {
                    
                     var prescriptions = SetEntity(entity);
-                    var appointment = _Context.Appointment.Find(entity.AppointmentId);
-                    _Context.Entry<Appointment>(appointment).State = EntityState.Detached;
-                    if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled) 
+                    var appointment = _Context.Appointments.AsNoTracking().Include(x=>x.Details).FirstOrDefault(x=>x.Id==entity.AppointmentId);
+                    appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
+                    var consultationDetail = appointment.Details.FirstOrDefault(x => x.AppointmentType == AppointmentTypes.Consultation);
+                    if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled || consultationDetail==null) 
                     {
                         transaction.Rollback();
                         return new Result<PatientCheckup>(-1, -1, "appointmentNotValid_msg");
@@ -46,8 +47,7 @@ namespace PointOfSalesV2.Repository
                     entity.Date = appointment.Date;
                     entity.InsuranceId = appointment.InsuranceId;
                     entity.InsurancePlanId = appointment.InsurancePlanId;
-                    appointment.MedicalSpecialityId = appointment.MedicalSpecialityId;
-                    entity.DoctorId = appointment.DoctorId.HasValue?appointment.DoctorId.Value:entity.DoctorId;
+                    entity.DoctorId = consultationDetail.DoctorId.HasValue? consultationDetail.DoctorId.Value:entity.DoctorId;
                     entity.PatientId = appointment.PatientId;
                     result = base.Add(entity);
                     if (result.Status < 0) 
@@ -60,7 +60,7 @@ namespace PointOfSalesV2.Repository
 
 
                     appointment.State = appointment.AppointmentState == AppointmentStates.Scheduled ? (char)AppointmentStates.InProgress : appointment.State;
-                    _Context.Appointment.Update(appointment);
+                    _Context.Appointments.Update(appointment);
                     _Context.SaveChanges();
                     result = SavePrescriptions(prescriptions, result);
                     if (result.Status < 0)
@@ -91,7 +91,7 @@ namespace PointOfSalesV2.Repository
                 {
 
                     var prescriptions = SetEntity(entity);
-                    var appointment = _Context.Appointment.Find(entity.AppointmentId);
+                    var appointment = _Context.Appointments.Find(entity.AppointmentId);
                     _Context.Entry<Appointment>(appointment).State = EntityState.Detached;
                     result = base.Update(entity);
                     if (result.Status < 0)
@@ -108,7 +108,7 @@ namespace PointOfSalesV2.Repository
 
 
                     appointment.State = appointment.AppointmentState == AppointmentStates.Scheduled ? (char)AppointmentStates.InProgress : appointment.State;
-                    _Context.Appointment.Update(appointment);
+                    _Context.Appointments.Update(appointment);
                     _Context.SaveChanges();
                     result = UpdatePrescriptions(prescriptions, result);
                     if (result.Status < 0)
