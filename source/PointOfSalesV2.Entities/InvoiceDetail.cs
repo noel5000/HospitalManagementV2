@@ -70,6 +70,7 @@ namespace PointOfSalesV2.Entities
 
         public Guid? DoctorId { get; set; }
         public char Type { get; set; }
+        public long? AppointmentId { get; set; }
         public long? MedicalSpecialityId { get; set; }
 
         public decimal InsuranceCoverageAmount { get; set; }

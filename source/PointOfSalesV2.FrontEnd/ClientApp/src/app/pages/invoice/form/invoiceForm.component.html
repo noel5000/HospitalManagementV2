@@ -253,7 +253,7 @@
                             <td>{{entry.discountAmount | currency:""}}</td>
                             <td>{{entry.taxesAmount | currency:""}}</td>
                             <td>{{entry.totalAmount | currency:""}}</td>
-                            <td><i class="btn btn-danger" (click)="deleteEntry(i)">{{'delete_btn' | translate}}</i></td>
+                            <td><button type="button" class="btn btn-danger" [disabled]="entry.appointmentId" (click)="deleteEntry(i)">{{'delete_btn' | translate}}</button></td>
                         </tr>
                     </tbody>
                 </table>

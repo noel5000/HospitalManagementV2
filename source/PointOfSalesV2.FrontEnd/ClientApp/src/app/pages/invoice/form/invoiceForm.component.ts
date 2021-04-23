@@ -177,7 +177,7 @@ totalAmount:[0],
 free:[false],
 medicalSpecialityId:[null],
 type:[null],
-appointmentId:[null],
+appointmentId:[{value:null, disabled:this.isEditing}],
 insuranceCoverageAmount:[0],
 insuranceName:[""],
 insurancePlanName:[""],
@@ -670,9 +670,10 @@ doctorId:[null]
                                 currencyId:patient.currencyId,
                                 currencyName:patient.currency?patient.currency.name:'',
                                 insuranceCoverageAmount:0,
-                                nrc:patient.cardId
+                                nrc:patient.cardId,
+                                appointmentId:null
                             });
-
+                            this.entries=[];
 
                         }
                         const form = this.itemForm.getRawValue();
@@ -699,8 +700,11 @@ doctorId:[null]
 
                 this.itemForm.get('appointmentId').valueChanges.subscribe(val => {
                
-                   if(val && val>0)
-                   this.selectAppointment(val);
+                   if(val && val>0) {
+                  
+                    this.selectAppointment(val);
+                   }
+                   
                 
                 });
                 this.itemForm.get('productCost').valueChanges.subscribe(val => {
@@ -823,62 +827,71 @@ doctorId:[null]
           const form = this.itemForm.getRawValue();
           this.appointmentService.getById(id).subscribe(r=>{
             this.selectedAppointment=r.data[0];
-            if(this.selectedAppointment.details && this.selectedAppointment.details.length>0){
-                this.selectedAppointment.details.forEach((d,i) => {
-                    const detail ={
-                    quantity:1,
-                    doctorId:d.doctorId,
-                    productId:d.productId,
-                    medicalSpecialityId:d.medicalSpecialityId,
-                    branchOfficeId: this.selectedAppointment.hospitalId,
-                    insuranceApprovalCode:'',
-                    type:d.type,
-                    insuranceCoverageAmount:d.insuranceCoverageAmount,
-                    beforeTaxesAmount:d.beforeTaxesAmount,
-                    taxesAmount:d.taxesAmount,
-                    totalAmount:d.totalAmount,
-                    discountAmount:0,
-                    creditNoteAmount:0,
-                    date:d.date,
-                    invoiceId:this.id,
-                    patientPaymentAmount:d.totalAmount - d.insuranceCoverageAmount,
-                    returnAmount:0,
-                    noCoverage:false,
-                    product:d.product,
-                    doctor:d.doctor,
-                    medicalSpeciality:d.medicalSpeciality,
-                    currencyId:d.currencyId,
-                    currency:d.currency,
-                    cost:d.product?d.product.cost:0,
-                    amount:d.beforeTaxesAmount,
-                    free:false,
-                    comments:'',
-                    principalCurrencyAmount:d.totalAmount,
-                    discountRate:0,
-                    warehouseId:form.warehouseId,
-                    unitId:null,
-                    unit:null,
-                    saveRegister:true
-                    };
-                    const index = this.entries.findIndex(x=>x.productId==detail.productId
-                         && x.doctorId==detail.doctorId && x.type==detail.type && x.medicalSpecialityId==detail.medicalSpecialityId);
-               if(!this.itemForm.contains(`unitDiscountRate_${i}`)){
-                   this.itemForm.addControl(`unitDiscountRate_${i}`, new FormControl({value:detail.discountRate, disabled:this.isEditing},[]) )
-               }
-
-               if(!this.itemForm.contains(`unitQuantity_${i}`)){
-                this.itemForm.addControl(`unitQuantity_${i}`, new FormControl({value:detail.quantity, disabled:this.isEditing},[Validators.required, Validators.min(0.0001)]) )
-            }
-               
-                if(index >-1)
-                this.entries[index]=detail;
-                else{
-                    this.entries.push(detail);
+            if(!this.isEditing){
+                let index =this.entries.findIndex(x=>x.appointmentId && x.appointmentId>0);   
+                while(index>=0){
+                    this.entries.splice(index,1);
+                    index =this.entries.findIndex(x=>x.appointmentId && x.appointmentId>0)
                 }
-               
-                });
-                this.refreshAmounts();
+                if(this.selectedAppointment.details && this.selectedAppointment.details.length>0){
+                    this.selectedAppointment.details.forEach((d,i) => {
+                        const detail ={
+                        quantity:1,
+                        doctorId:d.doctorId,
+                        productId:d.productId,
+                        medicalSpecialityId:d.medicalSpecialityId,
+                        branchOfficeId: this.selectedAppointment.hospitalId,
+                        insuranceApprovalCode:'',
+                        type:d.type,
+                        insuranceCoverageAmount:d.insuranceCoverageAmount,
+                        beforeTaxesAmount:d.beforeTaxesAmount,
+                        taxesAmount:d.taxesAmount,
+                        totalAmount:d.totalAmount,
+                        discountAmount:0,
+                        creditNoteAmount:0,
+                        date:d.date,
+                        invoiceId:this.id,
+                        patientPaymentAmount:d.totalAmount - d.insuranceCoverageAmount,
+                        returnAmount:0,
+                        noCoverage:false,
+                        product:d.product,
+                        doctor:d.doctor,
+                        medicalSpeciality:d.medicalSpeciality,
+                        currencyId:d.currencyId,
+                        currency:d.currency,
+                        cost:d.product?d.product.cost:0,
+                        amount:d.beforeTaxesAmount,
+                        free:false,
+                        comments:'',
+                        principalCurrencyAmount:d.totalAmount,
+                        discountRate:0,
+                        warehouseId:form.warehouseId,
+                        appointmentId:d.appointmentId,
+                        unitId:null,
+                        unit:null,
+                        saveRegister:true
+                        };
+                        const index = this.entries.findIndex(x=>x.productId==detail.productId
+                             && x.doctorId==detail.doctorId && x.type==detail.type && x.medicalSpecialityId==detail.medicalSpecialityId);
+                   if(!this.itemForm.contains(`unitDiscountRate_${i}`)){
+                       this.itemForm.addControl(`unitDiscountRate_${i}`, new FormControl({value:detail.discountRate, disabled:this.isEditing},[]) )
+                   }
+    
+                   if(!this.itemForm.contains(`unitQuantity_${i}`)){
+                    this.itemForm.addControl(`unitQuantity_${i}`, new FormControl({value:detail.quantity, disabled:this.isEditing},[Validators.required, Validators.min(0.0001)]) )
+                }
+                   
+                    if(index >-1)
+                    this.entries[index]=detail;
+                    else{
+                        this.entries.push(detail);
+                    }
+                   
+                    });
+                    this.refreshAmounts();
+                }
             }
+          
 
           })
       }
