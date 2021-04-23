@@ -48,6 +48,17 @@ namespace PointOfSalesV2.Entities
             this.ReturnAmount = newDetail.ReturnAmount;
             this.Defective = newDetail.Defective;
             this.BranchOfficeId = newDetail.BranchOfficeId;
+
+            this.MedicalSpecialityId = newDetail.MedicalSpecialityId;
+            this.Type = newDetail.Type;
+            this.InsuranceCoverageAmount = newDetail.InsuranceCoverageAmount;
+            this.DoctorId = newDetail.DoctorId;
+            this.InsuranceApprovalCode = newDetail.InsuranceApprovalCode;
+            this.PatientPaymentAmount = newDetail.PatientPaymentAmount;
+            this.NoCoverage = newDetail.NoCoverage;
+
+            this.MedicalSpeciality = newDetail.MedicalSpeciality;
+            this.Doctor = newDetail.Doctor;
         }
         [NotMapped]
         public bool Defective { get; set; }
@@ -55,6 +66,15 @@ namespace PointOfSalesV2.Entities
         public decimal ReturnAmount { get; set; }
 
         public long BranchOfficeId { get; set; }
+        public string InsuranceApprovalCode { get; set; }
+
+        public Guid? DoctorId { get; set; }
+        public char Type { get; set; }
+        public long? MedicalSpecialityId { get; set; }
+
+        public decimal InsuranceCoverageAmount { get; set; }
+        public decimal PatientPaymentAmount { get; set; }
+        public bool NoCoverage { get; set; }
 
         public long ProductId { get; set; }
         [Export(Order = 2)]
@@ -108,7 +128,12 @@ namespace PointOfSalesV2.Entities
                 this.UnitId == other.UnitId && this.TaxesAmount == other.TaxesAmount && this.BeforeTaxesAmount == other.BeforeTaxesAmount && this.TotalAmount == other.TotalAmount &&
                 this.InvoiceId == other.InvoiceId && this.CreditNoteAmount == other.CreditNoteAmount && this.DiscountAmount == other.DiscountAmount && this.DiscountRate == other.DiscountRate
                 && this.Free == other.Free && this.ParentId == other.ParentId && this.WarehouseId == other.WarehouseId &&
-                this.Active == other.Active && this.Date == other.Date && this.CreatedDate == other.CreatedDate);
+
+                this.MedicalSpecialityId == other.MedicalSpecialityId && this.Type == other.Type && this.InsuranceCoverageAmount == other.InsuranceCoverageAmount &&
+            this.DoctorId == other.DoctorId    &&   this.InsuranceApprovalCode == other.InsuranceApprovalCode &&            this.PatientPaymentAmount == other.PatientPaymentAmount &&
+            this.NoCoverage == other.NoCoverage &&
+
+            this.Active == other.Active && this.Date == other.Date && this.CreatedDate == other.CreatedDate);
         }
 
         public override int GetHashCode()
@@ -155,13 +180,20 @@ namespace PointOfSalesV2.Entities
                 var hashCodeDecimal9 = this.Cost.GetHashCode();
                 hashCode = hashCode ^ hashCodeDecimal9;
 
+                var hashCodeDecima20 = this.InsuranceCoverageAmount.GetHashCode();
+                hashCode = hashCode ^ hashCodeDecima20;
+
+                var hashCodeDecima21 = this.PatientPaymentAmount.GetHashCode();
+                hashCode = hashCode ^ hashCodeDecima21;
+
+
                 return Convert.ToInt32( hashCode);
             }
         }
 
         public bool Equals([AllowNull] InvoiceDetail x, [AllowNull] InvoiceDetail y)
         {
-            return x.Id == y.Id && x.ProductId == y.ProductId && x.UnitId == y.UnitId && x.Quantity == y.Quantity && x.InvoiceId==y.InvoiceId;
+            return x.Id == y.Id && x.ProductId == y.ProductId && x.UnitId == y.UnitId && x.Quantity == y.Quantity && x.InvoiceId==y.InvoiceId && x.DoctorId==y.DoctorId && x.MedicalSpecialityId==y.MedicalSpecialityId && y.Type==x.Type;
         }
 
         public int GetHashCode([DisallowNull] InvoiceDetail obj)
@@ -178,6 +210,14 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("UnitId")]
         [Export(Order = 13, ChildProperty ="Name")]
         public Unit Unit { get; set; }
+
+        [ForeignKey("DoctorId")]
+        [Export(Order = 13, ChildProperty = "FullName")]
+        public User Doctor { get; set; }
+
+        [ForeignKey("MedicalSpecialityId")]
+        [Export(Order = 13, ChildProperty = "Name")]
+        public MedicalSpeciality MedicalSpeciality { get; set; }
 
 
         [ForeignKey("InvoiceId")]

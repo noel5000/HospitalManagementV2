@@ -188,7 +188,7 @@
                                             </tr>
 
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "customer_lbl").Value : @invoice.Customer.NameAndCode.ToString()</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "customer_lbl").Value : @invoice.Patient.NameAndCode.ToString()</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "invoiceNumber_lbl").Value :</th>
                                                 <th class="text-left">@invoice.InvoiceNumber.ToUpper()</th>
@@ -197,16 +197,16 @@
                                                 <th>@languageKeys.FirstOrDefault(x => x.Key == "trn_lbl").Value : @invoice.TRN</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "closureDate_lbl").Value :</th>
-                                                <th class="text-left">@(invoice.BillingDate.HasValue?invoice.BillingDate.Value.AddDays(invoice.Customer.InvoiceDueDays).ToString("dd-MM-yyyy"): invoice.CreatedDate.AddDays(invoice.Customer.InvoiceDueDays).ToString("dd-MM-yyyy"))</th>
+                                                <th class="text-left">@(invoice.BillingDate.HasValue?invoice.BillingDate.Value.AddDays(invoice.Patient.InvoiceDueDays).ToString("dd-MM-yyyy"): invoice.CreatedDate.AddDays(invoice.Patient.InvoiceDueDays).ToString("dd-MM-yyyy"))</th>
                                             </tr>
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @invoice.Customer.Address</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @invoice.Patient.Address</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "seller_lbl").Value :</th>
                                                 <th class="text-left">@invoice.Seller?.Name</th>
                                             </tr>
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @invoice.Customer.PhoneNumber</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @invoice.Patient.PhoneNumber</th>
                                                 <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "trn_lbl").Value :</th>
                                                 <th class=" text-left">@invoice.TRN</th>

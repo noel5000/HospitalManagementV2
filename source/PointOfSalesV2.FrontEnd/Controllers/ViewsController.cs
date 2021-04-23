@@ -43,7 +43,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
-            var invoice = invoiceRepo.Get(x => x.Include(i=>i.Customer).Include(i=>i.Seller)
+            var invoice = invoiceRepo.Get(x => x.Include(i=>i.Patient).Include(i=>i.Seller)
             .Include(i=>i.Currency).Include(i=>i.InvoiceDetails).ThenInclude(d=>d.Product), y => y.Active == true && y.Id == id);
             var selectedLanguageKeys = languageKeys.Where(x=>x.LanguageCode.ToLower()==language.ToLower()).ToList();
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true ).ToList();
@@ -71,7 +71,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Customer).Include(i => i.Seller)
+            var invoice = invoiceRepo.Get(x => x.Include(i => i.Patient).Include(i => i.Seller)
             .Include(i=>i.Payments).ThenInclude(p=>p.Seller)
             .Include(i => i.Currency), y => y.Active == true && y.Id == invoiceId);
             invoice.Payments = invoice.Payments.Where(p => p.Active == true).ToList();

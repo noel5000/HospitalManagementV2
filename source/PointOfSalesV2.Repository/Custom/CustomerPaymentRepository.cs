@@ -212,7 +212,7 @@ namespace PointOfSalesV2.Repository
                             PaymentTypeId=model.Payment.PaymentTypeId,
                         };
                         i.BranchOffice = null;
-                        i.Customer = null;
+                        i.Patient = null;
                         i.Currency = null;
                         i.Seller = null;
                         i.Currency = null;
@@ -280,8 +280,8 @@ namespace PointOfSalesV2.Repository
                         trans.Rollback();
                         return new Result<object>(-1, -1, "paymentNotValid_msg");
                     }
-                    var invoices = _Context.Invoices.Include(i=>i.Customer).ThenInclude(c=>c.CustomerBalances).AsNoTracking().Where(i => payments.Select(p => p.InvoiceNumber).Contains(i.InvoiceNumber)).ToList();
-                    var balances = invoices.SelectMany(x => x.Customer.CustomerBalances).Where(x=>x.Active==true && x.CurrencyId== payments.FirstOrDefault().CurrencyId).FirstOrDefault();
+                    var invoices = _Context.Invoices.Include(i=>i.Patient).ThenInclude(c=>c.CustomerBalances).AsNoTracking().Where(i => payments.Select(p => p.InvoiceNumber).Contains(i.InvoiceNumber)).ToList();
+                    var balances = invoices.SelectMany(x => x.Patient.CustomerBalances).Where(x=>x.Active==true && x.CurrencyId== payments.FirstOrDefault().CurrencyId).FirstOrDefault();
                     payments.ForEach(p => {
                         p.State =(char) BillingStates.Nulled;
                         var index = invoices.FindIndex(x=>x.Id==p.InvoiceId);
@@ -296,7 +296,7 @@ namespace PointOfSalesV2.Repository
                         p.Seller = null;
                     });
                     invoices.ForEach(i => {
-                        i.Customer = null;
+                        i.Patient = null;
                         i.Currency = null;
                         i.BranchOffice = null;
                         i.Payments = null;

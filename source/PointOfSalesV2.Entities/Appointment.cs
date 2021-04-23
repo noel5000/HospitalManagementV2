@@ -28,9 +28,9 @@ namespace PointOfSalesV2.Entities
         public char State { get; set; }
 
         [NotMapped]
-        public AppointmentStates AppointmentState 
+        public AppointmentStates AppointmentState
         {
-            get 
+            get
             {
                 return (AppointmentStates)this.State;
             }
@@ -48,10 +48,10 @@ namespace PointOfSalesV2.Entities
 
         public List<AppointmentDetail> Details { get; set; }
 
-       
+
         [ForeignKey("InsuranceId")]
         public Insurance Insurance { get; set; }
-       
+
         [ForeignKey("PatientId")]
         public Customer Patient { get; set; }
         [ForeignKey("InsurancePlanId")]
@@ -64,12 +64,12 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("HospitalId")]
         public BranchOffice Hospital { get; set; }
 
-     
+
 
         [NotMapped]
         public string InsuranceName { get; set; }
 
-       
+
 
         [NotMapped]
         public string PatientName { get; set; }
@@ -77,7 +77,7 @@ namespace PointOfSalesV2.Entities
         [NotMapped]
         public string InsurancePlanName { get; set; }
 
-     
+
 
 
         [NotMapped]
@@ -98,6 +98,15 @@ namespace PointOfSalesV2.Entities
 
         [NotMapped]
         public string AppointmentType { get; set; }
+
+        [NotMapped]
+        public string DateFormatted
+        {
+            get
+            {
+                return this.Date.ToString("yyyy-MM-dd hh:mm tt");
+            }
+        }
 
 
     }

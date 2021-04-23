@@ -40,7 +40,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
             isTranslated:false
         },
         {
-            property: "Customer",
+            property: "Patient",
             value: "Name",
             type: ObjectTypes.ChildObject,
             isTranslated:false
@@ -113,9 +113,9 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
       visible:true,
       id:'customerId',
       type:'text',
-      fieldToShow:'customer.name',
+      fieldToShow:'patient.name',
       isTranslated:false,
-      name:this.lang.getValueByKey('customer_lbl'),
+      name:this.lang.getValueByKey('patient_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
@@ -291,7 +291,7 @@ else{
                 isTranslated:false
             },
             {
-                property: "Customer",
+                property: "Patient",
                 value: "Name",
                 type: ObjectTypes.ChildObject,
                 isTranslated:false

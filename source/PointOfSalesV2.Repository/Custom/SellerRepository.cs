@@ -65,7 +65,7 @@ namespace PointOfSalesV2.Repository
         public ComissionsReport SalesComissions(ComissionsSearch search)
         {
             var result = new ComissionsReport() { ComissionsByCyrrencies = new List<ComissionsByCurrency>() };
-            var invoices = _Context.Invoices.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x => x.Customer)
+            var invoices = _Context.Invoices.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x => x.Patient)
                 .Where(x =>
                 x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid) &&
                 (search.CustomerId.HasValue && search.CustomerId.Value > 0 ? x.CustomerId == search.CustomerId.Value : x.CustomerId > 0) &&
@@ -90,7 +90,7 @@ namespace PointOfSalesV2.Repository
                         PaidAmount = x.PaidAmount,
                         TotalAmount = x.TotalAmount,
                         CurrencyCode = x.Currency.Code,
-                        CustomerName = x.Customer.NameAndCode,
+                        CustomerName = x.Patient.NameAndCode,
                         Date = x.BillingDate.Value,
                         Reference = x.InvoiceNumber,
                         SellerName = x.Seller?.NameAndCode ?? ""

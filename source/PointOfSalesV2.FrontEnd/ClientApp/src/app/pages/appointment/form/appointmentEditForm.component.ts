@@ -362,18 +362,7 @@ grandPatientPaymentAmount:  [0],
             });
 
 
-        this.customerService.getAll().subscribe(r=>{
-            this.customers=[{id:null, name:""} as Customer];
-            this.customers=this.customers.concat(r);
-            if(r.length==1){
-                this.itemForm.patchValue({
-                    patientId:r[0].id,
-                    insuranceId:r[0].insuranceId,
-                    insurancePlanId:r[0].insurancePlanId,
-                    currencyId:r[0].currencyId
-                });
-            }
-        });
+       
     }
 
     onChanges(): void {

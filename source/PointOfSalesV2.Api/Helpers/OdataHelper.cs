@@ -106,11 +106,12 @@ namespace PointOfSalesV2.Api.Helpers
             builder.EntitySet<MenuDetail>("MenuDetail").HasOptionalBinding(x => x.Product, "Product");
             builder.EntitySet<MenuDetail>("MenuDetail").HasOptionalBinding(x => x.Unit, "Unit");
             builder.EntitySet<Invoice>("Invoice");
-            builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x=>x.Customer,"Customer");
+            builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x=>x.Patient, "Patient");
             builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x => x.Currency, "Currency");
             builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x => x.BranchOffice, "BranchOffice");
             builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x => x.Seller, "Seller");
             builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x => x.TRNControl, "TNRControl");
+            builder.EntitySet<Invoice>("Invoice").HasOptionalBinding(x => x.Appointment, "Appointment");
 
             builder.EntitySet<Customer>("Customer").HasOptionalBinding(x => x.Insurance, "Insurance");
             builder.EntitySet<Customer>("Customer").HasOptionalBinding(x => x.InsurancePlan, "InsurancePlan");

@@ -44,7 +44,7 @@ namespace PointOfSalesV2.Api.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Customer).Include(i => i.Seller)
+            var invoice = invoiceRepo.Get(x => x.Include(i => i.Patient).Include(i => i.Seller)
             .Include(i => i.Currency).Include(i => i.InvoiceDetails).ThenInclude(d => d.Product).Include(i=>i.InvoiceDetails).ThenInclude(x=>x.Unit), y => y.Active == true && y.Id == id)?? new Invoice();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();

@@ -20,7 +20,7 @@ namespace PointOfSalesV2.Entities
         {
             this.Id = newInvoice.Id;
             this.Active = newInvoice.Active;
-            this.Customer = newInvoice.Customer ?? null;
+            this.Patient = newInvoice.Patient ?? null;
             this.CustomerId = newInvoice.CustomerId;
             this.CreatedBy = newInvoice.CreatedBy;
             this.Details = newInvoice.Details ?? null;
@@ -71,6 +71,10 @@ namespace PointOfSalesV2.Entities
             this.InsurancePlan = newInvoice.InsurancePlan;
             this.InsurancePlanId = newInvoice.InsurancePlanId;
             this.InsuranceCardId = newInvoice.InsuranceCardId;
+            this.Appointment = newInvoice.Appointment;
+            this.AppointmentId = newInvoice.AppointmentId;
+            this.InsuranceCoverageAmount = newInvoice.InsuranceCoverageAmount;
+            this.PatientPaymentAmount = newInvoice.PatientPaymentAmount;
         }
         public string InsuranceCardId { get; set; }
 
@@ -169,6 +173,14 @@ namespace PointOfSalesV2.Entities
         [Export(Order = 6)]
         public decimal BeforeTaxesAmount { get; set; }
 
+        [Export(Order = 6)]
+        public decimal InsuranceCoverageAmount { get; set; }
+
+        [Export(Order = 6)]
+        public decimal PatientPaymentAmount { get; set; }
+        [Export(Order = 26)]
+        public long? AppointmentId { get; set; }
+
         [NotMapped]
         public Enums.BillingStates BillingState 
         {
@@ -194,11 +206,14 @@ namespace PointOfSalesV2.Entities
 
         [ForeignKey("CustomerId")]
         [Export(Order =2, ChildProperty ="NameAndCode" )]
-        public Customer Customer { get; set; }
+        public Customer Patient { get; set; }
 
         [ForeignKey("BranchOfficeId")]
         [Export(Order = 24, ChildProperty ="Name")]
         public BranchOffice BranchOffice { get; set; }
+        [ForeignKey("AppointmentId")]
+        [Export(Order = 27, ChildProperty = "Name")]
+        public Appointment Appointment { get; set; }
 
         public virtual  List<CustomerPayment> Payments { get; set; }
 
