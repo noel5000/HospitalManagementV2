@@ -109,7 +109,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                 invoiceDetails? this.invoice.invoiceDetails:[];
                
                 this.itemForm.patchValue({
-                    customerName:`${this.invoice.customer.name} - ${this.invoice.customer.code}`,
+                    customerName:`${this.invoice.patient.name} - ${this.invoice.patient.code}`,
                     currencyName:this.invoice.currency.code,
                     billingDate:this.invoice.billingDate.split('T')[0],
                     totalAmount:this.invoice.totalAmount

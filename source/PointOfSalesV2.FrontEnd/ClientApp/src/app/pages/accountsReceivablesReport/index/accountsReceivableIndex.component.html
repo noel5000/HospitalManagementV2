@@ -71,7 +71,7 @@
     </thead>
     <tbody>
       <tr *ngFor=" let invoice of invoices">
-        <td>{{invoice.customer.nameAndCode}}</td>
+        <td>{{invoice.patient.nameAndCode}}</td>
         <td>{{invoice.invoiceNumber}}</td>
         <td>{{invoice.billingDate | date:"shortDate"}}</td>
         <td>{{invoice.trn}}</td>
