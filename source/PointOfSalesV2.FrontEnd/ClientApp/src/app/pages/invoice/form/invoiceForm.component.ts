@@ -139,7 +139,7 @@ trnType:[{value:null, disabled:this.isEditing},[ Validators.required]],
 nrc:[null,[ Validators.required]],
 productId:[null,[ Validators.required,Validators.min(1)]],
 unitId:this.defaultUnitValidator,
-hospitalId:[this.hospitalId],
+branchOfficeId:[this.hospitalId],
 warehouseId:[{value:null, disabled:this.isEditing}],
 sellerId:[{value:null, disabled:this.isEditing}],
 billingDate:[this.currentDate],
@@ -590,7 +590,7 @@ doctorId:[null]
                 //    }
                 });
 
-                this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
+                this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
                
                     const {medicalSpecialityId} = this.itemForm.getRawValue();
                     if(val && val>0 && medicalSpecialityId && medicalSpecialityId>0 )
@@ -600,17 +600,17 @@ doctorId:[null]
 
                 this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
                
-                    const {hospitalId,type} = this.itemForm.getRawValue();
-                    if(hospitalId && hospitalId>0 ){
+                    const {branchOfficeId,type} = this.itemForm.getRawValue();
+                    if(branchOfficeId && branchOfficeId>0 ){
                         this.getProducts(val,type?type:'C');
-                        this.getDoctors(val,hospitalId);
+                        this.getDoctors(val,branchOfficeId);
                     }
                 });
 
                 this.itemForm.get('type').valueChanges.subscribe(val => {
                     this.products=[];
                     this.doctors=[];
-                    const {hospitalId,medicalSpecialityId} = this.itemForm.getRawValue();
+                    const {branchOfficeId,medicalSpecialityId} = this.itemForm.getRawValue();
                     this.itemForm.patchValue({productId:null,medicalSpecialityId:null,doctorId:null});
                     if(val=="C"){
                         if(this.itemForm.contains("doctorId"))
@@ -633,13 +633,14 @@ doctorId:[null]
                             this.setMedicalSpecialityChanges();
                         }
                     }
-                    if( hospitalId && hospitalId>0 ){
+                    if( branchOfficeId && branchOfficeId>0 ){
                         this.getProducts(medicalSpecialityId,val);
                     }
                     
         
                 
                 });
+               
 
             this.itemForm.get('unitId').valueChanges.subscribe(val => {
 
@@ -660,6 +661,7 @@ doctorId:[null]
 
                 this.itemForm.get('patientId').valueChanges.subscribe(val => {
                   //  this.resetForm(this.id>0?false:true);
+                  this.appointments=[];
                     if(val && this.patients && this.patients.length>0){
                         this.getPatientAppointments();
                         const patient = this.patients.find(x=>x.id==val);
@@ -676,7 +678,7 @@ doctorId:[null]
                                 nrc:patient.cardId,
                                 appointmentId:null
                             });
-                            this.entries=[];
+                            this.removeEntries();
 
                         }
                         const form = this.itemForm.getRawValue();
@@ -790,12 +792,30 @@ doctorId:[null]
       setMedicalSpecialityChanges(){
         this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
                
-            const {hospitalId,type} = this.itemForm.getRawValue();
-            if(hospitalId && hospitalId>0 ){
+            const {branchOfficeId,type} = this.itemForm.getRawValue();
+            if(branchOfficeId && branchOfficeId>0 ){
                 this.getProducts(val,type?type:'C');
-                this.getDoctors(val,hospitalId);
+                this.getDoctors(val,branchOfficeId);
             }
         });
+      }
+
+      removeEntries(){
+          for(let i=0;i<this.entries.length;i++){
+
+              if(this.itemForm.contains(`unitQuantity_${i}`))
+              this.itemForm.removeControl(`unitQuantity_${i}`);
+
+              if(this.itemForm.contains(`insuranceApprovalCode_${i}`))
+              this.itemForm.removeControl(`insuranceApprovalCode_${i}`);
+
+              if(this.itemForm.contains(`noCoverage_${i}`))
+              this.itemForm.removeControl(`noCoverage_${i}`);
+
+              
+          }
+
+          this.entries=[];
       }
 
       async getPatientAppointments(){
@@ -830,6 +850,7 @@ doctorId:[null]
           const form = this.itemForm.getRawValue();
           this.appointmentService.getById(id).subscribe(r=>{
             this.selectedAppointment=r.data[0];
+            this.itemForm.patchValue({branchOfficeId:this.selectedAppointment.hospitalId});
             if(!this.isEditing){
                 let index =this.entries.findIndex(x=>x.appointmentId && x.appointmentId>0);   
                 while(index>=0){
@@ -1022,7 +1043,7 @@ doctorId:[null]
             free:false
         });
         if(deleteEntries){
-            this.entries=[];
+            this.removeEntries();
             this.appointmentDetails=[];
         }
     }
@@ -1059,6 +1080,7 @@ doctorId:[null]
            form.warehouseId=form.warehouseId==0?null:form.warehouseId;
            form.invoiceDetails=this.entries;
            form.discountAmount=0;
+           form.customerId=form.patientId;
            form.state=!form.state?(form.inventoryModified?BillingStates.Billed:BillingStates.Quoted):form.state;
             const subscription =window.location.href.split('/').findIndex(x=>x.toLowerCase()=='add')>=0? this.invoiceService.post(form,"",""):this.invoiceService.put(form,"","");
             subscription.subscribe(r=>{
@@ -1077,11 +1099,9 @@ doctorId:[null]
         for(let i=0;i<this.entries.length;i++){
             this.entries[i].quantity = form[`unitQuantity_${i}`];
             this.entries[i].quantity = !this.entries[i].quantity?0:this.entries[i].quantity;
-            this.entries[i].discountRate = form[`unitDiscountRate_${i}`];
             this.entries[i].discountRate = !this.entries[i].discountRate?0:this.entries[i].discountRate;
             this.entries[i].discountAmount= this.entries[i].discountRate/100*this.entries[i].beforeTaxesAmount;
             this.entries[i].discountAmount = !this.entries[i].discountAmount?0:this.entries[i].discountAmount;
-            this.entries[i].insuranceCoverageAmount = form[`insuranceCoverageAmount_${i}`];
             this.entries[i].insuranceApprovalCode = form[`insuranceApprovalCode_${i}`];
             this.entries[i].noCoverage = form[`noCoverage_${i}`];
             this.entries[i].patientPaymentAmount = this.entries[i].totalAmount -(this.entries[i].insuranceCoverageAmount?this.entries[i].insuranceCoverageAmount:0);

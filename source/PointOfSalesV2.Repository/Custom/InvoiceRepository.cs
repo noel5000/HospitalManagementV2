@@ -221,6 +221,8 @@ namespace PointOfSalesV2.Repository
                     entity.ReturnedAmount = entity.ReturnedAmount < 0 ? 0 : entity.ReturnedAmount;
                     entity.Patient = null;
                     entity.Currency = null;
+                    entity.Insurance = null;
+                    entity.InsurancePlan = null;
                     entity.Appointment = null;
                     entity.BranchOffice = null;
                     entity.Payments = new List<CustomerPayment>();
@@ -241,9 +243,13 @@ namespace PointOfSalesV2.Repository
                         d.Product = null;
                         d.Doctor = null;
                         d.MedicalSpeciality = null;
+                        d.Active = true;
+                        d.Unit = null;
+                        d.Invoice = null;
                         d.Date = entity.BillingDate.HasValue ? entity.BillingDate.Value : DateTime.Now;
                         d.BranchOfficeId = entity.BranchOfficeId;
                         d.InvoiceId = entity.Id;
+                        
                     });
                     entity.InvoiceDetails = details;
                     if (entity.InventoryModified)
@@ -302,6 +308,8 @@ namespace PointOfSalesV2.Repository
             details.ForEach(d =>
             {
                 d.Product = d.Product == null ? _Context.Products.AsNoTracking().Include(x => x.ProductUnits).ThenInclude(x => x.Unit).Include(x => x.Taxes).ThenInclude(x => x.Tax).FirstOrDefault(x => x.Active == true && x.Id == d.ProductId) : d.Product;
+                d.Doctor =!d.DoctorId.HasValue?null: _Context.Users.AsNoTracking().FirstOrDefault(x => x.Active == true && x.UserId == d.DoctorId);
+                d.MedicalSpeciality = d.MedicalSpecialityId.HasValue ? _Context.MedicalSpecialities.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == d.MedicalSpecialityId) : null;
                 d.Product.Taxes = d.Product.Taxes == null ? _Context.ProductTaxes.AsNoTracking().Include(x => x.Tax).Where(x => x.Active == true && x.ProductId == d.ProductId) : d.Product.Taxes;
                 d.Product.ProductUnits = d.Product.ProductUnits != null ? d.Product.ProductUnits.Where(x => x.Active) : d.Product.ProductUnits;
                 d.Amount = d.Amount > 0 ? d.Amount : (d.UnitId.HasValue ? (d.Product.Price / Convert.ToDecimal(d.Product.ProductUnits.FirstOrDefault(x => x.UnitId == d.UnitId.Value)?.Equivalence)) : d.Product.Price);
