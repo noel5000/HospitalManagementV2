@@ -25,7 +25,7 @@ namespace PointOfSalesV2.Entities
             this.CreatedBy = newInvoice.CreatedBy;
             this.Details = newInvoice.Details ?? null;
             this.WarehouseId = newInvoice.WarehouseId;
-            this.InvoiceDetails = newInvoice.InvoiceDetails;
+            this.InvoiceDetails = newInvoice.InvoiceDetails?? new List<InvoiceDetail>();
             this.State = newInvoice.State;
             this.CreatedDate = newInvoice.CreatedDate;
             this.BillingDate = newInvoice.BillingDate;

@@ -28,9 +28,9 @@ namespace PointOfSalesV2.Repository
         public override IQueryable<TResult> GetAll<TResult>(Func<IQueryable<Invoice>, IQueryable<TResult>> transform, Expression<Func<Invoice, bool>> filter = null, string sortExpression = null)
         {
             var _DbSet = _Context.Set<Invoice>();
-            var query = filter == null ? _DbSet.AsNoTracking().Include(x => x.Currency).Include(x => x.Patient)
+            var query = filter == null ? _DbSet.AsNoTracking().Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient).Include(x=>x.Appointment)
                 .Include(x => x.BranchOffice).Include(x => x.TRNControl).Include(x => x.Seller)
-                .OrderBy(sortExpression) : _DbSet.AsNoTracking().Include(x => x.Currency).Include(x => x.Patient)
+                .OrderBy(sortExpression) : _DbSet.AsNoTracking().Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient)
                 .Include(x => x.BranchOffice).Include(x => x.TRNControl).Include(x => x.Seller).Where(filter).OrderBy(sortExpression);
 
             var notSortedResults = transform(query);
@@ -60,7 +60,7 @@ namespace PointOfSalesV2.Repository
 
         public Invoice GetByInvoiceNumber(string invoiceNumber)
         {
-            var invoice = _Context.Invoices.Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl)
+            var invoice = _Context.Invoices.Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
                 .Include(x => x.Patient).AsNoTracking().FirstOrDefault(x => x.Active == true && x.InvoiceNumber.ToLower() == invoiceNumber.ToLower());
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             return invoice;
@@ -78,8 +78,8 @@ namespace PointOfSalesV2.Repository
          (endDate.HasValue ? invoice.BillingDate <= endDate.Value : invoice.Id > 0) && (customerId.HasValue && customerId.Value > 0 ? invoice.CustomerId == customerId.Value : invoice.Id > 0) &&
          (currencyId.HasValue && currencyId.Value > 0 ? invoice.CurrencyId == currencyId.Value : invoice.Id > 0) && (sellerId.HasValue && sellerId.Value > 0 ? invoice.SellerId == sellerId.Value : invoice.Id > 0)
          && (invoice.State != (char)Enums.BillingStates.Nulled);
-            return _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x => x.BranchOffice)
-                .Include(x => x.Seller).Include(x => x.Currency).Include(x => x.Currency).Where(func);
+            return _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x => x.BranchOffice).Include(x => x.Appointment)
+                .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Where(func);
         }
 
         public IEnumerable<Invoice> GetInvoicesToPay(long branchOfficeId = 0, long currencyId = 0, long customerId = 0)
@@ -92,7 +92,7 @@ namespace PointOfSalesV2.Repository
             return _Context.Invoices.AsNoTracking().Include(x => x.Patient).ThenInclude(x => x.Insurance)
                 .Include(x => x.Patient).ThenInclude(x => x.InsurancePlan)
                 .Include(x => x.BranchOffice)
-                .Include(x => x.Seller).Include(x => x.Currency).Include(x => x.Currency).Where(func);
+                .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Appointment).Where(func);
         }
         private void SetInvoiceData(Invoice entity, bool isEditing = false)
         {
@@ -771,12 +771,12 @@ namespace PointOfSalesV2.Repository
             List<CompanyStateModel> result = new List<CompanyStateModel>();
             var expenses = _Context.Expenses.Include(x => x.Payments).ThenInclude(p => p.Currency)
                 .Include(x => x.Supplier)
-                .Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
+               .Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
                 && x.Date >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.Date <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToList();
 
             var invoices = _Context.Invoices.Include(x => x.Payments).ThenInclude(p => p.Currency)
                 .Include(x => x.Patient)
-                .Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
+                .Include(x=>x.Appointment).Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
                   && x.BillingDate >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.BillingDate <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToList();
 
             expenses.ForEach(expense =>
@@ -865,7 +865,7 @@ namespace PointOfSalesV2.Repository
 
         public Result<Invoice> BillQuote(long quoteId)
         {
-            var quote = _Context.Invoices.AsNoTracking().Include(x => x.BranchOffice).Include(x => x.Currency).Include(x => x.Patient).Include(x => x.Seller)
+            var quote = _Context.Invoices.AsNoTracking().Include(x => x.BranchOffice).Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient).Include(x => x.Seller)
                  .Include(x => x.TRNControl).Include(x => x.InvoiceDetails).ThenInclude(y => y.Product)
                  .Include(x => x.InvoiceDetails).ThenInclude(y => y.Unit).FirstOrDefault(x => x.Id == quoteId && x.Active == true && x.State == (char)BillingStates.Quoted);
             if (quote != null)

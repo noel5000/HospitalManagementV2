@@ -81,6 +81,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     oldProductPrice:number=0;
     selectedProductCurrency:Currency=null;
     isEditing:boolean=false;
+    appointmentDetails:any[]=[];
     types:any[]=[
         {
             id:'C',
@@ -283,6 +284,8 @@ doctorId:[null]
         for(let i=0; i<this.entries.length;i++){
             this.setDetailFormAmount(i,this.entries[i].quantity);
             this.setDetailFormDiscount(i,this.entries[i].discountRate);
+            this.setDetailFormApprovalCode(i,this.entries[i].insuranceApprovalCode);
+            this.setDetailFormNoCoverage(i,this.entries[i].noCoverage);
           }
     }
 
@@ -873,12 +876,15 @@ doctorId:[null]
                         };
                         const index = this.entries.findIndex(x=>x.productId==detail.productId
                              && x.doctorId==detail.doctorId && x.type==detail.type && x.medicalSpecialityId==detail.medicalSpecialityId);
-                   if(!this.itemForm.contains(`unitDiscountRate_${i}`)){
-                       this.itemForm.addControl(`unitDiscountRate_${i}`, new FormControl({value:detail.discountRate, disabled:this.isEditing},[]) )
+                   if(!this.itemForm.contains(`insuranceApprovalCode_${i}`)){
+                       this.itemForm.addControl(`insuranceApprovalCode_${i}`, new FormControl({value:detail.insuranceApprovalCode, disabled:(detail.noCoverage || this.isEditing)},(detail.noCoverage?[]:[Validators.required,Validators.minLength(1), Validators.maxLength(50)])) )
                    }
     
                    if(!this.itemForm.contains(`unitQuantity_${i}`)){
-                    this.itemForm.addControl(`unitQuantity_${i}`, new FormControl({value:detail.quantity, disabled:this.isEditing},[Validators.required, Validators.min(0.0001)]) )
+                    this.itemForm.addControl(`unitQuantity_${i}`, new FormControl({value:detail.quantity, disabled:this.isEditing},[Validators.required, Validators.min(0.0001)]) ) 
+                }
+                if(!this.itemForm.contains(`noCoverage_${i}`)){
+                    this.itemForm.addControl(`noCoverage_${i}`, new FormControl({value:detail.noCoverage, disabled:this.isEditing},[]) ) 
                 }
                    
                     if(index >-1)
@@ -888,6 +894,7 @@ doctorId:[null]
                     }
                    
                     });
+                    this.appointmentDetails=this.entries;
                     this.refreshAmounts();
                 }
             }
@@ -896,18 +903,45 @@ doctorId:[null]
           })
       }
 
+      setCoverageValue(index:number){
+          const name=`noCoverage_${index}`;
+          const codeName=`insuranceApprovalCode_${index}`;
+          const {insuranceId,insurancePlanId} = this.itemForm.getRawValue();
+          const val =this.itemForm.get(name).value;
+          const item = this.entries[index];
+            // if(this.itemForm.contains(codeName))
+            // this.itemForm.removeControl(codeName);
+
+        this.itemForm.setControl(codeName, new FormControl({value:'', disabled:(val|| this.isEditing)},(val?[]:[Validators.required,Validators.minLength(1), Validators.maxLength(50)])));
+         if(val)
+             this.entries[index].insuranceCoverageAmount=0;
+             else
+             this.getInsuranceCoverageAmount(item.productId,index,insuranceId,insurancePlanId);
+             
+             this.entries[index].patientPaymentAmount= this.entries[index].totalAmount - this.entries[index].insuranceCoverageAmount;
+         
+         
+          
+      }
+
       getInsuranceCoverage(productId:number,insuranceId:number=null,insurancePlanId:number=null){
         const form = this.itemForm.getRawValue();
-        if((productId) && (form.insuranceId || form.InsurancePlanId) )
+        if((productId) && (form.insuranceId || form.insurancePlanId) )
         this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
         .subscribe(r=>{
-            if(r.status>=0){
-                const coverage=r.data[0];
-                this.itemForm.patchValue({insuranceCoverageAmount:coverage.coverageAmount});
-                this.refreshAmounts(false);
+            try{
+                if(r.status>=0){
+                    const coverage=r.data[0];
+                    this.itemForm.patchValue({insuranceCoverageAmount:coverage.coverageAmount});
+                    this.refreshAmounts(false);
+                }
+                else
+                this.modalService.showError('error_msg');
             }
-            else
-            this.modalService.showError('error_msg');
+            catch(ex){
+                console.log(ex);
+            }
+           
         });
         else
         {
@@ -915,6 +949,27 @@ doctorId:[null]
             this.refreshAmounts(false);
         }
 
+    }
+
+    getInsuranceCoverageAmount(productId:number,index:number,insuranceId:number=null,insurancePlanId:number=null){
+      
+        if((productId) && (insuranceId || insurancePlanId) )
+        this.insuranceService.getByUrlParameters(["GetInsuranceCoverage",productId.toString(),insuranceId?insuranceId.toString():'null',insurancePlanId?insurancePlanId.toString():'null'])
+        .subscribe(r=>{
+            try{
+                if(r.status>=0){
+                    const coverage=r.data[0];
+                    this.entries[index].insuranceCoverageAmount= coverage.coverageAmount;
+                    this.entries[index].patientPaymentAmount= this.entries[index].totalAmount - this.entries[index].insuranceCoverageAmount;
+                }
+                else
+                this.modalService.showError('error_msg');
+            }
+            catch(ex){
+                console.log(ex);
+            }
+        });
+        
     }
 
       updateSelectedPrice(val){
@@ -966,8 +1021,10 @@ doctorId:[null]
             totalAmount:0,
             free:false
         });
-        if(deleteEntries)
-        this.entries=[];
+        if(deleteEntries){
+            this.entries=[];
+            this.appointmentDetails=[];
+        }
     }
     get form() { return this.itemForm.controls; }
 
@@ -977,6 +1034,8 @@ doctorId:[null]
         form.taxesAmount= this.getTotalAmount(this.entries,'taxesAmount');
         form.discountAmount = this.getTotalAmount(this.entries,'discountAmount')
         form.totalAmount= this.getTotalAmount(this.entries,'totalAmount');
+        form.patientPaymentAmount= this.getTotalAmount(this.entries,'patientPaymentAmount');
+        form.insuranceCoverageAmount= this.getTotalAmount(this.entries,'insuranceCoverageAmount');
         form.owedAmount= form.totalAmount - form.paidAmount - form.appliedCreditNoteAmount;
         form.owedAmount = form.owedAmount <0?0:form.owedAmount;
         form.owedAmount= form.owedAmount<0?0:form.owedAmount;
@@ -1022,6 +1081,10 @@ doctorId:[null]
             this.entries[i].discountRate = !this.entries[i].discountRate?0:this.entries[i].discountRate;
             this.entries[i].discountAmount= this.entries[i].discountRate/100*this.entries[i].beforeTaxesAmount;
             this.entries[i].discountAmount = !this.entries[i].discountAmount?0:this.entries[i].discountAmount;
+            this.entries[i].insuranceCoverageAmount = form[`insuranceCoverageAmount_${i}`];
+            this.entries[i].insuranceApprovalCode = form[`insuranceApprovalCode_${i}`];
+            this.entries[i].noCoverage = form[`noCoverage_${i}`];
+            this.entries[i].patientPaymentAmount = this.entries[i].totalAmount -(this.entries[i].insuranceCoverageAmount?this.entries[i].insuranceCoverageAmount:0);
         }
     }
 
@@ -1052,6 +1115,8 @@ doctorId:[null]
         if(index<0){
             this.setDetailFormAmount(currentIndex,entry.quantity,true);
             this.setDetailFormDiscount(currentIndex,entry.discountRate,true);
+            this.setDetailFormApprovalCode(currentIndex,entry.insuranceApprovalCode,true);
+            this.setDetailFormNoCoverage(currentIndex,entry.noCoverage,true);
             this.entries.push(entry);
         }
         else {
@@ -1072,12 +1137,13 @@ doctorId:[null]
             productPrice:0
 
         });
-      
+      this.appointmentDetails=this.entries;
     }
     deleteEntry(index:number){
         this.itemForm.removeControl(`unitQuantity_${index}`);
         this.itemForm.removeControl(`unitDiscountRate_${index}`);
         this.entries.splice(index,1);
+        this.appointmentDetails=this.entries;
     }
   
 
@@ -1092,18 +1158,27 @@ doctorId:[null]
 
                     if(this.itemForm.contains(`unitDiscountRate_${i}`))
                     this.itemForm.removeControl(`unitDiscountRate_${i}`);
+
+                    if(this.itemForm.contains(`noCoverage_${i}`))
+                    this.itemForm.removeControl(`noCoverage_${i}`);
+
+                    if(this.itemForm.contains(`insuranceApprovalCode_${i}`))
+                    this.itemForm.removeControl(`insuranceApprovalCode_${i}`);
                 }
                 if(r.data[0] && r.data[0].invoiceDetails && r.data[0].invoiceDetails.length>0){
                     for(let i=0; i<r.data[0].invoiceDetails.length;i++){
                         this.setDetailFormAmount(i,r.data[0].invoiceDetails[i].quantity);
                         this.setDetailFormDiscount(i,r.data[0].invoiceDetails[i].discountRate);
+                        this.setDetailFormApprovalCode(i,r.data[0].invoiceDetails[i].insuranceApprovalCode);
+                        this.setDetailFormNoCoverage(i,r.data[0].invoiceDetails[i].noCoverage);
                       }
                 }
                 this.entries=r.data[0] && r.data[0].
                 invoiceDetails?r.data[0].invoiceDetails:[];
+                
                 this.item=r.data[0];
                 this.itemForm.patchValue(this.item);
-
+                this.appointmentDetails=this.entries;
                
             }
             else
@@ -1125,9 +1200,20 @@ doctorId:[null]
         if(!this.itemForm.contains(`unitDiscountRate_${index}`))
         this.itemForm.addControl(`unitDiscountRate_${index}`,new FormControl({value:discount, disabled:isNewEntry?false: this.isEditing},[Validators.max(100) ,Validators.min(0)]));
     }
+
+    setDetailFormNoCoverage(index:number,coverage:boolean=false, isNewEntry:boolean=false){
+        if(!this.itemForm.contains(`noCoverage_${index}`))
+        this.itemForm.addControl(`noCoverage_${index}`,new FormControl({value:coverage},[]));
+    }
+
+    setDetailFormApprovalCode(index:number,code:string, isNewEntry:boolean=false){
+        const noCoverage = this.itemForm.getRawValue()[`noCoverage_${index}`];
+        if(!this.itemForm.contains(`insuranceApprovalCode_${index}`))
+        this.itemForm.addControl(`insuranceApprovalCode_${index}`,new FormControl({value:code, disabled:isNewEntry?false: ( noCoverage ||this.isEditing)},noCoverage?[]:[Validators.required,Validators.maxLength(50) ,Validators.minLength(1)]));
+    }
     refreshAmounts(fromForm:boolean=false){
     
-        let {productPrice,productCost,quantity,unitId,beforeTaxesAmount, totalAmount, taxesAmount,discountAmount, discountRate,patientId, productId} = this.itemForm.getRawValue() as any;
+        let {productPrice,productCost,quantity,unitId,beforeTaxesAmount, totalAmount, taxesAmount,discountAmount, discountRate,patientId, productId, patientPaymentAmount,insuranceCoverageAmount} = this.itemForm.getRawValue() as any;
         if(productId && productId>0){
             const equivalence =unitId && unitId>0? this.productUnits.find(x=>x.unitId==unitId).equivalence:1;
             const patientCurrency =patientId && patientId>0 && this.patients.length>0? this.patients.find(x=>x.id==patientId).currency:null;
@@ -1139,6 +1225,7 @@ doctorId:[null]
             taxesAmount=(this.CalculateProductTax() * quantity)*rate;
             taxesAmount= (taxesAmount - (discountRate>1?taxesAmount*discountRate/100:taxesAmount*discountRate));
             totalAmount= beforeTaxesAmount + taxesAmount - discountAmount;
+           patientPaymentAmount=totalAmount-insuranceCoverageAmount;
             this.oldProductCost=productCost;
             this.oldProductPrice=productPrice;
             this.itemForm.patchValue({
@@ -1146,7 +1233,8 @@ doctorId:[null]
                 beforeTaxesAmount,
                 totalAmount,
                 taxesAmount,
-                discountAmount
+                discountAmount,
+                patientPaymentAmount
             })
         }
      

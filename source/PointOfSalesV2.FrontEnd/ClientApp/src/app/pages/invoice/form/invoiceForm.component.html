@@ -217,12 +217,11 @@
                             <th>{{'product_lbl' | translate}}</th>
                             <th>{{'unit_lbl' | translate}}</th>
                             <th>{{'quantity_lbl' | translate}}</th>
-                            <th>{{'discountRate_lbl' | translate}}</th>
-                            <th>{{'price_lbl' | translate}}</th>
-                            <th>{{'beforeTaxesAmount_lbl' | translate}}</th>
-                            <th>{{'discountAmount_lbl' | translate}}</th>
-                            <th>{{'taxAmount_lbl' | translate}}</th>
                             <th>{{'totalAmount_lbl' | translate}}</th>
+                            <th>{{'insuranceCoverageAmount_lbl' | translate}}</th>
+                            <th>{{'patientPaymentAmount_lbl' | translate}}</th>
+                            <th>{{'insuranceApprovalCode_lbl' | translate}}</th>
+                            <th>{{'noCoverage_lbl' | translate}}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -233,26 +232,23 @@
                             <td><input type="number"
                                  [formControlName]="('unitQuantity_'+i)" 
                                  required 
-                                 [disabled]="isEditing"
+                                 [disabled]="isEditing || entry.appointmentId"
                                  (change)="GetDetailProductTaxes(i)"
                                  class="form-control"
                                   min="1"
                                    [ngClass]="{ 'is-invalid':form[('unitQuantity_'+i)] && form[('unitQuantity_'+i)].errors }" />
                             </td>
-                            <td><input type="number"
-                                    [formControlName]="('unitDiscountRate_'+i)" 
-                                    required 
-                                    (change)="GetDetailProductTaxes(i)"
-                                    class="form-control"
-                                     min="1"
-                                     max="100"
-                                      [ngClass]="{ 'is-invalid':form[('unitDiscountRate_'+i)] && form[('unitDiscountRate_'+i)].errors }" />
-                            </td>
-                            <td>{{entry.amount | currency:""}}</td>
-                            <td>{{entry.beforeTaxesAmount | currency:""}}</td>
-                            <td>{{entry.discountAmount | currency:""}}</td>
-                            <td>{{entry.taxesAmount | currency:""}}</td>
+                            
                             <td>{{entry.totalAmount | currency:""}}</td>
+                            <td>{{entry.insuranceCoverageAmount | currency:""}}</td>
+                            <td>{{entry.patientPaymentAmount | currency:""}}</td>
+                            <td><input type="text"
+                                [formControlName]="('insuranceApprovalCode_'+i)" 
+                                required 
+                                class="form-control"
+                                  [ngClass]="{ 'is-invalid':form[('insuranceApprovalCode_'+i)] && form[('insuranceApprovalCode_'+i)].errors }" />
+                        </td>
+                        <td><input type="checkbox" [formControlName]="('noCoverage_'+i)" (change)="setCoverageValue(i)" ></td>
                             <td><button type="button" class="btn btn-danger" [disabled]="entry.appointmentId" (click)="deleteEntry(i)">{{'delete_btn' | translate}}</button></td>
                         </tr>
                     </tbody>
@@ -261,26 +257,16 @@
                 <table *ngIf="entries && entries.length>0" class="table table-bordered text-center">
                     <thead>
                       <tr >
-                        <th>{{'beforeTaxesAmount_lbl' | translate}}</th>
-                        <th>{{'discountAmount_lbl' | translate}}</th>
-                        <th>{{'taxAmount_lbl' | translate}}</th>
-                        <th>{{'creditNoteAmount_lbl' | translate}}</th>
                         <th>{{'totalAmount_lbl' | translate}}</th>
-                        <th>{{'totalPaid_lbl' | translate}}</th>
-                        <th>{{'totalOwed_lbl' | translate}}</th>
-                        <th>{{'returnedAmount_lbl' | translate}}</th>
+                        <th>{{'insuranceCoverageAmount_lbl' | translate}}</th>
+                        <th>{{'patientPaymentAmount_lbl' | translate}}</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td>{{formValues.beforeTaxesAmount | currency:""}}</td>
-                        <td>{{formValues.discountAmount | currency:""}}</td>
-                        <td>{{formValues.taxesAmount | currency:""}}</td>
-                        <td>{{formValues.appliedCreditNoteAmount | currency:""}}</td>
                         <td>{{formValues.totalAmount | currency:""}}</td>
-                        <td>{{formValues.paidAmount | currency:""}}</td>
-                        <td>{{formValues.owedAmount | currency:""}}</td>
-                        <td>{{formValues.returnedAmount | currency:""}}</td>
+                        <td>{{formValues.insuranceCoverageAmount | currency:""}}</td>
+                        <td>{{formValues.patientPaymentAmount | currency:""}}</td>
                       </tr>
                     </tbody>
                   </table>
