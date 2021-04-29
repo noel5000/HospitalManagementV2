@@ -61,7 +61,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         },
         {
             id:'C',
-            name:this.lang.getValueByKey('Consultation_lbl')
+            name:this.lang.getValueByKey('consultation_lbl')
         },
         {
             id:'L',
@@ -69,7 +69,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         },
         {
             id:'E',
-            name:this.lang.getValueByKey('especializedImage_lbl')
+            name:this.lang.getValueByKey('especializedImages_lbl')
         }
     ];
 

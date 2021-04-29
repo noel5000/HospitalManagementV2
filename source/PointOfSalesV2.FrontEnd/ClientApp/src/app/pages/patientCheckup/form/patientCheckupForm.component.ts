@@ -58,7 +58,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         },
         {
             id:'C',
-            name:this.lang.getValueByKey('Consultation_lbl')
+            name:this.lang.getValueByKey('consultation_lbl')
         },
         {
             id:'L',
@@ -66,7 +66,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         },
         {
             id:'E',
-            name:this.lang.getValueByKey('especializedImage_lbl')
+            name:this.lang.getValueByKey('especializedImages_lbl')
         }
     ];
 

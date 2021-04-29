@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PointOfSalesV2.Entities;
+using PointOfSalesV2.Api.Controllers;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using System.Data.SqlClient;
@@ -13,8 +14,10 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using PointOfSalesV2.Common;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.OData.Edm;
 using Newtonsoft.Json;
+using System;
 
 namespace PointOfSalesV2.Test
 {
@@ -30,53 +33,42 @@ namespace PointOfSalesV2.Test
         public void GetLanguageKeysJsonFile() 
         {
             var provider = this.StartDI();
-            var fileLines = System.IO.File.ReadAllLines("C:\\Users\\noelj\\OneDrive\\traducciones.csv").ToList();
+            var fileLines = System.IO.File.ReadAllLines("D:\\Code\\Code\\HospitalV2\\source\\PointOfSalesV2.Common\\languagekeys.csv").ToList();
             var langKeysRepo = provider.GetService<IDataRepositoryFactory>().GetDataRepositories<LanguageKey>();
             var currentKeys = langKeysRepo.GetAll(x => x, y => y.Active == true);
+            List<LanguageKey> list = new List<LanguageKey>();
             fileLines.ForEach(l => {
                 var keyValues = l.Split(",");
-                if (keyValues[0] != "Key")
+                if (keyValues[0] != "LanguageCode")
                 {
                     LanguageKey spanishKey = new LanguageKey()
                     {
                         CreatedBy = new System.Guid(),
-                        CreatedDate = new Date(2000, 1, 1),
+                        CreatedDate = DateTime.Now,
                         Active = true,
                         CreatedByName = "admin",
-                        Key = keyValues[0],
-                        LanguageCode = "ES",
-                        LanguageId = 2,
-                        Value = keyValues[1]
+                        Key = keyValues[1],
+                        LanguageCode = keyValues[0],
+                        LanguageId = Convert.ToInt64(keyValues[9]),
+                        Value = keyValues[10]
                     };
-                    LanguageKey englishKey = new LanguageKey()
-                    {
-                        CreatedBy = new System.Guid(),
-                        CreatedDate = new Date(2000, 1, 1),
-                        Active = true,
-                        CreatedByName = "admin",
-                        Key = keyValues[0],
-                        LanguageCode = "ES",
-                        LanguageId = 1,
-                        Value = keyValues[2]
-                    };
-                    if (!currentKeys.Data.Any(x => x.LanguageCode == spanishKey.LanguageCode && x.Key == spanishKey.Key))
-                    {
-                        langKeysRepo.Add(spanishKey);
-                    }
-                    if (!currentKeys.Data.Any(x => x.LanguageCode == englishKey.LanguageCode && x.Key == englishKey.Key))
-                    {
-                        langKeysRepo.Add(englishKey);
-                    }
+
+                    if (!list.Exists(y => y.Key == spanishKey.Key && y.LanguageCode==spanishKey.LanguageCode))
+                        list.Add(spanishKey);
+                   
+                  
                 }
                
             });
+           
+            langKeysRepo.AddRange(list);
 
             string result = JsonConvert.SerializeObject(langKeysRepo.GetAll().Data);
         }
 
         public ServiceProvider StartDI() 
         {
-            string connectionString = "Server=localhost;Database=ComedoresEconomicos;Trusted_Connection=True;";
+            string connectionString = "Server=localhost\\MSSQLSERVER01;Database=hospitalV2;Trusted_Connection=True;";
             ServiceProvider serviceProvider = new ServiceCollection()
                   .AddDbContext<MainDataContext>(options =>
                   {
