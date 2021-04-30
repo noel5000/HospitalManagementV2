@@ -55,6 +55,12 @@
 <div *ngFor="let checkup of patientCheckups" class="checkupsHistory">
   <div class="form-row my-1 mx-1">
     <div class="form-group col-md-12 col-xs-12">
+      <label>{{'date_lbl' | translate}}</label>
+      <input type="text" [value]="checkup.dayFormatted"
+      disabled class="form-control" />
+     
+  </div>
+    <div class="form-group col-md-12 col-xs-12">
         <label>{{'doctor_lbl' | translate}}</label>
         <input type="text" [value]="checkup.doctor.fullName"
         disabled class="form-control" />

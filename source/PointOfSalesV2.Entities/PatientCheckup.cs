@@ -31,6 +31,15 @@ namespace PointOfSalesV2.Entities
             }
         }
 
+        [NotMapped]
+        public string DayFormatted
+        {
+            get
+            {
+                return Date.ToString("yyyy-MM-dd");
+            }
+        }
+
 
         [ForeignKey("PatientId")]
         public Customer Patient { get; set; }
