@@ -250,6 +250,11 @@ export class PagesComponent {
             title: this.lang.getValueByKey('taxesReport_menu'),
             link: 'taxesreport',
             hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
+          },
+          {
+            title: this.lang.getValueByKey('insuranceCoveragesReport_menu'),
+            link: 'insurancecoveragereport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
           }
         ],
       },

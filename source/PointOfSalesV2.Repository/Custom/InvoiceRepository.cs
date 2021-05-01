@@ -28,10 +28,7 @@ namespace PointOfSalesV2.Repository
         public override IQueryable<TResult> GetAll<TResult>(Func<IQueryable<Invoice>, IQueryable<TResult>> transform, Expression<Func<Invoice, bool>> filter = null, string sortExpression = null)
         {
             var _DbSet = _Context.Set<Invoice>();
-            var query = filter == null ? _DbSet.AsNoTracking().Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient).Include(x=>x.Appointment)
-                .Include(x => x.BranchOffice).Include(x => x.TRNControl).Include(x => x.Seller)
-                .OrderBy(sortExpression) : _DbSet.AsNoTracking().Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient)
-                .Include(x => x.BranchOffice).Include(x => x.TRNControl).Include(x => x.Seller).Where(filter).OrderBy(sortExpression);
+            var query = filter == null ? _DbSet.AsNoTracking().OrderBy(sortExpression) : _DbSet.AsNoTracking().Where(filter).OrderBy(sortExpression);
 
             var notSortedResults = transform(query);
 
@@ -42,7 +39,10 @@ namespace PointOfSalesV2.Repository
         public IEnumerable<Invoice> GetAccountsReceivable(DateTime? startDate, DateTime? endDate, long? customerId, long? currencyId, long? sellerId, long? branchOfficeId)
         {
 
-            return this.GetAll<Invoice>(y => y, x =>
+            return this.GetAll<Invoice>(y => y.AsNoTracking()
+           .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Currency).Include(x => x.Patient).Include(x => x.Appointment)
+                .Include(x => x.BranchOffice).Include(x => x.TRNControl).Include(x => x.Seller)
+            , x =>
              x.Active == true && (startDate.HasValue ? x.BillingDate >= startDate.Value : x.BillingDate > DateTime.MinValue) &&
             (endDate.HasValue ? x.BillingDate <= endDate.Value : x.BillingDate < DateTime.Now) &&
             (customerId.HasValue && customerId.Value > 0 ? x.CustomerId == customerId.Value : x.CustomerId > 0) &&
@@ -60,7 +60,8 @@ namespace PointOfSalesV2.Repository
 
         public Invoice GetByInvoiceNumber(string invoiceNumber)
         {
-            var invoice = _Context.Invoices.Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
+            var invoice = _Context.Invoices.Include(x=>x.Appointment).Include(x => x.Insurance).Include(x => x.InsurancePlan)
+                .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
                 .Include(x => x.Patient).AsNoTracking().FirstOrDefault(x => x.Active == true && x.InvoiceNumber.ToLower() == invoiceNumber.ToLower());
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             return invoice;
@@ -78,8 +79,48 @@ namespace PointOfSalesV2.Repository
          (endDate.HasValue ? invoice.BillingDate <= endDate.Value : invoice.Id > 0) && (customerId.HasValue && customerId.Value > 0 ? invoice.CustomerId == customerId.Value : invoice.Id > 0) &&
          (currencyId.HasValue && currencyId.Value > 0 ? invoice.CurrencyId == currencyId.Value : invoice.Id > 0) && (sellerId.HasValue && sellerId.Value > 0 ? invoice.SellerId == sellerId.Value : invoice.Id > 0)
          && (invoice.State != (char)Enums.BillingStates.Nulled);
-            return _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x => x.BranchOffice).Include(x => x.Appointment)
+            return _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x => x.BranchOffice).Include(x => x.Appointment)
                 .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Where(func);
+        }
+
+        public List<InsurancCoverageDetail> GetInsuranceCoverages(DateTime? startDate, DateTime? endDate, long? insuranceId, long? insurancePlanId, long? currencyId, long? branchOfficeId)
+        {
+            var validStates = new List<char>() 
+            {
+            (char)BillingStates.Paid,
+            (char)BillingStates.FullPaid,
+            (char)BillingStates.Billed,
+            
+            };
+            Func<Invoice, bool> func = invoice => invoice.Active == true &&invoice.InsuranceId.HasValue==true && (startDate.HasValue ? invoice.BillingDate >= startDate.Value : invoice.Id > 0) &&
+             (branchOfficeId.HasValue && branchOfficeId.Value > 0 ? invoice.BranchOfficeId == branchOfficeId.Value : invoice.BranchOfficeId > 0) &&
+         (endDate.HasValue ? invoice.BillingDate <= endDate.Value : invoice.Id > 0) &&
+         (insuranceId.HasValue && insuranceId.Value > 0 ? invoice.InsuranceId == insuranceId.Value : invoice.Id > 0) &&
+         (insurancePlanId.HasValue && insurancePlanId.Value > 0 ? invoice.InsurancePlanId == insurancePlanId.Value : invoice.Id > 0) &&
+         (currencyId.HasValue && currencyId.Value > 0 ? invoice.CurrencyId == currencyId.Value : invoice.Id > 0)&&
+         (validStates.Contains(invoice.State) );
+            var invoices = _Context.Invoices.AsNoTracking().Include(x => x.Patient)
+                .Include(x=>x.InvoiceDetails).ThenInclude(d=>d.Product)
+                .Include(x => x.InvoiceDetails).ThenInclude(d => d.Doctor)
+                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.BranchOffice).Include(x => x.Appointment)
+              .Include(x => x.Currency).Where(func).ToList();
+
+            List<InsurancCoverageDetail> result = new List<InsurancCoverageDetail>();
+            invoices.ForEach(invoice => {
+                var details = invoice.InvoiceDetails.Where(x => x.Active == true).Select(f => new InsurancCoverageDetail(f) { 
+               Insurance=invoice.Insurance,
+               InsurancePlan=invoice.InsurancePlan,
+               InvoiceState=invoice.State,
+               InsuranceCardId=invoice.InsuranceCardId,
+               InvoiceNumber=invoice.InvoiceNumber,
+               PatientName=invoice.Patient.NameAndCode,
+               PatientCardId=invoice.Patient.CardId,
+               Currency=invoice.Currency,
+               Doctor=f.Doctor
+                }).ToList();
+                result.AddRange(details);
+            });
+            return result;
         }
 
         public IEnumerable<Invoice> GetInvoicesToPay(long branchOfficeId = 0, long currencyId = 0, long customerId = 0)
@@ -89,7 +130,7 @@ namespace PointOfSalesV2.Repository
           (customerId > 0 ? invoice.CustomerId == customerId : invoice.CustomerId > 0) &&
          (currencyId > 0 ? invoice.CurrencyId == currencyId : invoice.CurrencyId > 0) && (branchOfficeId > 0 ? invoice.BranchOfficeId == branchOfficeId : invoice.BranchOfficeId > 0)
          && (invoiceStates.Any(x => x == invoice.State)) && (invoice.OwedAmount > 0) && (invoice.PaidAmount < invoice.TotalAmount);
-            return _Context.Invoices.AsNoTracking().Include(x => x.Patient).ThenInclude(x => x.Insurance)
+            return _Context.Invoices.AsNoTracking().Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).ThenInclude(x => x.Insurance)
                 .Include(x => x.Patient).ThenInclude(x => x.InsurancePlan)
                 .Include(x => x.BranchOffice)
                 .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Appointment).Where(func);
@@ -783,7 +824,7 @@ namespace PointOfSalesV2.Repository
                 && x.Date >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.Date <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToList();
 
             var invoices = _Context.Invoices.Include(x => x.Payments).ThenInclude(p => p.Currency)
-                .Include(x => x.Patient)
+                .Include(x => x.Patient).Include(x => x.Insurance).Include(x => x.InsurancePlan)
                 .Include(x=>x.Appointment).Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
                   && x.BillingDate >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.BillingDate <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToList();
 
@@ -832,7 +873,7 @@ namespace PointOfSalesV2.Repository
                 result.Add(new CompanyStateModel()
                 {
                     CompanyOwedAmount = 0,
-                    CustomersOwedAmount = invoice.TotalAmount,
+                    CustomersOwedAmount = invoice.PatientPaymentAmount,
                     IncomeAmount = 0,
                     OutcomeAmount = invoice.Cost,
                     CurrencyCode = invoice.Currency.Code,
@@ -843,7 +884,7 @@ namespace PointOfSalesV2.Repository
                     Reference = invoice.InvoiceNumber,
                     Details = $"{invoice.Patient.NameAndCode}",
                     ExchangeRate = invoice.ExchangeRate,
-                    SellerName = string.Empty
+                    SellerName =invoice.Seller==null? string.Empty:invoice.Seller.NameAndCode
                 });
                 invoice.Payments.Where(x => x.Active == true && x.State == (char)BillingStates.Paid).ToList().ForEach(payment =>
                 {
@@ -861,7 +902,7 @@ namespace PointOfSalesV2.Repository
                         Details = $"{invoice.Patient.NameAndCode}",
                         ExchangeRate = payment.ExchangeRate,
                         Reference = payment.Sequence,
-                        SellerName = string.Empty
+                        SellerName = payment.Seller == null ? string.Empty : invoice.Seller.NameAndCode
                     });
                 });
             });

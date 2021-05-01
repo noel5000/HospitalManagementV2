@@ -18,5 +18,7 @@ namespace PointOfSalesV2.Repository
 
         List<CompanyStateModel> GetCompanyStatus(DateTime? initialDate, DateTime? endDate);
 
+        List<InsurancCoverageDetail> GetInsuranceCoverages(DateTime? startDate, DateTime? endDate, long? insuranceId, long? insurancePlanId, long? currencyId, long? branchOfficeId);
+
     }
 }

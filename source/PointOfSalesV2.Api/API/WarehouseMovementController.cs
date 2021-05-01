@@ -103,7 +103,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                     return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                return BadRequest(new { status = -1, message = "Documento no existe" });
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
 
             }

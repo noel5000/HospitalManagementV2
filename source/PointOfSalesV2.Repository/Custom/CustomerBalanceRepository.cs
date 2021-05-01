@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Repository
                     SellerName = x.Seller?.NameAndCode ?? "N/A",
                     Reference = "N/A",
                     Credit = 0,
-                    Debit = x.TotalAmount,
+                    Debit = x.PatientPaymentAmount,
                     Balance = x.OwedAmount,
                     CustomerName=report.Customer?.NameAndCode??""
                 });

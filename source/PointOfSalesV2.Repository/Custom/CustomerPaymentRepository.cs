@@ -33,7 +33,9 @@ namespace PointOfSalesV2.Repository
 
         public List<CustomerPayment> IncomesReport(long branchOfficeId, long customerId, long currencyId, long paymentTypeId, DateTime? initialDate, DateTime? endDate)
         {
-            return _Context.CustomersPayments.Include(x=>x.Invoice)
+            return _Context.CustomersPayments
+                .Include(x => x.Invoice).ThenInclude(i=>i.Insurance)
+                .Include(x => x.Invoice).ThenInclude(i => i.InsurancePlan)
                 .Include(x=>x.Customer)
                 .Include(x => x.Currency)
                 .Include(x => x.Seller)

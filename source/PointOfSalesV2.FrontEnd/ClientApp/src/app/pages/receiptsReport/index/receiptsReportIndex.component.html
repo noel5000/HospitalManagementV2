@@ -79,12 +79,14 @@
   <table class="table">
     <thead>
       <tr>
-        <th>{{'customer_lbl' | translate}}</th>
+        <th>{{'patient_lbl' | translate}}</th>
         <th>{{'invoiceNumber_lbl' | translate}}</th>
         <th>{{'currency_lbl' | translate}}</th>
+        <th>{{'totalAmount_lbl' | translate}}</th>
+        <th>{{'insuranceCoverageAmount_lbl' | translate}}</th>
+        <th>{{'patientPaymentAmount_lbl' | translate}}</th>  
         <th>{{'paidAmount_lbl' | translate}}</th>
         <th>{{'owedAmount_lbl' | translate}}</th>
-        <th>{{'totalAmount_lbl' | translate}}</th>
         <th>{{'date_lbl' | translate}}</th>
         <th>{{'sequence_lbl' | translate}}</th>
         <th>{{'daysAmount_lbl' | translate}}</th>
@@ -92,12 +94,14 @@
     </thead>
     <tbody>
       <tr *ngFor=" let invoice of invoices">
-        <td>{{invoice.patient.nameAndCode}}</td>
+        <td>{{invoice.customer.nameAndCode}}</td>
         <td>{{invoice.invoiceNumber}}</td>
         <td>{{invoice.currency.code}}</td>
+        <td>{{invoice.totalAmount | currency:"" }}</td>
+        <td>{{(invoice.invoice?invoice.invoice.insuranceCoverageAmount:0) | currency:"" }}</td>
+        <td>{{(!invoice.invoice?0:invoice.invoice.patientPaymentAmount) | currency:"" }}</td>
         <td>{{invoice.paidAmount | currency:"" }}</td>
         <td>{{invoice.outstandingAmount | currency:"" }}</td>
-        <td>{{invoice.totalAmount | currency:"" }}</td>
         <td>{{invoice.date | date:"shortDate"}}</td>
         <td>{{invoice.sequence }}</td>
         <td>{{invoice.daysCount}}</td>
@@ -109,17 +113,17 @@
       <hr>
       <table *ngIf="invoices && invoices.length>0" class="table table-bordered text-center">
         <thead>
-          <tr class="row">
-            <th class="col-4">{{'totalBilled_lbl' | translate}}</th>
-            <th class="col-4">{{'totalPaid_lbl' | translate}}</th>
-            <th class="col-4">{{'totalOwed_lbl' | translate}}</th>
+          <tr >
+            <th >{{'totalBilled_lbl' | translate}}</th>
+            <th >{{'totalPaid_lbl' | translate}}</th>
+            <th >{{'totalOwed_lbl' | translate}}</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="row">
-            <td class="col-4">{{getTotalAmount(invoices,'totalAmount') | currency:""}}</td>
-            <td class="col-4">{{getTotalAmount(invoices,'paidAmount') | currency:""}}</td>
-            <td class="col-4">{{getTotalAmount(invoices,'outstandingAmount') | currency:""}}</td>
+          <tr >
+            <td >{{getTotalAmount(invoices,'totalAmount') | currency:""}}</td>
+            <td >{{getTotalAmount(invoices,'paidAmount') | currency:""}}</td>
+            <td >{{getTotalAmount(invoices,'outstandingAmount') | currency:""}}</td>
           </tr>
         </tbody>
       </table>

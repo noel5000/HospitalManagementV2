@@ -167,6 +167,83 @@ namespace PointOfSalesV2.Api.Controllers
 
         }
 
+        [EnableCors("AllowAllOrigins")]
+        [HttpGet("GetInsuranceCoverages/{branchOfficeId:long}/{currencyId:long}/{insuranceId:long}/{insurancePlanId:long}/{startDate}/{endDate}")]
+        [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
+        public virtual Task<IActionResult> GetInsuranceCoverages(long branchOfficeId = 0, long currencyId = 0,long insuranceId=0,long insurancePlanId=0, string startDate = "0", string endDate = "0")
+        {
+            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
+                try
+                {
+                    var t_inputs = arg as Tuple<long, long, long, long, string, string>;
+                    var invoices = _customRepo.GetInsuranceCoverages(
+                        t_inputs.Item5 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item5),
+                        t_inputs.Item6 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item6),
+                        t_inputs.Item3, 
+                        t_inputs.Item4,
+                        t_inputs.Item2,
+                        t_inputs.Item1);
+                    return Ok(new { status = 0, id = 0, data = invoices });
+                }
+                catch (Exception ex)
+                {
+                    SaveException(ex);
+                    return Ok(new { status = -1, message = ex.Message });
+                }
+
+            }, new Tuple<long, long, long,long, string, string>(branchOfficeId, currencyId, insuranceId, insurancePlanId, startDate, endDate));
+
+            return t_result;
+
+
+        }
+
+        [EnableCors("AllowAllOrigins")]
+        [HttpPost("GetInsuranceCoveragesExport/{branchOfficeId:long}/{currencyId:long}/{insuranceId:long}/{insurancePlanId:long}/{startDate}/{endDate}")]
+        [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
+        public virtual Task<IActionResult> GetInsuranceCoveragesExport(long branchOfficeId = 0, long currencyId = 0, long insuranceId = 0, long insurancePlanId = 0, string startDate = "0", string endDate = "0")
+        {
+            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
+                try
+                {
+                    var t_inputs = arg as Tuple<long, long, long, long, string, string>;
+                    var invoices = _customRepo.GetInsuranceCoverages(
+                        t_inputs.Item5 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item5),
+                        t_inputs.Item6 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item6),
+                        t_inputs.Item3,
+                        t_inputs.Item4,
+                        t_inputs.Item2,
+                        t_inputs.Item1);
+
+
+                    string requestLanguage = "EN";
+                    var languageIdHeader = this.Request.Headers["languageid"];
+                    requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                    var excelData = ExportUtility.GetExcelData<InsurancCoverageDetail>(invoices, requestLanguage, this.languageKeys.ToList());
+                    var excelStream = ExcelImport.CreateXlsStream(
+                        excelData.Item1,
+                       excelData.Item2
+                       );
+                    if (invoices != null && excelStream != null && excelStream.Length > 0)
+                    {
+
+                        return File(excelStream.ToArray(), "application/octet-stream", $"Report-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
+                    }
+                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
+                }
+                catch (Exception ex)
+                {
+                    SaveException(ex);
+                    return Ok(new { status = -1, message = ex.Message });
+                }
+
+            }, new Tuple<long, long, long, long, string, string>(branchOfficeId, currencyId, insuranceId, insurancePlanId, startDate, endDate));
+
+            return t_result;
+
+
+        }
+
         [HttpPost("ExportAccountReceivables/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{startDate}/{endDate}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
@@ -196,7 +273,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                             return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                         }
-                        return BadRequest(new { status = -1, message = "Documento no existe" });
+                        return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
 
                     
@@ -271,7 +348,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                         return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                     }
-                    return BadRequest(new { status = -1, message = "Documento no existe" });
+                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
 
 
