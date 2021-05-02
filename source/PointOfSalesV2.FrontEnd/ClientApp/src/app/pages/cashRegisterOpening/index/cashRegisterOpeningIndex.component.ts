@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { CashRegisterOpening } from '../../../@core/data/CashRegisterOpening';
@@ -180,7 +180,7 @@ this.actions=[
         icon:'',
         id:'edit',
         visible:(item)=>{
-            return item.state == CashRegisterOpeningStates.Open;
+            return item.state == CashRegisterOpeningStates.Open && this.isUserValidOperation(Operations.UPDATE);
          }
    
     },
@@ -190,7 +190,7 @@ this.actions=[
         icon:'',
         id:'closeRegister',
         visible:(item)=>{
-            return item.state == CashRegisterOpeningStates.Open;
+            return item.state == CashRegisterOpeningStates.Open && this.isUserValidOperation(Operations.UPDATE);
          }
     },
     {
@@ -199,7 +199,7 @@ this.actions=[
         icon:'',
         id:'delete',
         visible:(item)=>{
-            return item.state == CashRegisterOpeningStates.Open;
+            return item.state == CashRegisterOpeningStates.Open && this.isUserValidOperation(Operations.DELETE);
          }
     }
 ];

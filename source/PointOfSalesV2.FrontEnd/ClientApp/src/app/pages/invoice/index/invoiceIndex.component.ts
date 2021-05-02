@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -200,7 +200,7 @@ this.actions=[
         icon:'',
         id:'edit',
         visible:(item)=>{
-            return item.state == BillingStates.Billed ;
+            return item.state == BillingStates.Billed && this.isUserValidOperation(Operations.UPDATE);
         }
     },
     {
@@ -209,8 +209,8 @@ this.actions=[
         icon:'',
         id:'pay',
         visible:(item)=>{
-            return false;
-          // return item.state != BillingStates.Nulled;
+            //return false;
+           return item.state != BillingStates.Nulled && this.isUserValidOperation(Operations.UPDATE);
         }
     },
     {
@@ -219,7 +219,7 @@ this.actions=[
         icon:'',
         id:'delete',
         visible:(item)=>{
-           return item.state == BillingStates.Billed ;
+           return item.state == BillingStates.Billed && this.isUserValidOperation(Operations.DELETE) ;
         }
     },
     

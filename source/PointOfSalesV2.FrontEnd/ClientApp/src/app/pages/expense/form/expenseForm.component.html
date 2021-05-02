@@ -176,7 +176,7 @@
           
 
             <div class="text-center">
-                <button class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
+                <button *ngIf="this.permits.add || this.permits.update" class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
                 <button class="btn btn-secondary" type="reset" (click)="cancel()">{{'cancel_btn' | translate}}</button>
             </div>
         </form>

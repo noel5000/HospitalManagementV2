@@ -117,7 +117,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
          modalService:ModalService,
       private  http: HttpClient
         ){
-      super(route, langService, AppSections.Users,modalService);  
+      super(route, langService, AppSections.Appointment,modalService);  
       this.itemForm = this.formBuilder.group({
         branchOfficeId: [0],
         doctorId: ["null"],

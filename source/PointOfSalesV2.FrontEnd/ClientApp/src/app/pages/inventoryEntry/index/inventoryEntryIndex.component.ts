@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -205,7 +205,10 @@ this.actions=[
         title:scope.lang.getValueByKey('reverse_btn'),
         class:'btn btn-danger',
         icon:'',
-        id:'delete'
+        id:'delete',
+        visible:()=>{
+            return this.isUserValidOperation(Operations.DELETE);
+        }
     }
 ];
        

@@ -337,7 +337,9 @@ namespace PointOfSalesV2.Common
             TAXREPORT = 16,
             GENERATEDICTIONARY = 17,
             COMISSIONSREPORT = 18,
-            PRODUCTMOVEMENTS = 19
+            PRODUCTMOVEMENTS = 19,
+            PATIENSHISTORY=20,
+            ATTENDPATIENT=21
 
         }
     }

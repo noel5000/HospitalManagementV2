@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates } from '../../../@core/common/enums';
+import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../../@core/services/ExpenseService';
@@ -149,7 +149,7 @@ this.actions=[
         icon:'',
         id:'delete',
         visible:(item)=>{
-           return item.state != BillingStates.Nulled;
+           return item.state != BillingStates.Nulled && this.isUserValidOperation(Operations.DELETE);
         }
     },
     {
