@@ -220,8 +220,12 @@ namespace PointOfSalesV2.Common
             InsurancePlan = 54,
             InsuranceCoverage = 55,
             Appointment = 56,
-            PatientCheckup=57
-
+            PatientCheckup=57,
+            MedicalSpecialities=58,
+            AppointmentAttend=59,
+            PatientHistory=60,
+            InsurancesCoveragesReport=61,
+            CheckupAttachment=62
         }
         public enum MovementTypes
         {
@@ -241,7 +245,7 @@ namespace PointOfSalesV2.Common
             { AppSections.NotSpecified,""},
             {AppSections.Permissions,"User,UserClaims,Role,RoleSection,Section,SectionOperation" },
             {AppSections.CustomerRates,"Customer,CustomerRate" },
-            {AppSections.Products,"Product,ProductTax" },
+            {AppSections.Products,"Product,ProductTax,MedicalSpeciality,Tax,ProductUnit,ProductCost,ProductComposite" },
             {AppSections.CustomerPayments,"Customer,CustomerPayment" },
             {AppSections.Currencies,"Currency" },
             {AppSections.Taxes,"Tax" },
@@ -250,8 +254,7 @@ namespace PointOfSalesV2.Common
             {AppSections.Quotes,"Invoice,InvoiceDetail,Unit,UnitProductEquivalence,Seller,Currency,Customer,Insurance,InsurancePlan" },
             {AppSections.Customers,"Customer,BranchOffice,Warehouse,TRNControl,Zone,Invoice,InvoicePlan,Insurance,InsurancePlan" },
             {AppSections.Warehouses,"BranchOffice,Warehouse" },
-           { AppSections.Insurance,"Insurance,Currency"},
-           { AppSections.InsurancePlan,"InsurancePlan,Insurance,Currency"},
+        
             {AppSections.All,"*" },
             {AppSections.Inventories,"Inventory,Product,BranchOffice,Warehouse,Supplier" },
             {AppSections.TRNControl,"TRNControl" },
@@ -260,7 +263,7 @@ namespace PointOfSalesV2.Common
             {AppSections.ExpensesPayments,"Supplier,BranchOffice,User,Currency,Tax,ExpensesPayment" },
             {AppSections.Suppliers,"Supplier" },
             {AppSections.Units,"Unit" },
-            {AppSections.Users,"User,BranchOffice,Warehouse,CashRegister" },
+            {AppSections.Users,"User,BranchOffice,Warehouse,CashRegister,MedicalSpeciality" },
             {AppSections.PaymentTypes,"PaymentType" },
             {AppSections.CashRegisters,"CashRegister,BranchOffice" },
             {AppSections.CashRegisterOpenings,"CashRegister,User,CashRegisterOpening" },
@@ -292,8 +295,15 @@ namespace PointOfSalesV2.Common
             {AppSections.CompanyPayments,"CompanyPayment" },
             {AppSections.Menu,"" },
            { AppSections.School,"School,BranchOffice,Zone,Customer"},
-            {AppSections.Appointment,"" },
-            {AppSections.PatientCheckup,"" },
+            {AppSections.Insurance,"Insurance,InsurancePlan,Currency" },
+            {AppSections.InsurancePlan,"InsurancePlan" },
+            {AppSections.CheckupAttachment,"" },
+            {AppSections.InsuranceCoverage,"InsuranceServiceCoverage,Insurance,InsurancePlan,Product,Currency" },
+            {AppSections.Appointment,"MedicalSpeciality,Appointment,User,ProductUnit,ProductTax,InsuranceServiceCoverage,BranchOffice,Customer,Product" },
+            {AppSections.PatientCheckup,"PatientCheckup,CheckupAttachment,Appointment,MedicalSpeciality,Product,Customer" },
+            {AppSections.MedicalSpecialities,"MedicalSpeciality" },
+            {AppSections.InsurancesCoveragesReport,"Invoice,Insurance,Currency,BranchOffice" },
+
         };
         public enum Gender
         {

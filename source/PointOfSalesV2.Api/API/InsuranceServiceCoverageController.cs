@@ -20,7 +20,7 @@ namespace PointOfSalesV2.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.InsurancePlan)]
+    [ControllerAuthorize(Common.Enums.AppSections.InsuranceCoverage)]
     public class InsuranceServiceCoverageController : BaseController<InsuranceServiceCoverage>
     {
         readonly IInsuranceRepository _customRepo;

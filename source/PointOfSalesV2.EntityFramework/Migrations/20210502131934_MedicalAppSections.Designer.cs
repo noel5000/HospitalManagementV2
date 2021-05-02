@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210502131934_MedicalAppSections")]
+    partial class MedicalAppSections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4218,16 +4220,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
-                            Key = "documentDoesntExist_msg",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Document does not exist"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
                             Key = "documentNumber_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4654,16 +4646,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Insurance coverage amount"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "insuranceCoveragesReport_menu",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Coverages report"
                         },
                         new
                         {
@@ -6544,16 +6526,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Total income"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "totalInsuranceCoverage_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Total Coverage amount"
                         },
                         new
                         {
@@ -8468,16 +8440,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
-                            Key = "documentDoesntExist_msg",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Documento no existe"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
                             Key = "documentNumber_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -8904,16 +8866,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Monto de Cobertura"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "insuranceCoveragesReport_menu",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Reporte de coverturas"
                         },
                         new
                         {
@@ -10794,16 +10746,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Monto total de entradas"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "totalInsuranceCoverage_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Monto total de covertura"
                         },
                         new
                         {

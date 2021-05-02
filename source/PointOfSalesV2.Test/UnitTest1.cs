@@ -35,7 +35,7 @@ namespace PointOfSalesV2.Test
             var provider = this.StartDI();
             var fileLines = System.IO.File.ReadAllLines("D:\\Code\\Code\\HospitalV2\\source\\PointOfSalesV2.Common\\languagekeys.csv").ToList();
             var langKeysRepo = provider.GetService<IDataRepositoryFactory>().GetDataRepositories<LanguageKey>();
-            var currentKeys = langKeysRepo.GetAll(x => x, y => y.Active == true);
+          
             List<LanguageKey> list = new List<LanguageKey>();
             fileLines.ForEach(l => {
                 var keyValues = l.Split(",");
@@ -53,15 +53,32 @@ namespace PointOfSalesV2.Test
                         Value = keyValues[10]
                     };
 
-                    if (!list.Exists(y => y.Key == spanishKey.Key && y.LanguageCode==spanishKey.LanguageCode))
+                    if (!list.Exists(y => y.Key == spanishKey.Key && y.LanguageId==spanishKey.LanguageId))
                         list.Add(spanishKey);
                    
                   
                 }
                
             });
-           
-            langKeysRepo.AddRange(list);
+            var repoKeys = langKeysRepo.GetAll().Data.ToList();
+            foreach (var key in list) 
+            {
+                var index = repoKeys.FindIndex(x => x.LanguageId == key.LanguageId && x.Key.ToLower() == key.Key.ToLower());
+                if (index >= 0)
+                {
+                    var currentKey = repoKeys[index];
+                    currentKey.Value = key.Value;
+                    langKeysRepo.Update(currentKey);
+                }
+                else 
+                {
+                    var addResult = langKeysRepo.Add(key);
+                    if (addResult.Status < 0)
+                        throw addResult.Exception;
+                }
+              
+            }
+          
 
             string result = JsonConvert.SerializeObject(langKeysRepo.GetAll().Data);
         }

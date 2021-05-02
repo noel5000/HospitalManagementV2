@@ -188,9 +188,18 @@ export enum AppSections {
     InventoryIncomes = 47,
     CompanyPayments=48,
     Menu=49,
-    Insurance=53,
-    InsurancePlan=54,
-    PatientCheckup=55
+    School = 50,
+    SchoolMenu = 51,
+    InvoiceLeads = 52,
+    Insurance = 53,
+    InsurancePlan = 54,
+    InsuranceCoverage = 55,
+    Appointment = 56,
+    PatientCheckup=57,
+    MedicalSpecialities=58,
+    AppointmentAttend=59,
+    PatientHistory=60,
+    InsurancesCoveragesReport=61
 
 }
 export enum MovementTypes {
