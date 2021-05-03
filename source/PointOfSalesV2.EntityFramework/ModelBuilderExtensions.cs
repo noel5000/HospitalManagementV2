@@ -37,6 +37,7 @@ namespace PointOfSalesV2.EntityFramework
                 {
                     Id = (long)section,
                     Name = section.ToString(),
+                    Controllers=Common.Enums.SectionsControllers.ContainsKey(section)?SectionsControllers.GetValueOrDefault(section):"",
                     Active = true,
                     CreatedBy = new Guid("8A2FDD4A-E702-482C-F181-08D7015E3521"),
                     CreatedDate = new DateTime(2000, 1, 1),

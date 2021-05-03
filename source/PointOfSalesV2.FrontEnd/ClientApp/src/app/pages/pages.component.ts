@@ -46,7 +46,7 @@ export class PagesComponent {
           },
           {
             title: this.lang.getValueByKey('logOut_btn'),
-            link: '/auth/logout',
+            link: '/pages/logout',
             hidden: false
           },
           {
@@ -127,7 +127,7 @@ export class PagesComponent {
       {
         title: this.lang.getValueByKey('appointment_menu'),
         icon: 'printer-outline',
-        hidden: !this.securityService.validateMenuChildren(menuChildren.cashRegister),
+        hidden: !this.securityService.isUserValidInMenu(AppSections.Appointment),
         link:'appointment'
       },
       {

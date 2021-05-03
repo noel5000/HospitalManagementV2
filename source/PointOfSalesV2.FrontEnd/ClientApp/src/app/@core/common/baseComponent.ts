@@ -129,6 +129,7 @@ export class BaseComponent  {
     router: Router;
     lang: LanguageService;
     getUserAuthorizations() {
+        const url = window.location.href;
         const sectionOperations = this.authModel.user.permissions.filter(x => x.sectionId === this.section);
         this.permits.read = sectionOperations.length==0 || sectionOperations.findIndex(x => x.operationId === Operations.READ ||
             x.operationId === Operations.READALL) >= 0;
@@ -140,7 +141,7 @@ export class BaseComponent  {
         if (sectionOperations.findIndex(x => x.operationId === Operations.ALL) >= 0 || sectionOperations.length == 0) {
             this.permits = { read: true, update: true, delete: true, add: true, readPaged: true };
         }
-        if (!this.permits.read || (!this.permits.add && !this.permits.update && !this.permits.delete)) {
+        if (!this.permits.read || ((url.indexOf('add')>=0 || url.indexOf('edit')>=0) &&!this.permits.add && !this.permits.update && !this.permits.delete)) {
             this.returnToLogin();
         }
         const currentUrl = this.router.url.split('/');

@@ -58,6 +58,7 @@ import { appointmentsModule } from './appointment/appointment.module';
 import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.module';
 import { PatientCheckupModule } from './patientCheckup/patientCheckup.module';
 import { insuranceCoveragesReportModule } from './insuranceCoveragesReport/insuranceCoveragesReport.module';
+import { LogoutModule } from './logout/logout.module';
 
 @NgModule({
   imports: [
@@ -109,7 +110,8 @@ import { insuranceCoveragesReportModule } from './insuranceCoveragesReport/insur
     appointmentsModule,
     insuranceCoverageModule,
     PatientCheckupModule,
-    insuranceCoveragesReportModule
+    insuranceCoveragesReportModule,
+    LogoutModule
   ],
   declarations: [
     PagesComponent,

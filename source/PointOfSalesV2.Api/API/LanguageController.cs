@@ -18,18 +18,28 @@ namespace PointOfSalesV2.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LanguageController : BaseController<Language>
+    public class LanguageController :Controller
     {
-        private readonly ILanguageKeyRepository languageKeyRepository;
-        public LanguageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache)
+        private readonly ILanguageKeyRepository languageKeyRepository; 
+        protected readonly IDataRepositoryFactory _repositoryFactory;
+        protected readonly IOptions<AppSettings> _appSettings;
+        protected readonly IBase<Language> _baseRepo;
+        protected readonly IMemoryCache _cache;
+        protected readonly IBase<LanguageKey> languageKeysRepo;
+        protected readonly IBase<ExceptionLog> exceptionsRepo;
+        protected IEnumerable<LanguageKey> languageKeys;
+        public LanguageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) 
         {
             this.languageKeyRepository = repositoryFactory.GetCustomDataRepositories<ILanguageKeyRepository>();
+            this._baseRepo = repositoryFactory.GetDataRepositories<Language>();
+            _appSettings = appSettings;
+            _cache = cache;
         }
 
         [HttpGet]
-        [EnableCors("AllowAllOrigins")]
         [EnableQuery()]
-        public override IActionResult Get()
+        [EnableCors("AllowAllOrigins")]
+        public  IActionResult Get()
         {
             try
             {
@@ -39,7 +49,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -59,7 +69,7 @@ namespace PointOfSalesV2.Api.Controllers
             }
             catch(Exception ex)
             {
-                SaveException(ex);
+                
                 return Ok(new Result<object>(-1, -1, "errorDictionary_msg"));
             }
         }
@@ -71,7 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet("{id:long}")]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get(long id)
+        public  IActionResult Get(long id)
         {
             try
             {
@@ -81,14 +91,14 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
 
         [HttpGet("{number:int}/{size:int}")]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get(int number, int size)
+        public  IActionResult Get(int number, int size)
         {
             try
             {
@@ -100,7 +110,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -112,7 +122,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Post([FromBody] Language model)
+        public  IActionResult Post([FromBody] Language model)
         {
             
                 return Ok(new { status = -1 });
@@ -122,7 +132,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Put([FromBody] Language model)
+        public  IActionResult Put([FromBody] Language model)
         {
             return Ok(new { status = -1 });
 
@@ -130,7 +140,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpDelete("{id:long}")]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Delete(long id)
+        public  IActionResult Delete(long id)
         {
             return Ok(new { status = -1 });
 

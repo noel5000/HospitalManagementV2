@@ -79,6 +79,7 @@ import { patientCheckupIndexComponent } from './patientCheckup/index/patientChec
 import { patientCheckupFormComponent } from './patientCheckup/form/patientCheckupForm.component';
 import { patientCheckupEditFormComponent } from './patientCheckup/edit/patientCheckupEditForm.component';
 import { insuranceCoveragesReportComponent } from './insuranceCoveragesReport/index/insuranceCoveragesReport.component';
+import { LogoutIndexComponent } from './logout/index/logoutIndex.component';
 
 const routes: Routes = [{
   path: '',
@@ -509,6 +510,10 @@ component: AccountStateIndexComponent
 {
   path: 'insurancecoveragereport',
   component: insuranceCoveragesReportComponent
+},
+{
+  path: 'logout',
+  component: LogoutIndexComponent
 },
   ],
 }];
