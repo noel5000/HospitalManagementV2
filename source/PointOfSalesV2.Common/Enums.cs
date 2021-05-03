@@ -222,10 +222,7 @@ namespace PointOfSalesV2.Common
             Appointment = 56,
             PatientCheckup=57,
             MedicalSpecialities=58,
-            AppointmentAttend=59,
-            PatientHistory=60,
-            InsurancesCoveragesReport=61,
-            CheckupAttachment=62
+            InsurancesCoveragesReport=59,
         }
         public enum MovementTypes
         {
@@ -297,7 +294,6 @@ namespace PointOfSalesV2.Common
            { AppSections.School,"School,BranchOffice,Zone,Customer"},
             {AppSections.Insurance,"Insurance,InsurancePlan,Currency" },
             {AppSections.InsurancePlan,"InsurancePlan" },
-            {AppSections.CheckupAttachment,"" },
             {AppSections.InsuranceCoverage,"InsuranceServiceCoverage,Insurance,InsurancePlan,Product,Currency" },
             {AppSections.Appointment,"MedicalSpeciality,Appointment,User,ProductUnit,ProductTax,InsuranceServiceCoverage,BranchOffice,Customer,Product" },
             {AppSections.PatientCheckup,"PatientCheckup,CheckupAttachment,Appointment,MedicalSpeciality,Product,Customer" },
