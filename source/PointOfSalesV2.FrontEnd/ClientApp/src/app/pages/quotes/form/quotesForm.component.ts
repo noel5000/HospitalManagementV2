@@ -198,13 +198,7 @@ free:[false]
 
     async getWarehouses(){
         let filter = [
-        {
-            property: 'Code',
-            value: 'DEF',
-            type: ObjectTypes.String,
-            isTranslated:false,
-            comparer: ODataComparers.NotEqual
-        } as QueryFilter
+  
     ];
 
     const user = this.authModel.user;
@@ -219,7 +213,7 @@ free:[false]
 
         this.warehouseService.getAllFiltered(filter).subscribe(r=>{
             this.warehouses=[{id:0, name:''} as Warehouse];
-            this.warehouses= this.warehouses.concat(r['value']);
+            this.warehouses= this.warehouses.concat((r['value'] as Warehouse[]).filter(x=>x.code!='DEF'));
         });
     }
 

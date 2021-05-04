@@ -35,16 +35,16 @@
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'insurance_lbl' | translate}}</label>
-                    <input type="text" formControlName="insuranceName" [attr.disabled]="true" required class="form-control"/>
+                    <input type="text" formControlName="insuranceName" [attr.disabled]="true"  class="form-control"/>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'insurancePlan_lbl' | translate}}</label>
-                    <input type="text" formControlName="insurancePlanName" [attr.disabled]="true" required class="form-control"/>
+                    <input type="text" formControlName="insurancePlanName" [attr.disabled]="true"  class="form-control"/>
                 </div>
                
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'cardId_lbl' | translate}}</label>
-                    <input type="text" formControlName="nrc" [attr.disabled]="id>0" required class="form-control"/>
+                    <input type="text" formControlName="nrc" [attr.disabled]="id>0"  class="form-control"/>
                 </div>
                
 
@@ -108,6 +108,21 @@
             <hr><br>
 
             <div class="form-row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'type_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.type.errors }"
+                    formControlName="type"
+                    required
+                    >
+                    <option *ngFor="let type of types"
+                     [value]="type.id"
+                     >{{type.name}}</option>
+                    </select>
+                    <div *ngIf="form.type.errors" class="invalid-feedback">
+                        <div *ngIf="form.type.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'product_lbl' | translate}}</label>
                     <select class="form-control"
@@ -229,7 +244,7 @@
                         <tr *ngFor="let entry of entries;let i=index">
                             <td>{{entry.product.name}}</td>
                             <td>{{entry.unit?entry.unit.name:''}}</td>
-                            <td><input type="number"
+                            <td ><input type="number"
                                  [formControlName]="('unitQuantity_'+i)" 
                                  required 
                                  [disabled]="isEditing || entry.appointmentId"
@@ -243,6 +258,7 @@
                             <td>{{entry.insuranceCoverageAmount | currency:""}}</td>
                             <td>{{entry.patientPaymentAmount | currency:""}}</td>
                             <td><input type="text"
+                                *ngIf="entry.appointmentId"
                                 [formControlName]="('insuranceApprovalCode_'+i)" 
                                 required 
                                 class="form-control"

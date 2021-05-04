@@ -151,17 +151,11 @@ export class UserFormComponent extends BaseComponent implements OnInit {
                 type: ObjectTypes.Number,
                 isTranslated:false
             } as QueryFilter ,
-            {
-                property: 'Code',
-                value: 'DEF',
-                type: ObjectTypes.String,
-                isTranslated:false,
-                comparer: ODataComparers.NotEqual
-            } as QueryFilter
+            
            ]
        ).subscribe(x=>{
         this.warehouses= [{ name:'', id:null} as Warehouse];
-        this.warehouses= this.warehouses.concat(x['value']);
+        this.warehouses= this.warehouses.concat((x['value'] as Warehouse[]).filter(x=>x.code!='DEF'));
         
         })
     }

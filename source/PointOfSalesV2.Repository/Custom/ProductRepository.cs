@@ -117,7 +117,7 @@ namespace PointOfSalesV2.Repository
                     entity.ProductUnits = null;
                     entity.Sequence =string.IsNullOrEmpty(entity.Sequence)? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products):entity.Sequence;
                     entity.Taxes = null;
-                    decimal tempCost = (entity.IsService ?(entity.IsCompositeProduct? bases.Sum(x => x.TotalCost):entity.Cost ): costs.Average(x => x.Cost));
+                    decimal tempCost = (entity.IsService ?(entity.IsCompositeProduct?(bases.Count>0? bases.Sum(x => x.TotalCost):0):entity.Cost ): (costs.Count>0?costs.Average(x => x.Cost):0));
                     entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                     decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                     entity.Price = entity.Price == 0 ? tempPrice : entity.Price;

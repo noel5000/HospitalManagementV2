@@ -163,18 +163,15 @@ totalAmount:[0,[ Validators.required,Validators.min(0.0001)]],
             value: id.toString(),
             type: ObjectTypes.Number,
             isTranslated:false
-        } as QueryFilter,
-        {
-            property: 'Code',
-            value: 'DEF',
-            type: ObjectTypes.String,
-            isTranslated:false,
-            comparer: ODataComparers.NotEqual
         } as QueryFilter
     ]
         this.warehouseService.getAllFiltered(filter).subscribe(r=>{
             this.warehouses=[{id:0, name:''} as Warehouse];
-            this.warehouses= this.warehouses.concat(r['value']);
+            let data = r['value'] as Warehouse[];
+            if(data.length && data.length>0){
+               data =data.filter(x=>x.code!='DEF')
+            }
+            this.warehouses= data;
         });
     }
 

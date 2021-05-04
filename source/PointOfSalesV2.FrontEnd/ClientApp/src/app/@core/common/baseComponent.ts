@@ -80,6 +80,8 @@ export class BaseComponent  {
             }
             this.setAdditionalBackupData();
             this.itemForm.patchValue(savedForm.form);
+            this.onChanges();
+            localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
          
             }
       }
@@ -92,6 +94,10 @@ export class BaseComponent  {
     }
     }
    setAdditionalBackupData(){
+
+     }
+
+     onChanges(): void{
 
      }
     clearBackupData(){
