@@ -2,7 +2,7 @@
 @using System.Collections.Generic;
 @using System.Linq;
 
-@{Invoice invoice = ViewBag.Invoice;}
+@{Appointment appointment = ViewBag.Appointment as Appointment;}
 @{
     Layout = null;
     List<LanguageKey> languageKeys = ViewBag.LanguageKeys;
@@ -19,7 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
     <meta name="viewport" content="width=device-width" />
-    <title>InvoicePrint</title>
+    <title>Invoice Print</title>
     <style>
 
 
@@ -164,16 +164,15 @@
                                 <div class="divBody">
                                     <table class="">
                                         <thead>
-                                            <tr><th class="titulo">Compania</th></tr>
-                                            <tr><th class="titulo">Dominicana. SRL</th></tr>
+                                            <tr><th class="titulo">@(appointment.Hospital.Name.ToUpper())</th></tr>
                                         </thead>
                                     </table>
                                     <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : Calle # Esq.  No. #</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : 809-555-5555</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : 000000000</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : email@gmail.com</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @appointment.Hospital.Address</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @appointment.Hospital.PhoneNumber</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : @appointment.Hospital.NRC</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : @appointment.Hospital.Email</th></tr>
                                         </thead>
                                     </table>
                                     <br />
@@ -184,72 +183,56 @@
                                                 @*<th> <img src="~/Content/images/logo.jpg" alt="header" width="230" height="60" /></th>*@
                                                 <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "date_lbl").Value :</th>
-                                                <th class="text-left">@(invoice.BillingDate.HasValue?invoice.BillingDate.Value.ToString("dd-MM-yyyy"):invoice.CreatedDate.ToString("dd-MM-yyyy"))</th>
+                                                <th class="text-left">@(appointment.Date.ToString("dd-MM-yyyy hh:mm"))</th>
+                                            </tr>
+                                            @*@{ if (appointment.Doctor != null)
+                                                {
+                                                    <tr>
+
+                                                        <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
+                                                        <th class="text-left">@(appointment.MedicalSpeciality?.Name??"")</th>
+                                                        <th class=" "></th>
+                                                        <th>@(languageKeys.FirstOrDefault(x => x.Key == "doctor_lbl")?.Value?? "doctor_lbl") : @(appointment.Doctor?.FullName??"")</th>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            @{ if (appointment.Product != null)
+                                                {
+                                                    <tr>
+
+                                                        <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
+                                                        <th class="text-left">@(appointment.MedicalSpeciality?.Name??"")</th>
+                                                        <th class=" "></th>
+                                                        <th>@(languageKeys.FirstOrDefault(x => x.Key == "Procedure_lbl")?.Value?? "Procedure_lbl") : @(appointment.Product?.Name??"")</th>
+                                                    </tr>
+                                                }
+                                            }*@
+
+                                            <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "patient_lbl")?.Value?? "patient_lbl") : @appointment.Patient.NameAndCode.ToString()</th>
+                                                <th class=" "></th>
+                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "documentNumber_lbl")?.Value?? "documentNumber_lbl") :</th>
+                                                <th class="text-left">@(appointment.Patient.CardId.ToString())</th>
+                                            </tr>
+                                            <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "insurance_lbl")?.Value?? "insurance_lbl") : @(appointment.Insurance?.Name??"")</th>
+                                                <th class=" "></th>
+                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "insurancePlan_lbl")?.Value?? "insurancePlan_lbl") :</th>
+                                                <th class="text-left">@(appointment.InsurancePlan?.Name??"")</th>
                                             </tr>
 
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "customer_lbl").Value : @invoice.Patient.NameAndCode.ToString()</th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "appointmentNumber_lbl")?.Value?? "appointmentNumber_lbl") : @appointment.Id.ToString()</th>
                                                 <th class=" "></th>
-                                                <th class="text-left">@(string.IsNullOrEmpty(invoice.InvoiceNumber)? languageKeys.FirstOrDefault(x => x.Key == "documentNumber_lbl").Value : languageKeys.FirstOrDefault(x => x.Key == "invoiceNumber_lbl").Value) :</th>
-                                                <th class="text-left">@(string.IsNullOrEmpty(invoice.InvoiceNumber)?invoice.DocumentNumber.ToUpper():invoice.InvoiceNumber.ToUpper())</th>
+                                                <th class="text-left"></th>
+                                                <th class="text-left"></th>
                                             </tr>
-                                            <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "trn_lbl").Value : @invoice.TRN</th>
-                                                <th class=" "></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "closureDate_lbl").Value :</th>
-                                                <th class="text-left">@(invoice.BillingDate.HasValue?invoice.BillingDate.Value.AddDays(invoice.Patient.InvoiceDueDays).ToString("dd-MM-yyyy"): invoice.CreatedDate.AddDays(invoice.Patient.InvoiceDueDays).ToString("dd-MM-yyyy"))</th>
-                                            </tr>
-                                            <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @invoice.Patient.Address</th>
-                                                <th class=" "></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "seller_lbl").Value :</th>
-                                                <th class="text-left">@invoice.Seller?.Name</th>
-                                            </tr>
-                                            <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @invoice.Patient.PhoneNumber</th>
-                                                <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "trn_lbl").Value :</th>
-                                                <th class=" text-left">@invoice.TRN</th>
-                                            </tr>
-
                                             <tr>
                                                 <th style="color:white !important; visibility:hidden;">sssss</th>
                                             </tr>
 
                                         </thead>
-
-                                    </table>
-                                    <table class="table table-vcenter">
-                                        <thead class="table-bordered tabl">
-                                            <tr>
-
-                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "product_lbl").Value</th>
-                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "quantity_lbl").Value</th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "beforeTaxAmount_lbl").Value </th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "taxAmount_lbl").Value </th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "totalAmount_lbl").Value </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="filas">
-                                            @for (int i = 0; i < invoice.InvoiceDetails.Count; i++)
-                                            {
-                                                <tr>
-
-                                                    <td class="text-left">@invoice.InvoiceDetails[i].Product?.Name</td>
-                                                    <td class="text-left">@invoice.InvoiceDetails[i].Quantity @(invoice.InvoiceDetails[i].Unit?.Name??"")</td>
-                                                    <td class="text-center"> @invoice.InvoiceDetails[i].BeforeTaxesAmount</td>
-                                                    <td class="text-center"> @invoice.InvoiceDetails[i].TaxesAmount</td>
-                                                    <td class="text-center"> @invoice.InvoiceDetails[i].TotalAmount</td>
-                                                </tr>
-                                            }
-
-
-
-
-
-                                        </tbody>
-
-
                                         <tfoot>
                                             <tr>
                                                 <th style="color:white !important; visibility:hidden;">sssss</th>
@@ -259,36 +242,43 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "beforeTaxAmount_lbl").Value :</th>
-                                                <th class="text-right" style="border-top: 1px solid black !important; border-bottom: 2px double black">@($"{invoice.Currency.Code} ${ invoice.BeforeTaxesAmount}")</th>
+                                                <th class="text-right" style="border-top: 1px solid black !important; border-bottom: 2px double black">@($"{appointment.Currency.Code} ${ appointment.BeforeTaxesAmount}")</th>
                                             </tr>
                                             <tr>
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "taxAmount_lbl").Value :</th>
-                                                <th class="text-right" style=" border-bottom:2px double black">@($"{invoice.Currency.Code} ${ invoice.TaxesAmount}")</th>
+                                                <th class="text-right" style=" border-bottom:2px double black">@($"{appointment.Currency.Code} ${ appointment.TaxesAmount}")</th>
+                                            </tr>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "totalAmount_lbl").Value  :</th>
+                                                <th class="text-right" style=" border-bottom: 2px double black">@($"{appointment.Currency.Code} ${ appointment.TotalAmount}")</th>
                                             </tr>
 
                                             <tr>
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "totalAmount_lbl").Value  :</th>
-                                                <th class="text-right" style=" border-bottom: 2px double black">@($"{invoice.Currency.Code} ${ invoice.TotalAmount}")</th>
+                                                <th class="text-left">@(languageKeys.FirstOrDefault(x => x.Key == "coverageAmount_lbl")?.Value?? "coverageAmount_lbl")  :</th>
+                                                <th class="text-right" style=" border-bottom: 2px double black">@($"{appointment.Currency.Code} ${ appointment.InsuranceCoverageAmount}")</th>
                                             </tr>
-                                            @if (invoice.PaidAmount > 0)
-                                            {
-                                                <tr>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th></th>
-                                                    <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "paidAmount_lbl").Value :</th>
-                                                    <th class="text-right" style=" border-bottom:2px double black"> @($"{invoice.Currency.Code} ${ invoice.PaidAmount}")</th>
-                                                </tr>
-                                            }
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th class="text-left">@(languageKeys.FirstOrDefault(x => x.Key == "patientPaymentAmount_lbl")?.Value?? "patientPaymentAmount_lbl")  :</th>
+                                                <th class="text-right" style=" border-bottom: 2px double black">@($"{appointment.Currency.Code} ${ appointment.PatientPaymentAmount}")</th>
+                                            </tr>
+
+                                         
 
                                         </tfoot>
                                     </table>
+                                   
                                     <br /><br /><br />
                                 </div>
                                 <div class="divFooter">
@@ -298,11 +288,11 @@
 
                                             <tr>
 
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; ">&nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key == "billedBy_lbl").Value.ToUpper() &nbsp &nbsp </th>
+
                                                 <th style=" border:none; width:220px;"></th>
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp   @languageKeys.FirstOrDefault(x => x.Key == "deliverdBy_lbl").Value.ToUpper()  &nbsp &nbsp  </th>
+                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp   @((languageKeys.FirstOrDefault(x => x.Key == "attendedBy_lbl")?.Value?? "attendedBy_lbl").ToUpper())  &nbsp &nbsp  </th>
                                                 <th style=" border:none; width:220px;"></th>
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key == "receivedBy_lbl").Value.ToUpper() &nbsp &nbsp </th>
+
 
                                             </tr>
                                         </tfoot>

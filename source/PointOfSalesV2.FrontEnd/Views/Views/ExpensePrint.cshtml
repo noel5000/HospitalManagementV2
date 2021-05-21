@@ -200,12 +200,12 @@
                                             <tr>
                                                 <th>@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @expense.Supplier.Address</th>
                                                 <th class=" "></th>
-                                               
+
                                             </tr>
                                             <tr>
                                                 <th>@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @expense.Supplier.PhoneNumber</th>
                                                 <th></th>
-                                                
+
                                             </tr>
 
                                             <tr>
@@ -228,7 +228,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="filas">
-                                        
+
                                             <tr>
 
                                                 <td class="text-left">@expense.Details</td>
@@ -238,9 +238,9 @@
                                                 <td class="text-center"> @expense.PaidAmount</td>
                                                 <td class="text-center"> @languageKeys.FirstOrDefault(x => x.Key == $"billingState{expense.State}_lbl").Value</td>
 
-                                                
+
                                             </tr>
-                                            
+
 
 
 
