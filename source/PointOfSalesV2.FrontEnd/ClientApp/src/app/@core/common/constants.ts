@@ -1,9 +1,9 @@
 import { AppSections } from './enums';
 
-export const endpointUrl = 'https://localhost:44352/api/';
+export const endpointUrl = 'http://localhost:8081/api/';
 //export const endpointUrl = 'http://noeltest400-001-site6.ctempurl.com/api/';
 
-export const endpointViewsUrl = 'https://localhost:44352/';
+export const endpointViewsUrl = 'http://localhost:8081/';
 //export const endpointViewsUrl = 'http://noeltest400-001-site6.ctempurl.com/';
 
 export const endpointControllers = {
