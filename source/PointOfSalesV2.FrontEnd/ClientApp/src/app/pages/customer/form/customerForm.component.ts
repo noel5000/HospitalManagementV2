@@ -57,7 +57,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],
             phoneNumber: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
-            cardId: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
+            cardId: ['',[Validators.maxLength(20)]],
             address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
             bloodType: ['',[ Validators.required,Validators.minLength(1), Validators.maxLength(4)]],
             code: [''],

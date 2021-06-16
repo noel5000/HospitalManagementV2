@@ -41,9 +41,14 @@ namespace PointOfSalesV2.Repository
 
         public override Result<Customer> Add(Customer entity)
         {
-            if (_Context.Customers.AsNoTracking().Count(x => x.Active == true && x.CardId.ToUpper() == entity.CardId.ToUpper()) > 0) 
+            if (!string.IsNullOrEmpty(entity.CardId) &&  _Context.Customers.AsNoTracking().Count(x => x.Active == true && x.CardId.ToUpper() == entity.CardId.ToUpper()) > 0) 
             {
                 return new Result<Customer>(-1, -1, "cardIdAlreadyExist_error");
+            }
+
+            if (!string.IsNullOrEmpty(entity.Name) && _Context.Customers.AsNoTracking().Count(x => x.Active == true && x.Name.Trim().ToUpper() == entity.Name.Trim().ToUpper()) > 0)
+            {
+                return new Result<Customer>(-1, -1, "alreadyExist_error");
             }
             return base.Add(entity);
         }
