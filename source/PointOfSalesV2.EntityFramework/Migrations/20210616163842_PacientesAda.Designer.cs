@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210616163842_PacientesAda")]
+    partial class PacientesAda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11807,15 +11809,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ExploracionFisica")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FC")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("InsuranceId")
                         .HasColumnType("bigint");
 
@@ -11835,20 +11828,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("PatientId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Peso")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sat")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Symptoms")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Talla")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Temperatura")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");

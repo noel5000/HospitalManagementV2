@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'symptoms_lbl' | translate}}</label>
+                    <label>{{'Padecimiento Actual' | translate}}</label>
                     <textarea formControlName="symptoms" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.symptoms.errors }"></textarea>
                     <div *ngIf="form.symptoms.errors" class="invalid-feedback">
                         <div *ngIf="form.symptoms.required">{{'required_lbl' | translate}}</div>
@@ -33,6 +33,42 @@
                     <div *ngIf="form.diagnoses.errors" class="invalid-feedback">
                         <div *ngIf="form.diagnoses.required">{{'required_lbl' | translate}}</div>
                     </div>
+                </div>
+
+                
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Exploracion Fisica' | translate}}</label>
+                    <textarea formControlName="exploracionFisica"  rows="100" class="form-control" ></textarea>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Peso' | translate}}</label>
+                    <input type="text" formControlName="peso" maxlength="200" class="form-control"  />
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Talla' | translate}}</label>
+                    <input type="text" formControlName="talla" maxlength="200" class="form-control"  />
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Temperatura' | translate}} (Celsius)</label>
+                    <input type="number" formControlName="temperatura" maxlength="200" class="form-control"  />
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'FC' | translate}}</label>
+                    <input type="text" formControlName="fc" maxlength="200" class="form-control"  />
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'FR' | translate}}</label>
+                    <input type="text" formControlName="fr" maxlength="200" class="form-control"  />
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Sat' | translate}}</label>
+                    <input type="text" formControlName="sat" maxlength="200" class="form-control"  />
+                   
                 </div>
 
            </div>

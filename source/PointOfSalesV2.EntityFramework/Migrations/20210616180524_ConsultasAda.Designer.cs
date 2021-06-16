@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20210616180524_ConsultasAda")]
+    partial class ConsultasAda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11835,8 +11837,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("PatientId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Peso")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Peso")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Sat")
                         .HasColumnType("nvarchar(max)");

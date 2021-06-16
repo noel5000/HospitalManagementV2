@@ -96,5 +96,36 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("InsurancePlanId")]
         public virtual InsurancePlan InsurancePlan { get; set; }
 
+        #region Custom doctor properties
+        [MaxLength(500)]
+        public string Informante { get; set; }
+        [MaxLength(5000)]
+        public string AHF { get; set; }
+        [MaxLength(5000)]
+        public string APNP { get; set; }
+        [MaxLength(5000)]
+        public string AntecedentesPerinatales { get; set; }
+        [MaxLength(5000)]
+        public string DesarrolloPsicomotor { get; set; }
+        
+        public string AntecedentesPatologicos { get; set; }
+        [MaxLength(5000)]
+        public string PadenciaActual { get; set; }
+        public string ExploracionFisica { get; set; }
+        [MaxLength(5000)]
+        public string Espirometria { get; set; }
+        [MaxLength(5000)]
+        public string Paraclinicos { get; set; }
+        [MaxLength(2000)]
+        public string Diagnosticos { get; set; }
+
+        [MaxLength(5000)]
+        public string PlanTerapeutico { get; set; }
+        [MaxLength(1000)]
+        public string EstadoDeSalud { get; set; }
+
+
+        #endregion
+
     }
 }

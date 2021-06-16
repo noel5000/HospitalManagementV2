@@ -112,6 +112,15 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insuranceId:[null],
             insurancePlanId:[null],
             currencyId:[0],
+            
+            exploracionFisica:[''],
+            peso:[''],
+            talla:[''],
+            temperatura:[''],
+            fc:[''],
+            fr:[''],
+            sat:[''],
+        
         });
     }
     addProduct(){
@@ -303,6 +312,13 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
                 currencyId:this.item.currencyId,
+                exploracionFisica:this.item.exploracionFisica,
+                peso:this.item.peso,
+                talla:this.item.talla,
+                temperatura:this.item.temperatura,
+                fc:this.item.fc,
+                fr:this.item.fr,
+                sat:this.item.sat,
             });
 
         }

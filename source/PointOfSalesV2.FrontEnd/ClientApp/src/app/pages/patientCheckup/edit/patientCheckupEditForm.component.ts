@@ -118,6 +118,13 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             insuranceId:[null],
             insurancePlanId:[null],
             currencyId:[0],
+            exploracionFisica:[''],
+            peso:[''],
+            talla:[''],
+            temperatura:[''],
+            fc:[''],
+            fr:[''],
+            sat:[''],
         });
         const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
         const appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
@@ -357,6 +364,13 @@ this.attachmentsService.getAllFiltered([
                      insuranceId:this.item.insuranceId?this.item.insuranceId:null,
                      insurancePlanId:this.item.insurancePlanId?this.item.insurancePlanId:null,
                      currencyId:this.item.patient.currencyId,
+                     exploracionFisica:this.item.exploracionFisica,
+                     peso:this.item.peso,
+                     talla:this.item.talla,
+                     temperatura:this.item.temperatura,
+                     fc:this.item.fc,
+                     fr:this.item.fr,
+                     sat:this.item.sat,
                 });
 
                 this.getAttachments(id);

@@ -68,7 +68,7 @@
     </div>
 
     <div class="form-group col-md-12 col-xs-12">
-        <label>{{'symptoms_lbl' | translate}}</label>
+        <label>{{'Padecimiento Actual' | translate}}</label>
         <textarea disabled class="form-control" [value]="checkup.symptoms" ></textarea>
     </div>
 
@@ -76,6 +76,41 @@
         <label>{{'diagnoses_lbl' | translate}}</label>
         <textarea disabled class="form-control" [value]="checkup.diagnoses"></textarea>
     </div>
+
+    <div class="form-group col-md-12 col-xs-12" *ngIf="checkup.exploracionFisica">
+      <label>{{'Exploracion Fisica' | translate}}</label>
+      <textarea disabled class="form-control" [value]="checkup.exploracionFisica"></textarea>
+  </div>
+
+  <div class="form-group col-md-12 col-xs-12" *ngIf="checkup.peso">
+    <label>{{'Peso' | translate}}</label>
+    <textarea disabled class="form-control" [value]="checkup.peso"></textarea>
+</div>
+
+<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.talla">
+  <label>{{'Talla' | translate}}</label>
+  <textarea disabled class="form-control" [value]="checkup.talla"></textarea>
+</div>
+
+<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.temperatura">
+  <label>{{'Temperatura' | translate}}</label>
+  <textarea disabled class="form-control" [value]="checkup.temperatura"></textarea>
+</div>
+
+<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.fc">
+  <label>{{'FC' | translate}}</label>
+  <textarea disabled class="form-control" [value]="checkup.fc"></textarea>
+</div>
+
+<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.fr">
+  <label>{{'FR' | translate}}</label>
+  <textarea disabled class="form-control" [value]="checkup.fr"></textarea>
+</div>
+
+<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.sat">
+  <label>{{'Sat' | translate}}</label>
+  <textarea disabled class="form-control" [value]="checkup.sat"></textarea>
+</div>
 
 </div>
 <div class="text-center my-1">

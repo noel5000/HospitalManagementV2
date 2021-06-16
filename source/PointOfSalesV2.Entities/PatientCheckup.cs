@@ -60,7 +60,16 @@ namespace PointOfSalesV2.Entities
 
         public virtual List<CheckupAttachment> Attachments { get; set; }
 
+        #region Custom doctor properties
+        public string ExploracionFisica { get; set; }
+        public string Peso { get; set; }
+        public string Talla { get; set; }
+        public decimal Temperatura { get; set; }
+        public string FC { get; set; }
+        public string FR { get; set; }
+        public string Sat { get; set; }
 
+        #endregion
     }
 }
 

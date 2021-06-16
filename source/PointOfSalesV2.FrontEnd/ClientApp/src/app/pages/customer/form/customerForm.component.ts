@@ -70,7 +70,20 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             invoiceDueDays: [0],
             billingAmountLimit: [0],
             creditAmountLimit: [0],
-            id: [0]
+            id: [0],
+            informante :[''],
+         ahf :[''],
+         apnp :[''],
+         antecedentesPerinatales :[''],
+         desarrolloPsicomotor :[''],
+         antecedentesPatologicos :[''],
+         padenciaActual :[''],
+         exploracionFisica :[''],
+         espirometria :[''],
+         paraclinicos :[''],
+         diagnosticos :[''],
+         planTerapeutico :[''],
+         estadoDeSalud :['']
         });
     }
     ngOnInit(): void {
@@ -100,21 +113,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
-            this.itemForm.patchValue({
-                id:this.item.id,
-                name: this.item.name,
-                phoneNumber: this.item.phoneNumber,
-                cardId: this.item.cardId,
-                address: this.item.address,
-                birthDate:this.item.birthDate,
-                code: this.item.code,
-                currencyId: this.item.currencyId,
-                trnControlId: this.item.trnControlId,
-                bloodType:this.item.bloodType,
-                insuranceId:this.item.insuranceId,
-                insurancePlanId:this.item.insurancePlanId,
-                insuranceCardId:this.item.insuranceCardId
-            });
+            this.itemForm.patchValue(this.item);
 
         }
         this.validateFormData();

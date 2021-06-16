@@ -29,5 +29,17 @@ export class Customer extends BaseModel {
     insurancePlan:any;
     insuranceCardId:string;     
     bloodType:string;
-    
+    informante :string;
+         ahf :string;
+         apnp :string;
+         antecedentesPerinatales :string;
+         desarrolloPsicomotor :string;
+         antecedentesPatologicos :string;
+         padenciaActual :string;
+         exploracionFisica :string;
+         espirometria :string;
+         paraclinicos :string;
+         diagnosticos :string;
+         planTerapeutico :string;
+         estadoDeSalud :string;
 }

@@ -55,7 +55,7 @@
 
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'address_lbl' | translate}}</label>
-                    <textarea 
+                    <textarea rows="100" 
                     formControlName="address" 
                     minlength="1" 
                     maxlength="200" 
@@ -133,6 +133,151 @@
                     <input type="text" formControlName="code" maxlength="50" disabled class="form-control" />
                    
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Informante' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="informante" 
+                    maxlength="500" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.informante.errors }"
+                    ></textarea>
+                   
+                </div>
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'AHF' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="ahf" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.ahf.errors }"
+                    ></textarea>
+                   
+                </div>
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'APNP' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="apnp" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.apnp.errors }"
+                    ></textarea>
+                   
+                </div>
+              
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Antecedentes Perinatales' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="antecedentesPerinatales" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.antecedentesPerinatales.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Desarrollo Psicomotor' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="desarrolloPsicomotor" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.desarrolloPsicomotor.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Antecedentes Patologicos' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="antecedentesPatologicos" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.antecedentesPatologicos.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Padencia Actual' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="padenciaActual" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.padenciaActual.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Exploracion Fisica' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="exploracionFisica" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.exploracionFisica.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Espirometria' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="espirometria" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.espirometria.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Paraclinicos' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="paraclinicos" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.paraclinicos.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Diagnosticos' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="diagnosticos" 
+                    maxlength="2000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.diagnosticos.errors }"
+                    ></textarea>
+                   
+                </div>
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Plan Terapeutico' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="planTerapeutico" 
+                    maxlength="5000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.planTerapeutico.errors }"
+                    ></textarea>
+                   
+                </div>
+
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'Estado De Salud' | translate}}</label>
+                    <textarea rows="100" 
+                    formControlName="estadoDeSalud" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.estadoDeSalud.errors }"
+                    ></textarea>
+                   
+                </div>
+
+                
                
             </div>
           
