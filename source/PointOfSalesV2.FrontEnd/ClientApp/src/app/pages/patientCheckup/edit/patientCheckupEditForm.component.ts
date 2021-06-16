@@ -1,7 +1,7 @@
 
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
@@ -35,6 +35,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     patientId:number=0;
     editing:number=1;
     patient:any={};
+    newProduct:boolean=false;
     doctor:any={};
     appointment:any={};
     selectedMedicines:any[]=[];
@@ -137,6 +138,44 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`, itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
 
+    addProduct(){
+        this.newProduct=true;
+        this.itemForm.patchValue({productId:null});
+        if(!this.itemForm.contains('newProduct'))
+        this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
+    }
+    saveNewProduct(){
+        let newProduct={
+            id:Math.floor(Math.random() * -1000),
+            name:this.itemForm.getRawValue().newProduct,
+            type:'M'
+        } as Product;
+        while(newProduct.id==0){
+            newProduct.id=Math.floor(Math.random() * -1000);
+        }
+        if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
+            const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+            if(index<=0)
+            this.products.push(newProduct);
+            else
+            newProduct.id=this.products[index].id;
+            this.itemForm.patchValue({productId:newProduct.id});
+            this.newProduct=false;
+            if(this.itemForm.contains('newProduct'))
+            this.itemForm.removeControl('newProduct');
+        }
+
+    }
+    cancelNewProduct(){
+        this.itemForm.patchValue({
+            productId:null,
+            newProduct:''
+        });
+        this.newProduct=false;
+        if(this.itemForm.contains('newProduct'))
+        this.itemForm.removeControl('newProduct');
+    }
+
     async getAttachments(id:number){
 this.attachmentsService.getAllFiltered([
     {
@@ -206,13 +245,6 @@ this.attachmentsService.getAllFiltered([
             value: "Id,Name,Code,ExchangeRate",
             type: ObjectTypes.ChildObject,
             isTranslated: false
-        } as QueryFilter,
-        {
-            property: "IsService",
-            value: "true",
-            type: ObjectTypes.Boolean,
-            isTranslated: false,
-            comparer: ODataComparers.equals
         } as QueryFilter,
         {
             property: "Type",
@@ -397,7 +429,7 @@ console.log(ex);
             }
             break;
             case "M":
-                if(prescription.productId && prescription.productId>0){
+                if(prescription.productId){
                 index = this.selectedMedicines.findIndex(x=>x.productId==prescription.productId);
                 if(index>=0)
                 this.selectedMedicines[index]=prescription

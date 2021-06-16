@@ -7,8 +7,8 @@
                     <label>{{'doctor_lbl' | translate}}</label>
                     <input type="text" formControlName="doctorName" maxlength="50" minlength="3" required 
                     disabled class="form-control" [ngClass]="{ 'is-invalid':form.doctorName && form.doctorName.errors }" />
-                    <div *ngIf="form.doctorName.errors" class="invalid-feedback">
-                        <div *ngIf="form.doctorName.errors.required">{{'required_lbl' | translate}}</div>
+                    <div *ngIf="form.doctorName && form.doctorName.errors" class="invalid-feedback">
+                        <div *ngIf="form.doctorName && form.doctorName.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
@@ -52,21 +52,44 @@
         </div>
         <div *ngIf="prescriptionType">
             <div class="row">
-                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType!='C' && prescriptionType!='L'">
-                    <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
-                    <label *ngIf="prescriptionType=='E'">{{'especializedImages_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.productId.errors }"
-                    formControlName="productId"
-                    >
-                    <option *ngFor="let medicine of products"
-                     [value]="medicine.id"
-                     >{{medicine.name}}</option>
-                    </select>
-                    <div *ngIf="form.productId.errors" class="invalid-feedback">
-                        <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
+                <div class="col-md-4 col-xs-12 row" *ngIf="prescriptionType!='C' && prescriptionType!='L' && !newProduct">
+                    <div class="form-group col-10" >
+                        <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
+                        <label *ngIf="prescriptionType=='E'">{{'especializedImages_lbl' | translate}}</label>
+                        <select class="form-control"
+                        [ngClass]="{ 'is-invalid': form.productId.errors }"
+                        formControlName="productId"
+                        >
+                        <option *ngFor="let medicine of products"
+                         [value]="medicine.id"
+                         >{{medicine.name}}</option>
+                        </select>
+                        <div *ngIf="form.productId.errors" class="invalid-feedback">
+                            <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
+                        </div>
+                    </div>
+                    <div class="col-2 my-2" style="margin-left:-5%;">
+                        <i class="btn btn-success btn-sm my-4" (click)="addProduct()">+</i>
                     </div>
                 </div>
+
+                <div class="col-md-4 col-xs-12 row" *ngIf="prescriptionType!='C' && prescriptionType!='L' && newProduct">
+                    <div class="form-group col-10" >
+                        <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
+                        <label *ngIf="prescriptionType=='E'">{{'especializedImages_lbl' | translate}}</label>
+                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
+                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
+                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
+                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                    </div>
+                    <div class="col-2 my-2" style="margin-left:-5%;">
+                        <i class="btn btn-info btn-sm my-4" (click)="saveNewProduct()">{{'add_btn' | translate}}</i>
+                        <i class="btn btn-danger btn-sm my-4" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
+                    </div>
+                </div>
+                
+
                 <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='C'">
                     <label>{{'medicalSpeciality_lbl' | translate}}</label>
                     <select class="form-control"

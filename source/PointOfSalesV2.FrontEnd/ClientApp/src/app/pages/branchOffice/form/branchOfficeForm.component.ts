@@ -59,10 +59,7 @@ export class BranchOfficeFormComponent extends BaseComponent implements OnInit {
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
-            this.itemForm.patchValue({
-                id:this.item.id,
-                name:this.item.name
-            });
+            this.itemForm.patchValue(this.item);
            
         }
         

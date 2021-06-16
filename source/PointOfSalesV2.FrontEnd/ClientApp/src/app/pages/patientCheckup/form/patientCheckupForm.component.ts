@@ -1,7 +1,7 @@
 
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
@@ -75,6 +75,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
     medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
+    newProduct:boolean=false;
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
@@ -112,6 +113,43 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insurancePlanId:[null],
             currencyId:[0],
         });
+    }
+    addProduct(){
+        this.newProduct=true;
+        this.itemForm.patchValue({productId:null});
+        if(!this.itemForm.contains('newProduct'))
+        this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
+    }
+    saveNewProduct(){
+        let newProduct={
+            id:Math.floor(Math.random() * -1000),
+            name:this.itemForm.getRawValue().newProduct,
+            type:'M'
+        } as Product;
+        while(newProduct.id==0){
+            newProduct.id=Math.floor(Math.random() * -1000);
+        }
+        if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
+            const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+            if(index<=0)
+            this.products.push(newProduct);
+            else
+            newProduct.id=this.products[index].id;
+            this.itemForm.patchValue({productId:newProduct.id});
+            this.newProduct=false;
+            if(this.itemForm.contains('newProduct'))
+            this.itemForm.removeControl('newProduct');
+        }
+
+    }
+    cancelNewProduct(){
+        this.itemForm.patchValue({
+            productId:null,
+            newProduct:''
+        });
+        this.newProduct=false;
+        if(this.itemForm.contains('newProduct'))
+        this.itemForm.removeControl('newProduct');
     }
     ngOnInit(): void {
      const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
@@ -194,13 +232,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             value: "Id,Name,Code,ExchangeRate",
             type: ObjectTypes.ChildObject,
             isTranslated: false
-        } as QueryFilter,
-        {
-            property: "IsService",
-            value: "true",
-            type: ObjectTypes.Boolean,
-            isTranslated: false,
-            comparer: ODataComparers.equals
         } as QueryFilter,
         {
             property: "Type",
@@ -338,7 +369,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             }
             break;
             case "M":
-                if(prescription.productId && prescription.productId>0){
+                if(prescription.productId){
                 index = this.selectedMedicines.findIndex(x=>x.productId==prescription.productId);
                 if(index>=0)
                 this.selectedMedicines[index]=prescription

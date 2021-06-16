@@ -11,8 +11,10 @@ namespace PointOfSalesV2.Repository
 {
     public class PatientCheckupRepository : Repository<PatientCheckup>, IPatientCheckupRepository
     {
-        public PatientCheckupRepository(MainDataContext context) : base(context)
+       readonly IDataRepositoryFactory factory;
+        public PatientCheckupRepository(MainDataContext context, IDataRepositoryFactory dataRepositoryFactory) : base(context)
         {
+            this.factory = dataRepositoryFactory;
         }
 
         public override Result<PatientCheckup> Get(long id)
@@ -189,30 +191,73 @@ namespace PointOfSalesV2.Repository
         private List<CheckupPrescription> SetEntity(PatientCheckup entity) 
         {
             
-            entity.Appointment = null;
-            entity.Doctor = null;
-            entity.Insurance = null;
-            entity.InsurancePlan = null;
-            entity.Patient = null;
+           
             var prescriptions = entity.CheckupPrescriptions?? new List<CheckupPrescription>();
             entity.CheckupPrescriptions = null;
             entity.Active = true;
             for (int i = 0; i < prescriptions.Count; i++)
             {
+                if (prescriptions[i].Product != null && prescriptions[i].Product.Id <= 0 && prescriptions[i].Product.Type==(char) AppointmentTypes.Medication && !string.IsNullOrEmpty(prescriptions[i].Product.Name)) 
+                {
+                    entity.Appointment = entity.Appointment == null ? _Context.Appointments.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == entity.AppointmentId):entity.Appointment;
+                 prescriptions[i].ProductId=   AddNewPrescriptionProduct(prescriptions[i].Product, entity);
+                }
                 prescriptions[i].Product = null;
                 prescriptions[i].MedicalSpeciality = null;
                 prescriptions[i].Active = true;
                 prescriptions[i].PatientCheckup = null;
                 prescriptions[i].Quantity = prescriptions[i].Quantity <= 0 ? 1 : prescriptions[i].Quantity;
             }
+            entity.Appointment = null;
+            entity.Doctor = null;
+            entity.Insurance = null;
+            entity.InsurancePlan = null;
+            entity.Patient = null;
             return prescriptions;
+        }
+
+        private long AddNewPrescriptionProduct(Product product, PatientCheckup checkup) 
+        {
+            product.Description = product.Name;
+            product.Price = 1;
+            product.Price2 = 1;
+            product.Price3 = 1;
+            product.Active = true;
+            product.Code = "";
+            product.Cost = 0;
+            product.CurrencyId = checkup.Appointment.CurrencyId;
+            product.IsCompositeProduct = false;
+            product.IsService = false;
+            product.MedicalSpecialityId = null;
+            product.Taxes = _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0 || x.Rate == 0.18m)).Select(x => new ProductTax()
+            {
+                Active = true,
+                ProductId=0,
+                TaxId=x.Id
+            }) ;
+            product.ProductUnits = _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence() { 
+            Active=true,
+            CostPrice=0,
+            Equivalence=1,
+            IsPrimary=true,
+            Order=1,
+            ProductId=0,
+            SellingPrice=0,
+            UnitId=x.Id
+            });
+            var repo = this.factory.GetCustomDataRepositories<IProductRepository>();
+            var result = repo.AddWithoutTransaction(product);
+            if (result.Status < 0)
+                throw result.Exception?? new Exception(result.Message);
+            return result.Id;
+            
         }
 
         public async Task<List<PatientCheckup>> GetPatientHistory(long patientId)
         {
             var entities = await _Context.PatientCheckups.AsNoTracking().Include(x => x.Doctor)
                 .Include(x=>x.Appointment)
-                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).Where(x => x.Active == true && x.PatientId == patientId).ToListAsync();
+                .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).Where(x => x.Active == true && x.PatientId == patientId).OrderByDescending(x=>x.Date).ToListAsync();
             return entities;
         }
     }

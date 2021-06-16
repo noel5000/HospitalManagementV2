@@ -54,20 +54,21 @@ namespace PointOfSalesV2.Repository
             {
                 try
                 {
+                    entity.Id = 0;
                     if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
                         throw new Exception("productNeedsTaxes_msg");
                     languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
-                    entity.TranslationData = TranslateUtility.SaveTranslation(entity, entity.TranslationData,languages);
-                    var costs = entity.SuppliersCosts?.ToList();
-                    var units = entity.ProductUnits?.ToList();
-                    var taxes = entity.Taxes?.ToList();
-                    var bases = entity.BaseCompositeProducts?.ToList();
+                    entity.TranslationData = TranslateUtility.SaveTranslation(entity, entity.TranslationData, languages);
+                    var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
+                    var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
+                    var taxes = entity.Taxes?.ToList() ?? new List<ProductTax>();
+                    var bases = entity.BaseCompositeProducts?.ToList() ?? new List<CompositeProduct>();
                     entity.BaseCompositeProducts = null;
                     entity.SuppliersCosts = null;
                     entity.ProductUnits = null;
                     entity.Taxes = null;
-                    decimal tempCost = (entity.IsService ? bases.Sum(x => x.TotalCost) : costs.Sum(x => x.Cost) / costs.Count);
-                    entity.Cost = entity.Cost > tempCost ? entity.Cost :tempCost;
+                    decimal tempCost = (entity.IsService ? bases.Sum(x => x.TotalCost) : costs.Sum(x => x.Cost) / (costs.Count == 0 ? 1 : costs.Count));
+                    entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                     decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                     entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
                     string sequence = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
@@ -78,7 +79,7 @@ namespace PointOfSalesV2.Repository
 
 
                     transaction.Commit();
-                    result = new Result<Product>(0, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
+                    result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
                 }
                 catch (Exception ex)
                 {
@@ -93,11 +94,11 @@ namespace PointOfSalesV2.Repository
         {
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
 
-            using (var transaction = _Context.Database.BeginTransaction()) 
+            using (var transaction = _Context.Database.BeginTransaction())
             {
                 try
                 {
-                    if ((entity.Taxes == null || entity.Taxes.Count() == 0)&& !entity.IsCompositeProduct)
+                    if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
                         throw new Exception("productNeedsTaxes_msg");
                     var dbEntity = _Context.Products.Find(entity.Id);
                     _Context.Entry<Product>(dbEntity).State = EntityState.Detached;
@@ -108,31 +109,31 @@ namespace PointOfSalesV2.Repository
                         entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
 
                     }
-                    var costs = entity.SuppliersCosts?.ToList();
-                    var units = entity.ProductUnits?.ToList();
-                    var taxes = entity.Taxes?.ToList();
-                    var bases = entity.BaseCompositeProducts?.ToList();
+                    var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
+                    var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
+                    var taxes = entity.Taxes?.ToList() ?? new List<ProductTax>();
+                    var bases = entity.BaseCompositeProducts?.ToList() ?? new List<CompositeProduct>();
                     entity.BaseCompositeProducts = null;
                     entity.SuppliersCosts = null;
                     entity.ProductUnits = null;
-                    entity.Sequence =string.IsNullOrEmpty(entity.Sequence)? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products):entity.Sequence;
+                    entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
                     entity.Taxes = null;
-                    decimal tempCost = (entity.IsService ?(entity.IsCompositeProduct?(bases.Count>0? bases.Sum(x => x.TotalCost):0):entity.Cost ): (costs.Count>0?costs.Average(x => x.Cost):0));
+                    decimal tempCost = (entity.IsService ? (entity.IsCompositeProduct ? (bases.Count > 0 ? bases.Sum(x => x.TotalCost) : 0) : entity.Cost) : (costs.Count > 0 ? costs.Average(x => x.Cost) : 0));
                     entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                     decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                     entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
                     _Context.Products.Update(entity);
                     _Context.SaveChanges();
-                  
-                    SetChildren(entity,costs,units,taxes,bases);
+
+                    SetChildren(entity, costs, units, taxes, bases);
 
 
                     transaction.Commit();
-                    result = new Result<Product>(0, 0, "ok_msg", new List<Product>() { new Product() {Id=entity.Id } });
+                    result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
                 }
                 catch (Exception ex)
                 {
-                   result = new Result<Product>(-1, -1, ex.Message,null,ex);
+                    result = new Result<Product>(-1, -1, ex.Message, null, ex);
                     transaction.Rollback();
                 }
             }
@@ -140,14 +141,103 @@ namespace PointOfSalesV2.Repository
         }
 
 
-        private void SetChildren(Product product,List<ProductSupplierCost> costs,List<UnitProductEquivalence> units,List<ProductTax>taxes,List<CompositeProduct> bases) 
+        public Result<Product> AddWithoutTransaction(Product entity)
+        {
+
+            Result<Product> result = new Result<Product>(-1, -1, "error_msg");
+
+            try
+            {
+                entity.Id = 0;
+                if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
+                    throw new Exception("productNeedsTaxes_msg");
+                languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                entity.TranslationData = TranslateUtility.SaveTranslation(entity, entity.TranslationData, languages);
+                var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
+                var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
+                var taxes = entity.Taxes?.ToList() ?? new List<ProductTax>();
+                var bases = entity.BaseCompositeProducts?.ToList() ?? new List<CompositeProduct>();
+                entity.BaseCompositeProducts = null;
+                entity.SuppliersCosts = null;
+                entity.ProductUnits = null;
+                entity.Taxes = null;
+                decimal tempCost = (entity.IsService ? bases.Sum(x => x.TotalCost) : costs.Sum(x => x.Cost) / (costs.Count == 0 ? 1 : costs.Count));
+                entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
+                decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
+                entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
+                string sequence = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
+                entity.Sequence = sequence;
+                _Context.Products.Add(entity);
+                _Context.SaveChanges();
+                SetChildren(entity, costs, units, taxes, bases);
+                result = new Result<Product>(entity.Id,0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
+            }
+            catch (Exception ex)
+            {
+                result = new Result<Product>(-1, -1, $"error_msg", null, ex);
+            }
+
+            return result;
+        }
+
+        public Result<Product> UpdateWithoutTransaction(Product entity, bool fromDb = true)
+        {
+            Result<Product> result = new Result<Product>(-1, -1, "error_msg");
+
+
+            try
+            {
+                if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
+                    throw new Exception("productNeedsTaxes_msg");
+                var dbEntity = _Context.Products.Find(entity.Id);
+                _Context.Entry<Product>(dbEntity).State = EntityState.Detached;
+                var translation = dbEntity as IEntityTranslate;
+                if (translation != null)
+                {
+                    languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                    entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
+
+                }
+                var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
+                var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
+                var taxes = entity.Taxes?.ToList() ?? new List<ProductTax>();
+                var bases = entity.BaseCompositeProducts?.ToList() ?? new List<CompositeProduct>();
+                entity.BaseCompositeProducts = null;
+                entity.SuppliersCosts = null;
+                entity.ProductUnits = null;
+                entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
+                entity.Taxes = null;
+                decimal tempCost = (entity.IsService ? (entity.IsCompositeProduct ? (bases.Count > 0 ? bases.Sum(x => x.TotalCost) : 0) : entity.Cost) : (costs.Count > 0 ? costs.Average(x => x.Cost) : 0));
+                entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
+                decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
+                entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
+                _Context.Products.Update(entity);
+                _Context.SaveChanges();
+
+                SetChildren(entity, costs, units, taxes, bases);
+
+
+
+                result = new Result<Product>(0, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
+            }
+            catch (Exception ex)
+            {
+                result = new Result<Product>(-1, -1, ex.Message, null, ex);
+
+            }
+
+            return result;
+        }
+
+        private void SetChildren(Product product, List<ProductSupplierCost> costs, List<UnitProductEquivalence> units, List<ProductTax> taxes, List<CompositeProduct> bases)
         {
             var previousCost = _Context.ProductSupplierCosts.Where(x => x.ProductId == product.Id && x.Active == true).AsNoTracking().ToList();
             var previousUnits = _Context.UnitProductsEquivalences.Where(x => x.ProductId == product.Id && x.Active == true).AsNoTracking().ToList();
             var previousTaxes = _Context.ProductTaxes.Where(x => x.ProductId == product.Id && x.Active == true).AsNoTracking().ToList();
             var previousBases = _Context.CompositeProducts.Where(x => x.ProductId == product.Id && x.Active == true).AsNoTracking().ToList();
             var productIsBase = _Context.CompositeProducts.Where(x => x.BaseProductId == product.Id && x.Active == true).AsNoTracking().ToList();
-            costs.ForEach(c => {
+            costs.ForEach(c =>
+            {
                 c.ProductId = product.Id;
                 c.Supplier = null;
                 c.Product = null;
@@ -162,20 +252,22 @@ namespace PointOfSalesV2.Repository
                     _Context.ProductSupplierCosts.Update(c);
                 _Context.SaveChanges();
             });
-            previousCost.ForEach(c=> {
-                if (!costs.Any(x => x.Id == c.Id)) 
+            previousCost.ForEach(c =>
+            {
+                if (!costs.Any(x => x.Id == c.Id))
                 {
                     this.Remove(c.Id);
                 }
             });
-           
 
-            units.ForEach(c => {
-               
+
+            units.ForEach(c =>
+            {
+
                 c.ProductId = product.Id;
                 c.Product = null;
                 c.Unit = null;
-                c.CostPrice = product.Cost/c.Equivalence;
+                c.CostPrice = product.Cost / c.Equivalence;
                 c.SellingPrice = GetUnitSellingPrice(product, c.Equivalence);
 
                 if (c.Id > 0 && !previousUnits.Any(x => x.Id == c.Id))
@@ -189,7 +281,8 @@ namespace PointOfSalesV2.Repository
                     _Context.UnitProductsEquivalences.Update(c);
                 _Context.SaveChanges();
             });
-            previousUnits.ForEach(c => {
+            previousUnits.ForEach(c =>
+            {
                 if (!units.Any(x => x.Id == c.Id))
                 {
                     c.Active = false;
@@ -198,8 +291,9 @@ namespace PointOfSalesV2.Repository
                 }
             });
 
-            taxes.ForEach(c => {
-               
+            taxes.ForEach(c =>
+            {
+
                 c.ProductId = product.Id;
                 c.Product = null;
                 c.Tax = null;
@@ -217,7 +311,8 @@ namespace PointOfSalesV2.Repository
             });
 
 
-            previousTaxes.ForEach(c => {
+            previousTaxes.ForEach(c =>
+            {
                 if (!taxes.Any(x => x.Id == c.Id))
                 {
                     c.Active = false;
@@ -225,20 +320,21 @@ namespace PointOfSalesV2.Repository
                     _Context.SaveChanges();
                 }
             });
-            bases.ForEach(c => {
-               
+            bases.ForEach(c =>
+            {
+
                 c.BaseProduct = c.BaseProduct != null && c.BaseProduct.Id > 0 ? c.BaseProduct : _Context.Products.Find(c.BaseProductId);
                 _Context.Entry<Product>(c.BaseProduct).State = EntityState.Detached;
                 c.BaseProductUnitId = c.BaseProductUnitId == 0 ? null : c.BaseProductUnitId;
-                c.UnitProductEquivalence = c.UnitProductEquivalence != null && c.UnitProductEquivalence.Id > 0 ? c.UnitProductEquivalence :c.BaseProductUnitId.HasValue? _Context.UnitProductsEquivalences.Find(c.BaseProductUnitId):null;
-                if(c.UnitProductEquivalence!=null)
-                _Context.Entry<UnitProductEquivalence>(c.UnitProductEquivalence).State = EntityState.Detached;
+                c.UnitProductEquivalence = c.UnitProductEquivalence != null && c.UnitProductEquivalence.Id > 0 ? c.UnitProductEquivalence : c.BaseProductUnitId.HasValue ? _Context.UnitProductsEquivalences.Find(c.BaseProductUnitId) : null;
+                if (c.UnitProductEquivalence != null)
+                    _Context.Entry<UnitProductEquivalence>(c.UnitProductEquivalence).State = EntityState.Detached;
                 c.ProductId = product.Id;
                 c.Active = true;
                 c.CurrencyId = product.CurrencyId;
                 c.Currency = null;
-                c.TotalCost =c.UnitProductEquivalence!=null? c.Quantity * c.UnitProductEquivalence.CostPrice:c.BaseProduct.Cost*c.Quantity;
-                c.TotalPrice =c.UnitProductEquivalence!=null?(c.Quantity*c.UnitProductEquivalence.SellingPrice): c.Quantity * (new decimal[] { product.Price, product.Price2, product.Price3 }.OrderByDescending(x => x).FirstOrDefault());
+                c.TotalCost = c.UnitProductEquivalence != null ? c.Quantity * c.UnitProductEquivalence.CostPrice : c.BaseProduct.Cost * c.Quantity;
+                c.TotalPrice = c.UnitProductEquivalence != null ? (c.Quantity * c.UnitProductEquivalence.SellingPrice) : c.Quantity * (new decimal[] { product.Price, product.Price2, product.Price3 }.OrderByDescending(x => x).FirstOrDefault());
                 c.BaseProduct = null;
                 c.Product = null;
                 c.UnitProductEquivalence = null;
@@ -254,8 +350,9 @@ namespace PointOfSalesV2.Repository
                     _Context.CompositeProducts.Update(c);
                 _Context.SaveChanges();
             });
-            productIsBase.ForEach(b => {
-                var unit = b.BaseProductUnitId.HasValue ? units.FirstOrDefault(x => x.UnitId == b.BaseProductUnitId):null;
+            productIsBase.ForEach(b =>
+            {
+                var unit = b.BaseProductUnitId.HasValue ? units.FirstOrDefault(x => x.UnitId == b.BaseProductUnitId) : null;
                 if (b.BaseProductUnitId.HasValue && unit == null)
                     throw new Exception("thisIsABaseProduct_error");
 
@@ -268,7 +365,8 @@ namespace PointOfSalesV2.Repository
             });
 
 
-            previousBases.ForEach(c => {
+            previousBases.ForEach(c =>
+            {
                 if (!bases.Any(x => x.Id == c.Id))
                 {
                     c.Active = false;
@@ -278,11 +376,11 @@ namespace PointOfSalesV2.Repository
             });
         }
 
-        private decimal GetUnitSellingPrice(Product product, decimal equivalence) 
+        private decimal GetUnitSellingPrice(Product product, decimal equivalence)
         {
             decimal result = 0;
-            decimal[] prices = new decimal[] { product.Price, product.Price2, product.Price3 }.Where(x=>x>0).ToArray();
-            result = prices.Average(x=>x) / equivalence;
+            decimal[] prices = new decimal[] { product.Price, product.Price2, product.Price3 }.Where(x => x > 0).ToArray();
+            result = prices.Average(x => x) / equivalence;
             return result;
         }
     }
