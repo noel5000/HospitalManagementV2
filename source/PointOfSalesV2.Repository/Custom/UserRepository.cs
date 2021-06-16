@@ -20,7 +20,7 @@ namespace PointOfSalesV2.Repository
 
         public User Login(Login login,string tokenKey)
         {
-            var user = _Context.Users.AsNoTracking().FirstOrDefault(u => u.Active == true && u.Email == login.Email && u.Password == MD5.Encrypt(login.Password, tokenKey));
+            var user = _Context.Users.AsNoTracking().FirstOrDefault(u => u.Active == true && u.UserName == login.Email && u.Password == MD5.Encrypt(login.Password, tokenKey));
             if (user != null) 
             {
                user.Permissions =

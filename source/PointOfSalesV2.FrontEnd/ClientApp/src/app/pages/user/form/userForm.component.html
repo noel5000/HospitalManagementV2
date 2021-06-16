@@ -41,7 +41,7 @@
                
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'email_lbl' | translate}}</label>
-                    <input type="email" formControlName="email" maxlength="15" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.email.errors }" />
+                    <input type="email" formControlName="email" maxlength="150" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.email.errors }" />
                     <div *ngIf="form.email.errors" class="invalid-feedback">
                         <div *ngIf="form.email.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
