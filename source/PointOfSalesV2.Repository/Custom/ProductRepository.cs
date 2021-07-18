@@ -170,7 +170,60 @@ namespace PointOfSalesV2.Repository
                 _Context.Products.Add(entity);
                 _Context.SaveChanges();
                 SetChildren(entity, costs, units, taxes, bases);
-                result = new Result<Product>(entity.Id,0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
+                result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
+            }
+            catch (Exception ex)
+            {
+                result = new Result<Product>(-1, -1, $"error_msg", null, ex);
+            }
+
+            return result;
+        }
+
+        public Result<Product> AddRangeWithoutTransaction(List<Product> entity, bool createSequence = false)
+        {
+
+            Result<Product> result = new Result<Product>(-1, -1, "error_msg");
+
+            try
+            {
+                languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                var currentSequence = _Context.SequencesControl.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Code == (short)Common.Enums.SequenceTypes.Products);
+                foreach (Product product in entity)
+                {
+                    product.Id = 0;
+                    if ((product.Taxes == null || product.Taxes.Count() == 0) && !product.IsCompositeProduct)
+                        throw new Exception("productNeedsTaxes_msg");
+
+                    product.TranslationData = TranslateUtility.SaveTranslation(product, product.TranslationData, languages);
+                    var costs = product.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
+                    var bases = product.BaseCompositeProducts?.ToList() ?? new List<CompositeProduct>();
+                    // product.BaseCompositeProducts = null;
+                    //product.SuppliersCosts = null;
+                    //product.ProductUnits = null;
+                    //product.Taxes = null;
+                    decimal tempCost = (product.IsService ? bases.Sum(x => x.TotalCost) : costs.Sum(x => x.Cost) / (costs.Count == 0 ? 1 : costs.Count));
+                    product.Cost = product.Cost > tempCost ? product.Cost : tempCost;
+                    decimal tempPrice = (product.IsService ? bases.Sum(x => x.TotalPrice) : product.Price);
+                    product.Price = product.Price == 0 ? tempPrice : product.Price;
+                    string sequence = !createSequence ? "" : String.Format("{0}{1:00000}", currentSequence.CodeName, (currentSequence.NumericControl + 1));
+                    product.Sequence = sequence;
+                    if (createSequence)
+                        currentSequence.NumericControl++;
+
+                }
+
+                _Context.Products.AddRange(entity);
+                _Context.SaveChanges();
+                if (createSequence)
+                {
+                    _Context.SequencesControl.Update(currentSequence);
+                    _Context.SaveChanges();
+                }
+
+                // SetChildren(entity, costs, units, taxes, bases);
+
+                result = new Result<Product>(0, 0, "ok_msg", entity);
             }
             catch (Exception ex)
             {

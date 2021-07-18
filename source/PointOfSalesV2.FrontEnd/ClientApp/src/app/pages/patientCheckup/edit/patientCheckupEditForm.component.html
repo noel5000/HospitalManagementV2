@@ -5,7 +5,7 @@
             <div class="form-row">
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'doctor_lbl' | translate}}</label>
-                    <input type="text" formControlName="doctorName" maxlength="50" minlength="3" required 
+                    <input type="text" formControlName="doctorName" 
                     disabled class="form-control" [ngClass]="{ 'is-invalid':form.doctorName && form.doctorName.errors }" />
                     <div *ngIf="form.doctorName.errors" class="invalid-feedback">
                         <div *ngIf="form.doctorName.errors.required">{{'required_lbl' | translate}}</div>
@@ -13,7 +13,7 @@
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'name_lbl' | translate}}</label>
-                    <input type="text" formControlName="patientName" maxlength="50" minlength="3" required disabled class="form-control" [ngClass]="{ 'is-invalid': form.patientName.errors }" />
+                    <input type="text" formControlName="patientName" disabled class="form-control" [ngClass]="{ 'is-invalid': form.patientName.errors }" />
                     <div *ngIf="form.patientName.errors" class="invalid-feedback">
                         <div *ngIf="form.patientName.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
@@ -29,8 +29,8 @@
 
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'diagnoses_lbl' | translate}}</label>
-                    <textarea formControlName="diagnoses" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.diagnoses.errors }"></textarea>
-                    <div *ngIf="form.diagnoses.errors" class="invalid-feedback">
+                    <textarea formControlName="diagnoses" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.diagnoses && form.diagnoses.errors }"></textarea>
+                    <div *ngIf=" form.diagnoses && form.diagnoses.errors" class="invalid-feedback">
                         <div *ngIf="form.diagnoses.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
@@ -112,7 +112,6 @@
         </div>
         <div *ngIf="prescriptionType">
             <div class="row">
-            
                 <div class="col-md-4 col-xs-12 row" *ngIf="prescriptionType!='C' && prescriptionType!='L' && !newProduct">
                     <div class="form-group col-10" >
                         <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
@@ -134,23 +133,11 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 col-xs-12 row" *ngIf="prescriptionType!='C' && prescriptionType!='L' && newProduct">
-                    <div class="form-group col-10" >
-                        <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
-                        <label *ngIf="prescriptionType=='E'">{{'especializedImages_lbl' | translate}}</label>
-                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
-                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
-                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
-                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-info btn-sm my-4" (click)="saveNewProduct()">{{'add_btn' | translate}}</i>
-                        <i class="btn btn-danger btn-sm my-4" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
-                    </div>
-                </div>
+               
+                
 
-                <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='C'">
+                <div class="form-group col-md-4 col-xs-12 row" *ngIf="prescriptionType=='C' && !newProduct">
+                   <div class="form-group col-10">
                     <label>{{'medicalSpeciality_lbl' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
@@ -162,6 +149,28 @@
                     </select>
                     <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
                         <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                   </div>
+                    <div class="col-2 my-2" style="margin-left:-5%;">
+                        <i class="btn btn-success btn-sm my-4" (click)="addProduct()">+</i>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-xs-12 row" *ngIf="newProduct">
+                    <div class="form-group col-10" >
+                        <label *ngIf="prescriptionType=='M'">{{'medication_lbl' | translate}}</label>
+                        <label *ngIf="prescriptionType=='E'">{{'especializedImages_lbl' | translate}}</label>
+                        <label *ngIf="prescriptionType=='C'">{{'medicalSpeciality_lbl' | translate}}</label>
+                        <label *ngIf="prescriptionType=='L'">{{'labTests_lbl' | translate}}</label>
+                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
+                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
+                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
+                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                    </div>
+                    <div class="col-2 my-2" style="margin-left:-5%;">
+                        <i class="btn btn-info btn-sm my-4" (click)="saveNewProduct()">{{'add_btn' | translate}}</i>
+                        <i class="btn btn-danger btn-sm my-4" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                     </div>
                 </div>
                
@@ -200,22 +209,33 @@
                      class="form-control" />
                 </div>
                 <div class="col-md-3 col-xs-12">
-                  <button type="button" class="btn btn-primary mr-1  my-4" [disabled]="!editing || editing<1" (click)="addPrescription()">{{'addMedicine_btn' | translate}}</button>             
+                    <i class="btn btn-primary mr-1  my-4" (click)="addPrescription()">{{'addMedicine_btn' | translate}}</i>
                 </div>
             </div>
         </div>
-
         <div class="scrollTableMobile" id="labTestSelection" *ngIf="prescriptionType=='L'">
-            <h4>{{'labTests_lbl' | translate}}</h4>
-            <div class="row">
-                <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
-                    <div *ngIf="selectedLabTest.id && selectedLabTest.id>0">
-                        <label for="vehicle1">{{selectedLabTest.name}}</label><br>
-                        <input type="checkbox"   (click)="labTestSelection(i)">
+           
+            <div>
+                <div class="row">
+                    <div class="col-6">
+                        <h4>{{'labTests_lbl' | translate}}</h4> 
                     </div>
-                  
+                    
+                      <div class="col-2" style="margin-left:-5%;">
+                        <i class="btn btn-success btn-sm" (click)="addProduct()">+</i>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
+                        <div *ngIf="selectedLabTest.id">
+                            <label for="vehicle1">{{selectedLabTest.name}}</label><br>
+                            <input type="checkbox"  [checked]="selectedLabTest.selected"  (click)="labTestSelection(i)">
+                        </div>
+                      
+                    </div>
+                </div>  
             </div>
+            
            
         </div>
         <div class="scrollTableMobile" *ngIf="selectedMedicines.length>0">
@@ -236,7 +256,7 @@
                         <td>{{selectedMedicine.quantity}}</td>
                         <td>{{selectedMedicine.whenToTake}}</td>
                         <td>{{selectedMedicine.emptyStomach?('yes_lbl' | translate):('no_lbl' | translate)}}</td>
-                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</button></td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>
@@ -256,7 +276,7 @@
                     <tr *ngFor="let selectedImage of selectedImages; let i=index">
                         <td>{{selectedImage.product.name}}</td>
                         <td>{{selectedImage.additionalData}}</td>
-                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</button></td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>
@@ -275,12 +295,12 @@
                     <tr *ngFor="let selectedConsultation of selectedConsultations; let i=index">
                         <td>{{selectedConsultation.medicalSpeciality.name}}</td>
                         <td>{{selectedConsultation.additionalData}}</td>
-                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</button></td>
-                       >
+                        <td><i class="btn btn-danger" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>
         </div>
+       
 
         <div class="scrollTableMobile" id="selectedLabTestTable" *ngIf="selectedLabTests.length>0">
             <h4>{{'selectedlabTests_lbl' | translate}}</h4>
@@ -294,7 +314,7 @@
                 <tbody>
                     <tr *ngFor="let selectedLabTest of selectedLabTests; let i=index">
                         <td>{{selectedLabTest.product.name}}</td>
-                        <td><button type="button" class="btn btn-danger" [disabled]="!editing || editing<1" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</button></td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>

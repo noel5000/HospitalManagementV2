@@ -16,5 +16,7 @@ namespace PointOfSalesV2.Repository
         Result<Product> UpdateWithoutTransaction(Product entity, bool fromDb = true);
 
         IEnumerable<Product> GetProductByName( string name);
+
+        Result<Product> AddRangeWithoutTransaction(List<Product> entity, bool createSequence = false);
     }
 }

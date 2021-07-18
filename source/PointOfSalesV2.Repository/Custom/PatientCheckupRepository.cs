@@ -36,10 +36,11 @@ namespace PointOfSalesV2.Repository
             {
                 try
                 {
-                   
-                    var prescriptions = SetEntity(entity);
-                    var appointment = _Context.Appointments.AsNoTracking().Include(x=>x.Details).FirstOrDefault(x=>x.Id==entity.AppointmentId);
+                    var appointment = _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId);
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
+                    entity.Appointment = appointment;
+                    var prescriptions = SetEntity(entity);
+                    entity.Appointment = null;
                     var consultationDetail = appointment.Details.FirstOrDefault(x => x.AppointmentType == AppointmentTypes.Consultation);
                     if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled || consultationDetail==null) 
                     {
@@ -91,10 +92,11 @@ namespace PointOfSalesV2.Repository
             {
                 try
                 {
-
+                    var appointment = _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId);
+                    appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
+                    entity.Appointment = appointment;
                     var prescriptions = SetEntity(entity);
-                    var appointment = _Context.Appointments.Find(entity.AppointmentId);
-                    _Context.Entry<Appointment>(appointment).State = EntityState.Detached;
+                    entity.Appointment = null;
                     result = base.Update(entity);
                     if (result.Status < 0)
                     {
@@ -195,13 +197,21 @@ namespace PointOfSalesV2.Repository
             var prescriptions = entity.CheckupPrescriptions?? new List<CheckupPrescription>();
             entity.CheckupPrescriptions = null;
             entity.Active = true;
+
+            var newPrescriptionsProducts = prescriptions.Where(x=> x.Product != null && x.Product.Id <= 0 && !string.IsNullOrEmpty(x.Product.Name)).Select(x=>x.Product).ToList();
+            var newPrescriptionsMedicalSpecialities = prescriptions.Where(x => x.MedicalSpeciality != null && x.MedicalSpeciality.Id <= 0 && !string.IsNullOrEmpty(x.MedicalSpeciality.Name)).Select(x => x.MedicalSpeciality).ToList();
+            var newProductsResult = AddNewPrescriptionProducts(newPrescriptionsProducts, entity).Data?.ToList()??new List<Product>();
+            var newMedicalSpecialitiesResult = AddNewPrescriptionMedicalSpecialities(newPrescriptionsMedicalSpecialities, entity).Data?.ToList() ?? new List<MedicalSpeciality>();
             for (int i = 0; i < prescriptions.Count; i++)
             {
-                if (prescriptions[i].Product != null && prescriptions[i].Product.Id <= 0 && prescriptions[i].Product.Type==(char) AppointmentTypes.Medication && !string.IsNullOrEmpty(prescriptions[i].Product.Name)) 
-                {
-                    entity.Appointment = entity.Appointment == null ? _Context.Appointments.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == entity.AppointmentId):entity.Appointment;
-                 prescriptions[i].ProductId=   AddNewPrescriptionProduct(prescriptions[i].Product, entity);
-                }
+                int index = newProductsResult.FindIndex(x => x.OldId == prescriptions[i].ProductId);
+                if (index >= 0)
+                    prescriptions[i].ProductId = newProductsResult[index].Id;
+
+                int medicalEIndex = newMedicalSpecialitiesResult.FindIndex(x => x.OldId == prescriptions[i].MedicalSpecialityId);
+                if (medicalEIndex >= 0)
+                    prescriptions[i].MedicalSpecialityId = newMedicalSpecialitiesResult[medicalEIndex].Id;
+
                 prescriptions[i].Product = null;
                 prescriptions[i].MedicalSpeciality = null;
                 prescriptions[i].Active = true;
@@ -220,22 +230,22 @@ namespace PointOfSalesV2.Repository
         {
             product.Description = product.Name;
             product.Price = 1;
-            product.Price2 = 1;
-            product.Price3 = 1;
+            product.Price2 = 0;
+            product.Price3 = 0;
             product.Active = true;
             product.Code = "";
             product.Cost = 0;
             product.CurrencyId = checkup.Appointment.CurrencyId;
             product.IsCompositeProduct = false;
-            product.IsService = false;
-            product.MedicalSpecialityId = null;
+           // product.IsService = false;
+           // product.MedicalSpecialityId = null;
             product.Taxes = _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0 || x.Rate == 0.18m)).Select(x => new ProductTax()
             {
                 Active = true,
                 ProductId=0,
                 TaxId=x.Id
             }) ;
-            product.ProductUnits = _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence() { 
+            product.ProductUnits = product.IsService?null: _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence() { 
             Active=true,
             CostPrice=0,
             Equivalence=1,
@@ -251,6 +261,93 @@ namespace PointOfSalesV2.Repository
                 throw result.Exception?? new Exception(result.Message);
             return result.Id;
             
+        }
+
+        private Result<Product> AddNewPrescriptionProducts(List<Product> products, PatientCheckup checkup)
+        {
+            var taxes = _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0)).Select(x => new ProductTax()
+            {
+                Active = true,
+                ProductId = 0,
+                TaxId = x.Id
+            }).ToList();
+            var productUnit= _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence()
+            {
+                Active = true,
+                CostPrice = 0,
+                Equivalence = 1,
+                IsPrimary = true,
+                Order = 1,
+                ProductId = 0,
+                SellingPrice = 0,
+                UnitId = x.Id
+            }).ToList();
+           for(int i=0;i<products.Count();i++)
+            {
+                products[i].Description = products[i].Name;
+                products[i].Price = 1;
+                products[i].Price2 = 0;
+                products[i].Price3 = 0;
+                products[i].Active = true;
+                products[i].OldId = products[i].Id;
+                products[i].Code = "";
+                products[i].Cost = 0;
+                products[i].CurrencyId = checkup.Appointment.CurrencyId;
+                products[i].IsCompositeProduct = false;
+                // product.IsService = false;
+                // product.MedicalSpecialityId = null;
+                products[i].Taxes = taxes;
+                products[i].ProductUnits = products[i].IsService ? null : productUnit;
+
+
+            }
+
+            var oldIds = products.Select(x => x.OldId).ToList();
+            var repo = this.factory.GetCustomDataRepositories<IProductRepository>();
+            var result = repo.AddRangeWithoutTransaction(products,false);
+            if (result.Data != null) 
+            {
+                var data = result.Data.ToList();
+                for (int i = 0; i < oldIds.Count; i++)
+                {
+                    data[i].OldId = oldIds[i];
+                }
+                result.Data = data;
+            }
+                
+            return result;
+        }
+
+        private Result<MedicalSpeciality> AddNewPrescriptionMedicalSpecialities(List<MedicalSpeciality> medicalSpecialities, PatientCheckup checkup)
+        {
+            languages =languages==null || languages.Count<=0? _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList():languages;
+
+            for (int i = 0; i < medicalSpecialities.Count(); i++)
+            {
+               
+                medicalSpecialities[i].Active = true;
+                medicalSpecialities[i].OldId = medicalSpecialities[i].Id;
+                medicalSpecialities[i].Id = 0;
+                var translation = medicalSpecialities[i] as IEntityTranslate;
+                medicalSpecialities[i].TranslationData = TranslateUtility.SaveTranslation(medicalSpecialities[i], translation.TranslationData, languages);
+            }
+
+            var oldIds = medicalSpecialities.Select(x => x.OldId).ToList();
+            var repo = this.factory.GetDataRepositories<MedicalSpeciality>();
+            repo.AddRange(medicalSpecialities);
+
+            var result = new Result<MedicalSpeciality>(0, 0, "ok_msg", medicalSpecialities);
+            if (result.Data != null)
+            {
+                var data = result.Data.ToList();
+                for (int i = 0; i < oldIds.Count; i++)
+                {
+                    data[i].OldId = oldIds[i];
+                }
+                result.Data = data;
+            }
+
+            return result;
         }
 
         public async Task<List<PatientCheckup>> GetPatientHistory(long patientId)
