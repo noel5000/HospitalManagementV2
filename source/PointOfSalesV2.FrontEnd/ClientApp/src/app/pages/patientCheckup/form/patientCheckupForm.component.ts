@@ -95,9 +95,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         this.itemForm = this.formBuilder.group({
             doctorName: [''],
             patientName:[''],
-            appointmentId:[null,Validators.required],
-            symptoms:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
-            diagnoses:['',Validators.required, Validators.minLength(1),Validators.maxLength(500)],
+            appointmentId:[null,[Validators.required]],
+            symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
+            diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
             prescriptionType: ['',[ Validators.required]],
             doctorId: [0,[ Validators.required, Validators.min(1)]],
             patientId: [0,[ Validators.required, Validators.min(1)]],
@@ -106,7 +106,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             whenToTake:[''],
             medicalSpecialityId:[null],
             emptyStomach:[false],
-            additionalData:['',Validators.maxLength(500)],
+            additionalData:['',[Validators.maxLength(500)]],
             id: [0],
             hospitalId:[0],
             insuranceId:[null],
@@ -121,30 +121,60 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
     }
     saveNewProduct(){
-        let newProduct={
-            id:Math.floor(Math.random() * -1000),
-            name:this.itemForm.getRawValue().newProduct,
-            type:'M'
-        } as Product;
-        while(newProduct.id==0){
-            newProduct.id=Math.floor(Math.random() * -1000);
+        
+        const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
+        if(prescriptionType!="C"){
+            let newProduct={
+                id:Math.floor(Math.random() * -1000),
+                name:this.itemForm.getRawValue().newProduct,
+                type:prescriptionType,
+                currencyId,
+                medicalSpecialityId,
+                isService:prescriptionType=='M'?false:true
+            } as Product;
+            while(newProduct.id==0){
+                newProduct.id=Math.floor(Math.random() * -1000);
+            }
+            if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
+                const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                if(index<0){
+                   this.products.push(newProduct);
+                }
+                else
+                    newProduct.id=this.products[index].id
+                    this.itemForm.patchValue({productId:newProduct.id});
+            }
+           
         }
-        if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
-            const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
-            if(index<=0)
-            this.products.push(newProduct);
-            else
-            newProduct.id=this.products[index].id;
-            this.itemForm.patchValue({productId:newProduct.id});
-            this.newProduct=false;
-            if(this.itemForm.contains('newProduct'))
-            this.itemForm.removeControl('newProduct');
+        else{
+            let newConsultation ={
+                id:Math.floor(Math.random() * -1000),
+            name:this.itemForm.getRawValue().newProduct
+            }
+            while(newConsultation.id==0){
+                newConsultation.id=Math.floor(Math.random() * -1000);
+            }
+            if(newConsultation.name && newConsultation.name.length>1 && newConsultation.name.length<100){
+                const index = this.medicalSpecialities.findIndex(x=>x.name.toLocaleLowerCase().trim()==newConsultation.name.toLowerCase().trim());
+                if(index<0){
+                   this.medicalSpecialities.push(newConsultation);
+                }
+                else
+                newConsultation.id=this.medicalSpecialities[index].id;
+
+                    this.itemForm.patchValue({medicalSpecialityId:newConsultation.id});
+            }
         }
+       
+        this.newProduct=false;
+        if(this.itemForm.contains('newProduct'))
+        this.itemForm.removeControl('newProduct');
 
     }
     cancelNewProduct(){
         this.itemForm.patchValue({
             productId:null,
+            medicalSpecialityId:null,
             newProduct:''
         });
         this.newProduct=false;
@@ -350,7 +380,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         let index =0;
         switch(prescription.type){
             case "E":
-                if(prescription.productId && prescription.productId>0){
+                if(prescription.productId ){
                     index = this.selectedImages.findIndex(x=>x.productId==prescription.productId);
                     if(index>=0)
                     this.selectedImages[index]=prescription
@@ -360,7 +390,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
              
             break;
             case "L":
-                if(prescription.productId && prescription.productId>0){
+                if(prescription.productId){
                 index = this.selectedLabTests.findIndex(x=>x.productId==prescription.productId);
                 if(index>=0)
                 this.selectedLabTests[index]=prescription
@@ -378,8 +408,8 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 }
             break;
             case "C":
-                if(prescription.medicalSpecialityId && prescription.medicalSpecialityId>0){
-                index = this.selectedConsultations.findIndex(x=>x.productId==prescription.productId);
+                if(prescription.medicalSpecialityId){
+                index = this.selectedConsultations.findIndex(x=>x.medicalSpecialityId==prescription.medicalSpecialityId);
                 if(index>=0)
                 this.selectedConsultations[index]=prescription
                 else
@@ -390,7 +420,12 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     }
     }
   async  deleteSelectedLabTests(index:number){
-        this.selectedLabTests.splice(index,1);
+    const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
+    if(i>=0){
+        this.products[i].selected=false;
+    }   
+    this.selectedLabTests.splice(index,1);
+       
     }
 
     async  deleteSelectedConsultation(index:number){

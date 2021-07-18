@@ -33,9 +33,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     _route:ActivatedRoute;
     appointmentId:number=0;
     patientId:number=0;
-    editing:number=1;
     patient:any={};
-    newProduct:boolean=false;
     doctor:any={};
     appointment:any={};
     selectedMedicines:any[]=[];
@@ -75,11 +73,13 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     ];
 
 
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckup`);
-    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
     appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
     medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
+    newProduct:boolean=false;
+    editing:number=1;
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);    
     attachments:any[]=[];
     public uploader: FileUploader;
     constructor(
@@ -98,42 +98,45 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
            
             super(route, langService, AppSections.PatientCheckup,modalService);
             this._route=router;
-        this.itemForm = this.formBuilder.group({
-            doctorName: [''],
-            patientName:[''],
-            appointmentId:[null,Validators.required],
-            symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
-            diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
-            prescriptionType: [''],
-            doctorId: [0,[ Validators.required, Validators.min(1)]],
-            patientId: [0,[ Validators.required, Validators.min(1)]],
-            productId: [null],
-            quantity:[1],
-            whenToTake:[''],
-            medicalSpecialityId:[null],
-            emptyStomach:[false],
-            additionalData:['',Validators.maxLength(500)],
-            id: [0],
-            hospitalId:[0],
-            insuranceId:[null],
-            insurancePlanId:[null],
-            currencyId:[0],
-        });
-        const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
-        const appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
-        const editing= parseInt( this._route.snapshot.paramMap.get('editing'));
-        if(!isNaN(appointmentId))
-        this.appointmentId=appointmentId;
+            const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
+            const appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
+            const editing= parseInt( this._route.snapshot.paramMap.get('editing'));
+            if(!isNaN(appointmentId))
+            this.appointmentId=appointmentId;
+    
+            if(!isNaN(editing))
+            this.editing=editing;
+    
+            if(!isNaN(urlId)){
+               this.id=urlId;
+               this.getItem(urlId);
+            }
+            else
+            this.validateFormData();
 
-        if(!isNaN(editing))
-        this.editing=editing;
-
-        if(!isNaN(urlId)){
-           this.id=urlId;
-           this.getItem(urlId);
-        }
-        else
-        this.validateFormData();
+            
+            this.itemForm = this.formBuilder.group({
+                doctorName: [''],
+                patientName:[''],
+                appointmentId:[ this.appointmentId,[Validators.required]],
+                symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
+                diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
+                prescriptionType: ['',[ Validators.required]],
+                doctorId: [0,[ Validators.required, Validators.min(1)]],
+                patientId: [0,[ Validators.required, Validators.min(1)]],
+                productId: [null],
+                quantity:[1],
+                whenToTake:[''],
+                medicalSpecialityId:[null],
+                emptyStomach:[false],
+                additionalData:['',[Validators.maxLength(500)]],
+                id: [this.id],
+                hospitalId:[0],
+                insuranceId:[null],
+                insurancePlanId:[null],
+                currencyId:[0],
+            });
+      
 
         this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`, itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
@@ -145,30 +148,60 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
     }
     saveNewProduct(){
-        let newProduct={
-            id:Math.floor(Math.random() * -1000),
-            name:this.itemForm.getRawValue().newProduct,
-            type:'M'
-        } as Product;
-        while(newProduct.id==0){
-            newProduct.id=Math.floor(Math.random() * -1000);
+        
+        const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
+        if(prescriptionType!="C"){
+            let newProduct={
+                id:Math.floor(Math.random() * -1000),
+                name:this.itemForm.getRawValue().newProduct,
+                type:prescriptionType,
+                currencyId,
+                medicalSpecialityId,
+                isService:prescriptionType=='M'?false:true
+            } as Product;
+            while(newProduct.id==0){
+                newProduct.id=Math.floor(Math.random() * -1000);
+            }
+            if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
+                const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                if(index<0){
+                   this.products.push(newProduct);
+                }
+                else
+                    newProduct.id=this.products[index].id
+                    this.itemForm.patchValue({productId:newProduct.id});
+            }
+           
         }
-        if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
-            const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
-            if(index<=0)
-            this.products.push(newProduct);
-            else
-            newProduct.id=this.products[index].id;
-            this.itemForm.patchValue({productId:newProduct.id});
-            this.newProduct=false;
-            if(this.itemForm.contains('newProduct'))
-            this.itemForm.removeControl('newProduct');
+        else{
+            let newConsultation ={
+                id:Math.floor(Math.random() * -1000),
+            name:this.itemForm.getRawValue().newProduct
+            }
+            while(newConsultation.id==0){
+                newConsultation.id=Math.floor(Math.random() * -1000);
+            }
+            if(newConsultation.name && newConsultation.name.length>1 && newConsultation.name.length<100){
+                const index = this.medicalSpecialities.findIndex(x=>x.name.toLocaleLowerCase().trim()==newConsultation.name.toLowerCase().trim());
+                if(index<0){
+                   this.medicalSpecialities.push(newConsultation);
+                }
+                else
+                newConsultation.id=this.medicalSpecialities[index].id;
+
+                    this.itemForm.patchValue({medicalSpecialityId:newConsultation.id});
+            }
         }
+       
+        this.newProduct=false;
+        if(this.itemForm.contains('newProduct'))
+        this.itemForm.removeControl('newProduct');
 
     }
     cancelNewProduct(){
         this.itemForm.patchValue({
             productId:null,
+            medicalSpecialityId:null,
             newProduct:''
         });
         this.newProduct=false;
@@ -197,7 +230,11 @@ this.attachmentsService.getAllFiltered([
         this.verifyUser();
         this.getMedicalSpecialities();
         this.onChanges();
-
+        if(this.appointmentId && this.appointmentId>0)
+        this.getAppointment(this.appointmentId);
+        else
+        this.modalService.showError('appointmentNotValid_msg');
+        this.getAttachments(this.id);
         this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
          console.log('FileUpload:uploaded successfully:', item, status, response);
@@ -331,35 +368,30 @@ this.attachmentsService.getAllFiltered([
                 this.selectedLabTests=this.item.checkupPrescriptions.filter(x=>x.type=="L");
                 this.selectedConsultations=this.item.checkupPrescriptions.filter(x=>x.type=="C");
                 this.selectedImages=this.item.checkupPrescriptions.filter(x=>x.type=="E");
-           
                 this.patientId=this.item.patientId;
-                if(this.appointmentId && this.appointmentId>0)
-                this.getAppointment(this.appointmentId);
-                else
-                this.modalService.showError('appointmentNotValid_msg');
-                 this.itemForm.patchValue({
-                     doctorName: this.item.doctor.fullName,
-                     appointmentId:this.appointmentId,
-                     patientName:this.item.patient.name,
-                     symptoms:this.item.symptoms,
-                    diagnoses:this.item.diagnoses,
-                     prescriptionType: '',
-                     doctorId: this.item.doctorId,
-                     patientId: this.item.patientId,
-                     productId:null,
-                     quantity:1,
-                     whenToTake:'',
-                     medicalSpecialityId:null,
-                     emptyStomach:false,
-                     additionalData:'',
-                     id: this.item.id,
-                     hospitalId:this.item.doctor.branchOfficeId,
-                     insuranceId:this.item.insuranceId?this.item.insuranceId:null,
-                     insurancePlanId:this.item.insurancePlanId?this.item.insurancePlanId:null,
-                     currencyId:this.item.patient.currencyId,
-                });
-
-                this.getAttachments(id);
+                const {appointmentId,symptoms,diagnoses,doctorId,patientId,id,insuranceId,insurancePlanId}=this.item;
+                this.itemForm.patchValue({
+                    doctorName: this.item.doctor.fullName,
+                    appointmentId,
+                    patientName:this.item.patient.name,
+                    symptoms,
+                    diagnoses,
+                    prescriptionType: '',
+                    doctorId,
+                    patientId,
+                    productId:null,
+                    quantity:1,
+                    whenToTake:'',
+                    medicalSpecialityId:null,
+                    emptyStomach:false,
+                    additionalData:'',
+                    id,
+                    hospitalId:this.item.doctor.branchOfficeId,
+                    insuranceId,
+                    insurancePlanId,
+                    currencyId:this.item.patient.currencyId,
+               });
+              
             }
             this.validateFormData();
         }
@@ -381,6 +413,7 @@ console.log(ex);
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
+           this.item.id=this.id;
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
@@ -393,77 +426,83 @@ console.log(ex);
                this.modalService.showError(r.message);
            })
     }
-   async addPrescription(){
-    const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
-    let prescription={
-       productId,
-       medicalSpecialityId,
-       quantity,
-       additionalData,
-       whenToTake,
-       emptyStomach,
-        type:prescriptionType,
-        product:this.products.find(x=>x.id==productId),
-        medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
-    };
-    if(prescription.quantity && prescription.quantity>0){
-        let index =0;
-        switch(prescription.type){
-            case "E":
-                if(prescription.productId && prescription.productId>0){
-                    index = this.selectedImages.findIndex(x=>x.productId==prescription.productId);
+    async addPrescription(){
+        const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+        let prescription={
+           productId,
+           medicalSpecialityId,
+           quantity,
+           additionalData,
+           whenToTake,
+           emptyStomach,
+            type:prescriptionType,
+            product:this.products.find(x=>x.id==productId),
+            medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
+        };
+        if(prescription.quantity && prescription.quantity>0){
+            let index =0;
+            switch(prescription.type){
+                case "E":
+                    if(prescription.productId ){
+                        index = this.selectedImages.findIndex(x=>x.productId==prescription.productId);
+                        if(index>=0)
+                        this.selectedImages[index]=prescription
+                        else
+                        this.selectedImages.push(prescription);
+                    }
+                 
+                break;
+                case "L":
+                    if(prescription.productId){
+                    index = this.selectedLabTests.findIndex(x=>x.productId==prescription.productId);
                     if(index>=0)
-                    this.selectedImages[index]=prescription
+                    this.selectedLabTests[index]=prescription
                     else
-                    this.selectedImages.push(prescription);
+                    this.selectedLabTests.push(prescription);
                 }
-             
-            break;
-            case "L":
-                if(prescription.productId && prescription.productId>0){
-                index = this.selectedLabTests.findIndex(x=>x.productId==prescription.productId);
-                if(index>=0)
-                this.selectedLabTests[index]=prescription
-                else
-                this.selectedLabTests.push(prescription);
+                break;
+                case "M":
+                    if(prescription.productId){
+                    index = this.selectedMedicines.findIndex(x=>x.productId==prescription.productId);
+                    if(index>=0)
+                    this.selectedMedicines[index]=prescription
+                    else
+                    this.selectedMedicines.push(prescription);
+                    }
+                break;
+                case "C":
+                    if(prescription.medicalSpecialityId){
+                    index = this.selectedConsultations.findIndex(x=>x.medicalSpecialityId==prescription.medicalSpecialityId);
+                    if(index>=0)
+                    this.selectedConsultations[index]=prescription
+                    else
+                    this.selectedConsultations.push(prescription);
+                    }
+                break;
             }
-            break;
-            case "M":
-                if(prescription.productId){
-                index = this.selectedMedicines.findIndex(x=>x.productId==prescription.productId);
-                if(index>=0)
-                this.selectedMedicines[index]=prescription
-                else
-                this.selectedMedicines.push(prescription);
-                }
-            break;
-            case "C":
-                if(prescription.medicalSpecialityId && prescription.medicalSpecialityId>0){
-                index = this.selectedConsultations.findIndex(x=>x.productId==prescription.productId);
-                if(index>=0)
-                this.selectedConsultations[index]=prescription
-                else
-                this.selectedConsultations.push(prescription);
-                }
-            break;
         }
-    }
-    }
-  async  deleteSelectedLabTests(index:number){
+        }
+      async  deleteSelectedLabTests(index:number){
+        const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
+        if(i>=0){
+            this.products[i].selected=false;
+        }   
         this.selectedLabTests.splice(index,1);
-    }
-
-    async  deleteSelectedConsultation(index:number){
-        this.selectedConsultations.splice(index,1);
-    }
-
-    async  deleteSelectedImage(index:number){
-        this.selectedImages.splice(index,1);
-    }
-
-    async  deleteSelectedMedicine(index:number){
-        this.selectedMedicines.splice(index,1);
-    }
+           
+        }
+    
+        async  deleteSelectedConsultation(index:number){
+            this.selectedConsultations.splice(index,1);
+        }
+    
+        async  deleteSelectedImage(index:number){
+            this.selectedImages.splice(index,1);
+        }
+    
+        async  deleteSelectedMedicine(index:number){
+            this.selectedMedicines.splice(index,1);
+        }
+    
 
     cancel(){
         this.clearBackupData();
