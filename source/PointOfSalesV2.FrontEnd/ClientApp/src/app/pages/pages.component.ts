@@ -107,8 +107,9 @@ export class PagesComponent {
             hidden: !this.securityService.isUserValidInMenu(AppSections.Users)
           },
           {
-            title: this.lang.getValueByKey('consultation_menu'),
+            title: this.lang.getValueByKey('Servicios Medicos'),
             link: 'product',
+            selected:true,
             hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
           },  {
             title: this.lang.getValueByKey('insuranceCoverage_menu'),
@@ -118,6 +119,7 @@ export class PagesComponent {
           {
             title: this.lang.getValueByKey('patients_menu'),
             link: 'customer',
+            selected:true,
             hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
           },
          
@@ -127,6 +129,7 @@ export class PagesComponent {
       {
         title: this.lang.getValueByKey('appointment_menu'),
         icon: 'printer-outline',
+        selected:true,
         hidden: !this.securityService.isUserValidInMenu(AppSections.Appointment),
         link:'appointment'
       },

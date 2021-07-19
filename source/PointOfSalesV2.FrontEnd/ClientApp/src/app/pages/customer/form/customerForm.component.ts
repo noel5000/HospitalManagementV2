@@ -61,7 +61,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
             bloodType: ['',[Validators.maxLength(4)]],
             code: [''],
-            birthDate:['', [Validators.required]],
+            birthDate:[''],
             insuranceCardId:[''],
             insuranceId:[null],
             currencyId: [0,[Validators.required,Validators.min(1)]],

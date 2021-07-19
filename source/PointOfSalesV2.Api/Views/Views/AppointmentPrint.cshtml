@@ -19,7 +19,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
     <meta name="viewport" content="width=device-width" />
-    <title>Invoice Print</title>
+    <title>Impresión de Factura</title>
     <style>
 
 
@@ -145,7 +145,7 @@
             <div class="row noImprimir">
                 <div class="col-md-6 col-xs-12 col-sm-12">
                     <button id="printButton" class="btn btn-default col-md-2">
-                        <i class="fa fa-print"></i> @languageKeys.FirstOrDefault(x => x.Key == "print_btn").Value
+                        <i class="fa fa-print"></i>Imprimir
                     </button>
                 </div>
 
@@ -169,8 +169,8 @@
                                     </table>
                                     <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @appointment.Hospital.Address</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @appointment.Hospital.PhoneNumber</th></tr>
+                                            <tr><th class="infoCompania">Dirección : @appointment.Hospital.Address</th></tr>
+                                            <tr><th class="infoCompania">Telefono : @appointment.Hospital.PhoneNumber</th></tr>
                                             <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : @appointment.Hospital.NRC</th></tr>
                                             <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : @appointment.Hospital.Email</th></tr>
                                         </thead>
