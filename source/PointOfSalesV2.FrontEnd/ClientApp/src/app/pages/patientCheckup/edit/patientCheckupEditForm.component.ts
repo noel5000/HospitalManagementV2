@@ -196,7 +196,8 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         this.newProduct=false;
         if(this.itemForm.contains('newProduct'))
         this.itemForm.removeControl('newProduct');
-
+        this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1);
     }
     cancelNewProduct(){
         this.itemForm.patchValue({
@@ -245,6 +246,7 @@ this.attachmentsService.getAllFiltered([
     async getMedicalSpecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=r;
+            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1);
         })
     }
 
@@ -294,7 +296,7 @@ this.attachmentsService.getAllFiltered([
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
-      
+            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
         });
     }
     async getAppointment(id:number){
@@ -480,6 +482,8 @@ console.log(ex);
                     }
                 break;
             }
+            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
         }
         }
       async  deleteSelectedLabTests(index:number){

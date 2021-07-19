@@ -169,7 +169,8 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         this.newProduct=false;
         if(this.itemForm.contains('newProduct'))
         this.itemForm.removeControl('newProduct');
-
+        this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
     cancelNewProduct(){
         this.itemForm.patchValue({
@@ -203,6 +204,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     async getMedicalSpecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=r;
+            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
         })
     }
 
@@ -274,7 +276,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
             this.products=this.products.concat( r['value']);
-            
+            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1)
         });
     }
     async getAppointment(id:number){
