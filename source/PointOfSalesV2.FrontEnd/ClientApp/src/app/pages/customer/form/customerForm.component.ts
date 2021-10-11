@@ -51,7 +51,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         private currencyService:CurrencyService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Customers,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -83,7 +83,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getTrnControls();
         this.getCurrencies();
@@ -94,7 +94,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             this.itemForm.patchValue({insurancePlanId:null});
                 this.getPlans(val);
         });
-      
+
     }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
@@ -143,33 +143,33 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
                 } as QueryFilter
             ]).subscribe(r=>{
                 this.insurancePlans = r['value'];
-                
+
             },error=>{
-    
+
             })
         }
     }
 
     getInsurances(){
-        
+
             this.insuranceService.getAll().subscribe(r=>{
                 this.insurances = [{name:'', id:null}]
                this.insurances=this.insurances.concat(r);
-                
+
             },error=>{
-    
+
             })
-        
+
     }
 
-   
+
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
             return;
         }
        const formValue = this.itemForm.value as Customer;
-      
+
            if(!this.item)
            this.item = formValue;
            this.item=  this.updateModel<Customer>(formValue,this.item);
