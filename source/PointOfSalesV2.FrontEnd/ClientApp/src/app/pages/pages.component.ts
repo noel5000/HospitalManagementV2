@@ -49,11 +49,6 @@ export class PagesComponent {
             link: '/pages/logout',
             hidden: false
           },
-          {
-            title: this.lang.getValueByKey('resetPass_menu'),
-            link: '/auth/reset-password',
-            hidden: false
-          },
         ],
       },
       {

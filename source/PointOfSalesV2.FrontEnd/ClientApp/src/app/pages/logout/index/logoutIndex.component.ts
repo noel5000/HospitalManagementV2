@@ -21,8 +21,12 @@ declare const $: any;
 export class LogoutIndexComponent  implements OnInit {
     ngOnInit(): void {
      this.service.post({}).subscribe(r=>{
-         if(r.status>=0)
-         this.router.navigateByUrl('auth/login');
+         if(r.status>=0){
+           localStorage.removeItem('currentUser')
+          this.router.navigateByUrl('auth/login');
+
+         }
+
          else
          this.modalService.showError(r.message);
      })
@@ -37,8 +41,8 @@ export class LogoutIndexComponent  implements OnInit {
       private modalService:ModalService,
        private  http: HttpClient,
     ) {
-    
-    
+
+
     }
 
 }
