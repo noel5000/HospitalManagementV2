@@ -62,7 +62,7 @@ namespace PointOfSalesV2.Repository
                   
 
 
-                    appointment.State = appointment.AppointmentState == AppointmentStates.Scheduled ? (char)AppointmentStates.InProgress : appointment.State;
+                    appointment.State = (appointment.AppointmentState == AppointmentStates.Scheduled || appointment.AppointmentState == AppointmentStates.Expired) ? (char)AppointmentStates.InProgress : appointment.State;
                     _Context.Appointments.Update(appointment);
                     _Context.SaveChanges();
                     result = SavePrescriptions(prescriptions, result);
@@ -111,7 +111,7 @@ namespace PointOfSalesV2.Repository
                     }
 
 
-                    appointment.State = appointment.AppointmentState == AppointmentStates.Scheduled ? (char)AppointmentStates.InProgress : appointment.State;
+                    appointment.State = (appointment.AppointmentState == AppointmentStates.Scheduled || appointment.AppointmentState == AppointmentStates.Expired) ? (char)AppointmentStates.InProgress : appointment.State;
                     _Context.Appointments.Update(appointment);
                     _Context.SaveChanges();
                     result = UpdatePrescriptions(prescriptions, result);
