@@ -34,9 +34,27 @@ namespace PointOfSalesV2.Repository
             Result<PatientCheckup> result = new Result<PatientCheckup>(-1, -1, "error_msg");
             using (var transaction = _Context.Database.BeginTransaction()) 
             {
+                
                 try
                 {
-                    var appointment = _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId);
+                    var appointment = entity.AppointmentId.HasValue && entity.AppointmentId>0? _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId):null;
+                    if (appointment == null) 
+                    {
+                        appointment = new Appointment()
+                        {
+                            State= (char)AppointmentStates.InProgress,
+                            Date=DateTime.Now,
+                            InsuranceId=entity.InsuranceId,
+                            InsurancePlanId=entity.InsurancePlanId,
+                            PatientId=entity.PatientId,
+                            AppointmentType= AppointmentTypes.Consultation.ToString(),
+                            Details=new List<AppointmentDetail>() { new AppointmentDetail() { 
+                            Active=true,
+                            DoctorId=entity.DoctorId
+                            } },
+                            CurrencyId=entity.Patient.CurrencyId
+                        };
+                    }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
                     var prescriptions = SetEntity(entity);
@@ -63,8 +81,12 @@ namespace PointOfSalesV2.Repository
 
 
                     appointment.State = (appointment.AppointmentState == AppointmentStates.Scheduled || appointment.AppointmentState == AppointmentStates.Expired) ? (char)AppointmentStates.InProgress : appointment.State;
-                    _Context.Appointments.Update(appointment);
-                    _Context.SaveChanges();
+                    if (appointment.Id > 0) 
+                    {
+                        _Context.Appointments.Update(appointment);
+                        _Context.SaveChanges();
+                    }
+                   
                     result = SavePrescriptions(prescriptions, result);
                     if (result.Status < 0)
                     {
@@ -92,7 +114,24 @@ namespace PointOfSalesV2.Repository
             {
                 try
                 {
-                    var appointment = _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId);
+                    var appointment = entity.AppointmentId.HasValue && entity.AppointmentId > 0 ? _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId) : null;
+                    if (appointment == null)
+                    {
+                        appointment = new Appointment()
+                        {
+                            State = (char)AppointmentStates.InProgress,
+                            Date = DateTime.Now,
+                            InsuranceId = entity.InsuranceId,
+                            InsurancePlanId = entity.InsurancePlanId,
+                            PatientId = entity.PatientId,
+                            AppointmentType = AppointmentTypes.Consultation.ToString(),
+                            Details = new List<AppointmentDetail>() { new AppointmentDetail() {
+                            Active=true,
+                            DoctorId=entity.DoctorId
+                            } },
+                            CurrencyId = entity.Patient.CurrencyId
+                        };
+                    }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
                     var prescriptions = SetEntity(entity);
@@ -112,8 +151,12 @@ namespace PointOfSalesV2.Repository
 
 
                     appointment.State = (appointment.AppointmentState == AppointmentStates.Scheduled || appointment.AppointmentState == AppointmentStates.Expired) ? (char)AppointmentStates.InProgress : appointment.State;
-                    _Context.Appointments.Update(appointment);
-                    _Context.SaveChanges();
+                    if (appointment.Id > 0) 
+                    {
+                        _Context.Appointments.Update(appointment);
+                        _Context.SaveChanges();
+                    }
+
                     result = UpdatePrescriptions(prescriptions, result);
                     if (result.Status < 0)
                     {

@@ -190,7 +190,7 @@
                                                 <th>@(languageKeys.FirstOrDefault(x => x.Key == "doctor_lbl")?.Value?? "doctor_lbl") : @checkup.Doctor.FullName.ToString()</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
-                                                <th class="text-left">@(checkup.Doctor.MedicalSpeciality.Name.ToString())</th>
+                                                <th class="text-left">@(checkup.Doctor.MedicalSpeciality?.Name??"")</th>
                                             </tr>
                                             <tr>
                                                 <th>@(languageKeys.FirstOrDefault(x => x.Key == "patient_lbl")?.Value?? "patient_lbl") : @checkup.Patient.NameAndCode.ToString()</th>

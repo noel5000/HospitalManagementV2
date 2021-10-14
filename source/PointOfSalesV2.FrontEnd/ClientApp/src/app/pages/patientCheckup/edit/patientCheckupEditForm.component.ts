@@ -29,7 +29,7 @@ declare const $: any;
     styleUrls: ["../patientCheckupStyles.component.scss"]
 })
 export class patientCheckupEditFormComponent extends BaseComponent implements OnInit {
- 
+
     _route:ActivatedRoute;
     appointmentId:number=0;
     patientId:number=0;
@@ -49,7 +49,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         '1-0-1',
         '0-1-1',
         '1-1-1',
-        
+
     ];
     products:Product[]=[];
     prescriptionType:string='';
@@ -79,7 +79,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     zones:Zone[]=[];
     newProduct:boolean=false;
     editing:number=1;
-    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);    
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
     attachments:any[]=[];
     public uploader: FileUploader;
     constructor(
@@ -95,18 +95,21 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         private  http: HttpClient,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.PatientCheckup,modalService);
             this._route=router;
             const urlId= parseInt( this._route.snapshot.paramMap.get('checkupid'));
             const appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
+            const patientId= parseInt( this._route.snapshot.paramMap.get('patientid'));
             const editing= parseInt( this._route.snapshot.paramMap.get('editing'));
             if(!isNaN(appointmentId))
             this.appointmentId=appointmentId;
-    
+            if(!isNaN(patientId))
+            this.patientId=patientId;
+
             if(!isNaN(editing))
             this.editing=editing;
-    
+
             if(!isNaN(urlId)){
                this.id=urlId;
                this.getItem(urlId);
@@ -114,11 +117,11 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             else
             this.validateFormData();
 
-            
+
             this.itemForm = this.formBuilder.group({
                 doctorName: [''],
                 patientName:[''],
-                appointmentId:[ this.appointmentId,[Validators.required]],
+                appointmentId:[ this.appointmentId==0?null:this.appointmentId],
                 symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
                 diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
                 prescriptionType: ['',[ Validators.required]],
@@ -136,7 +139,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                 insurancePlanId:[null],
                 currencyId:[0],
             });
-      
+
 
         this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`, itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
@@ -148,7 +151,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
     }
     saveNewProduct(){
-        
+
         const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
         if(prescriptionType!="C"){
             let newProduct={
@@ -171,7 +174,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                     newProduct.id=this.products[index].id
                     this.itemForm.patchValue({productId:newProduct.id});
             }
-           
+
         }
         else{
             let newConsultation ={
@@ -192,7 +195,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                     this.itemForm.patchValue({medicalSpecialityId:newConsultation.id});
             }
         }
-       
+
         this.newProduct=false;
         if(this.itemForm.contains('newProduct'))
         this.itemForm.removeControl('newProduct');
@@ -227,14 +230,15 @@ this.attachmentsService.getAllFiltered([
     this.attachments= r['value'];
 })
     }
-    ngOnInit(): void {    
+    ngOnInit(): void {
         this.verifyUser();
         this.getMedicalSpecialities();
         this.onChanges();
         if(this.appointmentId && this.appointmentId>0)
         this.getAppointment(this.appointmentId);
-        else
-        this.modalService.showError('appointmentNotValid_msg');
+        else {
+          this.getPatient(1);
+        }
         this.getAttachments(this.id);
         this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
@@ -275,7 +279,7 @@ this.attachmentsService.getAllFiltered([
                if(val)
                this.getProducts(val);
         });
-       
+
     }
     async getProducts(type:string){
         const filter = [
@@ -302,7 +306,7 @@ this.attachmentsService.getAllFiltered([
     async getAppointment(id:number){
         this.appointmentService.getById(id).subscribe(r=>{
             this.appointment=r.data[0];
-          
+
             if(!this.appointment)
             this.modalService.showError('appointmentNotValid_msg');
             else{
@@ -312,7 +316,7 @@ this.attachmentsService.getAllFiltered([
                 else{
                     this.appointment.doctorName=consultationDetail.doctor.fullName;
                     this.appointment.doctorId=consultationDetail.doctorId;
-                    
+
                 }
                 this.itemForm.patchValue({
                     appointmentId:this.appointment.id,
@@ -324,7 +328,7 @@ this.attachmentsService.getAllFiltered([
                     doctorName:this.appointment.doctorName,
                     patientName:this.appointment.patientName,
                     currencyId:this.appointment.currencyId,
-    
+
                 })
             }
         })
@@ -347,12 +351,12 @@ this.attachmentsService.getAllFiltered([
                     medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
                 };
             if(selectedIndex<0){
-                
+
                 this.selectedLabTests.push(
                     prescription
                 );
             }
-           
+
             else
             this.selectedLabTests[selectedIndex]=prescription;
         }
@@ -361,6 +365,35 @@ this.attachmentsService.getAllFiltered([
             this.selectedLabTests.splice(selectedIndex,1);
         }
     }
+
+    async getPatient(getData:number=0){
+      this.patientService.getById(this.patientId).subscribe(r=>{
+        if(r.status>=0)
+        this.patient=r.data[0];
+        else
+        this.modalService.showError(r.message);
+
+        if(getData>0)
+        this.getDataWithoutApointment();
+      })
+      }
+
+      async getDataWithoutApointment(){
+        const user = this.getUser();
+        this.itemForm.patchValue({
+          patientId:this.patientId,
+          doctorId: user.userId,
+          hospitalId:user.branchOfficeId,
+          appointmentId:null,
+          insuranceId:this.patient.insuranceId,
+          insurancePlanId:this.patient.insurancePlanId,
+          doctorName:user.fullName,
+          patientName:this.patient.name,
+          currencyId:this.patient.currencyId,
+        });
+
+      }
+
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         try{
@@ -393,7 +426,7 @@ this.attachmentsService.getAllFiltered([
                     insurancePlanId,
                     currencyId:this.item.patient.currencyId,
                });
-              
+
             }
             this.validateFormData();
         }
@@ -404,19 +437,25 @@ console.log(ex);
     });
     }
 
- 
+
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
             return;
         }
        const formValue = this.itemForm.getRawValue();
-      
+
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
            this.item.id=this.id;
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
+           this.item.patient=this.patient;
+           this.item.doctor=this.doctor?this.doctor:this.getUser();
+           this.item.doctor.name=this.item.doctor.name?this.item.doctor.name:'Name';
+           this.item.doctor.lastName=this.item.doctor.lastName?this.item.doctor.lastName:'lastName';
+           this.item.doctor.password=this.item.doctor.password?this.item.doctor.password:'password';
+           this.item.doctor.userName=this.item.doctor.userName?this.item.doctor.userName:'userName';
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -452,7 +491,7 @@ console.log(ex);
                         else
                         this.selectedImages.push(prescription);
                     }
-                 
+
                 break;
                 case "L":
                     if(prescription.productId){
@@ -490,23 +529,23 @@ console.log(ex);
         const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
         if(i>=0){
             this.products[i].selected=false;
-        }   
-        this.selectedLabTests.splice(index,1);
-           
         }
-    
+        this.selectedLabTests.splice(index,1);
+
+        }
+
         async  deleteSelectedConsultation(index:number){
             this.selectedConsultations.splice(index,1);
         }
-    
+
         async  deleteSelectedImage(index:number){
             this.selectedImages.splice(index,1);
         }
-    
+
         async  deleteSelectedMedicine(index:number){
             this.selectedMedicines.splice(index,1);
         }
-    
+
 
     cancel(){
         this.clearBackupData();

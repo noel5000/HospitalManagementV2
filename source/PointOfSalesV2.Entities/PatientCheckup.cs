@@ -16,7 +16,7 @@ namespace PointOfSalesV2.Entities
         public Guid DoctorId { get; set; }
         public long? InsuranceId { get; set; }
         public long? InsurancePlanId { get; set; }
-        public long AppointmentId { get; set; }
+        public long? AppointmentId { get; set; }
         public string Symptoms { get; set; }
         public string Diagnoses { get; set; }
 
