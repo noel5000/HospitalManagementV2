@@ -164,15 +164,15 @@
                                 <div class="divBody">
                                     <table class="">
                                         <thead>
-                                            <tr><th class="titulo">@(checkup.Appointment.Hospital.Name.ToUpper())</th></tr>
+                                            <tr><th class="titulo">@(checkup.Appointment?.Hospital?.Name.ToUpper())</th></tr>
                                         </thead>
                                     </table>
                                     <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @checkup.Appointment.Hospital.Address</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @checkup.Appointment.Hospital.PhoneNumber</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : @checkup.Appointment.Hospital.NRC</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : @checkup.Appointment.Hospital.Email</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : @checkup.Appointment?.Hospital?.Address</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : @checkup.Appointment?.Hospital?.PhoneNumber</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : @checkup.Appointment?.Hospital?.NRC</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : @checkup.Appointment?.Hospital?.Email</th></tr>
                                         </thead>
                                     </table>
                                     <br />
@@ -187,13 +187,13 @@
                                             </tr>
 
                                             <tr>
-                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "doctor_lbl")?.Value?? "doctor_lbl") : @checkup.Doctor.FullName.ToString()</th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "doctor_lbl")?.Value?? "doctor_lbl") : @checkup.Doctor?.FullName.ToString()</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
-                                                <th class="text-left">@(checkup.Doctor.MedicalSpeciality?.Name??"")</th>
+                                                <th class="text-left">@(checkup.Doctor?.MedicalSpeciality?.Name??"")</th>
                                             </tr>
                                             <tr>
-                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "patient_lbl")?.Value?? "patient_lbl") : @checkup.Patient.NameAndCode.ToString()</th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key == "patient_lbl")?.Value?? "patient_lbl") : @checkup.Patient?.NameAndCode.ToString()</th>
                                                 <th class=" "></th>
                                                 <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key == "checkupNumber_lbl")?.Value?? "checkupNumber_lbl") :</th>
                                                 <th class="text-left">@(checkup.Id.ToString())</th>
