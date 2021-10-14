@@ -3,7 +3,7 @@ import { AppSections } from './enums';
 export const endpointUrl = 'https://adaneumoniaback.solucionesrn.com/api/';
 //export const endpointUrl = 'http://noeltest400-001-site6.ctempurl.com/api/';
 
-export const endpointViewsUrl = 'http://adaneumoniaback.solucionesrn.com/';
+export const endpointViewsUrl = 'https://adaneumoniaback.solucionesrn.com/';
 //export const endpointViewsUrl = 'http://noeltest400-001-site6.ctempurl.com/';
 
 export const endpointControllers = {
