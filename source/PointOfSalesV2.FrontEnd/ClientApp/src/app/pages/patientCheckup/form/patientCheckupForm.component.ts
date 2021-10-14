@@ -27,7 +27,7 @@ declare const $: any;
     styleUrls: ["../patientCheckupStyles.component.scss"]
 })
 export class patientCheckupFormComponent extends BaseComponent implements OnInit {
- 
+
     _route:ActivatedRoute;
     appointmentId:number=0;
     patientId:number=0;
@@ -47,7 +47,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         '1-0-1',
         '0-1-1',
         '1-1-1',
-        
+
     ];
     products:Product[]=[];
     prescriptionType:string='';
@@ -89,13 +89,13 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         private  http: HttpClient,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.PatientCheckup,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             doctorName: [''],
             patientName:[''],
-            appointmentId:[null,[Validators.required]],
+            appointmentId:[null],
             symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
             diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
             prescriptionType: ['',[ Validators.required]],
@@ -112,15 +112,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insuranceId:[null],
             insurancePlanId:[null],
             currencyId:[0],
-            
-            exploracionFisica:[''],
-            peso:[''],
-            talla:[''],
-            temperatura:[''],
-            fc:[''],
-            fr:[''],
-            sat:[''],
-        
         });
     }
     addProduct(){
@@ -129,8 +120,19 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         if(!this.itemForm.contains('newProduct'))
         this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
     }
+   async getPatient(getData:number=0){
+    this.patientService.getById(this.patientId).subscribe(r=>{
+      if(r.status>=0)
+      this.patient=r.data[0];
+      else
+      this.modalService.showError(r.message);
+
+      if(getData>0)
+      this.getDataWithoutApointment();
+    })
+    }
     saveNewProduct(){
-        
+
         const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
         if(prescriptionType!="C"){
             let newProduct={
@@ -153,7 +155,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                     newProduct.id=this.products[index].id
                     this.itemForm.patchValue({productId:newProduct.id});
             }
-           
+
         }
         else{
             let newConsultation ={
@@ -174,7 +176,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                     this.itemForm.patchValue({medicalSpecialityId:newConsultation.id});
             }
         }
-       
+
         this.newProduct=false;
         if(this.itemForm.contains('newProduct'))
         this.itemForm.removeControl('newProduct');
@@ -204,8 +206,10 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
      if(this.appointmentId && this.appointmentId>0)
         this.getAppointment(this.appointmentId);
-        else
-        this.modalService.showError('appointmentNotValid_msg');
+        else {
+          this.getPatient(1);
+        }
+
         this.verifyUser();
         this.getMedicalSpecialities();
         this.onChanges();
@@ -215,6 +219,21 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             this.medicalSpecialities=r;
             this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
         })
+    }
+    async getDataWithoutApointment(){
+      const user = this.getUser();
+      this.itemForm.patchValue({
+        patientId:this.patientId,
+        doctorId: user.userId,
+        hospitalId:user.branchOfficeId,
+        appointmentId:null,
+        insuranceId:this.patient.insuranceId,
+        insurancePlanId:this.patient.insurancePlanId,
+        doctorName:user.fullName,
+        patientName:this.patient.name,
+        currencyId:this.patient.currencyId,
+      });
+
     }
 
     onChanges(){
@@ -232,7 +251,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                if(val)
                this.getProducts(val);
         });
-       
+
     }
     async labTestSelection(index:number){
         this.products[index].selected=!this.products[index].selected;
@@ -252,12 +271,12 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                     medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
                 };
             if(selectedIndex<0){
-                
+
                 this.selectedLabTests.push(
                     prescription
                 );
             }
-           
+
             else
             this.selectedLabTests[selectedIndex]=prescription;
         }
@@ -300,7 +319,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 else{
                     this.appointment.doctorName=consultationDetail.doctor.fullName;
                     this.appointment.doctorId=consultationDetail.doctorId;
-                    
+
                 }
                 this.itemForm.patchValue({
                     appointmentId:this.appointment.id,
@@ -312,10 +331,10 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                     doctorName:this.appointment.doctorName,
                     patientName:this.appointment.patientName,
                     currencyId:this.appointment.currencyId,
-    
+
                 })
             }
-           
+
         })
     }
 
@@ -323,7 +342,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
-           
+
             this.itemForm.patchValue({
                 doctorName: this.item.doctor.fullName,
                 appointmentId:this.item.appointmentId,
@@ -344,13 +363,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
                 currencyId:this.item.currencyId,
-                exploracionFisica:this.item.exploracionFisica,
-                peso:this.item.peso,
-                talla:this.item.talla,
-                temperatura:this.item.temperatura,
-                fc:this.item.fc,
-                fr:this.item.fr,
-                sat:this.item.sat,
             });
 
         }
@@ -358,18 +370,24 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     })
     }
 
- 
+
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
             return;
         }
        const formValue = this.itemForm.getRawValue();
-      
+
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
+           this.item.patient=this.patient;
+           this.item.doctor=this.doctor?this.doctor:this.getUser();
+           this.item.doctor.name=this.item.doctor.name?this.item.doctor.name:'Name';
+           this.item.doctor.lastName=this.item.doctor.lastName?this.item.doctor.lastName:'lastName';
+           this.item.doctor.password=this.item.doctor.password?this.item.doctor.password:'password';
+           this.item.doctor.userName=this.item.doctor.userName?this.item.doctor.userName:'userName';
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -405,7 +423,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                     else
                     this.selectedImages.push(prescription);
                 }
-             
+
             break;
             case "L":
                 if(prescription.productId){
@@ -441,9 +459,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
     if(i>=0){
         this.products[i].selected=false;
-    }   
+    }
     this.selectedLabTests.splice(index,1);
-       
+
     }
 
     async  deleteSelectedConsultation(index:number){

@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20211014004231_consultasSinCitas")]
+    partial class consultasSinCitas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -880,27 +882,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AHF")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
-                    b.Property<string>("APNP")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
-
-                    b.Property<string>("AntecedentesPatologicos")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AntecedentesPerinatales")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
 
                     b.Property<decimal>("BillingAmountLimit")
                         .HasColumnType("decimal(18, 2)");
@@ -936,29 +923,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("CurrencyId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("DesarrolloPsicomotor")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
-                    b.Property<string>("Diagnosticos")
-                        .HasColumnType("nvarchar(2000)")
-                        .HasMaxLength(2000);
-
-                    b.Property<string>("Espirometria")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
-                    b.Property<string>("EstadoDeSalud")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
-
-                    b.Property<string>("ExploracionFisica")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Informante")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
-
                     b.Property<string>("InsuranceCardId")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
@@ -986,21 +950,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<string>("PadenciaActual")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
-                    b.Property<string>("Paraclinicos")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(20)")
                         .HasMaxLength(20);
-
-                    b.Property<string>("PlanTerapeutico")
-                        .HasColumnType("nvarchar(max)")
-                        .HasMaxLength(5000);
 
                     b.Property<long>("TRNControlId")
                         .HasColumnType("bigint");
@@ -11827,15 +11779,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<Guid>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ExploracionFisica")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FC")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long?>("InsuranceId")
                         .HasColumnType("bigint");
 
@@ -11855,20 +11798,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("PatientId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Peso")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sat")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Symptoms")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Talla")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Temperatura")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
