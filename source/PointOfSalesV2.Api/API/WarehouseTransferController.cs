@@ -33,11 +33,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public virtual async Task<IActionResult> Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<WarehouseTransfer>(x => x
+                var data = await _baseRepo.GetAllAsync<WarehouseTransfer>(x => x
                 .Include(x => x.OriginBranchOffice)
                 .Include(x => x.DestinyBranchOffice)
                 .Include(x => x.Unit)
@@ -62,7 +62,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.AddTransfersList(model.Entries, model.Reference, model.Details);
+                var result = await repo.AddTransfersList(model.Entries, model.Reference, model.Details);
                 return Ok(result);
             }
 
@@ -81,7 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.RemoveTransfers(sequence);
+                var result = await repo.RemoveTransfers(sequence);
                 return Ok(result);
             }
 

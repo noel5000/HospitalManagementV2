@@ -27,25 +27,21 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("GetComissionsReport")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.COMISSIONSREPORT)]
-        public virtual Task<IActionResult> GetComissionsReport([FromBody] ComissionsSearch search)
+        public virtual async Task<IActionResult> GetComissionsReport([FromBody] ComissionsSearch search)
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<ComissionsSearch, ISellerRepository>;
-                    var invoices =t_inputs.Item1.ReportType==0?
-                    t_inputs.Item2.SalesComissions(t_inputs.Item1): t_inputs.Item2.PaymentsComissions(t_inputs.Item1);
-                    return Ok(new { status = 0, id = 0, data = invoices });
-                }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<ComissionsSearch, ISellerRepository>(search, _repositoryFactory.GetCustomDataRepositories<ISellerRepository>()));
-
-            return t_result;
+            try
+            {
+                var repo = this._repositoryFactory.GetCustomDataRepositories<ISellerRepository>();
+                
+                var invoices = search.ReportType == 0 ?
+               await repo.SalesComissions(search) : await repo.PaymentsComissions(search);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -53,44 +49,39 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportComissionsReport")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.COMISSIONSREPORT)]
-        public Task<IActionResult> ExportComissionsReport([FromBody] ComissionsSearch search)
+        public async Task<IActionResult> ExportComissionsReport([FromBody] ComissionsSearch search)
         {
+            try
+            {
+                var repo = this._repositoryFactory.GetCustomDataRepositories<ISellerRepository>();
 
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
+                var invoices = search.ReportType == 0 ?
+               await repo.SalesComissions(search) :await repo.PaymentsComissions(search);
+
+
+                string requestLanguage = "EN";
+                var languageIdHeader = this.Request.Headers["languageid"];
+                requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                var excelData = ExportUtility.GetExcelData<ComissionDetail>(invoices.ComissionsByCyrrencies.SelectMany(x => x.Details), requestLanguage, this.languageKeys.ToList());
+                var excelStream = ExcelImport.CreateXlsStream(
+                    excelData.Item1,
+                   excelData.Item2
+                   );
+                if (invoices != null && excelStream != null && excelStream.Length > 0)
                 {
-                    var t_inputs = arg as Tuple<ComissionsSearch, ISellerRepository>;
-                    var invoices = t_inputs.Item1.ReportType == 0 ?
-                    t_inputs.Item2.SalesComissions(t_inputs.Item1) : t_inputs.Item2.PaymentsComissions(t_inputs.Item1);
 
-
-                    string requestLanguage = "EN";
-                    var languageIdHeader = this.Request.Headers["languageid"];
-                    requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                    var excelData = ExportUtility.GetExcelData<ComissionDetail>(invoices.ComissionsByCyrrencies.SelectMany(x=>x.Details), requestLanguage, this.languageKeys.ToList());
-                    var excelStream = ExcelImport.CreateXlsStream(
-                        excelData.Item1,
-                       excelData.Item2
-                       );
-                    if (invoices != null && excelStream != null && excelStream.Length > 0)
-                    {
-
-                        return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                    }
-                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-
-
-
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
-            }, new Tuple<ComissionsSearch, ISellerRepository>(search, _repositoryFactory.GetCustomDataRepositories<ISellerRepository>()));
 
-            return t_result;
+
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
         }
     }

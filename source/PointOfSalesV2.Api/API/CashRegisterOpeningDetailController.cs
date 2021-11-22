@@ -33,7 +33,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<CashRegisterOpeningDetail>(x => x.Include(x => x.CashRegisterOpening)
+                var data = await _baseRepo.GetAllAsync<CashRegisterOpeningDetail>(x => x.Include(x => x.CashRegisterOpening)
                 .Where(y => y.Active == true));
                 return Ok(data);
             }

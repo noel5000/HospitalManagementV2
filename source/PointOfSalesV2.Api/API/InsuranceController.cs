@@ -38,7 +38,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Insurance>(x =>x
+                var data = await _baseRepo.GetAllAsync<Insurance>(x =>x
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -58,7 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Insurance>(x => x
+                var data = await _baseRepo.GetAllAsync<Insurance>(x => x
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];

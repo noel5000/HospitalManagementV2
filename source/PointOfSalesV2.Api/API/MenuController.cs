@@ -37,13 +37,14 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Menu>(x => x
+                var data = await _baseRepo.GetAllAsync<Menu>(x => x
                 , y => y.Active == true);
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
+                await this.SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -55,9 +56,9 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var rawData = _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
+                var rawData = (await _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
                .Include(y => y.MenuDetails).ThenInclude(d => d.Unit)
-               , y => y.Active == true).ToList();
+               , y => y.Active == true)).ToList();
                 var rawDetails = rawData.SelectMany(x => x.MenuDetails);
                 var data = rawData.GroupBy(x => x.WeekNumber).ToList();
                 var result = new List<WeekMenuModel>();
@@ -72,7 +73,7 @@ namespace PointOfSalesV2.Api.Controllers
                             MenuDetails=rawDetails.Where(y=>y.Active==true &&y.MenuId==x.FirstOrDefault().Id).ToList()
                         }).ToList()
                     };
-                    result.AddAsync(model);
+                    result.Add(model);
                 });
 
                 return Ok(new { Id = 0, Status = 0, data = result });
@@ -80,6 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                await this.SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -91,9 +93,9 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
+                var data = (await _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
                 .Include(y => y.MenuDetails).ThenInclude(d => d.Unit)
-                , y => y.Active == true && y.WeekNumber == weekNumber && y.DayOfWeek == (DayOfWeek)dayOfWeek).ToList().GroupBy(x => x.WeekNumber).ToList();
+                , y => y.Active == true && y.WeekNumber == weekNumber && y.DayOfWeek == (DayOfWeek)dayOfWeek)).ToList().GroupBy(x => x.WeekNumber).ToList();
                 var result = new List<WeekMenuModel>();
                 data.ForEach(d =>
                 {
@@ -106,7 +108,7 @@ namespace PointOfSalesV2.Api.Controllers
                             MenuDetails = d.Select(j => j.MenuDetails).SelectMany(r => r).ToList()
                         }).ToList()
                     };
-                    result.AddAsync(model);
+                    result.Add(model);
                 });
 
                 return Ok(new { Id = 0, Status = 0, data = result });
@@ -114,6 +116,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
+                await this.SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -125,12 +128,13 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = menuRepository.DeleteMenuEntry((byte)weekNumber, (DayOfWeek)dayOfWeek);
+                var result = await menuRepository.DeleteMenuEntry((byte)weekNumber, (DayOfWeek)dayOfWeek);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
+                await this.SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -143,13 +147,14 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = this.menuRepository.MonthProjection(selectedDate,branchOfficeId,warehouseId);
+                var data = await this.menuRepository.MonthProjection(selectedDate,branchOfficeId,warehouseId);
 
                 return Ok(new { Id = 0, Status = 0, data });
             }
 
             catch (Exception ex)
             {
+                await this.SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

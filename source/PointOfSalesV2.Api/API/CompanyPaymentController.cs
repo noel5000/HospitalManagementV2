@@ -33,7 +33,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<CompanyPayments>(x => x.Include(t=>t.Currency)
+                var data = await _baseRepo.GetAllAsync<CompanyPayments>(x => x.Include(t=>t.Currency)
                 .Include(t=>t.PaymentType)
                 , y => y.Active == true);
                 return Ok(data);

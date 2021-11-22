@@ -37,7 +37,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency).Include(x=>x.MedicalSpeciality)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency).Include(x=>x.MedicalSpeciality)
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -64,7 +64,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as Product;
                 }
-                var result = _customRepo.AddAsync(model);
+                var result = await _customRepo.AddAsync(model);
                 result.Data = null;
                 return Ok(result);
             }
@@ -84,7 +84,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = _customRepo.UpdateAsync(model);
+                var result = await _customRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -103,7 +103,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];

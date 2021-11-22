@@ -37,7 +37,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance)
+                var data = await _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance)
                 .Include(t=>t.Product)
                  , y => y.Active == true);
                 return Ok(data);
@@ -87,7 +87,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance).Include(t=>t.Product)
+                var data = await _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance).Include(t=>t.Product)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];

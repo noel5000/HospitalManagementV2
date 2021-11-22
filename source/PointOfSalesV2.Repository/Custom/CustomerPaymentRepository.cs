@@ -19,10 +19,10 @@ namespace PointOfSalesV2.Repository
             this.dataRepositoryFactory = repoFactory;
         }
 
-        public CustomerPayment ApplyInvoicePayment(CustomerPayment payment)
+        public async Task<CustomerPayment> ApplyInvoicePayment(CustomerPayment payment)
         {
             var result = _Context.CustomersPayments.Add(payment).Entity;
-            _Context.SaveChanges();
+           await _Context.SaveChangesAsync();
             return result;
         }
 

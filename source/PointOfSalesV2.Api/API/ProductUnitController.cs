@@ -33,7 +33,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<UnitProductEquivalence>(x => x.Include(t => t.Unit)
+                var data = await _baseRepo.GetAllAsync<UnitProductEquivalence>(x => x.Include(t => t.Unit)
                 .Include(t => t.Product)
                 , y => y.Active == true);
                 return Ok(data);

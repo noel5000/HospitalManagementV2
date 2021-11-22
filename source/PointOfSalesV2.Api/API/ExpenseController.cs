@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.GetAllAsync<Expense>(x => x
+                var data = await _repo.GetAllAsync<Expense>(x => x
                 .Include(x=>x.Supplier)
                 .Include(x=>x.Currency)
                 .Include(x=>x.BranchOffice)
@@ -63,7 +63,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.Get(id);
+                var data = await _repo.GetAsync(id);
                 return Ok(data);
             }
 
@@ -82,7 +82,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.GetDebsToPay(model.StartDate,model.EndDate,model.SupplierId,model.CurrencyId,model.BranchOfficeId);
+                var data = await _repo.GetDebsToPay(model.StartDate,model.EndDate,model.SupplierId,model.CurrencyId,model.BranchOfficeId);
                 return Ok(new { status = 0, data});
             }
 
@@ -105,7 +105,7 @@ namespace PointOfSalesV2.Api.Controllers
                 start = startDate != "0" ? Convert.ToDateTime(startDate) : start;
                 DateTime? end = null;
                 end = endDate != "0" ? Convert.ToDateTime(endDate) : DateTime.Now;
-                var data = _repo.GetDebsToPay(start,end,supplierId,currencyId, branchOfficeId);
+                var data = await _repo.GetDebsToPay(start,end,supplierId,currencyId, branchOfficeId);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
@@ -143,7 +143,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as Expense;
                 }
-                var result = _repo.AddAsync(model);
+                var result = await _repo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -163,7 +163,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = _repo.UpdateAsync(model);
+                var result = await _repo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -183,7 +183,7 @@ namespace PointOfSalesV2.Api.Controllers
             try
             {
 
-                var result = _repo.RemoveAsync(id);
+                var result = await _repo.RemoveAsync(id);
                     return Ok(result);
                 
 

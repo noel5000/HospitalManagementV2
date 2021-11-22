@@ -122,14 +122,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<object> RemoveEntries(string sequence)
+        public async Task<Result<object>> RemoveEntries(string sequence)
         {
             Result<object> result = new Result<object>(-1, -1, "error_msg");
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var entries = _Context.InventoryEntries.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToList();
+                    var entries = await _Context.InventoryEntries.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToListAsync();
                     entries.ForEach(e =>
                     {
                         e.Active = false;
@@ -160,25 +160,25 @@ productUnits
 
                     });
                     _Context.InventoryEntries.UpdateRange(entries);
-                    _Context.SaveChanges();
-                    tran.Commit();
+                    await _Context.SaveChangesAsync();
+                    await tran.CommitAsync();
                     result = new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                    await tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
             return result;
         }
 
-        public override Result<InventoryEntry> Add(InventoryEntry entity)
+        public override async Task< Result<InventoryEntry>> AddAsync(InventoryEntry entity)
         {
             throw new NotImplementedException();
         }
 
-        public override Result<InventoryEntry> Update(InventoryEntry entity, bool fromDb = true)
+        public override async Task< Result<InventoryEntry>> UpdateAsync(InventoryEntry entity, bool fromDb = true)
         {
             throw new NotImplementedException();
         }

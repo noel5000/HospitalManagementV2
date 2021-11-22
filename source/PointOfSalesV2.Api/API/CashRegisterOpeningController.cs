@@ -123,11 +123,11 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var model = _baseRepo.Get(id).Data.FirstOrDefault();
+                var model = (await _baseRepo.GetAsync(id)).Data.FirstOrDefault();
                 if (model != null && model.State ==(char) Enums.CashRegisterOpeningStates.Open)
                 {
                     model.State = (char)Enums.CashRegisterOpeningStates.Nulled;
-                    var result = _baseRepo.UpdateAsync(model as CashRegisterOpening);
+                    var result = await _baseRepo.UpdateAsync(model as CashRegisterOpening);
                     return Ok(result);
                 }
                 else 

@@ -63,7 +63,7 @@ namespace PointOfSalesV2.Repository.Helpers.BillServices
             var productBasesRepo = dataRepositoryFactory.GetDataRepositories<CompositeProduct>();
             var productUnitRepo = dataRepositoryFactory.GetDataRepositories<UnitProductEquivalence>();
 
-            var baseDetails = invoiceDetailRepo.GetChildren(detail.Id).ToList();
+            var baseDetails = invoiceDetailRepo.GetChildren(detail.Id).Result.ToList();
             baseDetails.ForEach(p =>
             {
                 var currentProduct = p.Product ?? productRepo.Get(p.ProductId).Data.FirstOrDefault();

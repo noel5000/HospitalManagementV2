@@ -34,7 +34,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<WarehouseMovement>(x =>
+                var data = (await _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -44,7 +44,7 @@ namespace PointOfSalesV2.Api.Controllers
                   && (warehouseId > 0 ? y.WarehouseId == warehouseId : y.WarehouseId > 0)
                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0)
                   && (!string.IsNullOrEmpty(reference) && reference != "*" ? y.Reference.ToLower() == reference : y.Reference != "")
-                && y.Active == true).OrderBy(x=>x.CreatedDate).Select(x => new WarehouseMovementModel()
+                && y.Active == true)).OrderBy(x=>x.CreatedDate).Select(x => new WarehouseMovementModel()
                 {
                     BranchOffice = new BaseModel() { Id = x.BranchOffice.Id, Name = x.BranchOffice.Name },
                     Warehouse = new BaseModel() { Id = x.Warehouse.Id, Name = x.Warehouse.Name },
@@ -79,7 +79,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<WarehouseMovement>(x =>
+                var data = (await _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -89,7 +89,7 @@ namespace PointOfSalesV2.Api.Controllers
                   && (warehouseId > 0 ? y.WarehouseId == warehouseId : y.WarehouseId > 0)
                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0)
                   && (!string.IsNullOrEmpty(reference) && reference!="*" ? y.Reference.ToLower() == reference : y.Reference != "")
-                && y.Active == true).OrderBy(x => x.CreatedDate);
+                && y.Active == true)).OrderBy(x => x.CreatedDate);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "ES";

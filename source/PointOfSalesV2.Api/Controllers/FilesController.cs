@@ -67,7 +67,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
                                 PatientChekupId=id,
                                 
                                 });
-                                result.AddAsync(checkupAttcahmentResult);
+                                result.Add(checkupAttcahmentResult);
                             }
                            
 
@@ -84,7 +84,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
             }
             catch (Exception ex)
             {
-                this.exceptionsRepo.AddAsync(new ExceptionLog()
+              await  this.exceptionsRepo.AddAsync(new ExceptionLog()
                 {
                     Code = ex.HResult.ToString(),
                     Active = true,

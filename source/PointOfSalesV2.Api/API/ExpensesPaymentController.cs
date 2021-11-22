@@ -38,7 +38,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.GetAllAsync<ExpensesPayment>(x => x
+                var data = await _repo.GetAllAsync<ExpensesPayment>(x => x
                 .Include(x => x.Supplier)
                 .Include(x => x.Currency)
                 .Include(x => x.ExpenseCurrency)
@@ -63,7 +63,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.Get(id);
+                var data = await _repo.GetAsync(id);
                 return Ok(data);
             }
 
@@ -87,7 +87,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as ExpensesPayment;
                 }
-                var result = _repo.AddAsync(model);
+                var result = await _repo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -109,7 +109,7 @@ namespace PointOfSalesV2.Api.Controllers
             {
                 if (model.Expenses == null || model.Expenses.Count == 0)
                     throw new Exception("error_msg");
-                var result = _repo.AddPayment(model.Payment, model.Expenses);
+                var result = await _repo.AddPayment(model.Payment, model.Expenses);
 
                 return Ok(result);
             }
@@ -129,7 +129,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = _repo.UpdateAsync(model);
+                var result = await _repo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -148,7 +148,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = _repo.RemoveAsync(id);
+                var result = await _repo.RemoveAsync(id);
                 return Ok(result);
 
             }

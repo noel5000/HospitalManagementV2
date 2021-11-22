@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text; using System.Threading.Tasks;
-using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -58,7 +57,7 @@ namespace PointOfSalesV2.Repository
         Task<Result<T>> UpdateAsync(T entity, bool getFromDb = true);
         Task<Result<T>> GetAllAsync(string sortExpression = null);
         Task<Result<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null);
-        Task<IQueryable<TResult>> GetAllAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null)
+        Task<IQueryable<TResult>> GetAllAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null);
         Task<int> GetCountAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null);
         Task<Result<T>> GetAsync(long id);
         Task<Result<T>> GetAsync(Guid id);

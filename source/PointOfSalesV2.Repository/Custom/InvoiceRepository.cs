@@ -307,7 +307,7 @@ namespace PointOfSalesV2.Repository
                     var branchOffice = _Context.BranchOffices.AsNoTracking().FirstOrDefault(x => x.Id == entity.BranchOfficeId && x.Active == true);
                     entity.InvoiceDetails = details;
                     Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
-                    CreatePayment(entity);
+                  await  CreatePayment(entity);
                     var appointmentResult = await UpdateAppointmentStatus(entity);
                     if (appointmentResult.Status < 0)
                     {
@@ -390,7 +390,7 @@ namespace PointOfSalesV2.Repository
 
         }
 
-        void CreatePayment(Invoice entity)
+        async Task CreatePayment(Invoice entity)
         {
             if (entity.PaidAmount > 0 && entity.Payments != null && entity.Payments.Count > 0 && entity.InventoryModified)
             {
@@ -402,7 +402,7 @@ namespace PointOfSalesV2.Repository
                     payment.CreatedDate = entity.CreatedDate;
                     payment.CurrentOwedAmount = payment.OutstandingAmount;
                     payment.Sequence = sequencePayment;
-                    InvoiceHelper.ApplyInvoicePayment(payment, this.dataRepositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>());
+                   await InvoiceHelper.ApplyInvoicePayment(payment, this.dataRepositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>());
                 }
             }
         }
@@ -488,7 +488,7 @@ namespace PointOfSalesV2.Repository
                 var branchOffice = await _Context.BranchOffices.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.BranchOfficeId && x.Active == true);
                 entity.InvoiceDetails = details;
                 Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
-                CreatePayment(entity);
+              await  CreatePayment(entity);
                 var appointmentResult = await UpdateAppointmentStatus(entity);
                 if (appointmentResult.Status < 0)
                 {

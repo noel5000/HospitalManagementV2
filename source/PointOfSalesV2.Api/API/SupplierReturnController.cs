@@ -36,7 +36,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<SupplierReturn>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<SupplierReturn>(x => x.Include(t => t.Currency)
                 .Include(t => t.BranchOffice)
                 .Include(t => t.Warehouse)
                 .Include(t => t.Product)
@@ -60,7 +60,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.AddInventoryList(model.Entries, model.Reference, model.Details);
+                var result = await repo.AddInventoryList(model.Entries, model.Reference, model.Details);
                 return Ok(result);
             }
 
@@ -78,7 +78,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.RemoveEntries(sequence);
+                var result = await repo.RemoveEntries(sequence);
                 return Ok(result);
             }
 

@@ -33,7 +33,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<CheckupAttachment>(x => x.Include(t => t.FileAttachment)
+                var data = await _baseRepo.GetAllAsync<CheckupAttachment>(x => x.Include(t => t.FileAttachment)
                 .Include(t => t.PatientCheckup)
                 , y => y.Active == true);
                 return Ok(data);

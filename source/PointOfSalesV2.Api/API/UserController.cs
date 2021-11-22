@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
+                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
                 return Ok(data);
             }
 
@@ -57,7 +57,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.Get(new Guid(id));
+                var data = await _baseRepo.GetAsync(new Guid(id));
                 return Ok(data);
             }
 
@@ -105,7 +105,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as User;
                 }
-                var result = _baseRepo.AddAsync(model);
+                var result = await _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -124,7 +124,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = _baseRepo.UpdateAsync(model);
+                var result = await _baseRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -142,11 +142,11 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var model = _baseRepo.Get(new Guid(id)).Data.FirstOrDefault() as ICommonData;
+                var model = (await _baseRepo.GetAsync(new Guid(id))).Data.FirstOrDefault() as ICommonData;
                 if (model != null)
                 {
                     model.Active = false;
-                    var result = _baseRepo.UpdateAsync(model as User);
+                    var result = await _baseRepo.UpdateAsync(model as User);
                     return Ok(result);
                 }
                 else

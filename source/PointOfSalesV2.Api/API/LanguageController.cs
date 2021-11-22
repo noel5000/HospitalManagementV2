@@ -39,11 +39,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public  IActionResult Get()
+        public  async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Language>(x => x.Where(y => y.Active == true));
+                var data = await _baseRepo.GetAllAsync<Language>(x => x.Where(y => y.Active == true));
                 return Ok(data);
             }
 
@@ -81,17 +81,17 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet("{id:long}")]
         [EnableCors("AllowAllOrigins")]
-        public  IActionResult Get(long id)
+        public  async Task<IActionResult> Get(long id)
         {
             try
             {
-                var data = _baseRepo.Get(id);
+                var data = await _baseRepo.GetAsync(id);
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
-                
+               
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

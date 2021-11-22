@@ -47,37 +47,32 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetState/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.READ)]
         [EnableCors("AllowAllOrigins")]
-        public virtual Task<IActionResult> GetState(long branchOfficeId = 0, long customerId = 0,long currencyId=0, string startDate="0",string endDate="0")
+        public virtual async Task<IActionResult> GetState(long branchOfficeId = 0, long customerId = 0,long currencyId=0, string startDate="0",string endDate="0")
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<string,string>;
-                    var invoices = _customRepo.GetCompanyStatus(
-                        t_inputs.Item1=="0"?DateTime.MinValue:Convert.ToDateTime(t_inputs.Item1),
-                        t_inputs.Item2 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item2));
-                    var result = new List<CompanyStateReport>();
-                    invoices.GroupBy(x => x.CurrencyCode).ToList().ForEach(x => {
-                        result.AddAsync(new CompanyStateReport() 
-                        {
-                        TotalCompanyOwedAmount=x.Sum(r=>r.CompanyOwedAmount),
-                        TotalCustomersOwedAmount=x.Sum(r=>r.CustomersOwedAmount),
-                        TotalIncomesAmount=x.Sum(r=>r.IncomeAmount),
-                        TotalOutComesAmount=x.Sum(r=>r.OutcomeAmount),
-                        CurrencyCode=x.FirstOrDefault()?.CurrencyName??"",
-                        Data=x.ToList()
-                        });
+            try
+            {
+                
+                var invoices = await _customRepo.GetCompanyStatus(
+                    startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                   endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate));
+                var result = new List<CompanyStateReport>();
+                invoices.GroupBy(x => x.CurrencyCode).ToList().ForEach(x => {
+                    result.Add(new CompanyStateReport()
+                    {
+                        TotalCompanyOwedAmount = x.Sum(r => r.CompanyOwedAmount),
+                        TotalCustomersOwedAmount = x.Sum(r => r.CustomersOwedAmount),
+                        TotalIncomesAmount = x.Sum(r => r.IncomeAmount),
+                        TotalOutComesAmount = x.Sum(r => r.OutcomeAmount),
+                        CurrencyCode = x.FirstOrDefault()?.CurrencyName ?? "",
+                        Data = x.ToList()
                     });
-                    return Ok(new { status = 0, id = 0, data = result });
-                }
-                catch (Exception ex)
-                {
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<string,string>(startDate,endDate));
-
-            return t_result;
+                });
+                return Ok(new { status = 0, id = 0, data = result });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -85,45 +80,40 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportState/{startDate}/{endDate}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
-        public  Task<IActionResult> ExportState( string startDate = "0", string endDate = "0")
+        public  async Task<IActionResult> ExportState( string startDate = "0", string endDate = "0")
         {
 
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
+            try
+            {
+                
+                var invoices = await _customRepo.GetCompanyStatus(
+                   startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                   endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate));
+
+
+                string requestLanguage = "EN";
+                var languageIdHeader = this.Request.Headers["languageid"];
+                requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                var excelData = ExportUtility.GetExcelData<CompanyStateModel>(invoices, requestLanguage, this.languageKeys.ToList());
+                var excelStream = ExcelImport.CreateXlsStream(
+                    excelData.Item1,
+                   excelData.Item2
+                   );
+                if (invoices != null && excelStream != null && excelStream.Length > 0)
                 {
-                    var t_inputs = arg as Tuple<string, string>;
-                    var invoices = _customRepo.GetCompanyStatus(
-                        t_inputs.Item1 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item1),
-                        t_inputs.Item2 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item2));
-                   
-                      
-                        string requestLanguage = "EN";
-                        var languageIdHeader = this.Request.Headers["languageid"];
-                        requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                        var excelData = ExportUtility.GetExcelData<CompanyStateModel>(invoices, requestLanguage, this.languageKeys.ToList());
-                        var excelStream = ExcelImport.CreateXlsStream(
-                            excelData.Item1,
-                           excelData.Item2
-                           );
-                        if (invoices != null && excelStream != null && excelStream.Length > 0)
-                        {
 
-                            return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                        }
-                        return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-
-
-                    
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                catch (Exception ex)
-                {
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
-            }, new Tuple<string, string>(startDate, endDate));
 
-            return t_result;
-           
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { status = -1, message = ex.Message });
+            }
+
         }
 
 

@@ -40,5 +40,10 @@ namespace PointOfSalesV2.Repository
         {
             throw new NotImplementedException();
         }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _DataContext.SaveChangesAsync();
+        }
     }
 }

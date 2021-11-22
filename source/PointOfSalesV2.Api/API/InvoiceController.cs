@@ -31,110 +31,97 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetForPrint/{id:long}")]
         [ActionAuthorize(Operations.READ)]
-        public virtual Task<IActionResult> GetForPrint(long id)
+        public virtual async Task<IActionResult> GetForPrint(long id)
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    long t_id = (long)arg;
-                    var invoice = _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i=>i.Patient)
-                    .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
-                    .Where(y => y.Active == true && y.Id == t_id)).FirstOrDefault();
-                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
-                    x.Include(i=>i.Product).Include(i=>i.Unit), y => y.Active == true && y.InvoiceId == id).ToList();
-                    return Ok(new { status = 0, id, data = new Invoice[] { invoice } });
-                }
+            try
+            {
+              
+                var invoice = (await _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
+                .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
+                .Where(y => y.Active == true && y.Id == id))).FirstOrDefault();
+                invoice.InvoiceDetails =(await _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
+                x.Include(i => i.Product).Include(i => i.Unit), y => y.Active == true && y.InvoiceId == id)).ToList();
+                return Ok(new { status = 0, id, data = new Invoice[] { invoice } });
+            }
 
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
-            }, id);
-
-            return t_result;
+          
           
         }
 
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetByInvoiceNumber/{invoiceNumber}")]
         [ActionAuthorize(Operations.READ)]
-        public virtual Task<IActionResult> GetByInvoiceNumber(string invoiceNumber)
+        public virtual async Task<IActionResult> GetByInvoiceNumber(string invoiceNumber)
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var validStates=new char[]{ ((char)Enums.BillingStates.Paid), ((char)Enums.BillingStates.FullPaid )};
-                    string t_id = (string)arg;
-                    var invoice = _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
-                    .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
-                    .Where(y => y.Active == true && validStates.Contains(y.State) && y.InvoiceNumber.ToLower() == t_id.ToLower())).FirstOrDefault();
-                    if(invoice==null)
-                        return Ok(new { status = -1, message ="notFound_msg" });
-                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
-                    x.Include(i => i.Product).Include(i => i.Unit), y => y.Active == true && y.InvoiceId == invoice.Id).ToList();
-                    return Ok(new { status = 0, id=0, data = new Invoice[] { invoice } });
-                }
+            try
+            {
+                var validStates = new char[] { ((char)Enums.BillingStates.Paid), ((char)Enums.BillingStates.FullPaid) };
+              
+                var invoice = (await _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
+                .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
+                .Where(y => y.Active == true && validStates.Contains(y.State) && y.InvoiceNumber.ToLower() == invoiceNumber.ToLower()))).FirstOrDefault();
+                if (invoice == null)
+                    return Ok(new { status = -1, message = "notFound_msg" });
+                invoice.InvoiceDetails =(await _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
+                x.Include(i => i.Product).Include(i => i.Unit), y => y.Active == true && y.InvoiceId == invoice.Id)).ToList();
+                return Ok(new { status = 0, id = 0, data = new Invoice[] { invoice } });
+            }
 
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            };
 
-            }, invoiceNumber);
-
-            return t_result;
+            
 
         }
 
         [EnableCors("AllowAllOrigins")]
         [HttpPost("BillQuote/{id:long}")]
         [ActionAuthorize(Operations.UPDATE)]
-        public virtual Task<IActionResult> BillQuote(long id)
+        public virtual async Task<IActionResult> BillQuote(long id)
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    long t_id = (long)arg;
-                  var result=  _customRepo.BillQuote(t_id);
-                    return  Ok(result);
-                }
+            try
+            {
+               
+                var result = await _customRepo.BillQuote(id);
 
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return Ok(result);
+            }
 
-            }, id);
-
-            return t_result;
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
+         
 
         }
 
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetInvoicesToPay/{branchOfficeId:long}/{customerId:long}/{currencyId:long}")]
         [ActionAuthorize(Operations.READALL)]
-        public virtual Task<IActionResult> GetInvoicesToPay(long branchOfficeId=0,long customerId=0, long currencyId = 0)
+        public virtual async Task<IActionResult> GetInvoicesToPay(long branchOfficeId=0,long customerId=0, long currencyId = 0)
         {
-                var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                    try 
-                    {
-                        var t_inputs = arg as Tuple<long, long, long>;
-                        var invoices = _customRepo.GetInvoicesToPay(t_inputs.Item1,t_inputs.Item3,t_inputs.Item2);
-                        return Ok(new { status = 0, id = 0, data = invoices });
-                    }
-                    catch (Exception ex)
-                    {
-                       await SaveException(ex);
-                        return Ok(new { status = -1, message = ex.Message });
-                    }
-                   
-                },new Tuple<long,long,long>(branchOfficeId,customerId,currencyId));
-
-            return t_result;
+            try
+            {
+              
+                var invoices = await _customRepo.GetInvoicesToPay(branchOfficeId,currencyId,customerId);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
+        
 
            
         }
@@ -142,27 +129,23 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetAccountReceivables/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
-        public virtual Task<IActionResult> GetAccountReceivables(long branchOfficeId = 0, long customerId = 0,long currencyId=0, string startDate="0",string endDate="0")
+        public virtual async Task<IActionResult> GetAccountReceivables(long branchOfficeId = 0, long customerId = 0,long currencyId=0, string startDate="0",string endDate="0")
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<long, long, long,string,string>;
-                    var invoices = _customRepo.GetAccountsReceivable(
-                        t_inputs.Item4=="0"?DateTime.MinValue:Convert.ToDateTime(t_inputs.Item4),
-                        t_inputs.Item5 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item1, t_inputs.Item2,null, t_inputs.Item3);
-                    return Ok(new { status = 0, id = 0, data = invoices });
-                }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<long, long, long,string,string>(customerId, currencyId,branchOfficeId,startDate,endDate));
-
-            return t_result;
+            try
+            {
+             
+                var invoices = await _customRepo.GetAccountsReceivable(
+                    startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                    endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                   customerId, currencyId, null, branchOfficeId);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
+           
 
 
         }
@@ -170,30 +153,25 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetInsuranceCoverages/{branchOfficeId:long}/{currencyId:long}/{insuranceId:long}/{insurancePlanId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
-        public virtual Task<IActionResult> GetInsuranceCoverages(long branchOfficeId = 0, long currencyId = 0,long insuranceId=0,long insurancePlanId=0, string startDate = "0", string endDate = "0")
+        public virtual async Task<IActionResult> GetInsuranceCoverages(long branchOfficeId = 0, long currencyId = 0,long insuranceId=0,long insurancePlanId=0, string startDate = "0", string endDate = "0")
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<long, long, long, long, string, string>;
-                    var invoices = _customRepo.GetInsuranceCoverages(
-                        t_inputs.Item5 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item6 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item6),
-                        t_inputs.Item3, 
-                        t_inputs.Item4,
-                        t_inputs.Item2,
-                        t_inputs.Item1);
-                    return Ok(new { status = 0, id = 0, data = invoices });
-                }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<long, long, long,long, string, string>(branchOfficeId, currencyId, insuranceId, insurancePlanId, startDate, endDate));
-
-            return t_result;
+            try
+            {
+               
+                var invoices = await _customRepo.GetInsuranceCoverages(
+                   startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                   endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                   insuranceId,
+                   insurancePlanId,
+                   currencyId,
+                   branchOfficeId);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -201,45 +179,25 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [HttpPost("GetInsuranceCoveragesExport/{branchOfficeId:long}/{currencyId:long}/{insuranceId:long}/{insurancePlanId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
-        public virtual Task<IActionResult> GetInsuranceCoveragesExport(long branchOfficeId = 0, long currencyId = 0, long insuranceId = 0, long insurancePlanId = 0, string startDate = "0", string endDate = "0")
+        public virtual async Task<IActionResult> GetInsuranceCoveragesExport(long branchOfficeId = 0, long currencyId = 0, long insuranceId = 0, long insurancePlanId = 0, string startDate = "0", string endDate = "0")
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<long, long, long, long, string, string>;
-                    var invoices = _customRepo.GetInsuranceCoverages(
-                        t_inputs.Item5 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item6 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item6),
-                        t_inputs.Item3,
-                        t_inputs.Item4,
-                        t_inputs.Item2,
-                        t_inputs.Item1);
-
-
-                    string requestLanguage = "EN";
-                    var languageIdHeader = this.Request.Headers["languageid"];
-                    requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                    var excelData = ExportUtility.GetExcelData<InsurancCoverageDetail>(invoices, requestLanguage, this.languageKeys.ToList());
-                    var excelStream = ExcelImport.CreateXlsStream(
-                        excelData.Item1,
-                       excelData.Item2
-                       );
-                    if (invoices != null && excelStream != null && excelStream.Length > 0)
-                    {
-
-                        return File(excelStream.ToArray(), "application/octet-stream", $"Report-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                    }
-                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-                }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<long, long, long, long, string, string>(branchOfficeId, currencyId, insuranceId, insurancePlanId, startDate, endDate));
-
-            return t_result;
+            try
+            {
+                
+                var invoices = await _customRepo.GetInsuranceCoverages(
+                    startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                   endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                    insuranceId,
+                    insurancePlanId,
+                    currencyId,
+                    branchOfficeId);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -247,74 +205,64 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportAccountReceivables/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{startDate}/{endDate}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ACCOUNTRECEIVABLES)]
-        public  Task<IActionResult> ExportAccountReceivables(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
+        public async Task<IActionResult> ExportAccountReceivables(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
         {
 
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
+            try
+            {
+                
+                var invoices = await _customRepo.GetAccountsReceivable(
+                   startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                    endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                   customerId, currencyId, null, branchOfficeId);
+
+
+                string requestLanguage = "EN";
+                var languageIdHeader = this.Request.Headers["languageid"];
+                requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                var excelData = ExportUtility.GetExcelData<Invoice>(invoices, requestLanguage, this.languageKeys.ToList());
+                var excelStream = ExcelImport.CreateXlsStream(
+                    excelData.Item1,
+                   excelData.Item2
+                   );
+                if (invoices != null && excelStream != null && excelStream.Length > 0)
                 {
-                    var t_inputs = arg as Tuple<long, long, long, string, string>;
-                    var invoices = _customRepo.GetAccountsReceivable(
-                        t_inputs.Item4 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item4),
-                        t_inputs.Item5 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item1, t_inputs.Item2, null, t_inputs.Item3);
-                   
-                      
-                        string requestLanguage = "EN";
-                        var languageIdHeader = this.Request.Headers["languageid"];
-                        requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                        var excelData = ExportUtility.GetExcelData<Invoice>(invoices, requestLanguage, this.languageKeys.ToList());
-                        var excelStream = ExcelImport.CreateXlsStream(
-                            excelData.Item1,
-                           excelData.Item2
-                           );
-                        if (invoices != null && excelStream != null && excelStream.Length > 0)
-                        {
 
-                            return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                        }
-                        return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-
-
-                    
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
-            }, new Tuple<long, long, long, string, string>(customerId, currencyId, branchOfficeId, startDate, endDate));
 
-            return t_result;
-           
+
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
+
         }
 
 
         [EnableCors("AllowAllOrigins")]
         [HttpGet("GetSales/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.SALESREPORT)]
-        public virtual Task<IActionResult> GetSales(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
+        public virtual async Task<IActionResult> GetSales(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    var t_inputs = arg as Tuple<long, long, long, string, string>;
-                    var invoices = _customRepo.GetSales(
-                        t_inputs.Item4 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item4),
-                        t_inputs.Item5 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item1, t_inputs.Item2, null, t_inputs.Item3);
-                    return Ok(new { status = 0, id = 0, data = invoices });
-                }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<long, long, long, string, string>(customerId, currencyId, branchOfficeId, startDate, endDate));
-
-            return t_result;
+            try
+            {
+                
+                var invoices = await _customRepo.GetSales(
+                    startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                    endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                    customerId, currencyId, null, branchOfficeId);
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -322,49 +270,45 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportSales/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{startDate}/{endDate}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.SALESREPORT)]
-        public Task<IActionResult> ExportSales(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
+        public async Task<IActionResult> ExportSales(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, string startDate = "0", string endDate = "0")
         {
 
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
+            try
+            {
+                
+                var invoices = await _customRepo.GetSales(
+                    startDate == "0" ? DateTime.MinValue : Convert.ToDateTime(startDate),
+                   endDate == "0" ? DateTime.Now : Convert.ToDateTime(endDate),
+                    customerId, currencyId, null, branchOfficeId);
+
+
+                string requestLanguage = "EN";
+                var languageIdHeader = this.Request.Headers["languageid"];
+                requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                var excelData = ExportUtility.GetExcelData<Invoice>(invoices, requestLanguage, this.languageKeys.ToList());
+                var excelStream = ExcelImport.CreateXlsStream(
+                    excelData.Item1,
+                   excelData.Item2
+                   );
+                if (invoices != null && excelStream != null && excelStream.Length > 0)
                 {
-                    var t_inputs = arg as Tuple<long, long, long, string, string>;
-                    var invoices = _customRepo.GetSales(
-                        t_inputs.Item4 == "0" ? DateTime.MinValue : Convert.ToDateTime(t_inputs.Item4),
-                        t_inputs.Item5 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item5),
-                        t_inputs.Item1, t_inputs.Item2, null, t_inputs.Item3);
 
-
-                    string requestLanguage = "EN";
-                    var languageIdHeader = this.Request.Headers["languageid"];
-                    requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                    var excelData = ExportUtility.GetExcelData<Invoice>(invoices, requestLanguage, this.languageKeys.ToList());
-                    var excelStream = ExcelImport.CreateXlsStream(
-                        excelData.Item1,
-                       excelData.Item2
-                       );
-                    if (invoices != null && excelStream != null && excelStream.Length > 0)
-                    {
-
-                        return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                    }
-                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-
-
-
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                catch (Exception ex)
-                {
-                   await SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
-            }, new Tuple<long, long, long, string, string>(customerId, currencyId, branchOfficeId, startDate, endDate));
 
-            return t_result;
+
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
+
 
         }
 
-       
+
     }
 }

@@ -34,7 +34,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<SectionOperation>(x => x.Include(x => x.Section)
+                var data =await _baseRepo.GetAllAsync<SectionOperation>(x => x.Include(x => x.Section)
                 .Include(x => x.Operation)
                 .Where(y => y.Active == true));
                 return Ok(data);

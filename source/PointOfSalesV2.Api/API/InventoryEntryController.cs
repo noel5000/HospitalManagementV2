@@ -36,7 +36,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<InventoryEntry>(x => x
+                var data = await _baseRepo.GetAllAsync<InventoryEntry>(x => x
                 .Include(x => x.Warehouse)
                 .Include(x=>x.BranchOffice)
                 .Include(x => x.Unit)
@@ -61,7 +61,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.AddInventoryList(model.Entries, model.Reference, model.Details);
+                var result = await repo.AddInventoryList(model.Entries, model.Reference, model.Details);
                 return Ok(result);
             }
 
@@ -80,7 +80,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var result = repo.RemoveEntries(sequence);
+                var result = await repo.RemoveEntries(sequence);
                 return Ok(result);
             }
 

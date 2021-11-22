@@ -46,7 +46,7 @@ namespace PointOfSalesV2.Api.Controllers
             try
             {
                 UsersHelper.VerifyAdminUser(this.dataRepositoryFactory);
-                User user = userRepository.Login(model, _appSettings.Value.TokenKey);
+                User user = await userRepository.Login(model, _appSettings.Value.TokenKey);
                 if (user == null)
                     return Ok(new { status = -1, message = "Invalid credentials" });
                 var claims = new[]

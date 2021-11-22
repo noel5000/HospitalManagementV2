@@ -33,7 +33,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<CompositeProduct>(x => x.Include(t=>t.BaseProduct)
+                var data = await _baseRepo.GetAllAsync<CompositeProduct>(x => x.Include(t=>t.BaseProduct)
                 .Include(t=>t.Currency)
                 .Include(t => t.Product)
                 .Include(t=>t.UnitProductEquivalence)

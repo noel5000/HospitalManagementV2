@@ -38,7 +38,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Customer>(x => x
+                var data = await _baseRepo.GetAllAsync<Customer>(x => x
                 .Include(x => x.Currency)
                 .Include(x => x.TRNControl)
                 .Include(x=>x.Zone)
@@ -70,7 +70,7 @@ namespace PointOfSalesV2.Api.Controllers
                     model = activeEntity as Customer;
                     model.Code = await sequence.CreateSequence(SequenceTypes.Customers);
                 }
-                var result = _baseRepo.AddAsync(model);
+                var result =await _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -90,7 +90,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Customer>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<Customer>(x => x.Include(t => t.Currency)
                 .Include(x => x.TRNControl)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
@@ -125,7 +125,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repositoryFactory.GetCustomDataRepositories<ICustomerBalanceRepository>().CustomerState(customerId);
+                var data = await _repositoryFactory.GetCustomDataRepositories<ICustomerBalanceRepository>().CustomerState(customerId);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
@@ -158,7 +158,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repositoryFactory.GetCustomDataRepositories<ICustomerBalanceRepository>().CustomerState(customerId);
+                var data = await _repositoryFactory.GetCustomDataRepositories<ICustomerBalanceRepository>().CustomerState(customerId);
                 return Ok(new { status = 0, data });
             }
 

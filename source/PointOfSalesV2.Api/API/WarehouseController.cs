@@ -34,7 +34,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Warehouse>(x => x.AsNoTracking().Include(y=>y.BranchOffice),y=>y.Active==true);
+                var data = await _baseRepo.GetAllAsync<Warehouse>(x => x.AsNoTracking().Include(y=>y.BranchOffice),y=>y.Active==true);
                 return Ok(data);
             }
 

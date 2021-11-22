@@ -34,14 +34,14 @@ namespace PointOfSalesV2.Api.Controllers
             try
             {
                 List<object> result = new List<object>();
-                var data = _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
+                var data = (await _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
                 .Include(i => i.Warehouse)
                 .Include(i => i.BranchOffice)
                 .Include(i=>i.Unit)
                 , y => y.Active == true
                    && (branchOfficeId > 0 ? y.BranchOfficeId == branchOfficeId : y.BranchOfficeId > 0)
                    && (warehouseId > 0 ? y.WarehouseId == warehouseId : y.WarehouseId > 0)
-                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0))
+                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0)))
                    .ToList()
                     .GroupBy(x => x.BranchOfficeId)
                    .ToList();
@@ -54,7 +54,7 @@ namespace PointOfSalesV2.Api.Controllers
                     List<WarehouseModel> warehouses = new List<WarehouseModel>();
                     i.GroupBy(x => x.WarehouseId).ToList().ForEach(w =>
                     {
-                        warehouses.AddAsync(new WarehouseModel() 
+                        warehouses.Add(new WarehouseModel() 
                         {
                         Id= w.FirstOrDefault().Warehouse.Id,
                         Name= w.FirstOrDefault().Warehouse.Name,
@@ -73,7 +73,7 @@ namespace PointOfSalesV2.Api.Controllers
                     }).ToList();
                     });
                     branchOffice.Warehouses = warehouses;
-                    result.AddAsync(branchOffice);
+                    result.Add(branchOffice);
                 });
 
                     return Ok(new { id = 0, status = 0, message = "ok_msg", data = result });
@@ -88,11 +88,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel/{branchOfficeId:long}/{warehouseId:long}/{productId:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.INVENTORYREPORT)]
-        public  IActionResult ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0)
+        public  async Task<IActionResult> ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0)
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
+                var data = await _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
                 .Include(i => i.Warehouse)
                 .Include(i => i.BranchOffice)
                 .Include(i => i.Unit)

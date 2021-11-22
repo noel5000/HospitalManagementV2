@@ -40,7 +40,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<PatientCheckup>(x =>x.AsNoTracking().Include(t=>t.Insurance)
+                var data = await  _baseRepo.GetAllAsync<PatientCheckup>(x =>x.AsNoTracking().Include(t=>t.Insurance)
                 .Include(t=>t.InsurancePlan).Include(t=>t.Appointment).Include(t=>t.Doctor).Include(t=>t.Patient)
                  , y => y.Active == true);
                 return Ok(data);
@@ -79,7 +79,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAllAsync<PatientCheckup>(x => x.AsNoTracking().Include(t => t.Insurance)
+                var data = await _baseRepo.GetAllAsync<PatientCheckup>(x => x.AsNoTracking().Include(t => t.Insurance)
                .Include(t => t.InsurancePlan).Include(t => t.Appointment).Include(t => t.Doctor).Include(t => t.Patient)
                 , y => y.Active == true);
                 string requestLanguage = "EN";

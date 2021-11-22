@@ -35,7 +35,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _repo.GetWithAllChildren();
+                var data = await _repo.GetWithAllChildren();
                 return Ok(data);
             }
 
