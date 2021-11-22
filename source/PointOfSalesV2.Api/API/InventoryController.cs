@@ -29,12 +29,12 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPatch("GetCompanyInventory/{branchOfficeId:long}/{warehouseId:long}/{productId:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Common.Enums.Operations.INVENTORYREPORT)]
-        public IActionResult GetCompanyInventory(long branchOfficeId = 0, long warehouseId = 0,long productId=0) 
+       public async Task<IActionResult> GetCompanyInventory(long branchOfficeId = 0, long warehouseId = 0,long productId=0) 
         {
             try
             {
                 List<object> result = new List<object>();
-                var data = _baseRepo.GetAll<Inventory>(x => x.Include(i => i.Product)
+                var data = _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
                 .Include(i => i.Warehouse)
                 .Include(i => i.BranchOffice)
                 .Include(i=>i.Unit)
@@ -54,7 +54,7 @@ namespace PointOfSalesV2.Api.Controllers
                     List<WarehouseModel> warehouses = new List<WarehouseModel>();
                     i.GroupBy(x => x.WarehouseId).ToList().ForEach(w =>
                     {
-                        warehouses.Add(new WarehouseModel() 
+                        warehouses.AddAsync(new WarehouseModel() 
                         {
                         Id= w.FirstOrDefault().Warehouse.Id,
                         Name= w.FirstOrDefault().Warehouse.Name,
@@ -73,14 +73,14 @@ namespace PointOfSalesV2.Api.Controllers
                     }).ToList();
                     });
                     branchOffice.Warehouses = warehouses;
-                    result.Add(branchOffice);
+                    result.AddAsync(branchOffice);
                 });
 
                     return Ok(new { id = 0, status = 0, message = "ok_msg", data = result });
             }
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { id = -1, status = -1, message = "error_msg" });
             }
         }
@@ -92,7 +92,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<Inventory>(x => x.Include(i => i.Product)
+                var data = _baseRepo.GetAllAsync<Inventory>(x => x.Include(i => i.Product)
                 .Include(i => i.Warehouse)
                 .Include(i => i.BranchOffice)
                 .Include(i => i.Unit)
@@ -120,7 +120,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

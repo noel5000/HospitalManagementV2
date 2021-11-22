@@ -29,17 +29,17 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<CashRegister>(x => x.Include(x=>x.BranchOffice).Where(y => y.Active == true));
+                var data = _baseRepo.GetAllAsync<CashRegister>(x => x.Include(x=>x.BranchOffice).Where(y => y.Active == true));
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

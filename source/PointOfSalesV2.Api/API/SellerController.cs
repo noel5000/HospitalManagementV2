@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -84,7 +84,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 

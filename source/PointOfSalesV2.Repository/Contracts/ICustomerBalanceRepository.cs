@@ -1,14 +1,14 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
     public interface ICustomerBalanceRepository: IBase<CustomerBalance>
     {
-        CustomerBalance CustomerBalanceByCurrency(long customerId, long currencyId);
+        Task<CustomerBalance> CustomerBalanceByCurrency(long customerId, long currencyId);
 
-        CustomerStateReport CustomerState(long customerId);
+        Task<CustomerStateReport> CustomerState(long customerId);
     }
 }

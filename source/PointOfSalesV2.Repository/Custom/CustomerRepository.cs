@@ -6,7 +6,7 @@ using PointOfSalesV2.Entities.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -18,13 +18,13 @@ namespace PointOfSalesV2.Repository
             this._appSettings = appSettings;
         }
 
-        public override Result<Customer> Get(long id)
+        public override async Task<Result<Customer>> GetAsync(long id)
         {
             var result = new Result<Customer>(-1, -1, "error_msg");
             try
             {
-                var entity = _Context.Customers.AsNoTracking().Include(x => x.Currency).Include(x => x.TRNControl).Include(x => x.Zone).Include(x => x.Insurance)
-                    .Include(x => x.InsurancePlan).FirstOrDefault(x => x.Active == true && x.Id == id);
+                var entity = await _Context.Customers.AsNoTracking().Include(x => x.Currency).Include(x => x.TRNControl).Include(x => x.Zone).Include(x => x.Insurance)
+                    .Include(x => x.InsurancePlan).FirstOrDefaultAsync(x => x.Active == true && x.Id == id);
                 if (entity == null)
                     result = new Result<Customer>(-1, -1, "notFound_msg");
                 else
@@ -39,28 +39,28 @@ namespace PointOfSalesV2.Repository
         }
 
 
-        public override Result<Customer> Add(Customer entity)
+        public override async Task<Result<Customer>> AddAsync(Customer entity)
         {
-            if (!string.IsNullOrEmpty(entity.CardId) &&  _Context.Customers.AsNoTracking().Count(x => x.Active == true && x.CardId.ToUpper() == entity.CardId.ToUpper()) > 0) 
+            if (!string.IsNullOrEmpty(entity.CardId) &&  await _Context.Customers.AsNoTracking().CountAsync(x => x.Active == true && x.CardId.ToUpper() == entity.CardId.ToUpper()) > 0) 
             {
                 return new Result<Customer>(-1, -1, "cardIdAlreadyExist_error");
             }
 
-            if (!string.IsNullOrEmpty(entity.Name) && _Context.Customers.AsNoTracking().Count(x => x.Active == true && x.Name.Trim().ToUpper() == entity.Name.Trim().ToUpper()) > 0)
+            if (!string.IsNullOrEmpty(entity.Name) && await _Context.Customers.AsNoTracking().CountAsync(x => x.Active == true && x.Name.Trim().ToUpper() == entity.Name.Trim().ToUpper()) > 0)
             {
                 return new Result<Customer>(-1, -1, "alreadyExist_error");
             }
-            return base.Add(entity);
+            return await base.AddAsync(entity);
         }
 
-        public override Result<Customer> Update(Customer entity, bool fromDb = true)
+        public override async Task<Result<Customer>> UpdateAsync(Customer entity, bool fromDb = true)
         {
-            if (_Context.Customers.AsNoTracking().Count(x => x.Active == true && x.Id!=entity.Id &&
+            if ( await _Context.Customers.AsNoTracking().CountAsync(x => x.Active == true && x.Id!=entity.Id &&
             x.CardId.ToUpper() == entity.CardId.ToUpper()) > 0)
             {
                 return new Result<Customer>(-1, -1, "cardIdAlreadyExist_error");
             }
-            return base.Update(entity);
+            return  await base.UpdateAsync(entity);
         }
     }
 }

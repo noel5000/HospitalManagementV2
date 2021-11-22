@@ -1,13 +1,13 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
     public interface IInvoiceTaxRepository: IBase<InvoiceTax>
     {
-        IEnumerable<InvoiceTax> GetInvoiceTaxes(string invoiceNumber);
-        IEnumerable<InvoiceTax> GetInvoiceTaxes(long invoiceID);
+        Task<IEnumerable<InvoiceTax>> GetInvoiceTaxes(string invoiceNumber);
+       Task<IEnumerable<InvoiceTax>> GetInvoiceTaxes(long invoiceID);
     }
 }

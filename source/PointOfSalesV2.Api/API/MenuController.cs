@@ -33,11 +33,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<Menu>(x => x
+                var data = _baseRepo.GetAllAsync<Menu>(x => x
                 , y => y.Active == true);
                 return Ok(data);
             }
@@ -51,11 +51,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetMenus")]
         [ActionAuthorize(Operations.READALL)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult GetMenus()
+       public async Task<IActionResult> GetMenus()
         {
             try
             {
-                var rawData = _baseRepo.GetAll<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
+                var rawData = _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
                .Include(y => y.MenuDetails).ThenInclude(d => d.Unit)
                , y => y.Active == true).ToList();
                 var rawDetails = rawData.SelectMany(x => x.MenuDetails);
@@ -72,7 +72,7 @@ namespace PointOfSalesV2.Api.Controllers
                             MenuDetails=rawDetails.Where(y=>y.Active==true &&y.MenuId==x.FirstOrDefault().Id).ToList()
                         }).ToList()
                     };
-                    result.Add(model);
+                    result.AddAsync(model);
                 });
 
                 return Ok(new { Id = 0, Status = 0, data = result });
@@ -87,11 +87,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetMenu/{weekNumber:int}/{dayOfWeek:int}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READALL)]
-        public IActionResult GetMenu(int weekNumber, int dayOfWeek)
+       public async Task<IActionResult> GetMenu(int weekNumber, int dayOfWeek)
         {
             try
             {
-                var data = _baseRepo.GetAll<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
+                var data = _baseRepo.GetAllAsync<Menu>(x => x.Include(y => y.MenuDetails).ThenInclude(d => d.Product)
                 .Include(y => y.MenuDetails).ThenInclude(d => d.Unit)
                 , y => y.Active == true && y.WeekNumber == weekNumber && y.DayOfWeek == (DayOfWeek)dayOfWeek).ToList().GroupBy(x => x.WeekNumber).ToList();
                 var result = new List<WeekMenuModel>();
@@ -106,7 +106,7 @@ namespace PointOfSalesV2.Api.Controllers
                             MenuDetails = d.Select(j => j.MenuDetails).SelectMany(r => r).ToList()
                         }).ToList()
                     };
-                    result.Add(model);
+                    result.AddAsync(model);
                 });
 
                 return Ok(new { Id = 0, Status = 0, data = result });
@@ -121,7 +121,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("DeleteMenu/{weekNumber:int}/{dayOfWeek:int}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public IActionResult DeleteMenu(int weekNumber, int dayOfWeek)
+       public async Task<IActionResult> DeleteMenu(int weekNumber, int dayOfWeek)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetProjectedLeads/{branchOfficeId:long}/{warehouseId:long}/{selectedDate:datetime}")]
         [ActionAuthorize(Operations.READALL)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult GetProjectedLeads(long branchOfficeId, long warehouseId, DateTime selectedDate)
+       public async Task<IActionResult> GetProjectedLeads(long branchOfficeId, long warehouseId, DateTime selectedDate)
         {
             try
             {

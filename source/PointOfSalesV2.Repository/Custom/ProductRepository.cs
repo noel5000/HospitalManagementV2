@@ -3,7 +3,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -15,49 +15,49 @@ namespace PointOfSalesV2.Repository
             this._sequenceRepo = sequence;
         }
 
-        public IEnumerable<Product> GetFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
+        public async Task< IEnumerable<Product>> GetFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetProductByName(string name)
+        public async Task<IEnumerable<Product>> GetProductByName(string name)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetProductsOnlyFilteredAndLimited(int pageZise, string name, string searchCharacters)
+        public async Task<IEnumerable<Product>> GetProductsOnlyFilteredAndLimited(int pageZise, string name, string searchCharacters)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetProductsOnlyFilteredAndLimited(int pageZise, string fieldName1, string fieldName2, string searchCharacters)
+        public async Task<IEnumerable<Product>> GetProductsOnlyFilteredAndLimited(int pageZise, string fieldName1, string fieldName2, string searchCharacters)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string searchCharacters)
+        public async Task<IEnumerable<Product>> GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string searchCharacters)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
+        public async Task<IEnumerable<Product> >GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
         {
             throw new NotImplementedException();
         }
 
-        public override Result<Product> Add(Product entity)
+        public override async Task<Result<Product>> AddAsync(Product entity)
         {
 
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
 
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     entity.Id = 0;
                     if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
                         throw new Exception("productNeedsTaxes_msg");
-                    languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                    languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
                     entity.TranslationData = TranslateUtility.SaveTranslation(entity, entity.TranslationData, languages);
                     var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
                     var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
@@ -71,41 +71,41 @@ namespace PointOfSalesV2.Repository
                     entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                     decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                     entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
-                    string sequence = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
+                    string sequence = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
                     entity.Sequence = sequence;
                     _Context.Products.Add(entity);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     SetChildren(entity, costs, units, taxes, bases);
 
 
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                     result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
                 }
                 catch (Exception ex)
                 {
                     result = new Result<Product>(-1, -1, $"error_msg", null, ex);
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                 }
             }
             return result;
         }
 
-        public override Result<Product> Update(Product entity, bool fromDb = true)
+        public override async Task<Result<Product>> UpdateAsync(Product entity, bool fromDb = true)
         {
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
 
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
                         throw new Exception("productNeedsTaxes_msg");
-                    var dbEntity = _Context.Products.Find(entity.Id);
+                    var dbEntity = await _Context.Products.FindAsync(entity.Id);
                     _Context.Entry<Product>(dbEntity).State = EntityState.Detached;
                     var translation = dbEntity as IEntityTranslate;
                     if (translation != null)
                     {
-                        languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                        languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
                         entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
 
                     }
@@ -116,32 +116,32 @@ namespace PointOfSalesV2.Repository
                     entity.BaseCompositeProducts = null;
                     entity.SuppliersCosts = null;
                     entity.ProductUnits = null;
-                    entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
+                    entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
                     entity.Taxes = null;
                     decimal tempCost = (entity.IsService ? (entity.IsCompositeProduct ? (bases.Count > 0 ? bases.Sum(x => x.TotalCost) : 0) : entity.Cost) : (costs.Count > 0 ? costs.Average(x => x.Cost) : 0));
                     entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                     decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                     entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
                     _Context.Products.Update(entity);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
 
                     SetChildren(entity, costs, units, taxes, bases);
 
 
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                     result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
                 }
                 catch (Exception ex)
                 {
                     result = new Result<Product>(-1, -1, ex.Message, null, ex);
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                 }
             }
             return result;
         }
 
 
-        public Result<Product> AddWithoutTransaction(Product entity)
+        public async Task<Result<Product>> AddWithoutTransaction(Product entity)
         {
 
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
@@ -151,7 +151,7 @@ namespace PointOfSalesV2.Repository
                 entity.Id = 0;
                 if ((entity.Taxes == null || entity.Taxes.Count() == 0) && !entity.IsCompositeProduct)
                     throw new Exception("productNeedsTaxes_msg");
-                languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
                 entity.TranslationData = TranslateUtility.SaveTranslation(entity, entity.TranslationData, languages);
                 var costs = entity.SuppliersCosts?.ToList() ?? new List<ProductSupplierCost>();
                 var units = entity.ProductUnits?.ToList() ?? new List<UnitProductEquivalence>();
@@ -165,10 +165,10 @@ namespace PointOfSalesV2.Repository
                 entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                 decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                 entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
-                string sequence = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
+                string sequence = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products);
                 entity.Sequence = sequence;
                 _Context.Products.Add(entity);
-                _Context.SaveChanges();
+                await _Context.SaveChangesAsync();
                 SetChildren(entity, costs, units, taxes, bases);
                 result = new Result<Product>(entity.Id, 0, "ok_msg", new List<Product>() { new Product() { Id = entity.Id } });
             }
@@ -180,15 +180,15 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<Product> AddRangeWithoutTransaction(List<Product> entity, bool createSequence = false)
+        public async Task<Result<Product>> AddRangeWithoutTransaction(List<Product> entity, bool createSequence = false)
         {
 
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
 
             try
             {
-                languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
-                var currentSequence = _Context.SequencesControl.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Code == (short)Common.Enums.SequenceTypes.Products);
+                languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
+                var currentSequence = await _Context.SequencesControl.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.Code == (short)Common.Enums.SequenceTypes.Products);
                 foreach (Product product in entity)
                 {
                     product.Id = 0;
@@ -214,11 +214,11 @@ namespace PointOfSalesV2.Repository
                 }
 
                 _Context.Products.AddRange(entity);
-                _Context.SaveChanges();
+                await _Context.SaveChangesAsync();
                 if (createSequence)
                 {
                     _Context.SequencesControl.Update(currentSequence);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                 }
 
                 // SetChildren(entity, costs, units, taxes, bases);
@@ -233,7 +233,7 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<Product> UpdateWithoutTransaction(Product entity, bool fromDb = true)
+        public async Task<Result<Product>> UpdateWithoutTransaction(Product entity, bool fromDb = true)
         {
             Result<Product> result = new Result<Product>(-1, -1, "error_msg");
 
@@ -247,7 +247,7 @@ namespace PointOfSalesV2.Repository
                 var translation = dbEntity as IEntityTranslate;
                 if (translation != null)
                 {
-                    languages = _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToList();
+                    languages = await _Context.Set<Language>().AsNoTracking().Where(x => x.Active == true).ToListAsync();
                     entity.TranslationData = TranslateUtility.SaveTranslation(entity, translation.TranslationData, languages);
 
                 }
@@ -258,14 +258,14 @@ namespace PointOfSalesV2.Repository
                 entity.BaseCompositeProducts = null;
                 entity.SuppliersCosts = null;
                 entity.ProductUnits = null;
-                entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
+                entity.Sequence = string.IsNullOrEmpty(entity.Sequence) ? await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Products) : entity.Sequence;
                 entity.Taxes = null;
                 decimal tempCost = (entity.IsService ? (entity.IsCompositeProduct ? (bases.Count > 0 ? bases.Sum(x => x.TotalCost) : 0) : entity.Cost) : (costs.Count > 0 ? costs.Average(x => x.Cost) : 0));
                 entity.Cost = entity.Cost > tempCost ? entity.Cost : tempCost;
                 decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                 entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
                 _Context.Products.Update(entity);
-                _Context.SaveChanges();
+            await    _Context.SaveChangesAsync();
 
                 SetChildren(entity, costs, units, taxes, bases);
 

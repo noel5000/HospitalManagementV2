@@ -2,12 +2,12 @@
 using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
     public interface ISequenceManagerRepository : IBase<SequenceControl>
     {
-        string CreateSequence(Enums.SequenceTypes sequenceCode);
+        Task<string> CreateSequence(Enums.SequenceTypes sequenceCode);
     }
 }

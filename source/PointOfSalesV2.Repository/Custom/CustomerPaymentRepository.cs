@@ -5,7 +5,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
@@ -26,14 +26,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public object CommisionsReport(object searchParams)
+        public async Task<object> CommisionsReport(object searchParams)
         {
             throw new NotImplementedException();
         }
 
-        public List<CustomerPayment> IncomesReport(long branchOfficeId, long customerId, long currencyId, long paymentTypeId, DateTime? initialDate, DateTime? endDate)
+        public async Task<List<CustomerPayment>> IncomesReport(long branchOfficeId, long customerId, long currencyId, long paymentTypeId, DateTime? initialDate, DateTime? endDate)
         {
-            return _Context.CustomersPayments
+            return await _Context.CustomersPayments
                 .Include(x => x.Invoice).ThenInclude(i=>i.Insurance)
                 .Include(x => x.Invoice).ThenInclude(i => i.InsurancePlan)
                 .Include(x=>x.Customer)
@@ -47,29 +47,29 @@ namespace PointOfSalesV2.Repository
             (initialDate.HasValue?x.Date>=initialDate.Value:x.Date>DateTime.MinValue) &&
             x.State!= (char)BillingStates.Nulled &&
             (endDate.HasValue?x.Date<=endDate:x.Date<=DateTime.Now)
-            ).ToList();
+            ).ToListAsync();
         }
-        public override Result<CustomerPayment> Update(CustomerPayment entity, bool fromDb = true)
+        public override async Task<Result<CustomerPayment>> UpdateAsync(CustomerPayment entity, bool fromDb = true)
         {
             return new Result<CustomerPayment>(-1, -1, "cannotUpdatePayment_msg");
         }
 
-        public override Result<CustomerPayment> Add(CustomerPayment entity)
+        public override async Task<Result<CustomerPayment>> AddAsync(CustomerPayment entity)
         {
             var result = new Result<CustomerPayment>(-1, -1, "error_msg");
            
-            using (var transaction = _Context.Database.BeginTransaction()) 
+            using (var transaction = await _Context.Database.BeginTransactionAsync()) 
             {
                 try
                 {
-                    var invoice = _Context.Invoices.AsNoTracking().FirstOrDefault(x => x.InvoiceNumber.ToLower() == entity.InvoiceNumber.ToLower() && x.Active==true);
+                    var invoice = await _Context.Invoices.AsNoTracking().FirstOrDefaultAsync(x => x.InvoiceNumber.ToLower() == entity.InvoiceNumber.ToLower() && x.Active==true);
                     if (invoice == null)
                         return new Result<CustomerPayment>(-1,-1,"invalidInvoice_msg");
                     if(invoice.OwedAmount != entity.OutstandingAmount)
                         return new Result<CustomerPayment>(-1, -1, "owedAmountOutdated_msg");
                     if(invoice.OwedAmount<=0)
                         return new Result<CustomerPayment>(-1, -1, "invoicePaid_msg");
-                    var previousPayments = _Context.CustomersPayments.AsNoTracking().Where(x => x.InvoiceNumber.ToLower() == entity.InvoiceNumber.ToLower()&& x.Active==true).ToList();
+                    var previousPayments = await _Context.CustomersPayments.AsNoTracking().Where(x => x.InvoiceNumber.ToLower() == entity.InvoiceNumber.ToLower()&& x.Active==true).ToListAsync();
                     invoice.PaidAmount += invoice.PaidAmount;
                     entity.TotalAmount = invoice.TotalAmount;
                     decimal comissionRate = invoice.SellerRate / invoice.BeforeTaxesAmount;
@@ -84,30 +84,30 @@ namespace PointOfSalesV2.Repository
                         invoice.State = (char)Enums.BillingStates.Paid;
 
                     _Context.Invoices.Update(invoice);
-                    _Context.SaveChanges();
-                    var customerBalance = _Context.CustomersBalance.AsNoTracking().FirstOrDefault(x=>x.CustomerId==entity.CustomerId && x.CurrencyId== entity.CurrencyId && x.Active==true);
+                    await _Context.SaveChangesAsync();
+                    var customerBalance = await _Context.CustomersBalance.AsNoTracking().FirstOrDefaultAsync(x=>x.CustomerId==entity.CustomerId && x.CurrencyId== entity.CurrencyId && x.Active==true);
                     if (customerBalance != null)
                     {
                         customerBalance.OwedAmount -= entity.PaidAmount;
                         customerBalance.OwedAmount = customerBalance.OwedAmount < 0 ? 0 : customerBalance.OwedAmount;
                         _Context.CustomersBalance.Update(customerBalance);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
                     decimal taxesRate = invoice.TaxesAmount / invoice.TotalAmount;
                     decimal paymentComissionsAmount = (entity.PaidAmount - (entity.PaidAmount * taxesRate));
                     entity.SellerRate = (previousPayments != null && previousPayments.Sum(x => x.SellerRate) >= invoice.SellerRate) ? 0 : (paymentComissionsAmount * comissionRate);
 
                     _Context.CustomersPayments.Add(entity);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
 
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                     return new Result<CustomerPayment>(0, 0, "ok_msg", new List<CustomerPayment>() { entity });
 
 
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     result.Exception = ex;
                     return result;
                 }
@@ -152,32 +152,32 @@ namespace PointOfSalesV2.Repository
                 
         }
 
-        public  Result<object> PayInvoices(InvoicesPaymentModel model)
+        public  async Task<Result<object>> PayInvoices(InvoicesPaymentModel model)
         {
             var result = new Result<object>(-1, -1, "error_msg");
 
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     CashRegisterOpening cashRegisterOpening = null;
                     bool processCashRegister = false;
-                    var currentUser = _Context.Users.AsNoTracking().FirstOrDefault(x=>x.UserId==model.UserId && x.Active==true);
+                    var currentUser = await _Context.Users.AsNoTracking().FirstOrDefaultAsync(x=>x.UserId==model.UserId && x.Active==true);
                   
                     if (currentUser == null)
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                         return new Result<object>(-1, -1, "invalidUser_msg");
                     }
                     else
                     {
                         if (currentUser.CashRegisterId.HasValue && currentUser.CashRegisterId > 0) 
                         {
-                            cashRegisterOpening = _Context.CashRegisterOpenings.AsNoTracking().FirstOrDefault(x => x.Active == true && x.UserId == model.UserId 
+                            cashRegisterOpening = await _Context.CashRegisterOpenings.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.UserId == model.UserId 
                             && x.State == (char)CashRegisterOpeningStates.Open && x.MaxClosureDate>DateTime.Now && x.CurrencyId==model.Payment.CurrencyId);
                             if(cashRegisterOpening==null)
                             {
-                                transaction.Rollback();
+                                await transaction.RollbackAsync();
                                 return new Result<object>(-1, -1, "notCashRegisteredOpened_msg");
                             }
                            
@@ -185,10 +185,10 @@ namespace PointOfSalesV2.Repository
                         }
                     }
                    
-                    string sequence = dataRepositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>().CreateSequence(Enums.SequenceTypes.CustomerPayments);
+                    string sequence = await dataRepositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>().CreateSequence(Enums.SequenceTypes.CustomerPayments);
                     if (model.Invoices.Count == 0 && model.Invoices.Any(x => x.CurrentPaidAmount == 0))
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                         return new Result<object>(-1, -1, "noInvoicesSelected_msg");
                     }
                     model.Invoices.ForEach(i => {
@@ -225,13 +225,13 @@ namespace PointOfSalesV2.Repository
                             throw new Exception(paymentResult.Message);
                         }
                     });
-                    var customerBalance = _Context.CustomersBalance.AsNoTracking().FirstOrDefault(x => x.CustomerId == model.Invoices.FirstOrDefault().CustomerId && x.CurrencyId == model.Invoices.FirstOrDefault().CurrencyId && x.Active == true);
+                    var customerBalance = await _Context.CustomersBalance.AsNoTracking().FirstOrDefaultAsync(x => x.CustomerId == model.Invoices.FirstOrDefault().CustomerId && x.CurrencyId == model.Invoices.FirstOrDefault().CurrencyId && x.Active == true);
                     if (customerBalance != null)
                     {
                         customerBalance.OwedAmount -=model.Invoices.Sum(x=>x.PaidAmount);
                         customerBalance.OwedAmount = customerBalance.OwedAmount < 0 ? 0 : customerBalance.OwedAmount;
                         _Context.CustomersBalance.Update(customerBalance);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
                     if (processCashRegister) 
                     {
@@ -246,21 +246,21 @@ namespace PointOfSalesV2.Repository
                             MovementType = MovementTypes.IN.ToString(),
                             PaymentTypeId = model.Payment.PaymentTypeId
                         });
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                         cashRegisterOpening.TotalPaymentsAmount += model.Payment.GivenAmount;
                         _Context.CashRegisterOpenings.Update(cashRegisterOpening);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
-                
 
-                    transaction.Commit();
+
+                    await transaction.CommitAsync();
                     return new Result<object>(0, 0, "ok_msg", new List<CustomerPayment>() { new CustomerPayment() });
 
 
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                  await  transaction.RollbackAsync();
                     result.Exception = ex;
                     return result;
                 }
@@ -269,20 +269,21 @@ namespace PointOfSalesV2.Repository
             }
         }
 
-        public Result<object> ReversePayment(string sequence, string userId) 
+        public async Task< Result<object>> ReversePayment(string sequence, string userId) 
         {
             var result = new Result<object>(-1, -1, "error_msg");
-            using (var trans = _Context.Database.BeginTransaction()) 
+            using (var trans = await _Context.Database.BeginTransactionAsync()) 
             {
                 try
                 {
-                    var payments = this.GetAll(x => x, y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State!= (char) BillingStates.Nulled).Data.ToList();
+                    var payments = (await this.GetAllAsync(x => x, y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State!= (char) BillingStates.Nulled)).Data.ToList();
                     if (payments.Count == 0) 
                     {
-                        trans.Rollback();
+                       await trans.RollbackAsync();
                         return new Result<object>(-1, -1, "paymentNotValid_msg");
                     }
-                    var invoices = _Context.Invoices.Include(i=>i.Patient).ThenInclude(c=>c.CustomerBalances).AsNoTracking().Where(i => payments.Select(p => p.InvoiceNumber).Contains(i.InvoiceNumber)).ToList();
+                    var invoices = await _Context.Invoices.Include(i=>i.Patient).ThenInclude(c=>c.CustomerBalances).AsNoTracking()
+                        .Where(i => payments.Select(p => p.InvoiceNumber).Contains(i.InvoiceNumber)).ToListAsync();
                     var balances = invoices.SelectMany(x => x.Patient.CustomerBalances).Where(x=>x.Active==true && x.CurrencyId== payments.FirstOrDefault().CurrencyId).FirstOrDefault();
                     payments.ForEach(p => {
                         p.State =(char) BillingStates.Nulled;
@@ -307,13 +308,14 @@ namespace PointOfSalesV2.Repository
                         i.TRNControl = null;
                     });
                     _Context.Invoices.UpdateRange(invoices);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     _Context.CustomersPayments.UpdateRange(payments);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     _Context.CustomersBalance.Update(balances);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
 
-                    var cashFlowDetails = _Context.CashRegisterFlowDetails.Include(x => x.CashRegisterOpening).AsNoTracking().Where(x => x.Active == true && x.Reference.ToUpper() == sequence.ToUpper()).ToList();
+                    var cashFlowDetails = await  _Context.CashRegisterFlowDetails.Include(x => x.CashRegisterOpening).AsNoTracking()
+                        .Where(x => x.Active == true && x.Reference.ToUpper() == sequence.ToUpper()).ToListAsync();
                     if (cashFlowDetails != null && cashFlowDetails.Count>0) 
                     {
                         var cashRegisterOpening = cashFlowDetails.FirstOrDefault()?.CashRegisterOpening;
@@ -323,18 +325,18 @@ namespace PointOfSalesV2.Repository
                             cashRegisterOpening.TotalPaymentsAmount -= cashFlowDetails.Sum(x => x.TotalAmount);
                             _Context.CashRegisterOpenings.Update(cashRegisterOpening);
                             cashFlowDetails.ForEach(c => { c.CashRegisterOpening = null; });
-                            _Context.SaveChanges();
+                            await _Context.SaveChangesAsync();
                         }
                         _Context.CashRegisterFlowDetails.RemoveRange(cashFlowDetails);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
 
-                    trans.Commit();
+                    await trans.CommitAsync();
                     result = new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex) 
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
                 
@@ -342,19 +344,19 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<CustomerPayment> Remove(long id)
+        public override async Task< Result<CustomerPayment>> RemoveAsync(long id)
         {
             Result<CustomerPayment> result = new Result<CustomerPayment>(-1, -1, "error_msg");
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var obj = this.Get(id).Data.FirstOrDefault();
+                    var obj = (await  this.GetAsync(id)).Data.FirstOrDefault();
                     if (obj == null)
                         return new Result<CustomerPayment>(-1, -1, "paymentNotValid_msg");
                     obj.State = (char)BillingStates.Nulled;
 
-                    Invoice invoice = _Context.Invoices.AsNoTracking().FirstOrDefault(x => x.Active == true && x.InvoiceNumber == obj.InvoiceNumber);
+                    Invoice invoice = await _Context.Invoices.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.InvoiceNumber == obj.InvoiceNumber);
 
                     invoice.PaidAmount -= obj.PaidAmount;
                     invoice.PaidAmount = invoice.PaidAmount < 0 ? 0 : invoice.PaidAmount;
@@ -363,43 +365,43 @@ namespace PointOfSalesV2.Repository
                     if (invoice.State != (char)Enums.BillingStates.Billed)
                         invoice.State = (char)Enums.BillingStates.Billed;
                     _Context.Invoices.Update(invoice);
-                    _Context.SaveChanges();
-                    CustomerBalance customerBalance = _Context.CustomersBalance.AsNoTracking().FirstOrDefault(x => x.Active == true && x.CustomerId == obj.CustomerId && x.CurrencyId == obj.CurrencyId);
+                    await _Context.SaveChangesAsync();
+                    CustomerBalance customerBalance = await _Context.CustomersBalance.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.CustomerId == obj.CustomerId && x.CurrencyId == obj.CurrencyId);
                     if (customerBalance != null)
                     {
                         customerBalance.OwedAmount += obj.PaidAmount;
                         _Context.CustomersBalance.Update(customerBalance);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
                     // obj.ModificadoPor = userNamer;
                     obj.ModifiedDate = DateTime.Now;
                     _Context.CustomersPayments.Update(obj);
-                    _Context.SaveChanges();
-                    transaction.Commit();
+                    await _Context.SaveChangesAsync();
+                    await transaction.CommitAsync();
                     return new Result<CustomerPayment>(0, 0, "ok_msg", new List<CustomerPayment>() { obj });
                 }
 
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                 await   transaction.RollbackAsync();
                     result.Exception = ex;
                     return result;
                 }
             }
         }
-        public override Result<CustomerPayment> Remove(CustomerPayment entity)
+        public override async Task<Result<CustomerPayment>> RemoveAsync(CustomerPayment entity)
         {
             Result<CustomerPayment> result = new Result<CustomerPayment>(-1, -1, "error_msg");
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var obj = this.Get(entity.Id).Data.FirstOrDefault();
+                    var obj = (await this.GetAsync(entity.Id)).Data.FirstOrDefault();
                     if (obj == null)
                         return new Result<CustomerPayment>(-1, -1, "paymentNotValid_msg");
                     obj.State = (char)BillingStates.Nulled;
 
-                    Invoice invoice = _Context.Invoices.AsNoTracking().FirstOrDefault(x => x.Active == true && x.InvoiceNumber == obj.InvoiceNumber);
+                    Invoice invoice = await _Context.Invoices.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.InvoiceNumber == obj.InvoiceNumber);
 
                     invoice.PaidAmount -= obj.PaidAmount;
                     invoice.PaidAmount = invoice.PaidAmount < 0 ? 0 : invoice.PaidAmount;
@@ -408,34 +410,35 @@ namespace PointOfSalesV2.Repository
                     if (invoice.State != (char)Enums.BillingStates.Billed)
                         invoice.State = (char)Enums.BillingStates.Billed;
                     _Context.Invoices.Update(invoice);
-                    _Context.SaveChanges();
-                    CustomerBalance customerBalance = _Context.CustomersBalance.AsNoTracking().FirstOrDefault(x => x.Active == true && x.CustomerId == obj.CustomerId && x.CurrencyId == obj.CurrencyId);
+                    await _Context.SaveChangesAsync();
+                    CustomerBalance customerBalance = await _Context.CustomersBalance.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.CustomerId == obj.CustomerId && x.CurrencyId == obj.CurrencyId);
+
                     if (customerBalance != null)
                     {
                         customerBalance.OwedAmount += obj.PaidAmount;
                         _Context.CustomersBalance.Update(customerBalance);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
                     // obj.ModificadoPor = userNamer;
                     obj.ModifiedDate = DateTime.Now;
                     _Context.CustomersPayments.Update(obj);
-                    _Context.SaveChanges();
-                    transaction.Commit();
+                    await _Context.SaveChangesAsync();
+                    await transaction.CommitAsync();
                     return new Result<CustomerPayment>(0, 0, "ok_msg", new List<CustomerPayment>() { obj });
                 }
 
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     result.Exception = ex;
                     return result;
                 }
             }
         }
 
-        public override void AddRange(IEnumerable<CustomerPayment> entities)
+        public override async Task AddRangeAsync(IEnumerable<CustomerPayment> entities)
         {
-            base.AddRange(entities);
+           await base.AddRangeAsync(entities);
         }
     }
 }

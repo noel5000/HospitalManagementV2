@@ -1,7 +1,7 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,24 +13,24 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public IEnumerable<InvoiceDetail> GetByInvoiceId(long invoiceId)
+        public async Task<IEnumerable<InvoiceDetail>> GetByInvoiceId(long invoiceId)
         {
-            return _Context.InvoiceDetails.AsNoTracking().Include(x=>x.Product).Where(x => x.Active == true && x.InvoiceId == invoiceId);
+            return await _Context.InvoiceDetails.AsNoTracking().Include(x=>x.Product).Where(x => x.Active == true && x.InvoiceId == invoiceId).ToListAsync();
         }
 
-        public IEnumerable<InvoiceDetail> GetByProductId(long productId)
+        public async Task<IEnumerable<InvoiceDetail>> GetByProductId(long productId)
         {
-            return _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.ProductId == productId);
+            return await _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.ProductId == productId).ToListAsync();
         }
 
-        public IEnumerable<InvoiceDetail> GetChildren(long parentId)
+        public async Task<IEnumerable<InvoiceDetail> >GetChildren(long parentId)
         {
-            return _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.ParentId==parentId);
+            return await _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.ParentId==parentId).ToListAsync();
         }
 
-        public IEnumerable<InvoiceDetail> GetInvoiceParentsDetails(long invoiceId)
+        public async Task<IEnumerable<InvoiceDetail>> GetInvoiceParentsDetails(long invoiceId)
         {
-            return _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.InvoiceId == invoiceId && x.ParentId==null);
+            return await _Context.InvoiceDetails.AsNoTracking().Where(x => x.Active == true && x.InvoiceId == invoiceId && x.ParentId==null).ToListAsync();
         }
     }
 }

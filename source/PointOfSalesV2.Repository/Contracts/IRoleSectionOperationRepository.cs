@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
     public interface IRoleSectionOperationRepository : IBase<RoleSectionOperation>
     {
-        IQueryable<RoleSectionOperation> GetWithAllChildren();
+        Task<IQueryable<RoleSectionOperation>> GetWithAllChildren();
     }
 }

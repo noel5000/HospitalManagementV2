@@ -36,11 +36,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<PatientCheckup>(x =>x.AsNoTracking().Include(t=>t.Insurance)
+                var data = _baseRepo.GetAllAsync<PatientCheckup>(x =>x.AsNoTracking().Include(t=>t.Insurance)
                 .Include(t=>t.InsurancePlan).Include(t=>t.Appointment).Include(t=>t.Doctor).Include(t=>t.Patient)
                  , y => y.Active == true);
                 return Ok(data);
@@ -49,7 +49,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,7 +67,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -75,11 +75,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<PatientCheckup>(x => x.AsNoTracking().Include(t => t.Insurance)
+                var data = _baseRepo.GetAllAsync<PatientCheckup>(x => x.AsNoTracking().Include(t => t.Insurance)
                .Include(t => t.InsurancePlan).Include(t => t.Appointment).Include(t => t.Doctor).Include(t => t.Patient)
                 , y => y.Active == true);
                 string requestLanguage = "EN";
@@ -102,7 +102,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

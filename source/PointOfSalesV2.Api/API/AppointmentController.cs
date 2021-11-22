@@ -30,11 +30,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<Appointment>(x => x.AsNoTracking()
+                var data = await _baseRepo.GetAllAsync<Appointment>(x => x.AsNoTracking()
                 .Include(x => x.Hospital)
                 .Include(x => x.Patient)
                 .Include(x => x.Insurance)
@@ -49,7 +49,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,7 +67,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -85,7 +85,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

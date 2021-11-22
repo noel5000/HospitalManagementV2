@@ -29,11 +29,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<ProductTax>(x => x.Include(t => t.Tax)
+                var data = _baseRepo.GetAllAsync<ProductTax>(x => x.Include(t => t.Tax)
                 .Include(t => t.Product)
                 , y => y.Active == true);
                 return Ok(data);
@@ -41,7 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -49,7 +49,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] ProductTax model)
+        public override async Task<IActionResult> Post([FromBody] ProductTax model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }
@@ -58,7 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public override IActionResult Put([FromBody] ProductTax model)
+        public override async Task<IActionResult> Put([FromBody] ProductTax model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }

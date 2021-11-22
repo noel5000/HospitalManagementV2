@@ -32,11 +32,11 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
         [EnableQuery()]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<MenuDetail>(x =>x.Include(t=>t.Product)
+                var data = _baseRepo.GetAllAsync<MenuDetail>(x =>x.Include(t=>t.Product)
                 .Include(t=>t.Unit)
                 .Include(t=>t.Menu)
                 , y => y.Active == true);
@@ -45,7 +45,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

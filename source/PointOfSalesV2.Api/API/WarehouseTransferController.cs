@@ -33,11 +33,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public virtual IActionResult Get()
+        public virtual async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<WarehouseTransfer>(x => x
+                var data = _baseRepo.GetAllAsync<WarehouseTransfer>(x => x
                 .Include(x => x.OriginBranchOffice)
                 .Include(x => x.DestinyBranchOffice)
                 .Include(x => x.Unit)
@@ -50,7 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -58,7 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AddEntries")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public IActionResult AddEntries([FromBody]WarehouseTransferModel model)
+       public async Task<IActionResult> AddEntries([FromBody]WarehouseTransferModel model)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -77,7 +77,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("DeleteEntries/{sequence}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public IActionResult DeleteEntries(string sequence)
+       public async Task<IActionResult> DeleteEntries(string sequence)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

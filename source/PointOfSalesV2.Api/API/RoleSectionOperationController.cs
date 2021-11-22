@@ -31,7 +31,7 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
@@ -41,7 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

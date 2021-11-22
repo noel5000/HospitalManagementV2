@@ -3,7 +3,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -13,9 +13,9 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public IEnumerable<UnitProductEquivalence> GetProductUnits(long productId)
+        public async Task<IEnumerable<UnitProductEquivalence>> GetProductUnits(long productId)
         {
-            return _Context.UnitProductsEquivalences.AsNoTracking().Where(x=>x.Active==true && x.ProductId==productId);
+            return await _Context.UnitProductsEquivalences.AsNoTracking().Where(x=>x.Active==true && x.ProductId==productId).ToListAsync();
         }
     }
 }

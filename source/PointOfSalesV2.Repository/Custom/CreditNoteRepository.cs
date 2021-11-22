@@ -3,7 +3,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -13,9 +13,9 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public CreditNote GetBySequence(string sequence)
+        public async Task<CreditNote> GetBySequence(string sequence)
         {
-            return _Context.CreditNotes.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Sequence == sequence);
+            return await _Context.CreditNotes.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.Sequence == sequence);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.TAXREPORT)]
-        public IActionResult GetTaxesReport(string initialDate="0",string endDate="0")
+       public async Task<IActionResult> GetTaxesReport(string initialDate="0",string endDate="0")
         {
             try
             {
@@ -41,13 +41,13 @@ namespace PointOfSalesV2.Api.Controllers
                 DateTime? finalDate = null;
                 finalDate = endDate != "0" ? Convert.ToDateTime(endDate) : finalDate;
 
-                var data = businessStateRepository.GetTaxesReport(startDate, finalDate);
+                var data = await businessStateRepository.GetTaxesReport(startDate, finalDate);
                 return Ok(new { status = 0, data });
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -56,7 +56,7 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         //[EnableQuery]
         [ActionAuthorize(Operations.TAXREPORT)]
-        public IActionResult GetTaxesReportExcel(string initialDate = "0", string endDate = "0")
+       public async Task<IActionResult> GetTaxesReportExcel(string initialDate = "0", string endDate = "0")
         {
             try
             {
@@ -66,7 +66,7 @@ namespace PointOfSalesV2.Api.Controllers
                 DateTime? finalDate = null;
                 finalDate = endDate != "0" ? Convert.ToDateTime(endDate) : finalDate;
 
-                var data = businessStateRepository.GetTaxesReport(startDate, finalDate);
+                var data = await businessStateRepository.GetTaxesReport(startDate, finalDate);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
@@ -86,7 +86,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

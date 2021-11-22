@@ -32,11 +32,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<SupplierReturn>(x => x.Include(t => t.Currency)
+                var data = _baseRepo.GetAllAsync<SupplierReturn>(x => x.Include(t => t.Currency)
                 .Include(t => t.BranchOffice)
                 .Include(t => t.Warehouse)
                 .Include(t => t.Product)
@@ -56,7 +56,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AddEntries")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public IActionResult AddEntries([FromBody]SupplierReturnModel model)
+       public async Task<IActionResult> AddEntries([FromBody]SupplierReturnModel model)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("DeleteEntries/{sequence}")]
         [ActionAuthorize(Operations.DELETE)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult DeleteEntries(string sequence)
+       public async Task<IActionResult> DeleteEntries(string sequence)
         {
             try
             {

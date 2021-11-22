@@ -4,7 +4,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Repository
@@ -19,17 +19,17 @@ namespace PointOfSalesV2.Repository
 
 
 
-        public override Result<CompanyPayments> Add(CompanyPayments entity)
+        public override async Task<Result<CompanyPayments>> AddAsync(CompanyPayments entity)
         {
 
             Result<CompanyPayments> result = new Result<CompanyPayments>(-1, -1, "error_msg");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 try
                 {
-                    var currency = _Context.Currencies.Find(entity.CurrencyId);
+                    var currency = await _Context.Currencies.FindAsync(entity.CurrencyId);
                     _Context.Entry<Currency>(currency).State = EntityState.Detached;
                     var paymentEntity = new CompanyPayments()
                     {
@@ -45,19 +45,19 @@ namespace PointOfSalesV2.Repository
                         DestinationType = entity.DestinationType,
                         Details = entity.Details,
                         Reference = entity.Reference,
-                        Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
+                        Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
                         PaymentTypeId = entity.PaymentTypeId,
                         State = (char)Enums.BillingStates.Paid,
                         PositiveBalance = entity.GivenAmount - entity.PaidAmount,
                     };
                     _Context.CompanyPayments.Add(paymentEntity);
-                    _Context.SaveChanges();
-                    trans.Commit();
+                    await _Context.SaveChangesAsync();
+                    await trans.CommitAsync();
                     result = new Result<CompanyPayments>(0, (int)paymentEntity.Id, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     result = new Result<CompanyPayments>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -66,16 +66,16 @@ namespace PointOfSalesV2.Repository
            
         }
 
-        public override Result<CompanyPayments> Update(CompanyPayments entity, bool fromDb = true)
+        public override async Task<Result<CompanyPayments>> UpdateAsync(CompanyPayments entity, bool fromDb = true)
         {
             Result<CompanyPayments> result = new Result<CompanyPayments>(-1, -1, "error_msg");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 try
                 {
-                    var currency = _Context.Currencies.Find(entity.CurrencyId);
+                    var currency = await _Context.Currencies.FindAsync(entity.CurrencyId);
                     _Context.Entry<Currency>(currency).State = EntityState.Detached;
                     var paymentEntity = new CompanyPayments()
                     {
@@ -97,13 +97,13 @@ namespace PointOfSalesV2.Repository
                         PositiveBalance = entity.GivenAmount - entity.PaidAmount,
                     };
                     _Context.CompanyPayments.Update(paymentEntity);
-                    _Context.SaveChanges();
-                    trans.Commit();
+                    await _Context.SaveChangesAsync();
+                    await trans.CommitAsync();
                     result = new Result<CompanyPayments>(0, (int)paymentEntity.Id, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                  await  trans.RollbackAsync();
                     result = new Result<CompanyPayments>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -111,11 +111,11 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<CompanyPayments> Remove(long id)
+        public override async Task<Result<CompanyPayments>> RemoveAsync(long id)
         {
             Result<CompanyPayments> result = new Result<CompanyPayments>(-1, -1, "error_msg");
 
-            var payment = _Context.CompanyPayments.Find(id);
+            var payment = await _Context.CompanyPayments.FindAsync(id);
             _Context.Entry<CompanyPayments>(payment).State = EntityState.Detached;
             IEnumerable<ICommonData> children = null;
 
@@ -134,7 +134,7 @@ namespace PointOfSalesV2.Repository
             }
             payment.State = (char)Enums.BillingStates.Nulled;
             _Context.CompanyPayments.Update(payment);
-            _Context.SaveChanges();
+         await   _Context.SaveChangesAsync();
 
             return result;
         }

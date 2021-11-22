@@ -42,7 +42,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult Post()
+       public async Task<IActionResult> Post()
         {
             try
             {

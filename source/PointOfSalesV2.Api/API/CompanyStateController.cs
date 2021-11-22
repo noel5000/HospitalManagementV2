@@ -58,7 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
                         t_inputs.Item2 == "0" ? DateTime.Now : Convert.ToDateTime(t_inputs.Item2));
                     var result = new List<CompanyStateReport>();
                     invoices.GroupBy(x => x.CurrencyCode).ToList().ForEach(x => {
-                        result.Add(new CompanyStateReport() 
+                        result.AddAsync(new CompanyStateReport() 
                         {
                         TotalCompanyOwedAmount=x.Sum(r=>r.CompanyOwedAmount),
                         TotalCustomersOwedAmount=x.Sum(r=>r.CustomersOwedAmount),

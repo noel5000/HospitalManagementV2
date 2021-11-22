@@ -57,24 +57,24 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public virtual IActionResult Get()
+        public virtual async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<T>(x => x.AsNoTracking(),y=>y.Active==true);
+                var data = await _baseRepo.GetAllAsync<T>(x => x.AsNoTracking(),y=>y.Active==true);
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
 
-        protected void SaveException(Exception ex) 
+        protected async Task SaveException(Exception ex) 
         {
-            this.exceptionsRepo.Add(new ExceptionLog()
+          await  this.exceptionsRepo.AddAsync(new ExceptionLog()
             {
                 Code = ex.HResult.ToString(),
                 Active = true,
@@ -89,11 +89,11 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         [EnableQuery()]
         [ODataRoute("[controller]/ExportToExcel")]
-        public virtual IActionResult ExportToExcel()
+        public virtual async Task< IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<T>(x => x.Where(y => y.Active == true));
+                var data =await _baseRepo.GetAllAsync<T>(x => x.Where(y => y.Active == true));
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
@@ -114,7 +114,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -123,17 +123,17 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         //[EnableQuery]
         [ActionAuthorize(Operations.READ)]
-        public virtual IActionResult Get(long id)
+        public virtual async Task<IActionResult> Get(long id)
         {
             try
             {
-                var data = _baseRepo.Get(id);
+                var data = await _baseRepo.GetAsync(id);
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -142,7 +142,7 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         // [EnableQuery]
         [ActionAuthorize(Operations.READALL)]
-        public virtual IActionResult Get(int number, int size)
+        public virtual async Task<IActionResult> Get(int number, int size)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -167,7 +167,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public virtual IActionResult Post([FromBody] T model)
+        public virtual async Task<IActionResult> Post([FromBody] T model)
         {
             try
             {
@@ -177,14 +177,14 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as T;
                 }
-                var result = _baseRepo.Add(model);
+                var result = await _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -193,17 +193,17 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public virtual IActionResult Put([FromBody] T model)
+        public virtual async Task<IActionResult> Put([FromBody] T model)
         {
             try
             {
-                var result = _baseRepo.Update(model);
+                var result = await _baseRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -212,17 +212,17 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("{id:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public virtual IActionResult Delete(long id)
+        public virtual async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var result = _baseRepo.Remove(id);
+                var result = await _baseRepo.RemoveAsync(id);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

@@ -37,17 +37,17 @@ namespace PointOfSalesV2.Api.Controllers
                 try
                 {
                     long t_id = (long)arg;
-                    var invoice = _baseRepo.GetAll<Invoice>(x => x.AsNoTracking().Include(i=>i.Patient)
+                    var invoice = _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i=>i.Patient)
                     .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
                     .Where(y => y.Active == true && y.Id == t_id)).FirstOrDefault();
-                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAll<InvoiceDetail>(x =>
+                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
                     x.Include(i=>i.Product).Include(i=>i.Unit), y => y.Active == true && y.InvoiceId == id).ToList();
                     return Ok(new { status = 0, id, data = new Invoice[] { invoice } });
                 }
 
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -67,19 +67,19 @@ namespace PointOfSalesV2.Api.Controllers
                 {
                     var validStates=new char[]{ ((char)Enums.BillingStates.Paid), ((char)Enums.BillingStates.FullPaid )};
                     string t_id = (string)arg;
-                    var invoice = _baseRepo.GetAll<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
+                    var invoice = _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
                     .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
                     .Where(y => y.Active == true && validStates.Contains(y.State) && y.InvoiceNumber.ToLower() == t_id.ToLower())).FirstOrDefault();
                     if(invoice==null)
                         return Ok(new { status = -1, message ="notFound_msg" });
-                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAll<InvoiceDetail>(x =>
+                    invoice.InvoiceDetails = _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
                     x.Include(i => i.Product).Include(i => i.Unit), y => y.Active == true && y.InvoiceId == invoice.Id).ToList();
                     return Ok(new { status = 0, id=0, data = new Invoice[] { invoice } });
                 }
 
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -104,7 +104,7 @@ namespace PointOfSalesV2.Api.Controllers
 
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -128,7 +128,7 @@ namespace PointOfSalesV2.Api.Controllers
                     }
                     catch (Exception ex)
                     {
-                        SaveException(ex);
+                       await SaveException(ex);
                         return Ok(new { status = -1, message = ex.Message });
                     }
                    
@@ -156,7 +156,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -187,7 +187,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -233,7 +233,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -280,7 +280,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -308,7 +308,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 
@@ -355,7 +355,7 @@ namespace PointOfSalesV2.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    SaveException(ex);
+                   await SaveException(ex);
                     return Ok(new { status = -1, message = ex.Message });
                 }
 

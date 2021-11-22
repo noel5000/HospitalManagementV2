@@ -1,7 +1,7 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using static PointOfSalesV2.Common.Enums;
@@ -14,20 +14,20 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public CustomerBalance CustomerBalanceByCurrency(long customerId, long currencyId)
+        public async Task<CustomerBalance> CustomerBalanceByCurrency(long customerId, long currencyId)
         {
-            return _Context.CustomersBalance.AsNoTracking().Include(x=>x.Customer).Include(x=>x.Currency).FirstOrDefault(x => x.Active == true && x.CurrencyId == currencyId && x.CustomerId == customerId);
+            return await _Context.CustomersBalance.AsNoTracking().Include(x=>x.Customer).Include(x=>x.Currency).FirstOrDefaultAsync(x => x.Active == true && x.CurrencyId == currencyId && x.CustomerId == customerId);
         }
 
-        public CustomerStateReport CustomerState(long customerId)
+        public async Task<CustomerStateReport> CustomerState(long customerId)
         {
             CustomerStateReport report = new CustomerStateReport();
-            report.Customer = _Context.Customers.Find(customerId);
-            var customerInvoices = _Context.Invoices.Include(x => x.Currency)
+            report.Customer = await _Context.Customers.FindAsync(customerId);
+            var customerInvoices = await _Context.Invoices.Include(x => x.Currency)
                 .Include(x => x.Payments).ThenInclude(d => d.Currency)
                 .Include(x => x.Payments).ThenInclude(d => d.Seller)
                 .Include(x => x.Seller)
-                .AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid) && x.CustomerId==customerId).ToList();
+                .AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid) && x.CustomerId==customerId).ToListAsync();
             customerInvoices.ForEach(x =>
             {
                 report.Data.Add(new CustomerStateModel()

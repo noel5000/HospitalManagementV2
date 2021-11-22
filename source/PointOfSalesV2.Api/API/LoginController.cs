@@ -41,7 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult Post([FromBody] Login model)
+       public async Task<IActionResult> Post([FromBody] Login model)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet("VerifySession")]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult VerifySession()
+       public async Task<IActionResult> VerifySession()
         {
             try
             {

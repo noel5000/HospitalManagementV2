@@ -43,7 +43,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = _baseRepo.GetAll<Language>(x => x.Where(y => y.Active == true));
+                var data = _baseRepo.GetAllAsync<Language>(x => x.Where(y => y.Active == true));
                 return Ok(data);
             }
 
@@ -57,7 +57,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GenerateJsonFile/{serverType:int}")]
        [ActionAuthorize(Common.Enums.Operations.GENERATEDICTIONARY)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult GenerateJsonFile(int serverType=0) 
+       public async Task<IActionResult> GenerateJsonFile(int serverType=0) 
         {
             try
             {

@@ -35,11 +35,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _repo.GetAll<Expense>(x => x
+                var data = _repo.GetAllAsync<Expense>(x => x
                 .Include(x=>x.Supplier)
                 .Include(x=>x.Currency)
                 .Include(x=>x.BranchOffice)
@@ -50,7 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -59,7 +59,7 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READ)]
-        public override IActionResult Get(long id)
+        public override async Task<IActionResult> Get(long id)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -78,7 +78,7 @@ namespace PointOfSalesV2.Api.Controllers
         [EnableCors("AllowAllOrigins")]
         //[EnableQuery]
         [ActionAuthorize(Operations.DEBTSTOPAYREPORT)]
-        public IActionResult GetOwedExpenses([FromBody]DebsToPaySearchModel model)
+       public async Task<IActionResult> GetOwedExpenses([FromBody]DebsToPaySearchModel model)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -97,7 +97,7 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [ActionAuthorize(Operations.DEBTSTOPAYREPORT)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult GetOwedExpensesReport( long branchOfficeId=0,long supplierId=0,long currencyId=0, string startDate="0", string endDate="0" )
+       public async Task<IActionResult> GetOwedExpensesReport( long branchOfficeId=0,long supplierId=0,long currencyId=0, string startDate="0", string endDate="0" )
         {
             try
             {
@@ -125,7 +125,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -133,7 +133,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] Expense model)
+        public override async Task<IActionResult> Post([FromBody] Expense model)
         {
             try
             {
@@ -143,14 +143,14 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as Expense;
                 }
-                var result = _repo.Add(model);
+                var result = _repo.AddAsync(model);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -159,17 +159,17 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public override IActionResult Put([FromBody] Expense model)
+        public override async Task<IActionResult> Put([FromBody] Expense model)
         {
             try
             {
-                var result = _repo.Update(model);
+                var result = _repo.UpdateAsync(model);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -178,12 +178,12 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("{id:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public override IActionResult Delete(long id)
+        public override async Task<IActionResult> Delete(long id)
         {
             try
             {
 
-                var result = _repo.Remove(id);
+                var result = _repo.RemoveAsync(id);
                     return Ok(result);
                 
 
@@ -191,7 +191,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

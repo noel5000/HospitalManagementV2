@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -11,5 +11,6 @@ namespace PointOfSalesV2.Repository
         IDbContextTransaction CreateTransaction();
 
         int SaveChanges();
+        Task<int> SaveChangesAsync();
     }
 }

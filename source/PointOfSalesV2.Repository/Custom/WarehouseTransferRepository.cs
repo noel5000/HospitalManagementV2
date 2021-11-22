@@ -4,7 +4,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Repository
@@ -19,15 +19,15 @@ namespace PointOfSalesV2.Repository
             this.warehouseMovements = repositoryFactory.GetCustomDataRepositories<IWarehouseMovementRepository>();
         }
 
-        public Result<object> AddTransfersList(List<WarehouseTransfer> entries, string reference, string details)
+        public async Task<Result<object>> AddTransfersList(List<WarehouseTransfer> entries, string reference, string details)
         {
             var result = new Result<object>(-1, -1, "error_msg");
 
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran =await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    string sequence = sequenceRepo.CreateSequence(SequenceTypes.WarehouseTransfers);
+                    string sequence = await sequenceRepo.CreateSequence(SequenceTypes.WarehouseTransfers);
                     List<Inventory> inventories = new List<Inventory>();
                     entries.ForEach(e =>
                     {
@@ -85,7 +85,7 @@ namespace PointOfSalesV2.Repository
                     });
 
                     _Context.WarehousesTransfers.AddRange(entries);
-                    _Context.SaveChanges();
+                 await   _Context.SaveChangesAsync();
 
                     inventories.ForEach(inventory =>
                     {
@@ -116,12 +116,12 @@ namespace PointOfSalesV2.Repository
                         }
 
                     });
-                    tran.Commit();
+                   await tran.CommitAsync();
                     return new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                  await  tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -129,14 +129,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<object> RemoveTransfers(string sequence)
+        public async Task<Result<object>> RemoveTransfers(string sequence)
         {
             Result<object> result = new Result<object>(-1, -1, "error_msg");
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var entries = _Context.WarehousesTransfers.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToList();
+                    var entries = await _Context.WarehousesTransfers.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToListAsync();
                     entries.ForEach(e =>
                     {
                         e.Active = false;
@@ -184,25 +184,25 @@ productUnits
 
                     });
                     _Context.WarehousesTransfers.UpdateRange(entries);
-                    _Context.SaveChanges();
-                    tran.Commit();
+                await    _Context.SaveChangesAsync();
+                 await   tran.CommitAsync();
                     result = new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                await    tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
             return result;
         }
 
-        public override Result<WarehouseTransfer> Add(WarehouseTransfer entity)
+        public override async Task<Result<WarehouseTransfer>> AddAsync(WarehouseTransfer entity)
         {
             throw new NotImplementedException();
         }
 
-        public override Result<WarehouseTransfer> Update(WarehouseTransfer entity, bool fromDb = true)
+        public override async Task<Result<WarehouseTransfer>> UpdateAsync(WarehouseTransfer entity, bool fromDb = true)
         {
             throw new NotImplementedException();
         }

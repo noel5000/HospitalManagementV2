@@ -35,11 +35,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public virtual IActionResult Get()
+        public virtual async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
+                var data = _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
                 return Ok(data);
             }
 
@@ -53,7 +53,7 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READ)]
-        public virtual IActionResult Get(string id)
+        public virtual async Task<IActionResult> Get(string id)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace PointOfSalesV2.Api.Controllers
         // [EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READALL)]
-        public virtual IActionResult Get(int number, int size)
+        public virtual async Task<IActionResult> Get(int number, int size)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public virtual IActionResult Post([FromBody] User model)
+        public virtual async Task<IActionResult> Post([FromBody] User model)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as User;
                 }
-                var result = _baseRepo.Add(model);
+                var result = _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -120,11 +120,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public virtual IActionResult Put([FromBody] User model)
+        public virtual async Task<IActionResult> Put([FromBody] User model)
         {
             try
             {
-                var result = _baseRepo.Update(model);
+                var result = _baseRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -138,7 +138,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("{id}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public virtual IActionResult Delete(string id)
+        public virtual async Task<IActionResult> Delete(string id)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace PointOfSalesV2.Api.Controllers
                 if (model != null)
                 {
                     model.Active = false;
-                    var result = _baseRepo.Update(model as User);
+                    var result = _baseRepo.UpdateAsync(model as User);
                     return Ok(result);
                 }
                 else

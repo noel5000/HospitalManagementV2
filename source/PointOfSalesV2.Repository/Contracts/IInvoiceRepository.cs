@@ -1,24 +1,24 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
     public interface IInvoiceRepository: IBase<Invoice>
     {
-        IEnumerable<Invoice> GetAccountsReceivable(DateTime? startDate, DateTime? endDate, Nullable<long> customerId, Nullable<long> currencyId, long? sellerId,long?branchOfficeId);
-        IEnumerable<Invoice> GetSales(DateTime? startDate, DateTime? endDate, Nullable<long> customerId, Nullable<long> currencyId, Nullable<long> sellerId, long? branchOfficeId);
-        Invoice GetByInvoiceNumber(string invoiceNumber);
+        Task<IEnumerable<Invoice>> GetAccountsReceivable(DateTime? startDate, DateTime? endDate, Nullable<long> customerId, Nullable<long> currencyId, long? sellerId,long?branchOfficeId);
+      Task<IEnumerable<Invoice>> GetSales(DateTime? startDate, DateTime? endDate, Nullable<long> customerId, Nullable<long> currencyId, Nullable<long> sellerId, long? branchOfficeId);
+      Task<Invoice> GetByInvoiceNumber(string invoiceNumber);
 
-        Result<Invoice> BillQuote(long quoteId);
-        PagedList<Invoice> GetPagedQuotes(int page, int size);
-        IEnumerable<object> GetAccountStatus(DateTime? startDate, DateTime? endDate, long? customerId, long? currencyId);
-        IEnumerable<Invoice> GetInvoicesToPay(long branchOfficeId = 0, long currencyId = 0, long customerId = 0);
+       Task<Result<Invoice>> BillQuote(long quoteId);
+      Task<PagedList<Invoice>> GetPagedQuotes(int page, int size);
+       Task<IEnumerable<object> >GetAccountStatus(DateTime? startDate, DateTime? endDate, long? customerId, long? currencyId);
+      Task<IEnumerable<Invoice>> GetInvoicesToPay(long branchOfficeId = 0, long currencyId = 0, long customerId = 0);
 
-        List<CompanyStateModel> GetCompanyStatus(DateTime? initialDate, DateTime? endDate);
+        Task<List<CompanyStateModel> >GetCompanyStatus(DateTime? initialDate, DateTime? endDate);
 
-        List<InsurancCoverageDetail> GetInsuranceCoverages(DateTime? startDate, DateTime? endDate, long? insuranceId, long? insurancePlanId, long? currencyId, long? branchOfficeId);
+      Task<List<InsurancCoverageDetail> >GetInsuranceCoverages(DateTime? startDate, DateTime? endDate, long? insuranceId, long? insurancePlanId, long? currencyId, long? branchOfficeId);
 
     }
 }

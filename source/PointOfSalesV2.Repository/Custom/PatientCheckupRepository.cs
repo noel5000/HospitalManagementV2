@@ -3,7 +3,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
@@ -17,11 +17,11 @@ namespace PointOfSalesV2.Repository
             this.factory = dataRepositoryFactory;
         }
 
-        public override Result<PatientCheckup> Get(long id)
+        public override async Task< Result<PatientCheckup>> GetAsync(long id)
         {
-            var entity = _Context.PatientCheckups.AsNoTracking().Include(x=>x.Doctor)
+            var entity = await _Context.PatientCheckups.AsNoTracking().Include(x=>x.Doctor)
                 .Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x=>x.Patient).Include(x=>x.CheckupPrescriptions).ThenInclude(x=>x.MedicalSpeciality)
-                .Include(x=>x.CheckupPrescriptions).ThenInclude(d=>d.Product).FirstOrDefault(x=>x.Active==true && x.Id==id);
+                .Include(x=>x.CheckupPrescriptions).ThenInclude(d=>d.Product).FirstOrDefaultAsync(x=>x.Active==true && x.Id==id);
             if (entity == null)
                 return new Result<PatientCheckup>(-1, -1, "notFound_msg");
             entity.CheckupPrescriptions = entity.CheckupPrescriptions.Where(s => s.Active == true).ToList();
@@ -29,15 +29,15 @@ namespace PointOfSalesV2.Repository
             return new Result<PatientCheckup>(entity.Id, 0, "ok_msg", new List<PatientCheckup>() { entity });
         }
 
-        public override Result<PatientCheckup> Add(PatientCheckup entity)
+        public override async Task< Result<PatientCheckup>> AddAsync(PatientCheckup entity)
         {
             Result<PatientCheckup> result = new Result<PatientCheckup>(-1, -1, "error_msg");
-            using (var transaction = _Context.Database.BeginTransaction()) 
+            using (var transaction = await _Context.Database.BeginTransactionAsync()) 
             {
                 
                 try
                 {
-                    var appointment = entity.AppointmentId.HasValue && entity.AppointmentId>0? _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId):null;
+                    var appointment = entity.AppointmentId.HasValue && entity.AppointmentId>0?await _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefaultAsync(x => x.Id == entity.AppointmentId):null;
                     if (appointment == null) 
                     {
                         appointment = new Appointment()
@@ -57,12 +57,12 @@ namespace PointOfSalesV2.Repository
                     }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
-                    var prescriptions = SetEntity(entity);
+                    var prescriptions = await SetEntity(entity);
                     entity.Appointment = null;
                     var consultationDetail = appointment.Details.FirstOrDefault(x => x.AppointmentType == AppointmentTypes.Consultation);
                     if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled || consultationDetail==null) 
                     {
-                        transaction.Rollback();
+                     await   transaction.RollbackAsync();
                         return new Result<PatientCheckup>(-1, -1, "appointmentNotValid_msg");
                     }
                     entity.Date = appointment.Date;
@@ -70,11 +70,11 @@ namespace PointOfSalesV2.Repository
                     entity.InsurancePlanId = appointment.InsurancePlanId;
                     entity.DoctorId = consultationDetail.DoctorId.HasValue? consultationDetail.DoctorId.Value:entity.DoctorId;
                     entity.PatientId = appointment.PatientId;
-                    result = base.Add(entity);
+                    result = await base.AddAsync(entity);
                     if (result.Status < 0) 
                     {
                         
-                        transaction.Rollback();
+                      await  transaction.RollbackAsync();
                         return result;
                     }
                   
@@ -84,21 +84,21 @@ namespace PointOfSalesV2.Repository
                     if (appointment.Id > 0) 
                     {
                         _Context.Appointments.Update(appointment);
-                        _Context.SaveChanges();
+                     await   _Context.SaveChangesAsync();
                     }
                    
                     result = SavePrescriptions(prescriptions, result);
                     if (result.Status < 0)
                     {
-                        transaction.Rollback();
+                     await   transaction.RollbackAsync();
                         return result;
                     }
-                    transaction.Commit();
+               await     transaction.CommitAsync();
                     
                 }
                 catch (Exception ex) 
                 {
-                    transaction.Rollback();
+                  await  transaction.RollbackAsync();
                     result= new Result<PatientCheckup>(-1, -1, $"error_msg: | {ex.Message}", null, ex);
                 }
             }
@@ -107,14 +107,14 @@ namespace PointOfSalesV2.Repository
 
         }
 
-        public override Result<PatientCheckup> Update(PatientCheckup entity, bool getFromDb = true)
+        public override async Task< Result<PatientCheckup>> UpdateAsync(PatientCheckup entity, bool getFromDb = true)
         {
             Result<PatientCheckup> result = new Result<PatientCheckup>(-1, -1, "error_msg");
-            using (var transaction = _Context.Database.BeginTransaction())
+            using (var transaction = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var appointment = entity.AppointmentId.HasValue && entity.AppointmentId > 0 ? _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefault(x => x.Id == entity.AppointmentId) : null;
+                    var appointment =  entity.AppointmentId.HasValue && entity.AppointmentId > 0 ? await _Context.Appointments.AsNoTracking().Include(x => x.Details).FirstOrDefaultAsync(x => x.Id == entity.AppointmentId) : null;
                     if (appointment == null)
                     {
                         appointment = new Appointment()
@@ -134,17 +134,18 @@ namespace PointOfSalesV2.Repository
                     }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
-                    var prescriptions = SetEntity(entity);
+                    var prescriptions = await SetEntity(entity);
                     entity.Appointment = null;
-                    result = base.Update(entity);
+                    result = await base.UpdateAsync(entity);
                     if (result.Status < 0)
                     {
-                        transaction.Rollback();
+                        await transaction.RollbackAsync();
                         return result;
                     }
                     if (appointment.AppointmentState == AppointmentStates.Nulled)
                     {
-                        transaction.Dispose();
+                        await transaction.RollbackAsync();
+                        await  transaction.DisposeAsync();
                         result = new Result<PatientCheckup>(-1, -1, "appointmentNulled_msg");
                         return result;
                     }
@@ -154,21 +155,21 @@ namespace PointOfSalesV2.Repository
                     if (appointment.Id > 0) 
                     {
                         _Context.Appointments.Update(appointment);
-                        _Context.SaveChanges();
+                     await   _Context.SaveChangesAsync();
                     }
 
                     result = UpdatePrescriptions(prescriptions, result);
                     if (result.Status < 0)
                     {
-                        transaction.Rollback();
+                      await  transaction.RollbackAsync();
                         return result;
                     }
-                    transaction.Commit();
+                  await  transaction.CommitAsync();
 
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                  await  transaction.RollbackAsync();
                     result = new Result<PatientCheckup>(-1, -1, $"error_msg: | {ex.Message}", null, ex);
                 }
             }
@@ -233,7 +234,7 @@ namespace PointOfSalesV2.Repository
 
         }
 
-        private List<CheckupPrescription> SetEntity(PatientCheckup entity) 
+        private async Task<List<CheckupPrescription>> SetEntity(PatientCheckup entity) 
         {
             
            
@@ -243,8 +244,8 @@ namespace PointOfSalesV2.Repository
 
             var newPrescriptionsProducts = prescriptions.Where(x=> x.Product != null && x.Product.Id <= 0 && !string.IsNullOrEmpty(x.Product.Name)).Select(x=>x.Product).ToList();
             var newPrescriptionsMedicalSpecialities = prescriptions.Where(x => x.MedicalSpeciality != null && x.MedicalSpeciality.Id <= 0 && !string.IsNullOrEmpty(x.MedicalSpeciality.Name)).Select(x => x.MedicalSpeciality).ToList();
-            var newProductsResult = AddNewPrescriptionProducts(newPrescriptionsProducts, entity).Data?.ToList()??new List<Product>();
-            var newMedicalSpecialitiesResult = AddNewPrescriptionMedicalSpecialities(newPrescriptionsMedicalSpecialities, entity).Data?.ToList() ?? new List<MedicalSpeciality>();
+            var newProductsResult =(await AddNewPrescriptionProducts(newPrescriptionsProducts, entity)).Data?.ToList()??new List<Product>();
+            var newMedicalSpecialitiesResult =  AddNewPrescriptionMedicalSpecialities(newPrescriptionsMedicalSpecialities, entity).Data?.ToList() ?? new List<MedicalSpeciality>();
             for (int i = 0; i < prescriptions.Count; i++)
             {
                 int index = newProductsResult.FindIndex(x => x.OldId == prescriptions[i].ProductId);
@@ -269,7 +270,7 @@ namespace PointOfSalesV2.Repository
             return prescriptions;
         }
 
-        private long AddNewPrescriptionProduct(Product product, PatientCheckup checkup) 
+        private async Task<long> AddNewPrescriptionProduct(Product product, PatientCheckup checkup) 
         {
             product.Description = product.Name;
             product.Price = 1;
@@ -282,12 +283,12 @@ namespace PointOfSalesV2.Repository
             product.IsCompositeProduct = false;
            // product.IsService = false;
            // product.MedicalSpecialityId = null;
-            product.Taxes = _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0 || x.Rate == 0.18m)).Select(x => new ProductTax()
+            product.Taxes = await _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0 || x.Rate == 0.18m)).Select(x => new ProductTax()
             {
                 Active = true,
                 ProductId=0,
                 TaxId=x.Id
-            }) ;
+            }).ToListAsync() ;
             product.ProductUnits = product.IsService?null: _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence() { 
             Active=true,
             CostPrice=0,
@@ -299,22 +300,22 @@ namespace PointOfSalesV2.Repository
             UnitId=x.Id
             });
             var repo = this.factory.GetCustomDataRepositories<IProductRepository>();
-            var result = repo.AddWithoutTransaction(product);
+            var result = await repo.AddWithoutTransaction(product);
             if (result.Status < 0)
                 throw result.Exception?? new Exception(result.Message);
             return result.Id;
             
         }
 
-        private Result<Product> AddNewPrescriptionProducts(List<Product> products, PatientCheckup checkup)
+        private async Task<Result<Product>> AddNewPrescriptionProducts(List<Product> products, PatientCheckup checkup)
         {
-            var taxes = _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0)).Select(x => new ProductTax()
+            var taxes = await _Context.Taxes.AsNoTracking().Where(x => x.Active == true && (x.Rate == 0)).Select(x => new ProductTax()
             {
                 Active = true,
                 ProductId = 0,
                 TaxId = x.Id
-            }).ToList();
-            var productUnit= _Context.Units.AsNoTracking().Take(1).ToList().Select(x => new UnitProductEquivalence()
+            }).ToListAsync();
+            var productUnit= (await _Context.Units.AsNoTracking().Take(1).ToListAsync()).Select(x => new UnitProductEquivalence()
             {
                 Active = true,
                 CostPrice = 0,
@@ -347,7 +348,7 @@ namespace PointOfSalesV2.Repository
 
             var oldIds = products.Select(x => x.OldId).ToList();
             var repo = this.factory.GetCustomDataRepositories<IProductRepository>();
-            var result = repo.AddRangeWithoutTransaction(products,false);
+            var result = await repo.AddRangeWithoutTransaction(products,false);
             if (result.Data != null) 
             {
                 var data = result.Data.ToList();

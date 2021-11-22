@@ -4,7 +4,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -16,29 +16,30 @@ namespace PointOfSalesV2.Repository
             this._sequenceRepo = sequenceManagerRepository;
         }
 
-        public IEnumerable<Expense> GetDebsToPay(DateTime? startDate, DateTime? endDate, long? supplierId, long? currencyId, long? branchOfficeId)
+        public async  Task<IEnumerable<Expense>> GetDebsToPay(DateTime? startDate, DateTime? endDate, long? supplierId, long? currencyId, long? branchOfficeId)
         {
-            Func<Expense, bool> func = expense => expense.Active == true && expense.OwedAmount > 0 && expense.State != (char)Enums.BillingStates.Nulled && expense.State != (char)Enums.BillingStates.FullPaid
+           
+            return await _Context.Expenses.Include(x=>x.BranchOffice).Include(x=>x.Currency).Include(x=>x.Supplier).Where(
+                expense => expense.Active == true && expense.OwedAmount > 0 && expense.State != (char)Enums.BillingStates.Nulled && expense.State != (char)Enums.BillingStates.FullPaid
             && (startDate.HasValue ? expense.Date >= startDate.Value : expense.Id > 0) &&
-            (endDate.HasValue ? expense.Date <= endDate.Value : expense.Id > 0) && (supplierId.HasValue && supplierId.Value>0 ? expense.SupplierId == supplierId.Value : expense.Id > 0) &&
+            (endDate.HasValue ? expense.Date <= endDate.Value : expense.Id > 0) && (supplierId.HasValue && supplierId.Value > 0 ? expense.SupplierId == supplierId.Value : expense.Id > 0) &&
             (currencyId.HasValue && currencyId.Value > 0 ? expense.CurrencyId == currencyId.Value : expense.Id > 0) && (branchOfficeId.HasValue && branchOfficeId.Value > 0 ? expense.BranchOfficeId == branchOfficeId.Value : expense.Id > 0)
-            ;
-            return _Context.Expenses.Include(x=>x.BranchOffice).Include(x=>x.Currency).Include(x=>x.Supplier).Where(func);
+                ).ToListAsync();
         }
 
-        public override Result<Expense> Add(Expense entity)
+        public override async Task< Result<Expense>> AddAsync(Expense entity)
         {
             Result<Expense> result = new Result<Expense>(-1, -1, "");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
                 try
                 {
-                    entity.Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.Expenses);
+                    entity.Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.Expenses);
                     entity.ExpenseReference = entity.ExpenseReference ?? "";
                     var taxes = entity.Taxes?.ToList();
-                    entity.Currency = entity.Currency ?? _Context.Currencies.Find(entity.CurrencyId);
+                    entity.Currency = entity.Currency ?? await _Context.Currencies.FindAsync(entity.CurrencyId);
                     _Context.Entry<Currency>(entity.Currency).State = EntityState.Detached;
                     var currency = entity.Currency;
                     taxes.ForEach(d =>
@@ -71,11 +72,11 @@ namespace PointOfSalesV2.Repository
                     entity.ExchangeRate = entity.Currency.ExchangeRate;
                     entity.Currency = null;
                     _Context.Expenses.Add(entity);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
 
                     taxes.ForEach(x => { x.ExpenseId = entity.Id; });
                     _Context.ExpenseTaxes.AddRange(taxes);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     if (entity.PaymentTypeId.HasValue && entity.PaidAmount > 0)
                     {
 
@@ -93,18 +94,18 @@ namespace PointOfSalesV2.Repository
                             DestinationType = (byte)Enums.CompanyPaymentTypes.ExpensePayment,
                             Details = entity.Details,
                             Reference = entity.ExpenseReference,
-                            Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
+                            Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
                             PaymentTypeId = entity.PaymentTypeId.Value,
                             State = entity.State,
                             PositiveBalance = entity.GivenAmount - entity.PaidAmount
 
                         };
                         _Context.CompanyPayments.Add(payment);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                         ExpensesPayment expensePayment = new ExpensesPayment()
                         {
                             Date = DateTime.Now,
-                            Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.ExpensePayments),
+                            Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.ExpensePayments),
                             PaymentSequence = payment.Sequence,
                             PaidAmount = entity.PaidAmount,
                             TotalAmount = entity.TotalAmount,
@@ -126,15 +127,15 @@ namespace PointOfSalesV2.Repository
                             SupplierId = entity.SupplierId
                         };
                         _Context.ExpensesPayments.Add(expensePayment);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
 
-                    trans.Commit();
+                    await trans.CommitAsync();
                     result = new Result<Expense>(entity.Id, 0, "ok_msg", new List<Expense>() { entity });
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     result = new Result<Expense>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -142,17 +143,17 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<Expense> Update(Expense entity, bool fromDb = true)
+        public override async Task< Result<Expense>> UpdateAsync(Expense entity, bool fromDb = true)
         {
             Result<Expense> result = new Result<Expense>(-1, -1, "");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
-                var oldValue = _Context.Expenses.Find(entity.Id);
+                var oldValue = await _Context.Expenses.FindAsync(entity.Id);
                 _Context.Entry<Expense>(oldValue).State = EntityState.Detached;
                 if (oldValue == null || oldValue.State != (char)Enums.BillingStates.Billed || _Context.ExpensesPayments.AsNoTracking().Count(x => x.Active == true && x.State == (char)Enums.BillingStates.Paid && x.ExpenseId == entity.Id) > 0)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     return new Result<Expense>(-1, -1, "CannotUpdateExpense_msg");
                 }
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
@@ -162,10 +163,10 @@ namespace PointOfSalesV2.Repository
                     entity.ExpenseReference = entity.ExpenseReference ?? "";
                     entity.Date = DateTime.MinValue == entity.Date ? currentDate : entity.Date;
                     var taxes = entity.Taxes?.ToList();
-                    entity.Currency = entity.Currency ?? _Context.Currencies.Find(entity.CurrencyId);
+                    entity.Currency = entity.Currency ?? await _Context.Currencies.FindAsync(entity.CurrencyId);
                     _Context.Entry<Currency>(entity.Currency).State = EntityState.Detached;
                     var currency = entity.Currency;
-                    var oldTaxes = _Context.ExpenseTaxes.AsNoTracking().Where(x => x.Active == true && x.ExpenseId == entity.Id).ToList();
+                    var oldTaxes = await _Context.ExpenseTaxes.AsNoTracking().Where(x => x.Active == true && x.ExpenseId == entity.Id).ToListAsync();
                     //oldTaxes.ForEach(o => {
                     //    if (!taxes.Any(x => x.Id == o.Id)) 
                     //    {
@@ -175,7 +176,7 @@ namespace PointOfSalesV2.Repository
                     //});
 
                     _Context.ExpenseTaxes.RemoveRange(oldTaxes.Where(x => !taxes.Any(y => y.Id == x.Id)));
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     taxes.ForEach(d =>
                     {
                         d.Date = entity.Date;
@@ -210,7 +211,7 @@ namespace PointOfSalesV2.Repository
                     entity.ExchangeRateAmount = entity.Currency.ExchangeRate * entity.TotalAmount;
                     entity.Currency = null;
                     _Context.Expenses.Update(entity);
-                    _Context.SaveChanges();
+                    await _Context.SaveChangesAsync();
                     if (entity.PaymentTypeId.HasValue && entity.PaidAmount > 0)
                     {
                         var payment = new CompanyPayments()
@@ -227,19 +228,19 @@ namespace PointOfSalesV2.Repository
                             DestinationType = (byte)Enums.CompanyPaymentTypes.ExpensePayment,
                             Details = entity.Details,
                             Reference = entity.ExpenseReference,
-                            Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
+                            Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.CompanyPayments),
                             PaymentTypeId = entity.PaymentTypeId.Value,
                             State = entity.State,
                             PositiveBalance = entity.GivenAmount - entity.PaidAmount
 
                         };
                         _Context.CompanyPayments.Add(payment);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                         ExpensesPayment expensePayment = new ExpensesPayment()
                         {
                             PaidAmount = entity.PaidAmount,
                             Date = DateTime.Now,
-                            Sequence = _sequenceRepo.CreateSequence(Enums.SequenceTypes.ExpensePayments),
+                            Sequence = await _sequenceRepo.CreateSequence(Enums.SequenceTypes.ExpensePayments),
                             TotalAmount = entity.TotalAmount,
                             State = (char)Enums.BillingStates.Paid,
                             CurrencyId = entity.CurrencyId,
@@ -260,15 +261,15 @@ namespace PointOfSalesV2.Repository
                             SupplierId = entity.SupplierId
                         };
                         _Context.ExpensesPayments.Add(expensePayment);
-                        _Context.SaveChanges();
+                        await _Context.SaveChangesAsync();
                     }
 
-                    trans.Commit();
+                    await trans.CommitAsync();
                     result = new Result<Expense>(entity.Id, 0, "ok_msg", new List<Expense>() { entity });
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     result = new Result<Expense>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -276,18 +277,18 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<Expense> Remove(long id)
+        public override async Task< Result<Expense>> RemoveAsync(long id)
         {
             Result<Expense> result = new Result<Expense>(-1, -1, "");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
-                var entity = _Context.Expenses.Find(id);
+                var entity = await _Context.Expenses.FindAsync(id);
                 _Context.Entry<Expense>(entity).State = EntityState.Detached;
 
                 if (entity == null || entity.State != (char)Enums.BillingStates.Billed || _Context.ExpensesPayments.AsNoTracking().Count(x => x.Active == true && x.State != (char)Enums.BillingStates.Paid && x.ExpenseId == id) > 0)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     return new Result<Expense>(-1, -1, "CannotDeleteExpense_msg");
                 }
 
@@ -295,13 +296,13 @@ namespace PointOfSalesV2.Repository
                 {
                     entity.State = (char)Enums.BillingStates.Nulled;
                     _Context.Expenses.Update(entity);
-                    _Context.SaveChanges();
-                    trans.Commit();
+                    await _Context.SaveChangesAsync();
+                    await trans.CommitAsync();
                     result = new Result<Expense>(entity.Id, 0, "ok_msg", new List<Expense>() { entity });
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                    await trans.RollbackAsync();
                     result = new Result<Expense>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }

@@ -34,11 +34,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<Customer>(x => x
+                var data = _baseRepo.GetAllAsync<Customer>(x => x
                 .Include(x => x.Currency)
                 .Include(x => x.TRNControl)
                 .Include(x=>x.Zone)
@@ -50,7 +50,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -59,7 +59,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] Customer model)
+        public override async Task<IActionResult> Post([FromBody] Customer model)
         {
             try
             {
@@ -68,16 +68,16 @@ namespace PointOfSalesV2.Api.Controllers
                 {
                     activeEntity.Active = true;
                     model = activeEntity as Customer;
-                    model.Code = sequence.CreateSequence(SequenceTypes.Customers);
+                    model.Code = await sequence.CreateSequence(SequenceTypes.Customers);
                 }
-                var result = _baseRepo.Add(model);
+                var result = _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -86,11 +86,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<Customer>(x => x.Include(t => t.Currency)
+                var data = _baseRepo.GetAllAsync<Customer>(x => x.Include(t => t.Currency)
                 .Include(x => x.TRNControl)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
@@ -113,7 +113,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -121,7 +121,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AccountStateExport/{customerId:long}")]
         [ActionAuthorize(Operations.ACCOUNTSTATEREPORT)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult AccountStateExport(long customerId)
+        public async Task<IActionResult> AccountStateExport(long customerId)
         {
             try
             {
@@ -146,7 +146,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -154,7 +154,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("AccountState/{customerId:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ACCOUNTSTATEREPORT)]
-        public IActionResult AccountState(long customerId)
+       public async Task<IActionResult> AccountState(long customerId)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

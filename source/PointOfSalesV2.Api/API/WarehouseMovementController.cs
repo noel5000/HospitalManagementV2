@@ -30,11 +30,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetProductMovements/{branchOfficeId:long}/{warehouseId:long}/{productId:long}/{reference}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.PRODUCTMOVEMENTS)]
-        public IActionResult GetProductMovements(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference = "")
+       public async Task<IActionResult> GetProductMovements(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference = "")
         {
             try
             {
-                var data = _baseRepo.GetAll<WarehouseMovement>(x =>
+                var data = _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -67,7 +67,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -75,11 +75,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel/{branchOfficeId:long}/{warehouseId:long}/{productId:long}/{reference}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.PRODUCTMOVEMENTS)]
-        public IActionResult ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference="")
+       public async Task<IActionResult> ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference="")
         {
             try
             {
-                var data = _baseRepo.GetAll<WarehouseMovement>(x =>
+                var data = _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -110,7 +110,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

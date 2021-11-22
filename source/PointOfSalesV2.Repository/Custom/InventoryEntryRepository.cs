@@ -4,7 +4,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Repository
@@ -19,19 +19,19 @@ namespace PointOfSalesV2.Repository
             this.warehouseMovements = repositoryFactory.GetCustomDataRepositories<IWarehouseMovementRepository>();
         }
 
-        public Result<object> AddInventoryList(List<InventoryEntry> entries, string reference, string details)
+        public async Task<Result<object>> AddInventoryList(List<InventoryEntry> entries, string reference, string details)
         {
             var result = new Result<object>(-1, -1, "error_msg");
 
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    string sequence = sequenceRepo.CreateSequence(SequenceTypes.InventoryIncomes);
+                    string sequence = await sequenceRepo.CreateSequence(SequenceTypes.InventoryIncomes);
                     List<Inventory> inventories = new List<Inventory>();
-                    entries.ForEach(e =>
+                    entries.ForEach( e =>
                     {
-                        var currency = e.Currency ?? _Context.Currencies.Find(e.CurrencyId);
+                        var currency = e.Currency ??  _Context.Currencies.Find(e.CurrencyId);
                         _Context.Entry<Currency>(currency).State = EntityState.Detached;
                         e.ExchangeRate = currency.ExchangeRate;
                         e.Details = details;
@@ -48,7 +48,7 @@ namespace PointOfSalesV2.Repository
 
                         int inventoryIndex = inventories.FindIndex(x => x.ProductId == e.ProductId && x.WarehouseId == e.WarehouseId);
                         e.Product = e.Product != null ? e.Product : new Product() { Id = e.ProductId };
-                        e.Product.ProductUnits = _Context.UnitProductsEquivalences.Include(x => x.Unit).AsNoTracking().Where(x => x.Active == true && x.ProductId == e.ProductId);
+                        e.Product.ProductUnits =  _Context.UnitProductsEquivalences.Include(x => x.Unit).AsNoTracking().Where(x => x.Active == true && x.ProductId == e.ProductId).ToList();
                         var convertionResult = ProductsHelper.ConvertToProductPrincipalUnit(
             e.Quantity,
             e.UnitId,
@@ -78,7 +78,7 @@ namespace PointOfSalesV2.Repository
                     if (entries.Count > 0) 
                     {
                         _Context.InventoryEntries.AddRange(entries);
-                        _Context.SaveChanges();
+                     await   _Context.SaveChangesAsync();
                     }
 
 
@@ -109,12 +109,12 @@ namespace PointOfSalesV2.Repository
                         };
                         warehouseMovements.Add(movement);
                     });
-                    tran.Commit();
+                   await tran.CommitAsync();
                     return new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                  await  tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }

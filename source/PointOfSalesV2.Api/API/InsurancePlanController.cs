@@ -33,11 +33,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<InsurancePlan>(x => x.Include(t => t.Insurance)
+                var data = _baseRepo.GetAllAsync<InsurancePlan>(x => x.Include(t => t.Insurance)
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -45,7 +45,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -58,11 +58,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<InsurancePlan>(x => x.Include(t => t.Insurance)
+                var data = _baseRepo.GetAllAsync<InsurancePlan>(x => x.Include(t => t.Insurance)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
@@ -84,7 +84,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

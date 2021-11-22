@@ -4,7 +4,7 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Repository
@@ -20,15 +20,15 @@ namespace PointOfSalesV2.Repository
             this.warehouseMovements = repositoryFactory.GetCustomDataRepositories<IWarehouseMovementRepository>();
         }
 
-        public Result<object> AddInventoryList(List<SupplierReturn> entries, string reference, string details)
+        public async Task<Result<object>> AddInventoryList(List<SupplierReturn> entries, string reference, string details)
         {
             var result = new Result<object>(-1, -1, "error_msg");
 
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran =await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    string sequence = sequenceRepo.CreateSequence(SequenceTypes.SupplierReturns);
+                    string sequence = await sequenceRepo.CreateSequence(SequenceTypes.SupplierReturns);
                     List<Inventory> inventories = new List<Inventory>();
                     entries.ForEach(e =>
                     {
@@ -79,7 +79,7 @@ namespace PointOfSalesV2.Repository
                     if (entries.Count > 0)
                     {
                         _Context.SuppliersReturns.AddRange(entries);
-                        _Context.SaveChanges();
+                     await   _Context.SaveChangesAsync();
                     }
 
 
@@ -113,12 +113,12 @@ namespace PointOfSalesV2.Repository
                         };
                         warehouseMovements.Add(movement);
                     });
-                    tran.Commit();
+                   await tran.CommitAsync();
                     return new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                 await   tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -126,14 +126,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<object> RemoveEntries(string sequence)
+        public async Task< Result<object>> RemoveEntries(string sequence)
         {
             Result<object> result = new Result<object>(-1, -1, "error_msg");
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran =await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var entries = _Context.SuppliersReturns.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToList();
+                    var entries =await _Context.SuppliersReturns.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToListAsync();
                     entries.ForEach(e =>
                     {
                         e.Active = false;
@@ -164,8 +164,8 @@ productUnits
 
                     });
                     _Context.SuppliersReturns.UpdateRange(entries);
-                    _Context.SaveChanges();
-                    tran.Commit();
+                 await   _Context.SaveChangesAsync();
+                await    tran.CommitAsync();
                     result = new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
@@ -177,12 +177,12 @@ productUnits
             return result;
         }
 
-        public override Result<SupplierReturn> Add(SupplierReturn entity)
+        public override async Task<Result<SupplierReturn>> AddAsync(SupplierReturn entity)
         {
             throw new NotImplementedException();
         }
 
-        public override Result<SupplierReturn> Update(SupplierReturn entity, bool fromDb = true)
+        public override async Task<Result<SupplierReturn>> UpdateAsync(SupplierReturn entity, bool fromDb = true)
         {
             throw new NotImplementedException();
         }

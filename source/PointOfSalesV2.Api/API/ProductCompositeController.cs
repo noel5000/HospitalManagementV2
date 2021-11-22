@@ -24,7 +24,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Post([FromBody] CompositeProduct model)
+        public override async Task<IActionResult> Post([FromBody] CompositeProduct model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }
@@ -32,7 +32,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Put([FromBody] CompositeProduct model)
+        public override async Task<IActionResult> Put([FromBody] CompositeProduct model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }

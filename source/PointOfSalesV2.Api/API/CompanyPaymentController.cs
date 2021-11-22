@@ -29,11 +29,11 @@ namespace PointOfSalesV2.Api.Controllers
         [ActionAuthorize(Operations.READALL)]
         [EnableQuery()]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<CompanyPayments>(x => x.Include(t=>t.Currency)
+                var data = _baseRepo.GetAllAsync<CompanyPayments>(x => x.Include(t=>t.Currency)
                 .Include(t=>t.PaymentType)
                 , y => y.Active == true);
                 return Ok(data);
@@ -41,7 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

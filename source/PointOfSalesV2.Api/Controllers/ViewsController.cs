@@ -35,13 +35,13 @@ namespace PointOfSalesV2.Api.Controllers
 
 
         }
-        public IActionResult Index()
+       public async Task<IActionResult> Index()
         {
             return View();
         }
         public ActionResult InvoicePrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
             var invoice = invoiceRepo.Get(x => x.Include(i => i.Patient).Include(i => i.Seller)
@@ -56,7 +56,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult AppointmentPrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var appointmentRepo = dataRepository.GetDataRepositories<Appointment>();
             var appointment = appointmentRepo.Get(x => 
@@ -77,7 +77,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult CheckupMedicationsPrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = checkupRepo.Get(x => x.Include(t=>t.Doctor).ThenInclude(t=>t.MedicalSpeciality)
@@ -111,7 +111,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult CheckupSpecializedImagesPrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
@@ -145,7 +145,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult CheckupConsultationsPrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
@@ -179,7 +179,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult CheckupLabTestsPrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
@@ -213,7 +213,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult ExpensePrint(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
             var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id)?? new Expense();
@@ -226,7 +226,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult InvoicePayment(string sequence, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var paymentsRepo = dataRepository.GetDataRepositories<CustomerPayment>();
             var payments = paymentsRepo.GetAll(x => x.Include(p => p.Customer).Include(p => p.Currency).Include(p => p.Seller).Include(p => p.Invoice), y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State == (char)BillingStates.Paid).Data.ToList();
@@ -239,7 +239,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         public ActionResult ExpensePayment(long id, string language = "es")
         {
-            this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
+            this.httpContextAccessor.HttpContext.Request.Headers.AddAsync("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
             var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency)

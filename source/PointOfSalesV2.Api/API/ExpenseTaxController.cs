@@ -29,11 +29,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
         [EnableQuery()]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<ExpenseTax>(x => x.Include(x=>x.Tax)
+                var data = _baseRepo.GetAllAsync<ExpenseTax>(x => x.Include(x=>x.Tax)
                 .Include(x=>x.Expense)                
                 .Where(y => y.Active == true));
                 return Ok(data);
@@ -41,7 +41,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
