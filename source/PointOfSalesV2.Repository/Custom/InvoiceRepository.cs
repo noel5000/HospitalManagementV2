@@ -138,7 +138,7 @@ namespace PointOfSalesV2.Repository
                 invoice => invoice.Active == true &&
           (customerId > 0 ? invoice.CustomerId == customerId : invoice.CustomerId > 0) &&
          (currencyId > 0 ? invoice.CurrencyId == currencyId : invoice.CurrencyId > 0) && (branchOfficeId > 0 ? invoice.BranchOfficeId == branchOfficeId : invoice.BranchOfficeId > 0)
-         && (invoiceStates.Any(x => x == invoice.State)) && (invoice.OwedAmount > 0) && (invoice.PaidAmount < invoice.TotalAmount)
+         && (invoice.State== (char)Enums.BillingStates.Billed || invoice.State == (char)Enums.BillingStates.Paid) && (invoice.OwedAmount > 0) && (invoice.PaidAmount < invoice.TotalAmount)
                 ).ToListAsync();
         }
         private async Task SetInvoiceData(Invoice entity, bool isEditing = false)
@@ -148,8 +148,8 @@ namespace PointOfSalesV2.Repository
             entity.Currency = entity.Currency != null && entity.Currency.Id > 0 ? entity.Currency : await _Context.Currencies.FindAsync(entity.CurrencyId);
             _Context.Entry<Customer>(entity.Patient).State = EntityState.Detached;
             _Context.Entry<Currency>(entity.Currency).State = EntityState.Detached;
-            entity.TRNType = entity.Patient.TRNType;
-            entity.TRNControlId = entity.Patient.TRNControlId;
+            entity.TRNType = String.IsNullOrEmpty(entity.TRNType)? entity.Patient.TRNType:entity.TRNType;
+            entity.TRNControlId = entity.TRNControlId<=0? entity.Patient.TRNControlId: entity.TRNControlId;
             entity.BillingDate = entity.InventoryModified ? DateTime.Now : entity.BillingDate;
             entity.Month = entity.BillingDate.HasValue ? (Enums.Month)entity.BillingDate.Value.Month : (Enums.Month.NotSet);
             if (!entity.InventoryModified)

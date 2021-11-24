@@ -90,6 +90,7 @@ paidAmount:[0]
     }
 
     async getinvoices(){
+        this.invoices=!this.invoices?[]:this.invoices;
         const filter ={
             branchOfficeId:this.itemForm.get('branchOfficeId').value?this.itemForm.get('branchOfficeId').value:0,
             currencyId:this.itemForm.get('currencyId').value?this.itemForm.get('currencyId').value:0,
@@ -99,14 +100,17 @@ paidAmount:[0]
             this.itemForm.removeControl(`selectedInvoice-${e.id}`);
         });
         this.service.getByUrlParameters(['GetInvoicesToPay',filter.branchOfficeId,filter.customerId,filter.currencyId]).subscribe(r=>{
-
-            r.data.forEach(e=>{
-                this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
-                this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
-                    this.payInvoice(val,e.id);
-                })
-            });
-            this.invoices=r.data;
+          
+            if(r.data){
+                r.data.forEach(e=>{
+                    this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
+                    this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
+                        this.payInvoice(val,e.id);
+                    })
+                });
+                this.invoices=r.data;
+            }
+           
         });
     }
 
