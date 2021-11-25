@@ -78,7 +78,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         const product = this.products.find(x=>x.id==productId);
                     const principalCurrency = this.currencies.find(x=>x.isLocalCurrency);
                     const currency= this.currencies.find(x=>x.id==currencyId);
-                    const rate = principalCurrency.exchangeRate/currency.exchangeRate;
+                    const rate =(principalCurrency && currency)? principalCurrency.exchangeRate/currency.exchangeRate:1;
                     if(product){
                         this.productPrices=[product.price/rate,product.price2/rate,product.price3/rate];
                         this.productPrices=this.productPrices.filter(x=>x && x>0);
@@ -130,10 +130,10 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             this.products=[{id:null,name:""}];
             this.products=this.products.concat(r["value"]);
             if(r["value"].length==1&& (!this.item || !this.item.productId))
-            this.itemForm.patchValue({productId:this.products[1].id});
+            this.itemForm.patchValue({productId:r["value"][0].id});
             else
             this.itemForm.patchValue({
-                productId: this.item.productId
+                productId: this.item?this.item.productId:null
             })
         })
     }
@@ -145,11 +145,11 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             this.insurances=[{id:null,name:""}];
             this.insurances=this.insurances.concat(r);
             if(r.length==1&& (!this.item || !this.item.insuranceId))
-            this.itemForm.patchValue({insuranceId:this.insurances[1].id});
+            this.itemForm.patchValue({insuranceId:r[0].id});
            
             else
             this.itemForm.patchValue({
-                insuranceId: this.item.insuranceId
+                insuranceId: this.item?this.item.insuranceId:null
             })
         })
     }
@@ -159,10 +159,10 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             this.currencies=[{id:null,name:""}];
             this.currencies=this.currencies.concat(r);
             if(r.length==1 && (!this.item || !this.item.currencyId))
-            this.itemForm.patchValue({currencyId:this.currencies[1].id});
+            this.itemForm.patchValue({currencyId:r[0].id});
             else
             this.itemForm.patchValue({
-               currencyId: this.item.currencyId
+               currencyId: this.item?this.item.currencyId:null
             })
             
         })
@@ -199,6 +199,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             this.itemForm.patchValue({
                 insuranceId: this.item.insuranceId,
                 id: this.item.id,
+                currencyId:this.item.currencyId,
                 insurancePlanId:this.item.insurancePlanId,
                 coverageAmount:this.item.coverageAmount,
                 productId:this.item.productId,
