@@ -211,27 +211,34 @@ anchor.click();
           result+=expandResult;
         }
         let query = '$filter=';
-        filters.forEach(f => {
+        const filterData= filters.filter(x=>x.type!=ObjectTypes.ChildObject);
+        filterData.forEach(f => {
             let comparer= f.comparer?f.comparer.toString():'eq';
+            const propertyDef=f.property.indexOf('.')>=0?f.property.replace('.','/'):f.property;
+            let propertyDefArr=propertyDef.split('/');
+            let newSearch=propertyDefArr;
+            if(f.isTranslated && newSearch.length>1)
+            newSearch[newSearch.length-1]='TranslationData';
             if(comparer=="in"){
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
+                   
                     switch (f.type) {
-
+                      
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `
                             ;
                             break;
                         case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                         case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
+                            query = `${query}(${propertyDef} ${comparer} '${val}') or `;
                             break;
                         case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                     }
                 });
@@ -243,18 +250,18 @@ anchor.click();
                 switch (f.type) {
 
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
+                        query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `
                         ;
                         break;
                     case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                     case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
+                        query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
                         break;
                     case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                 }
             }
@@ -300,27 +307,34 @@ anchor.click();
           result+=expandResult;
         }
         let query = '$filter=';
-        filters.forEach(f => {
+        const filterData= filters.filter(x=>x.type!=ObjectTypes.ChildObject);
+        filterData.forEach(f => {
             let comparer= f.comparer?f.comparer.toString():'eq';
+            const propertyDef=f.property.indexOf('.')>=0?f.property.replace('.','/'):f.property;
+            let propertyDefArr=propertyDef.split('/');
+            let newSearch=propertyDefArr;
+            if(f.isTranslated && newSearch.length>1)
+            newSearch[newSearch.length-1]='TranslationData';
             if(comparer=="in"){
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
+                   
                     switch (f.type) {
-
+                      
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `
                             ;
                             break;
                         case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                         case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
+                            query = `${query}(${propertyDef} ${comparer} '${val}') or `;
                             break;
                         case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                     }
                 });
@@ -332,18 +346,18 @@ anchor.click();
                 switch (f.type) {
 
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
+                        query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `
                         ;
                         break;
                     case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                     case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
+                        query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
                         break;
                     case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                 }
             }

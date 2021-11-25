@@ -119,24 +119,26 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
     id:'insuranceId',
     fieldToShow:'insurance.name',
     type:'text',
+    objectTypeToShow:ObjectTypes.String,
     isTranslated:false,
     name:scope.lang.getValueByKey('insurance_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
  },
  {
     visible:true,
     id:'insurancePlanId',
     fieldToShow:'insurancePlan.name',
     type:'text',
+    objectTypeToShow:ObjectTypes.String,
     isTranslated:false,
     name:scope.lang.getValueByKey('insurancePlan_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
           },
         ];
 this.actions=[
@@ -202,9 +204,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

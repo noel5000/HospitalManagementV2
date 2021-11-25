@@ -93,7 +93,7 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
                 sorting:'desc',
                 toSort:true,
                 objectType:ObjectTypes.Number,
-                filterIsActive:false
+                filterIsActive:true
               },
 {
   visible:true,
@@ -111,36 +111,39 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
     id:'branchOfficeId',
     type:'text',
     fieldToShow:'branchOffice.name',
-    isTranslated:false,
+    isTranslated:true,
+    objectTypeToShow:ObjectTypes.String,
     name:this.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'warehouseId',
       type:'text',
       fieldToShow:'warehouse.name',
-      isTranslated:false,
+      isTranslated:true,
+      objectTypeToShow:ObjectTypes.String,
       name:this.lang.getValueByKey('warehouse_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
 {
     visible:true,
     id:'productId',
     type:'text',
     fieldToShow:'product.name',
-    isTranslated:false,
+    objectTypeToShow:ObjectTypes.String,
+    isTranslated:true,
     name:this.lang.getValueByKey('product_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
     {
         visible:true,
@@ -151,19 +154,20 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'unitId',
         type:'text',
         fieldToShow:'unit.name',
-        isTranslated:false,
+        isTranslated:true,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('unit_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
     {
         visible:true,
@@ -174,7 +178,7 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
@@ -182,11 +186,12 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
         type:'text',
         fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -197,7 +202,7 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   }
         ];
 this.actions=[
@@ -239,9 +244,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

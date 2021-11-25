@@ -90,14 +90,15 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
 {
     visible:true,
     id:'branchOfficeId',
-    type:'text',
     fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    objectTypeToShow:ObjectTypes.String,
+    type:'text',
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
 
   {
@@ -105,12 +106,13 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
       id:'customerId',
       type:'text',
       fieldToShow:'customer.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('customer_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     
     {
@@ -122,7 +124,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
 {
     visible:true,
@@ -157,19 +159,20 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
       {
         visible:true,
         id:'currencyId',
         type:'text',
         fieldToShow:'currency.code',
+        objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
         ];
 this.actions=[
@@ -210,9 +213,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

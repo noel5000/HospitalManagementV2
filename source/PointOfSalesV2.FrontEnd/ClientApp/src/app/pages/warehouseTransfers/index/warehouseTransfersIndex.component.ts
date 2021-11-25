@@ -95,7 +95,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
                 sorting:'desc',
                 toSort:true,
                 objectType:ObjectTypes.Number,
-                filterIsActive:false
+                filterIsActive:true
               },
 {
   visible:true,
@@ -113,60 +113,65 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
     id:'originBranchOfficeId',
     type:'text',
     fieldToShow:'originBranchOffice.name',
-    isTranslated:false,
+    isTranslated:true,
+    objectTypeToShow:ObjectTypes.String,
     name:this.lang.getValueByKey('originBranchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'originId',
       type:'text',
       fieldToShow:'origin.name',
-      isTranslated:false,
+      isTranslated:true,
+      objectTypeToShow:ObjectTypes.String,
       name:this.lang.getValueByKey('originWarehouse_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
         id:'destinyBranchOfficeId',
         type:'text',
         fieldToShow:'destinyBranchOffice.name',
-        isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
+        isTranslated:true,
         name:this.lang.getValueByKey('destinyBranchOffice_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
           visible:true,
           id:'destinyId',
           type:'text',
           fieldToShow:'destiny.name',
-          isTranslated:false,
+          objectTypeToShow:ObjectTypes.String,
+          isTranslated:true,
           name:this.lang.getValueByKey('destinyWarehouse_lbl'),
           sorting:'desc',
           toSort:true,
           objectType:ObjectTypes.String,
-          filterIsActive:false
+          filterIsActive:true
         },
 {
     visible:true,
     id:'productId',
     type:'text',
     fieldToShow:'product.name',
-    isTranslated:false,
+    isTranslated:true,
+    objectTypeToShow:ObjectTypes.String,
     name:this.lang.getValueByKey('product_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
     {
         visible:true,
@@ -177,19 +182,20 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'unitId',
         type:'text',
         fieldToShow:'unit.name',
-        isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
+        isTranslated:true,
         name:this.lang.getValueByKey('unit_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
     {
         visible:true,
@@ -200,7 +206,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
         ];
 this.actions=[
@@ -242,9 +248,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

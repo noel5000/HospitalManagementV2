@@ -105,12 +105,13 @@ export class PriceListIndexComponent extends BaseComponent implements OnInit {
         id:'currencyId',
         type:'text',
         fieldToShow:'currency.code',
+        objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:false,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -190,9 +191,9 @@ this.actions=[];
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

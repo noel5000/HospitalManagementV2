@@ -63,29 +63,20 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
         let scope = this;
        
         this.tableConfig=[
+
 {
-  visible:false,
-  id:'id',
-  type:'number',
-  isTranslated:false,
-  name:scope.lang.getValueByKey('id_lbl'),
-  sorting:'desc',
-  toSort:true,
-  objectType:ObjectTypes.Number,
-  filterIsActive:true
-},
-  {
-      visible:true,
-      id:'customerId',
-      type:'text',
-      fieldToShow:'customer.name',
-      isTranslated:false,
-      name:this.lang.getValueByKey('customer_lbl'),
-      sorting:'desc',
-      toSort:true,
-      objectType:ObjectTypes.String,
-      filterIsActive:false
-    },
+    visible:true,
+    id:'customerId',
+    type:'text',
+    fieldToShow:'customer.name',
+    isTranslated:false,
+    objectTypeToShow:ObjectTypes.String,
+    name:this.lang.getValueByKey('patient_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:true
+  },
     {
         visible:true,
         id:'sequence',
@@ -117,7 +108,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
@@ -125,11 +116,12 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
         type:'text',
         fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -140,7 +132,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -151,7 +143,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -162,7 +154,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
@@ -217,9 +209,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

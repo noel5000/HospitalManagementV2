@@ -83,7 +83,7 @@ export class BranchOfficeIndexComponent extends BaseComponent implements OnInit 
         visible:true,
         id:'nrc',
         type:'text',
-        isTranslated:true,
+        isTranslated:false,
         name:this.lang.getValueByKey('nrc_lbl'),
         sorting:'desc',
         toSort:false,
@@ -94,7 +94,7 @@ export class BranchOfficeIndexComponent extends BaseComponent implements OnInit 
           visible:true,
           id:'email',
           type:'text',
-          isTranslated:true,
+          isTranslated:false,
           name:this.lang.getValueByKey('email_lbl'),
           sorting:'desc',
           toSort:false,
@@ -105,7 +105,7 @@ export class BranchOfficeIndexComponent extends BaseComponent implements OnInit 
             visible:true,
             id:'phoneNumber',
             type:'text',
-            isTranslated:true,
+            isTranslated:false,
             name:this.lang.getValueByKey('phoneNumber_lbl'),
             sorting:'desc',
             toSort:false,
@@ -165,9 +165,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+  const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

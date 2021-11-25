@@ -31,6 +31,7 @@ export interface IPaginationModel{
   type:string;
   isTranslated:boolean,
   fieldToShow?:string;
+  objectTypeToShow?:ObjectTypes,
   name:string;
   sorting:string;
   toSort:boolean;

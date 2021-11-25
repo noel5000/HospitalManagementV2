@@ -91,13 +91,14 @@ export class CashRegisterIndexComponent extends BaseComponent implements OnInit 
     visible:true,
     id:'branchOfficeId',
     fieldToShow:'branchOffice.name',
+    objectTypeToShow:ObjectTypes.String,
     type:'text',
-    isTranslated:false,
+    isTranslated:true,
     name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
@@ -151,9 +152,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
