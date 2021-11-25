@@ -559,6 +559,16 @@ anchor.click();
         );
         return promise;
     }
+
+    showSpinner(){
+        let spinnerObj = document.getElementById("nb-global-spinner");
+        spinnerObj.style.display="block";
+     }
+    
+     hideSpinner(){
+         let spinnerObj = document.getElementById("nb-global-spinner");
+         spinnerObj.style.display="none";
+      }
 }
 @Injectable()
 export class NoopInterceptor implements HttpInterceptor {

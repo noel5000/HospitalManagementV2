@@ -141,7 +141,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             });
 
 
-        this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`, itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
+        this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
 
     addProduct(){
@@ -245,6 +245,19 @@ this.attachmentsService.getAllFiltered([
          console.log('FileUpload:uploaded successfully:', item, status, response);
          this.modalService.showSuccess('ok_msg');
          this.getAttachments(this.id);
+    };
+
+    this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
+    this.uploader.onErrorItem=(arg)=>{this.service.hideSpinner();};
+    this.uploader.onBeforeUploadItem=(arg)=>{this.service.showSpinner();};
+    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
+      this.service.hideSpinner();
+         console.log('FileUpload:uploaded successfully:', item, status, response);
+         this.uploader.clearQueue();
+         this.uploader
+         this.modalService.showSuccess(this.lang.getValueByKey('ok_msg'));
+         this.getAttachments(this.id);
+      
     };
     }
     async getMedicalSpecialities(){
@@ -546,6 +559,14 @@ console.log(ex);
         async  deleteSelectedMedicine(index:number){
             this.selectedMedicines.splice(index,1);
         }
+
+        uploadClick(){
+            document.getElementById('imageUpload').click();
+          }
+          fileSelectedUpload(arg:any){
+            console.log(arg);
+          this.uploader.uploadAll();
+          }
 
 
     cancel(){

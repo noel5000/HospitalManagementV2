@@ -36,30 +36,38 @@
                 </div>
 
            </div>
-           <div class="my-3">
-               <h3>{{'attachments_lbl' | translate}}</h3>
-               <div class="row my-1" *ngFor="let attachment of attachments; let i=index">
-                <div class="col-md-6 col-xs-6">
-                 <a  [href]="setLink(attachment)" target="_blank">{{attachment.fileAttachment.fileName}}</a>
-                </div>
-                <div class="col-md-6 col-xs-6">
-                 <button type="button" (click)="removeAttachment(attachment.id)"  [disabled]="(!editing || editing<1)" class="btn btn-danger">{{'delete_btn' | translate}}</button>
-                </div> 
-            </div>
-           </div>
          
-           <div class="row my-1">
-               <div class="col-md-6 col-xs-12">
-                <input type="file" class="form-control" name="file" ng2FileSelect [uploader]="uploader" />
-               </div>
-               <div class="col-md-6 col-xs-12">
-                   <button type="button" class="btn btn-primary"
-                   (click)="uploader.uploadAll()"
-                   [disabled]="(!editing || editing<1) || !uploader.getNotUploadedItems().length"
-                   >{{'upload_btn' | translate}}</button>
-                
+
+           <div class="my-3">
+            <h3 class="text-center">{{'attachments_lbl' | translate}}</h3>
+               <div class="row my-1">
+                <div class="col-md-6 col-xs-12">
+                    <img src="../../../../assets/images/upload-solid.svg" style="height: 131px;" (click)="uploadClick()" class="btn-block">
+                   <input type="file" id="imageUpload"  style="display: none" (onFileSelected)="fileSelectedUpload($event)"  name="imageUpload" ng2FileSelect [uploader]="uploader" />
+                  </div>
+
+                  <table class="col-md-6 col-xs-12">
+                      <thead>
+                          <tr>
+                              <th></th>
+                              <th></th>
+                          </tr>
+                         
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let attachment of attachments; let i=index">
+                          <td><a  [href]="setLink(attachment)" target="_blank">{{attachment.fileAttachment.fileName}}</a></td>
+                          <td><button type="button" (click)="removeAttachment(attachment.id)"  [disabled]="(!editing || editing<1)" class="btn btn-danger">{{'delete_btn' | translate}}</button></td>
+                        </tr>
+                    </tbody>
+                  </table>
+               
             </div>
            </div>
+
+          
+         
+           
            <div class="row">
             <div class="form-group col-md-3 col-xs-12">
                 <label>{{'prescriptionTypes_lbl' | translate}}</label>
