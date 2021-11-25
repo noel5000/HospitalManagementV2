@@ -3,7 +3,9 @@ using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text; using System.Threading.Tasks;
+using System.Text;
+using System.Threading.Tasks;
+using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Repository
 {
@@ -15,7 +17,7 @@ namespace PointOfSalesV2.Repository
             this._sequenceRepo = sequence;
         }
 
-        public async Task< IEnumerable<Product>> GetFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
+        public async Task<IEnumerable<Product>> GetFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
         {
             throw new NotImplementedException();
         }
@@ -40,7 +42,7 @@ namespace PointOfSalesV2.Repository
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Product> >GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
+        public async Task<IEnumerable<Product>> GetServicesOnlyFilteredAndLimited(int pageZise, string fieldName, string fieldName2, string searchCharacters)
         {
             throw new NotImplementedException();
         }
@@ -265,7 +267,7 @@ namespace PointOfSalesV2.Repository
                 decimal tempPrice = (entity.IsService ? bases.Sum(x => x.TotalPrice) : entity.Price);
                 entity.Price = entity.Price == 0 ? tempPrice : entity.Price;
                 _Context.Products.Update(entity);
-            await    _Context.SaveChangesAsync();
+                await _Context.SaveChangesAsync();
 
                 SetChildren(entity, costs, units, taxes, bases);
 
@@ -435,6 +437,57 @@ namespace PointOfSalesV2.Repository
             decimal[] prices = new decimal[] { product.Price, product.Price2, product.Price3 }.Where(x => x > 0).ToArray();
             result = prices.Average(x => x) / equivalence;
             return result;
+        }
+
+        public override async Task<Result<Product>> RemoveAsync(long id)
+        {
+            var states = new char[] { (char)BillingStates.Nulled };
+            var product = await _Context.Products.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+            if ((await _Context.AppointmentDetails.AsNoTracking().Include(a => a.Appointment).AnyAsync(x => x.Active == true && x.ProductId == id && states.Contains(x.Appointment.State)))
+                || (await _Context.CheckupPrescriptions.AsNoTracking().Include(a => a.PatientCheckup).AnyAsync(x => x.Active == true && x.ProductId == id))
+                 || (await _Context.InsuranceServiceCoverages.AsNoTracking().AnyAsync(x => x.Active == true && x.ProductId == id))
+               || (await _Context.Inventory.AsNoTracking().AnyAsync(x => x.Active == true && x.ProductId == id && x.Quantity > 0))
+                )
+            {
+                return new Result<Product>(-1, -1, "cannotRemoveProduct_msg");
+            }
+            else 
+            {
+                using (var tran = await _Context.Database.BeginTransactionAsync()) 
+                {
+                    try
+                    {
+                        _Context.ProductSupplierCosts.RemoveRange((_Context.ProductSupplierCosts.AsNoTracking().Where(x=>x.ProductId==id)));
+                     await   _Context.SaveChangesAsync();
+
+                        _Context.CompositeProducts.RemoveRange((_Context.CompositeProducts.AsNoTracking().Where(x => x.ProductId == id)));
+                        await _Context.SaveChangesAsync();
+
+                        _Context.ProductTaxes.RemoveRange((_Context.ProductTaxes.AsNoTracking().Where(x => x.ProductId == id)));
+                        await _Context.SaveChangesAsync();
+
+                        _Context.UnitProductsEquivalences.RemoveRange((_Context.UnitProductsEquivalences.AsNoTracking().Where(x => x.ProductId == id)));
+                        await _Context.SaveChangesAsync();
+
+                        var removeResult = await this.RemoveAsync(product);
+                        if (removeResult.Status < 0) 
+                        {
+                            await tran.RollbackAsync();
+                            return removeResult;
+                        }
+                        await tran.CommitAsync();
+                        return removeResult;
+                    }
+                    catch (Exception ex) 
+                    {
+                        await tran.RollbackAsync();
+                        return new Result<Product>(-1, -1, "error_msg",null,ex);
+                    }
+                
+                }
+               
+            }
+
         }
     }
 }

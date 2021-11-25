@@ -130,8 +130,8 @@
                     formControlName="whenToTake"
                     >
                     <option *ngFor="let whentoTakeSelection of whentoTakeSelections"
-                     [value]="whentoTakeSelection"
-                     >{{whentoTakeSelection}}</option>
+                     [value]="whentoTakeSelection.key"
+                     >{{whentoTakeSelection.value}}</option>
                     </select>
                     <div *ngIf="form.whenToTake.errors" class="invalid-feedback">
                         <div *ngIf="form.whenToTake.errors.required">{{'required_lbl' | translate}}</div>

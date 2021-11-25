@@ -1,14 +1,14 @@
 ﻿using PointOfSalesV2.Entities;
 using System;
 using System.Collections.Generic;
-using System.Text; using System.Threading.Tasks;
+using System.Text;
+using System.Threading.Tasks;
 using System.Linq;
 using PointOfSalesV2.Common;
 using PointOfSalesV2.Repository.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using static PointOfSalesV2.Common.Enums;
-using System.Threading.Tasks;
 using NPOI.SS.Formula.Functions;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -60,7 +60,7 @@ namespace PointOfSalesV2.Repository
 
         public async Task<Invoice> GetByInvoiceNumber(string invoiceNumber)
         {
-            var invoice = await _Context.Invoices.Include(x=>x.Appointment).Include(x => x.Insurance).Include(x => x.InsurancePlan)
+            var invoice = await _Context.Invoices.Include(x => x.Appointment).Include(x => x.Insurance).Include(x => x.InsurancePlan)
                 .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
                 .Include(x => x.Patient).AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.InvoiceNumber.ToLower() == invoiceNumber.ToLower());
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
@@ -74,9 +74,9 @@ namespace PointOfSalesV2.Repository
 
         public async Task<IEnumerable<Invoice>> GetSales(DateTime? startDate, DateTime? endDate, long? customerId, long? currencyId, long? sellerId, long? branchOfficeId)
         {
-         
-            return await _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x=>x.Insurance).Include(x=>x.InsurancePlan).Include(x => x.BranchOffice).Include(x => x.Appointment)
-                .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Where(
+
+            return await _Context.Invoices.AsNoTracking().Include(x => x.Patient).Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.BranchOffice).Include(x => x.Appointment)
+                .Include(x => x.Seller).Include(x => x.Appointment).Include(x => x.Currency).Where(
                 invoice => invoice.Active == true && (startDate.HasValue ? invoice.BillingDate >= startDate.Value : invoice.Id > 0) &&
              (branchOfficeId.HasValue && branchOfficeId.Value > 0 ? invoice.BranchOfficeId == branchOfficeId.Value : invoice.BranchOfficeId > 0) &&
          (endDate.HasValue ? invoice.BillingDate <= endDate.Value : invoice.Id > 0) && (customerId.HasValue && customerId.Value > 0 ? invoice.CustomerId == customerId.Value : invoice.Id > 0) &&
@@ -87,16 +87,16 @@ namespace PointOfSalesV2.Repository
 
         public async Task<List<InsurancCoverageDetail>> GetInsuranceCoverages(DateTime? startDate, DateTime? endDate, long? insuranceId, long? insurancePlanId, long? currencyId, long? branchOfficeId)
         {
-            var validStates = new List<char>() 
+            var validStates = new List<char>()
             {
             (char)BillingStates.Paid,
             (char)BillingStates.FullPaid,
             (char)BillingStates.Billed,
-            
+
             };
-           
+
             var invoices = await _Context.Invoices.AsNoTracking().Include(x => x.Patient)
-                .Include(x=>x.InvoiceDetails).ThenInclude(d=>d.Product)
+                .Include(x => x.InvoiceDetails).ThenInclude(d => d.Product)
                 .Include(x => x.InvoiceDetails).ThenInclude(d => d.Doctor)
                 .Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.BranchOffice).Include(x => x.Appointment)
               .Include(x => x.Currency).Where(
@@ -110,17 +110,19 @@ namespace PointOfSalesV2.Repository
                 ).ToListAsync();
 
             List<InsurancCoverageDetail> result = new List<InsurancCoverageDetail>();
-            invoices.ForEach(invoice => {
-                var details = invoice.InvoiceDetails.Where(x => x.Active == true).Select(f => new InsurancCoverageDetail(f) { 
-               Insurance=invoice.Insurance,
-               InsurancePlan=invoice.InsurancePlan,
-               InvoiceState=invoice.State,
-               InsuranceCardId=invoice.InsuranceCardId,
-               InvoiceNumber=invoice.InvoiceNumber,
-               PatientName=invoice.Patient.NameAndCode,
-               PatientCardId=invoice.Patient.CardId,
-               Currency=invoice.Currency,
-               Doctor=f.Doctor
+            invoices.ForEach(invoice =>
+            {
+                var details = invoice.InvoiceDetails.Where(x => x.Active == true).Select(f => new InsurancCoverageDetail(f)
+                {
+                    Insurance = invoice.Insurance,
+                    InsurancePlan = invoice.InsurancePlan,
+                    InvoiceState = invoice.State,
+                    InsuranceCardId = invoice.InsuranceCardId,
+                    InvoiceNumber = invoice.InvoiceNumber,
+                    PatientName = invoice.Patient.NameAndCode,
+                    PatientCardId = invoice.Patient.CardId,
+                    Currency = invoice.Currency,
+                    Doctor = f.Doctor
                 }).ToList();
                 result.AddRange(details);
             });
@@ -130,15 +132,15 @@ namespace PointOfSalesV2.Repository
         public async Task<IEnumerable<Invoice>> GetInvoicesToPay(long branchOfficeId = 0, long currencyId = 0, long customerId = 0)
         {
             var invoiceStates = new char[] { (char)Enums.BillingStates.Billed, (char)Enums.BillingStates.Paid };
-           
+
             return await _Context.Invoices.AsNoTracking().Include(x => x.Insurance).Include(x => x.InsurancePlan).Include(x => x.Patient).ThenInclude(x => x.Insurance)
                 .Include(x => x.Patient).ThenInclude(x => x.InsurancePlan)
                 .Include(x => x.BranchOffice)
-                .Include(x => x.Seller).Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Appointment).Where(
+                .Include(x => x.Seller).Include(x => x.Appointment).Include(x => x.Currency).Include(x => x.Appointment).Where(
                 invoice => invoice.Active == true &&
           (customerId > 0 ? invoice.CustomerId == customerId : invoice.CustomerId > 0) &&
          (currencyId > 0 ? invoice.CurrencyId == currencyId : invoice.CurrencyId > 0) && (branchOfficeId > 0 ? invoice.BranchOfficeId == branchOfficeId : invoice.BranchOfficeId > 0)
-         && (invoice.State== (char)Enums.BillingStates.Billed || invoice.State == (char)Enums.BillingStates.Paid) && (invoice.OwedAmount > 0) && (invoice.PaidAmount < invoice.TotalAmount)
+         && (invoice.State == (char)Enums.BillingStates.Billed || invoice.State == (char)Enums.BillingStates.Paid) && (invoice.OwedAmount > 0) && (invoice.PaidAmount < invoice.TotalAmount)
                 ).ToListAsync();
         }
         private async Task SetInvoiceData(Invoice entity, bool isEditing = false)
@@ -148,8 +150,8 @@ namespace PointOfSalesV2.Repository
             entity.Currency = entity.Currency != null && entity.Currency.Id > 0 ? entity.Currency : await _Context.Currencies.FindAsync(entity.CurrencyId);
             _Context.Entry<Customer>(entity.Patient).State = EntityState.Detached;
             _Context.Entry<Currency>(entity.Currency).State = EntityState.Detached;
-            entity.TRNType = String.IsNullOrEmpty(entity.TRNType)? entity.Patient.TRNType:entity.TRNType;
-            entity.TRNControlId = entity.TRNControlId<=0? entity.Patient.TRNControlId: entity.TRNControlId;
+            entity.TRNType = String.IsNullOrEmpty(entity.TRNType) ? entity.Patient.TRNType : entity.TRNType;
+            entity.TRNControlId = entity.TRNControlId <= 0 ? entity.Patient.TRNControlId : entity.TRNControlId;
             entity.BillingDate = entity.InventoryModified ? DateTime.Now : entity.BillingDate;
             entity.Month = entity.BillingDate.HasValue ? (Enums.Month)entity.BillingDate.Value.Month : (Enums.Month.NotSet);
             if (!entity.InventoryModified)
@@ -166,24 +168,24 @@ namespace PointOfSalesV2.Repository
                 _Context.Entry<Seller>(entity.Seller).State = EntityState.Detached;
         }
 
-         void SetSellerComisions(Invoice entity, List<InvoiceDetail> details)
+        void SetSellerComisions(Invoice entity, List<InvoiceDetail> details)
         {
             if (entity.Seller != null && entity.Seller.Id > 0 && entity.InventoryModified)
             {
                 decimal comision = 0;
-                details.ForEach( d =>
-                {
+                details.ForEach(d =>
+               {
 
-                    comision = entity.Seller.FixedComission ? ((d.BeforeTaxesAmount) * entity.Seller.ComissionRate) : 0;
-                    if (entity.Seller.ComissionByProduct)
-                    {
+                   comision = entity.Seller.FixedComission ? ((d.BeforeTaxesAmount) * entity.Seller.ComissionRate) : 0;
+                   if (entity.Seller.ComissionByProduct)
+                   {
 
-                        d.Product = d.Product ??  _Context.Products.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == d.ProductId);
-                        comision += (d.Product?.SellerRate * d.BeforeTaxesAmount).Value;
+                       d.Product = d.Product ?? _Context.Products.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == d.ProductId);
+                       comision += (d.Product?.SellerRate * d.BeforeTaxesAmount).Value;
 
-                    }
-                    d.SellerRate = comision;
-                });
+                   }
+                   d.SellerRate = comision;
+               });
                 entity.SellerRate = details.Sum(x => x.SellerRate);
 
             }
@@ -201,7 +203,7 @@ namespace PointOfSalesV2.Repository
                 if (balance.CurrencyId == entity.Patient.CurrencyId && entity.Patient.CreditAmountLimit > 0 && balance.OwedAmount > entity.Patient.CreditAmountLimit)
                 {
                     if (transaction != null)
-                  await      transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
                     return new Result<Invoice>(-1, -1, "creditLimitReached_msg");
                 }
                 if (balance.Id > 0)
@@ -209,7 +211,7 @@ namespace PointOfSalesV2.Repository
                 else
                     _Context.CustomersBalance.Add(balance);
 
-             await   _Context.SaveChangesAsync();
+                await _Context.SaveChangesAsync();
 
             }
 
@@ -222,7 +224,7 @@ namespace PointOfSalesV2.Repository
             {
                 try
                 {
-                  await  SetInvoiceData(entity);
+                    await SetInvoiceData(entity);
                     var trnResult = entity.InventoryModified ? await CreateTRN(entity) : new Result<Invoice>();
 
                     if (trnResult.Status < 0)
@@ -238,14 +240,14 @@ namespace PointOfSalesV2.Repository
 
                     if (entity.InvoiceDetails.Count <= 0)
                     {
-                       await transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
                         return new Result<Invoice>(-1, -1, "emptyInvoice_msg");
                     }
 
                     var details = SetDetailsProperties(entity);
                     entity.InvoiceDetails = null;
                     SetSellerComisions(entity, details);
-                     SetInvoiceAmounts(entity, details);
+                    SetInvoiceAmounts(entity, details);
                     var tempBranchOfiice = entity.BranchOffice ?? await _Context.BranchOffices.FindAsync(entity.BranchOfficeId);
                     _Context.Entry<BranchOffice>(tempBranchOfiice).State = EntityState.Detached;
                     entity.State = (entity.PaidAmount == (entity.TotalAmount - entity.InsuranceCoverageAmount) && entity.OwedAmount == 0) ? (char)Enums.BillingStates.FullPaid : (entity.PaidAmount > 0) ? (char)Enums.BillingStates.Paid : entity.State;
@@ -254,7 +256,7 @@ namespace PointOfSalesV2.Repository
                         var creditNoteResult = InvoiceHelper.ApplyCreditNote(entity, appliedCreditNote, out appliedCreditNote);
                         if (creditNoteResult.Status < 0)
                         {
-                           await transaction.RollbackAsync();
+                            await transaction.RollbackAsync();
                             return creditNoteResult;
                         }
                         else
@@ -282,7 +284,7 @@ namespace PointOfSalesV2.Repository
                     if (!string.IsNullOrEmpty(appliedCreditNote.Sequence))
                     {
                         _Context.CreditNotes.Update(appliedCreditNote);
-                     await   _Context.SaveChangesAsync();
+                        await _Context.SaveChangesAsync();
                     }
 
                     details.ForEach(d =>
@@ -296,25 +298,25 @@ namespace PointOfSalesV2.Repository
                         d.Date = entity.BillingDate.HasValue ? entity.BillingDate.Value : DateTime.Now;
                         d.BranchOfficeId = entity.BranchOfficeId;
                         d.InvoiceId = entity.Id;
-                        
+
                     });
                     entity.InvoiceDetails = details;
                     if (entity.InventoryModified)
-                        InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
+                        await InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
                     entity.InvoiceDetails = null;
                     invoice.BranchOffice = tempBranchOfiice;
 
                     var branchOffice = _Context.BranchOffices.AsNoTracking().FirstOrDefault(x => x.Id == entity.BranchOfficeId && x.Active == true);
                     entity.InvoiceDetails = details;
-                    Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
-                  await  CreatePayment(entity);
+                    await Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
+                    await CreatePayment(entity);
                     var appointmentResult = await UpdateAppointmentStatus(entity);
                     if (appointmentResult.Status < 0)
                     {
-                      await  transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
                         return new Result<Invoice>(-1, -1, appointmentResult.Message);
                     }
-                   await transaction.CommitAsync();
+                    await transaction.CommitAsync();
                     result = new Result<Invoice>(entity.Id, 0, "ok_msg", new List<Invoice>() { invoice });
 
                     return result;
@@ -322,7 +324,7 @@ namespace PointOfSalesV2.Repository
                 catch (Exception ex)
                 {
                     result = new Result<Invoice>(-1, -1, ex.Message, null, new Exception(ex.Message));
-                  await  transaction.RollbackAsync();
+                    await transaction.RollbackAsync();
                     return result;
                 }
             }
@@ -341,7 +343,7 @@ namespace PointOfSalesV2.Repository
 
                 appointment.State = (char)AppointmentStates.Billed;
                 _Context.Appointments.Update(appointment);
-               await _Context.SaveChangesAsync();
+                await _Context.SaveChangesAsync();
                 return new Result<object>(invoice.Id, 0, "ok_msg");
             }
 
@@ -355,7 +357,7 @@ namespace PointOfSalesV2.Repository
             details.ForEach(d =>
             {
                 d.Product = d.Product == null ? _Context.Products.AsNoTracking().Include(x => x.ProductUnits).ThenInclude(x => x.Unit).Include(x => x.Taxes).ThenInclude(x => x.Tax).FirstOrDefault(x => x.Active == true && x.Id == d.ProductId) : d.Product;
-                d.Doctor =!d.DoctorId.HasValue?null: _Context.Users.AsNoTracking().FirstOrDefault(x => x.Active == true && x.UserId == d.DoctorId);
+                d.Doctor = !d.DoctorId.HasValue ? null : _Context.Users.AsNoTracking().FirstOrDefault(x => x.Active == true && x.UserId == d.DoctorId);
                 d.MedicalSpeciality = d.MedicalSpecialityId.HasValue ? _Context.MedicalSpecialities.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == d.MedicalSpecialityId) : null;
                 d.Product.Taxes = d.Product.Taxes == null ? _Context.ProductTaxes.AsNoTracking().Include(x => x.Tax).Where(x => x.Active == true && x.ProductId == d.ProductId) : d.Product.Taxes;
                 d.Product.ProductUnits = d.Product.ProductUnits != null ? d.Product.ProductUnits.Where(x => x.Active) : d.Product.ProductUnits;
@@ -371,7 +373,7 @@ namespace PointOfSalesV2.Repository
             return details;
         }
 
-         void SetInvoiceAmounts(Invoice entity, List<InvoiceDetail> details)
+        void SetInvoiceAmounts(Invoice entity, List<InvoiceDetail> details)
         {
             entity.InvoiceDetails = null;
             entity.BeforeTaxesAmount = details.Sum(x => x.BeforeTaxesAmount);
@@ -402,7 +404,7 @@ namespace PointOfSalesV2.Repository
                     payment.CreatedDate = entity.CreatedDate;
                     payment.CurrentOwedAmount = payment.OutstandingAmount;
                     payment.Sequence = sequencePayment;
-                   await InvoiceHelper.ApplyInvoicePayment(payment, this.dataRepositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>());
+                    await InvoiceHelper.ApplyInvoicePayment(payment, this.dataRepositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>());
                 }
             }
         }
@@ -412,7 +414,7 @@ namespace PointOfSalesV2.Repository
             try
             {
 
-               await SetInvoiceData(entity);
+                await SetInvoiceData(entity);
                 var trnResult = entity.InventoryModified ? await CreateTRN(entity) : new Result<Invoice>();
 
                 if (trnResult.Status < 0)
@@ -469,7 +471,7 @@ namespace PointOfSalesV2.Repository
                 if (!string.IsNullOrEmpty(appliedCreditNote.Sequence))
                 {
                     _Context.CreditNotes.Update(appliedCreditNote);
-                  await  _Context.SaveChangesAsync();
+                    await _Context.SaveChangesAsync();
                 }
 
                 details.ForEach(d =>
@@ -481,14 +483,14 @@ namespace PointOfSalesV2.Repository
                 });
                 entity.InvoiceDetails = details;
                 if (entity.InventoryModified)
-                    InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
+                    await InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
                 entity.InvoiceDetails = null;
                 invoice.BranchOffice = tempBranchOfiice;
 
                 var branchOffice = await _Context.BranchOffices.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.BranchOfficeId && x.Active == true);
                 entity.InvoiceDetails = details;
-                Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
-              await  CreatePayment(entity);
+                await Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
+                await CreatePayment(entity);
                 var appointmentResult = await UpdateAppointmentStatus(entity);
                 if (appointmentResult.Status < 0)
                 {
@@ -524,7 +526,7 @@ namespace PointOfSalesV2.Repository
                 trnControl.Quantity--;
                 trnControl.NumericControl++;
                 _Context.TRNsControl.Update(trnControl);
-             await   _Context.SaveChangesAsync();
+                await _Context.SaveChangesAsync();
                 return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { obj });
             }
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { obj });
@@ -629,18 +631,23 @@ namespace PointOfSalesV2.Repository
                 Helpers.InvoiceDetailsHelper.UpdateDetails(entity, branchOffice, dataRepositoryFactory);
             }
         }
-        public override async Task< Result<Invoice>> UpdateAsync(Invoice entity, bool getFromDb = true)
+        public override async Task<Result<Invoice>> UpdateAsync(Invoice entity, bool getFromDb = true)
         {
             Result<Invoice> result = new Result<Invoice>(-1, -1, "error_msg");
             using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // SetInvoiceData(entity);
+
 
                     var newDetails = SetDetailsProperties(entity);
                     var dbEntity = await _Context.Invoices.FindAsync(entity.Id);
                     _Context.Entry<Invoice>(dbEntity).State = EntityState.Detached;
+                    if (dbEntity.BillingState != BillingStates.Quoted || dbEntity.BillingState != BillingStates.Billed || dbEntity.PaidAmount > 0)
+                    {
+                        await trans.RollbackAsync();
+                        return new Result<Invoice>(-1, -1, "cannotUpdate_msg");
+                    }
                     var oldDetails = await _Context.InvoiceDetails.AsNoTracking()
                         .Include(x => x.Product).ThenInclude(x => x.Taxes).ThenInclude(x => x.Tax)
                         .Include(x => x.Product).ThenInclude(x => x.ProductUnits)
@@ -668,13 +675,13 @@ namespace PointOfSalesV2.Repository
                     dbEntity.InvoiceNumber = string.IsNullOrEmpty(dbEntity.InvoiceNumber) && entity.InventoryModified ? await this.sequenceManagerRepository.CreateSequence(Enums.SequenceTypes.Invoices) : dbEntity.InvoiceNumber;
                     dbEntity.InvoiceDetails = null;
                     _Context.Invoices.Update(dbEntity);
-                 await   _Context.SaveChangesAsync();
-                  await  trans.CommitAsync();
+                    await _Context.SaveChangesAsync();
+                    await trans.CommitAsync();
                     result = new Result<Invoice>(entity.Id, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                 await   trans.RollbackAsync();
+                    await trans.RollbackAsync();
                     result = new Result<Invoice>(-1, -1, ex.Message, null, new Exception(ex.Message));
                 }
             }
@@ -693,6 +700,11 @@ namespace PointOfSalesV2.Repository
                 var newDetails = SetDetailsProperties(entity);
                 var dbEntity = await _Context.Invoices.FindAsync(entity.Id);
                 _Context.Entry<Invoice>(dbEntity).State = EntityState.Detached;
+                if (dbEntity.BillingState != BillingStates.Quoted || dbEntity.BillingState != BillingStates.Billed || dbEntity.PaidAmount > 0)
+                {
+
+                    return new Result<Invoice>(-1, -1, "cannotUpdate_msg");
+                }
                 var oldDetails = await _Context.InvoiceDetails.AsNoTracking()
                     .Include(x => x.Product).ThenInclude(x => x.Taxes).ThenInclude(x => x.Tax)
                     .Include(x => x.Product).ThenInclude(x => x.ProductUnits)
@@ -721,7 +733,7 @@ namespace PointOfSalesV2.Repository
                 dbEntity.InvoiceNumber = string.IsNullOrEmpty(dbEntity.InvoiceNumber) && entity.InventoryModified ? await this.sequenceManagerRepository.CreateSequence(Enums.SequenceTypes.Invoices) : dbEntity.InvoiceNumber;
                 dbEntity.InvoiceDetails = null;
                 _Context.Invoices.Update(dbEntity);
-               await  _Context.SaveChangesAsync();
+                await _Context.SaveChangesAsync();
                 result = new Result<Invoice>(entity.Id, 0, "ok_msg");
             }
             catch (Exception ex)
@@ -749,7 +761,7 @@ namespace PointOfSalesV2.Repository
                     var validStates = new char[] { (char)Enums.BillingStates.Billed, (char)Enums.BillingStates.Quoted };
                     if (!validStates.Contains(invoice.State))
                     {
-                     await   trans.RollbackAsync();
+                        await trans.RollbackAsync();
                         return new Result<Invoice>(-1, -1, "leadIsBilled_msg");
                     }
                     else
@@ -759,14 +771,14 @@ namespace PointOfSalesV2.Repository
                     {
                         appointment.State = await _Context.PatientCheckups.AnyAsync(x => x.Active == true && x.AppointmentId == appointment.Id) ? (char)AppointmentStates.InProgress : (char)AppointmentStates.Scheduled;
                         _Context.Appointments.Update(appointment);
-                      await  _Context.SaveChangesAsync();
+                        await _Context.SaveChangesAsync();
                     }
-                   await trans.CommitAsync();
+                    await trans.CommitAsync();
                     result = new Result<Invoice>(id, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                  await  trans.RollbackAsync();
+                    await trans.RollbackAsync();
                     result = new Result<Invoice>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -831,8 +843,8 @@ namespace PointOfSalesV2.Repository
 
             var invoices = await _Context.Invoices.Include(x => x.Payments).ThenInclude(p => p.Currency)
                 .Include(x => x.Patient).Include(x => x.Insurance).Include(x => x.InsurancePlan)
-                .Include(x=>x.Appointment).Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
-                  && x.BillingDate >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.BillingDate <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToListAsync();
+                .Include(x => x.Appointment).Include(x => x.Currency).AsNoTracking().Where(x => x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid)
+                    && x.BillingDate >= (initialDate.HasValue ? initialDate.Value : DateTime.MinValue) && x.BillingDate <= (endDate.HasValue ? endDate.Value : DateTime.Now)).ToListAsync();
 
             expenses.ForEach(expense =>
             {
@@ -890,7 +902,7 @@ namespace PointOfSalesV2.Repository
                     Reference = invoice.InvoiceNumber,
                     Details = $"{invoice.Patient.NameAndCode}",
                     ExchangeRate = invoice.ExchangeRate,
-                    SellerName =invoice.Seller==null? string.Empty:invoice.Seller.NameAndCode
+                    SellerName = invoice.Seller == null ? string.Empty : invoice.Seller.NameAndCode
                 });
                 invoice.Payments.Where(x => x.Active == true && x.State == (char)BillingStates.Paid).ToList().ForEach(payment =>
                 {
@@ -920,7 +932,7 @@ namespace PointOfSalesV2.Repository
 
         public async Task<Result<Invoice>> BillQuote(long quoteId)
         {
-            var quote = await _Context.Invoices.AsNoTracking().Include(x => x.BranchOffice).Include(x=>x.Appointment).Include(x => x.Currency).Include(x => x.Patient).Include(x => x.Seller)
+            var quote = await _Context.Invoices.AsNoTracking().Include(x => x.BranchOffice).Include(x => x.Appointment).Include(x => x.Currency).Include(x => x.Patient).Include(x => x.Seller)
                  .Include(x => x.TRNControl).Include(x => x.InvoiceDetails).ThenInclude(y => y.Product)
                  .Include(x => x.InvoiceDetails).ThenInclude(y => y.Unit).FirstOrDefaultAsync(x => x.Id == quoteId && x.Active == true && x.State == (char)BillingStates.Quoted);
             if (quote != null)
@@ -947,19 +959,19 @@ namespace PointOfSalesV2.Repository
                             quote.TRNControl = null;
                             quote.State = (char)BillingStates.Converted;
                             _Context.Invoices.Update(quote);
-                           await _Context.SaveChangesAsync();
+                            await _Context.SaveChangesAsync();
 
                         }
                         else
                         {
-                         await   transaction.RollbackAsync();
+                            await transaction.RollbackAsync();
                             return addResult;
                         }
-                       await transaction.CommitAsync();
+                        await transaction.CommitAsync();
                     }
                     catch (Exception ex)
                     {
-                       await transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
                         return new Result<Invoice>(-1, -1, ex.Message);
                     }
                 }

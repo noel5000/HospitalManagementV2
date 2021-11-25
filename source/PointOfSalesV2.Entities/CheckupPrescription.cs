@@ -16,6 +16,7 @@ namespace PointOfSalesV2.Entities
         public long? ProductId { get; set; }
         public long? MedicalSpecialityId { get; set; }
         public decimal Quantity { get; set; }
+        public decimal MedicinesAmount { get; set; }
         public char Type { get; set; }
 
         [NotMapped]

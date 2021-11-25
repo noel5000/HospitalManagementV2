@@ -3,14 +3,16 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20211124191958_medicinesAmount")]
+    partial class medicinesAmount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -8936,7 +8938,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Reporte de Coberturas"
+                            Value = "Reporte de coverturas"
                         },
                         new
                         {
@@ -10826,7 +10828,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Monto total de Cobertura"
+                            Value = "Monto total de covertura"
                         },
                         new
                         {
@@ -11137,146 +11139,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Zonas"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "1-0-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Mañana"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "1-1-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Mañana - Tarde"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "1-0-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Mañana - Noche"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "1-1-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Mañana - Tarde - Noche"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "0-1-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Tarde"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "0-1-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Tarde - Noche"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "0-0-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Noche"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "1-0-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Morning"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "1-1-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Morning - Afternoon"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "1-0-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Morning - Night"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "1-1-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Morning - Afternoon - Night"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "0-1-0",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Afternoon"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "0-1-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Afternoon - Night"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "0-0-1",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Night"
                         });
                 });
 
@@ -12165,7 +12027,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CASH",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Efectivo\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Cash\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CASH\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CASH\"}]}"
                         },
                         new
                         {
@@ -12176,7 +12038,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CHECK",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Cheque\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Check\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CHECK\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CHECK\"}]}"
                         },
                         new
                         {
@@ -12187,7 +12049,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CREDITCARD",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Tarjeta de Crédito\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Credit Card\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CREDITCARD\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CREDITCARD\"}]}"
                         },
                         new
                         {
@@ -12198,7 +12060,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "BANKTRANSFER",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Transferencia Bancaria\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Bank Transfer\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"BANKTRANSFER\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"BANKTRANSFER\"}]}"
                         });
                 });
 

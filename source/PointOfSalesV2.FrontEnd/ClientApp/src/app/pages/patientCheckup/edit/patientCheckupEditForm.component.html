@@ -140,7 +140,7 @@
                
               
                 <div class="form-group col-md-4 col-xs-12" *ngIf="prescriptionType=='M'">
-                    <label>{{'quantity_lbl' | translate}}</label>
+                    <label>{{'daysQuantity_lbl' | translate}}</label>
                     <input type="number" formControlName="quantity" min="1"  
                      class="form-control" [ngClass]="{ 'is-invalid': form.quantity.errors }" />
                     <div *ngIf="form.quantity.errors" class="invalid-feedback">
@@ -154,8 +154,8 @@
                     formControlName="whenToTake"
                     >
                     <option *ngFor="let whentoTakeSelection of whentoTakeSelections"
-                     [value]="whentoTakeSelection"
-                     >{{whentoTakeSelection}}</option>
+                     [value]="whentoTakeSelection.key"
+                     >{{whentoTakeSelection.value}}</option>
                     </select>
                     <div *ngIf="form.whenToTake.errors" class="invalid-feedback">
                         <div *ngIf="form.whenToTake.errors.required">{{'required_lbl' | translate}}</div>

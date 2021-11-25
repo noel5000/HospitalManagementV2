@@ -101,6 +101,22 @@ namespace PointOfSalesV2.Common
             {"char",ExcelColumnsDef.TEXT },
         };
 
+        public static Dictionary<PaymentTypes,string > GetPaymentTypeSpanishName = new Dictionary<PaymentTypes, string>()
+        {
+            {PaymentTypes.CHECK,"Cheque" },
+            {PaymentTypes.CASH,"Efectivo" },
+            {PaymentTypes.CREDITCARD ,"Tarjeta de Crédito"},
+            {PaymentTypes.BANKTRANSFER,"Transferencia Bancaria" },
+        };
+
+        public static Dictionary<PaymentTypes, string> GetPaymentTypeEnglishName = new Dictionary<PaymentTypes, string>()
+        {
+            {PaymentTypes.CHECK,"Check" },
+            {PaymentTypes.CASH,"Cash" },
+            {PaymentTypes.CREDITCARD,"Credit Card" },
+            {PaymentTypes.BANKTRANSFER,"Bank Transfer" },
+        };
+
         public enum ObjectType
         {
             STRING = 0,

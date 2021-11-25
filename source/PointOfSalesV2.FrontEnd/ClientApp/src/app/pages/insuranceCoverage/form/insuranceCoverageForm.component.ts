@@ -129,8 +129,12 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:null,name:""}];
             this.products=this.products.concat(r["value"]);
-            if(r["value"].length==1)
+            if(r["value"].length==1&& (!this.item || !this.item.productId))
             this.itemForm.patchValue({productId:this.products[1].id});
+            else
+            this.itemForm.patchValue({
+                productId: this.item.productId
+            })
         })
     }
 
@@ -140,8 +144,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.insuranceService.getAll().subscribe(r=>{
             this.insurances=[{id:null,name:""}];
             this.insurances=this.insurances.concat(r);
-            if(r.length==1)
+            if(r.length==1&& (!this.item || !this.item.insuranceId))
             this.itemForm.patchValue({insuranceId:this.insurances[1].id});
+           
+            else
+            this.itemForm.patchValue({
+                insuranceId: this.item.insuranceId
+            })
         })
     }
     async getCurrencies(){
@@ -149,8 +158,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.currencyService.getAll().subscribe(r=>{
             this.currencies=[{id:null,name:""}];
             this.currencies=this.currencies.concat(r);
-            if(r.length==1)
+            if(r.length==1 && (!this.item || !this.item.currencyId))
             this.itemForm.patchValue({currencyId:this.currencies[1].id});
+            else
+            this.itemForm.patchValue({
+               currencyId: this.item.currencyId
+            })
+            
         })
     }
     async getInsurancePlans(id:number){
@@ -168,8 +182,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.insurancePlanService.getAllFiltered(filter).subscribe(r=>{
             this.insurancePlans=[{id:null,name:""}];
             this.insurancePlans=this.insurancePlans.concat(r["value"]);
-            if(this.insurancePlans.length==1)
-            this.itemForm.patchValue({insurancePlanId:this.insurancePlans[0].id});
+            if(r["value"].length==1&& (!this.item || !this.item.insurancePlanId))
+            this.itemForm.patchValue({insurancePlanId:r["value"][0].id});
+
+            else
+            this.itemForm.patchValue({
+                insurancePlanId: this.item.insurancePlanId
+            })
         })
     }
 

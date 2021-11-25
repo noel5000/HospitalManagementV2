@@ -115,6 +115,7 @@
         <thead>
           <tr >
             <th >{{'totalBilled_lbl' | translate}}</th>
+            <th >{{'totalInsuranceCoverage_lbl' | translate}}</th>
             <th >{{'totalPaid_lbl' | translate}}</th>
             <th >{{'totalOwed_lbl' | translate}}</th>
           </tr>
@@ -122,6 +123,7 @@
         <tbody>
           <tr >
             <td >{{getTotalAmount(invoices,'totalAmount') | currency:""}}</td>
+            <td >{{getTotalAmount(invoices,'insuranceCoverageAmount') | currency:""}}</td>
             <td >{{getTotalAmount(invoices,'paidAmount') | currency:""}}</td>
             <td >{{getTotalAmount(invoices,'outstandingAmount') | currency:""}}</td>
           </tr>

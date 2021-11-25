@@ -42,13 +42,13 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     selectedLabTests:any[]=[];
     medicalSpecialities:any[]=[];
     whentoTakeSelections:any[]=[
-        '1-0-0',
-        '0-1-0',
-        '0-0-1',
-        '1-1-0',
-        '1-0-1',
-        '0-1-1',
-        '1-1-1',
+        {key:'1-0-0',value:`${this.lang.getValueByKey('1-0-0')}`, multiplier:1},
+        {key:'0-1-0',value:`${this.lang.getValueByKey('0-1-0')}`, multiplier:1},
+        {key:'0-0-1',value:`${this.lang.getValueByKey('0-0-1')}`, multiplier:1},
+        {key:'1-1-0',value:`${this.lang.getValueByKey('1-1-0')}`, multiplier:2},
+        {key:'1-0-1',value:`${this.lang.getValueByKey('1-0-1')}`, multiplier:2},
+        {key:'0-1-1',value:`${this.lang.getValueByKey('0-1-1')}`, multiplier:2},
+        {key:'1-1-1',value:`${this.lang.getValueByKey('1-1-1')}`, multiplier:3},
 
     ];
     products:Product[]=[];
@@ -473,6 +473,7 @@ console.log(ex);
            productId,
            medicalSpecialityId,
            quantity,
+           medicinesAmount:quantity * this.whentoTakeSelections.find(x=>x.key==whenToTake).multiplier,
            additionalData,
            whenToTake,
            emptyStomach,

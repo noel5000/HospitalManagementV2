@@ -156,7 +156,7 @@ namespace PointOfSalesV2.Repository
         public override async Task<Result<Appointment>> UpdateAsync(Appointment entity, bool getFromDb = true)
         {
             entity.Active = true;
-            var validStates = new char[] { (char)AppointmentStates.Scheduled, (char)AppointmentStates.InProgress };
+            var validStates = new char[] { (char)AppointmentStates.Scheduled, (char)AppointmentStates.InProgress, (char)AppointmentStates.Expired };
             if (!validStates.Contains(entity.State))
                 return new Result<Appointment>(-1, -1, "appointmentAlreadyProcessed_msg");
 
@@ -243,8 +243,9 @@ namespace PointOfSalesV2.Repository
 
         public override async Task<Result<Appointment>> RemoveAsync(long id)
         {
-            var appointment = (await this.GetAsync(id)).Data.FirstOrDefault();
-            if (appointment.State != (char)AppointmentStates.Scheduled)
+            var states = new char[] { (char)AppointmentStates.Scheduled, (char)AppointmentStates.Expired };
+            var appointment = (await base.GetAsync(id)).Data.FirstOrDefault();
+            if (!states.Contains(appointment.State))
                 return new Result<Appointment>(-1, -1, "AppointmentIsProcess_msg");
 
             appointment.State = (char)AppointmentStates.Nulled;

@@ -100,13 +100,15 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
+            const dateObj = this.item.birthDate?new Date(this.item.birthDate):new Date();
+            const dateObjString= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
             this.itemForm.patchValue({
                 id:this.item.id,
                 name: this.item.name,
                 phoneNumber: this.item.phoneNumber,
                 cardId: this.item.cardId,
                 address: this.item.address,
-                birthDate:this.item.birthDate,
+                birthDate:dateObjString,
                 code: this.item.code,
                 currencyId: this.item.currencyId,
                 trnControlId: this.item.trnControlId,

@@ -60,7 +60,18 @@ namespace PointOfSalesV2.Repository
             {
                 return new Result<Customer>(-1, -1, "cardIdAlreadyExist_error");
             }
+            this.CleanObject(entity);
+            
+
             return  await base.UpdateAsync(entity);
+        }
+        void CleanObject(Customer entity) {
+            entity.Currency = null;
+            entity.CustomerBalances = null;
+            entity.Insurance = null;
+            entity.InsurancePlan = null;
+            entity.TRNControl = null;
+            entity.Zone = null;
         }
     }
 }

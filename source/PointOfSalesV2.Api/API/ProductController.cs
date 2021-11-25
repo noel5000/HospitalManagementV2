@@ -24,7 +24,8 @@ namespace PointOfSalesV2.Api.Controllers
     public class ProductController : BaseController<Product>
     {
         readonly IProductRepository _customRepo;
-        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.Products)
+        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache
+            , repositoryFactory.GetCustomDataRepositories<IProductRepository>(), AppSections.Products)
         {
             _customRepo = repositoryFactory.GetCustomDataRepositories<IProductRepository>();
         }

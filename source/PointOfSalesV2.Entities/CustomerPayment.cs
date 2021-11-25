@@ -64,6 +64,13 @@ namespace PointOfSalesV2.Entities
         [NotMapped]
         [IgnoreDataMember]
         public override string TranslationData { get; set; }
+
+        [NotMapped]
+        public  decimal? InsuranceCoverageAmount { get 
+            {
+                return this.Invoice?.InsuranceCoverageAmount;    
+            }
+        }
         public long InvoiceCurrencyId { get; set; }
 
         public long PaymentTypeId { get; set; }

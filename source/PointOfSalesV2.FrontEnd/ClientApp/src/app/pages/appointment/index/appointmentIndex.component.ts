@@ -293,7 +293,7 @@ this.service.delete(appointment.id).subscribe(r=>{
     this.modalService.showSuccess(this.lang.getValueByKey(r.message));
   else
   this.modalService.showError(this.lang.getValueByKey(r.message));
-  
+  this.getMonthAppointments();
   this.getDayAppointments(this.viewDate);
 });
 });
