@@ -30,7 +30,12 @@
       "ProjectGuid": "0f376c6b-091f-42c9-9514-fb625f0994e9",
       "DisplayName": "PointOfSalesV2.EntityFramework",
       "ColorIndex": 5
+    },
+    "74c4f42c-daed-4b0e-9c59-62eae9eb630d": {
+      "ProjectGuid": "74c4f42c-daed-4b0e-9c59-62eae9eb630d",
+      "DisplayName": "PointOfSalesV2.Entities",
+      "ColorIndex": 6
     }
   },
-  "NextColorIndex": 6
+  "NextColorIndex": 7
 }
