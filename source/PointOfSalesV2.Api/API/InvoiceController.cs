@@ -13,6 +13,7 @@ using static PointOfSalesV2.Common.Enums;
 using PointOfSalesV2.Common;
 using NPOI.SS.Formula.Functions;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSalesV2.Api.Controllers
@@ -26,6 +27,29 @@ namespace PointOfSalesV2.Api.Controllers
         public InvoiceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>(), AppSections.Invoices)
         {
             this._customRepo = repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>();
+        }
+
+        [HttpGet]
+        [ActionAuthorize(Operations.READALL)]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
+        [EnableCors("AllowAllOrigins")]
+        public override async Task<IActionResult> Get()
+        {
+            try
+            {
+                var data = await _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking()
+                .Include(i=>i.BranchOffice).Include(i => i.Patient).Include(i => i.Currency).Include(i => i.Insurance)
+                .Include(i => i.InsurancePlan).Include(i => i.Appointment).Include(i => i.Seller)
+                , y => y.Active == true);
+                return Ok(data);
+            }
+
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
         }
 
         [EnableCors("AllowAllOrigins")]

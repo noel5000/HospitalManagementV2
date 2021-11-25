@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +29,8 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
         public override async Task<IActionResult> Get()
         {

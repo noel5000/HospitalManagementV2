@@ -10,7 +10,7 @@ using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,8 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
         public override async Task<IActionResult> Get()
         {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -33,7 +33,8 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
         public virtual async Task<IActionResult> Get()
         {
@@ -53,7 +54,7 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READ)]
-        public virtual async Task<IActionResult> Get(string id)
+        public virtual async Task<IActionResult> GetById(string id)
         {
             try
             {
@@ -67,25 +68,7 @@ namespace PointOfSalesV2.Api.Controllers
             }
         }
 
-        [HttpGet("{number:int}/{size:int}")]
-        // [EnableQuery]
-        [EnableCors("AllowAllOrigins")]
-        [ActionAuthorize(Operations.READALL)]
-        public virtual async Task<IActionResult> Get(int number, int size)
-        {
-            try
-            {
-                var data = _baseRepo.GetPaged(number, size);
-                data.Status = 0;
-                data.Message = "ok_msg";
-                return Ok(data);
-            }
-
-            catch (Exception ex)
-            {
-                return Ok(new { status = -1, message = ex.Message });
-            }
-        }
+        
 
 
 

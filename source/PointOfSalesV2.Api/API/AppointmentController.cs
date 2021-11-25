@@ -12,8 +12,8 @@ using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using Microsoft.EntityFrameworkCore;
 using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -28,7 +28,8 @@ namespace PointOfSalesV2.Api.Controllers
             this.appointmentRepository = this._repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>();
         }
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
         public override async Task<IActionResult> Get()
         {
