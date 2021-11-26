@@ -17,6 +17,7 @@ import {
   NbChatModule,
   NbDatepickerModule,
   NbDialogModule,
+  NbAccordionModule,
   NbMenuModule,
   NbSidebarModule,
   NbToastrModule,
@@ -44,6 +45,7 @@ import { FormsModule } from '@angular/forms';
   declarations: [AppComponent, NotFoundComponent],
   imports: [
     BrowserModule,
+    NbAccordionModule,
     CommonModule,
     NgbPaginationModule,  
     NgbAlertModule,

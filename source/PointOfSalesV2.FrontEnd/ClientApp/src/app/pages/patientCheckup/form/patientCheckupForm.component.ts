@@ -50,25 +50,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
     ];
     products:Product[]=[];
-    prescriptionType:string='';
-    prescriptionTypes:any[]=[
-        {
-            id:'M',
-            name:this.lang.getValueByKey('medicine_lbl')
-        },
-        {
-            id:'C',
-            name:this.lang.getValueByKey('consultation_lbl')
-        },
-        {
-            id:'L',
-            name:this.lang.getValueByKey('laboratory_lbl')
-        },
-        {
-            id:'E',
-            name:this.lang.getValueByKey('especializedImages_lbl')
-        }
-    ];
+    specilizedimages:Product[]=[];
+    medicines:Product[]=[];
+
 
 
     service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
@@ -98,7 +82,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             appointmentId:[null],
             symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
             diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
-            prescriptionType: ['',[ Validators.required]],
             doctorId: [0,[ Validators.required, Validators.min(1)]],
             patientId: [0,[ Validators.required, Validators.min(1)]],
             productId: [null],
@@ -112,9 +95,10 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insuranceId:[null],
             insurancePlanId:[null],
             currencyId:[0],
+            newProduct:[null,[Validators.maxLength(100)]]
         });
     }
-    addProduct(){
+    addProduct(type:string){
         this.newProduct=true;
         this.itemForm.patchValue({productId:null});
         if(!this.itemForm.contains('newProduct'))
@@ -131,9 +115,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
       this.getDataWithoutApointment();
     })
     }
-    saveNewProduct(){
+    saveNewProduct(prescriptionType:string){
 
-        const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
+        const {medicalSpecialityId,currencyId} = this.itemForm.getRawValue();
         if(prescriptionType!="C"){
             let newProduct={
                 id:Math.floor(Math.random() * -1000),
@@ -147,19 +131,44 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 newProduct.id=Math.floor(Math.random() * -1000);
             }
             if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
-                const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
-                if(index<0){
-                   this.products.push(newProduct);
+                let index = -1;
+                switch(prescriptionType){
+                    case 'L':
+                        index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.products.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.products[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
+                    case 'M':
+                        index = this.medicines.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.medicines.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.medicines[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
+                    case 'E':
+                        index = this.specilizedimages.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.specilizedimages.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.specilizedimages[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
                 }
-                else
-                    newProduct.id=this.products[index].id
-                    this.itemForm.patchValue({productId:newProduct.id});
+               
             }
 
         }
         else{
             let newConsultation ={
                 id:Math.floor(Math.random() * -1000),
+                type:prescriptionType,
             name:this.itemForm.getRawValue().newProduct
             }
             while(newConsultation.id==0){
@@ -178,9 +187,10 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         }
 
         this.newProduct=false;
-        if(this.itemForm.contains('newProduct'))
-        this.itemForm.removeControl('newProduct');
+        this.itemForm.patchValue({newProduct:''});
         this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
         this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
     cancelNewProduct(){
@@ -188,12 +198,15 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             productId:null,
             medicalSpecialityId:null,
             newProduct:''
+            
         });
-        this.newProduct=false;
-        if(this.itemForm.contains('newProduct'))
-        this.itemForm.removeControl('newProduct');
+       this.newProduct=false;
     }
     ngOnInit(): void {
+        this.medicines=[];
+        this.specilizedimages=[];
+        this.products=[];
+        this.medicalSpecialities=[];
      const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
       this.patientId= parseInt( this._route.snapshot.paramMap.get('patientid'));
      this.appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
@@ -212,6 +225,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
         this.verifyUser();
         this.getMedicalSpecialities();
+        this.getProducts('M');
+        this.getProducts('L');
+        this.getProducts('E');
         this.onChanges();
     }
     async getMedicalSpecialities(){
@@ -237,20 +253,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     }
 
     onChanges(){
-        this.itemForm.get('prescriptionType').valueChanges.subscribe(val => {
-               this.prescriptionType=val;
-               this.itemForm.patchValue({
-                medicalSpecialityId:null,
-                productId:null,
-                additionalData:'',
-                quantity:1,
-                emptyStomach:false,
-                whenToTake:'',
-               });
-
-               if(val)
-               this.getProducts(val);
-        });
+   
 
     }
     async labTestSelection(index:number){
@@ -258,7 +261,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         const labTest = this.products[index];
         const selectedIndex = this.selectedLabTests.findIndex(x=>x.productId==labTest.id);
         if(labTest.selected){
-            const {medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+            const {medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach} = this.itemForm.getRawValue();
                 let prescription={
                    productId:labTest.id,
                    medicalSpecialityId,
@@ -266,7 +269,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                    additionalData,
                    whenToTake,
                    emptyStomach,
-                    type:prescriptionType,
+                    type:'L',
                     product:labTest,
                     medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
                 };
@@ -302,9 +305,25 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         } as QueryFilter
     ]
         this.productService.getAllFiltered(filter).subscribe(r=>{
-            this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
-            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            switch(type){
+               
+                case 'M':
+                    this.medicines=[{id:0, name:''} as Product];
+                    this.medicines=this.products.concat( r['value']);
+                    this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+                case 'L':
+                    this.products=[{id:0, name:''} as Product];
+                    this.products=this.products.concat( r['value']);
+                    this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+                case 'E':
+                    this.specilizedimages=[{id:0, name:''} as Product];
+                    this.specilizedimages=this.products.concat( r['value']);
+                    this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+            }
+           
         });
     }
     async getAppointment(id:number){
@@ -349,7 +368,6 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 patientName:this.item.patientName,
                 symptoms:this.item.symptoms,
                 diagnoses:this.item.diagnoses,
-                prescriptionType: '',
                 doctorId: this.item.doctorId,
                 patientId: this.item.patientId,
                 productId:null,
@@ -399,17 +417,19 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                this.modalService.showError(r.message);
            })
     }
-   async addPrescription(){
-    const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+   async addPrescription(type:string){
+    const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach} = this.itemForm.getRawValue();
+    var quantityByWhenToTake= whenToTake?whenToTake.toString().split('-').filter(x=>x=='1'):[];
     let prescription={
        productId,
        medicalSpecialityId,
        quantity,
        additionalData,
        whenToTake,
+       medicinesAmount:(type=='M'?(quantityByWhenToTake.length * parseInt(quantity)):0),
        emptyStomach,
-        type:prescriptionType,
-        product:this.products.find(x=>x.id==productId),
+        type,
+        product:this.findProduct(productId,type),
         medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
     };
     if(prescription.quantity && prescription.quantity>0){
@@ -453,7 +473,36 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 }
             break;
         }
+        this.itemForm.patchValue({
+            productId: null,
+            quantity:1,
+            whenToTake:'',
+            medicalSpecialityId:null,
+            emptyStomach:false,
+            additionalData:'',
+            newProduct:''
+        })
     }
+
+    }
+
+    findProduct(id:number,type:string):Product{
+        let result= null;
+        switch (type){
+            case 'L':
+            result = this.products.find(x=>x.id==id);
+            break;
+            case 'M':
+            result = this.medicines.find(x=>x.id==id);
+            break;
+            case 'E':
+            result = this.specilizedimages.find(x=>x.id==id);
+            break;
+            case 'C':
+            result = this.medicalSpecialities.find(x=>x.id==id);
+            break;
+        }
+        return result;
     }
   async  deleteSelectedLabTests(index:number){
     const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
