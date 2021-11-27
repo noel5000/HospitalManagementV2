@@ -30,6 +30,18 @@ declare const $: any;
 })
 export class patientCheckupEditFormComponent extends BaseComponent implements OnInit {
 
+  
+   
+   
+
+   
+    editing:number=1;
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
+    attachments:any[]=[];
+    public uploader: FileUploader;
+
+
+
     _route:ActivatedRoute;
     appointmentId:number=0;
     patientId:number=0;
@@ -52,25 +64,9 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
     ];
     products:Product[]=[];
-    prescriptionType:string='';
-    prescriptionTypes:any[]=[
-        {
-            id:'M',
-            name:this.lang.getValueByKey('medicine_lbl')
-        },
-        {
-            id:'C',
-            name:this.lang.getValueByKey('consultation_lbl')
-        },
-        {
-            id:'L',
-            name:this.lang.getValueByKey('laboratory_lbl')
-        },
-        {
-            id:'E',
-            name:this.lang.getValueByKey('especializedImages_lbl')
-        }
-    ];
+    specilizedimages:Product[]=[];
+    medicines:Product[]=[];
+
 
 
     service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
@@ -78,10 +74,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
     medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
     newProduct:boolean=false;
-    editing:number=1;
-    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
-    attachments:any[]=[];
-    public uploader: FileUploader;
+
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
@@ -121,10 +114,9 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             this.itemForm = this.formBuilder.group({
                 doctorName: [''],
                 patientName:[''],
-                appointmentId:[ this.appointmentId==0?null:this.appointmentId],
+                appointmentId:[null],
                 symptoms:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
                 diagnoses:['',[Validators.required, Validators.minLength(1),Validators.maxLength(500)]],
-                prescriptionType: ['',[ Validators.required]],
                 doctorId: [0,[ Validators.required, Validators.min(1)]],
                 patientId: [0,[ Validators.required, Validators.min(1)]],
                 productId: [null],
@@ -133,26 +125,27 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                 medicalSpecialityId:[null],
                 emptyStomach:[false],
                 additionalData:['',[Validators.maxLength(500)]],
-                id: [this.id],
+                id: [0],
                 hospitalId:[0],
                 insuranceId:[null],
                 insurancePlanId:[null],
                 currencyId:[0],
+                newProduct:[null,[Validators.maxLength(100)]]
             });
 
 
         this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
 
-    addProduct(){
+    addProduct(type:string){
         this.newProduct=true;
         this.itemForm.patchValue({productId:null});
         if(!this.itemForm.contains('newProduct'))
         this.itemForm.addControl('newProduct',new FormControl(null,[ Validators.required, Validators.minLength(1), Validators.maxLength(100)]));
     }
-    saveNewProduct(){
+    saveNewProduct(prescriptionType:string){
 
-        const {medicalSpecialityId,prescriptionType,currencyId} = this.itemForm.getRawValue();
+        const {medicalSpecialityId,currencyId} = this.itemForm.getRawValue();
         if(prescriptionType!="C"){
             let newProduct={
                 id:Math.floor(Math.random() * -1000),
@@ -166,19 +159,44 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                 newProduct.id=Math.floor(Math.random() * -1000);
             }
             if(newProduct.name && newProduct.name.length>1 && newProduct.name.length<100){
-                const index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
-                if(index<0){
-                   this.products.push(newProduct);
+                let index = -1;
+                switch(prescriptionType){
+                    case 'L':
+                        index = this.products.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.products.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.products[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
+                    case 'M':
+                        index = this.medicines.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.medicines.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.medicines[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
+                    case 'E':
+                        index = this.specilizedimages.findIndex(x=>x.name.toLocaleLowerCase().trim()==newProduct.name.toLowerCase().trim());
+                        if(index<0){
+                           this.specilizedimages.push(newProduct);
+                        }
+                        else
+                            newProduct.id=this.specilizedimages[index].id
+                            this.itemForm.patchValue({productId:newProduct.id});
+                    break;
                 }
-                else
-                    newProduct.id=this.products[index].id
-                    this.itemForm.patchValue({productId:newProduct.id});
+               
             }
 
         }
         else{
             let newConsultation ={
                 id:Math.floor(Math.random() * -1000),
+                type:prescriptionType,
             name:this.itemForm.getRawValue().newProduct
             }
             while(newConsultation.id==0){
@@ -197,20 +215,20 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
         }
 
         this.newProduct=false;
-        if(this.itemForm.contains('newProduct'))
-        this.itemForm.removeControl('newProduct');
+        this.itemForm.patchValue({newProduct:''});
         this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
-        this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
+        this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
     }
     cancelNewProduct(){
         this.itemForm.patchValue({
             productId:null,
             medicalSpecialityId:null,
             newProduct:''
+            
         });
-        this.newProduct=false;
-        if(this.itemForm.contains('newProduct'))
-        this.itemForm.removeControl('newProduct');
+       this.newProduct=false;
     }
 
     async getAttachments(id:number){
@@ -231,8 +249,15 @@ this.attachmentsService.getAllFiltered([
 })
     }
     ngOnInit(): void {
+        this.medicines=[];
+        this.specilizedimages=[];
+        this.products=[];
+        this.medicalSpecialities=[];
         this.verifyUser();
         this.getMedicalSpecialities();
+        this.getProducts('M');
+        this.getProducts('L');
+        this.getProducts('E');
         this.onChanges();
         if(this.appointmentId && this.appointmentId>0)
         this.getAppointment(this.appointmentId);
@@ -263,7 +288,7 @@ this.attachmentsService.getAllFiltered([
     async getMedicalSpecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=r;
-            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
         })
     }
 
@@ -278,21 +303,40 @@ this.attachmentsService.getAllFiltered([
     }
 
     onChanges(){
-        this.itemForm.get('prescriptionType').valueChanges.subscribe(val => {
-               this.prescriptionType=val;
-               this.itemForm.patchValue({
-                medicalSpecialityId:null,
-                productId:null,
-                additionalData:'',
-                quantity:1,
-                emptyStomach:false,
-                whenToTake:'',
-               });
+      
 
-               if(val)
-               this.getProducts(val);
-        });
+    }
+    async labTestSelection(index:number){
+        this.products[index].selected=!this.products[index].selected;
+        const labTest = this.products[index];
+        const selectedIndex = this.selectedLabTests.findIndex(x=>x.productId==labTest.id);
+        if(labTest.selected){
+            const {medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach} = this.itemForm.getRawValue();
+                let prescription={
+                   productId:labTest.id,
+                   medicalSpecialityId,
+                   quantity,
+                   additionalData,
+                   whenToTake,
+                   emptyStomach,
+                    type:'L',
+                    product:labTest,
+                    medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
+                };
+            if(selectedIndex<0){
 
+                this.selectedLabTests.push(
+                    prescription
+                );
+            }
+
+            else
+            this.selectedLabTests[selectedIndex]=prescription;
+        }
+        else{
+            if(selectedIndex>=0)
+            this.selectedLabTests.splice(selectedIndex,1);
+        }
     }
     async getProducts(type:string){
         const filter = [
@@ -311,9 +355,25 @@ this.attachmentsService.getAllFiltered([
         } as QueryFilter
     ]
         this.productService.getAllFiltered(filter).subscribe(r=>{
-            this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
-            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            switch(type){
+               
+                case 'M':
+                    this.medicines=[{id:0, name:''} as Product];
+                    this.medicines=this.products.concat( r['value']);
+                    this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+                case 'L':
+                    this.products=[{id:0, name:''} as Product];
+                    this.products=this.products.concat( r['value']);
+                    this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+                case 'E':
+                    this.specilizedimages=[{id:0, name:''} as Product];
+                    this.specilizedimages=this.products.concat( r['value']);
+                    this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
+                break;
+            }
+           
         });
     }
     async getAppointment(id:number){
@@ -346,38 +406,7 @@ this.attachmentsService.getAllFiltered([
             }
         })
     }
-    async labTestSelection(index:number){
-        this.products[index].selected=!this.products[index].selected;
-        const labTest = this.products[index];
-        const selectedIndex = this.selectedLabTests.findIndex(x=>x.productId==labTest.id);
-        if(labTest.selected){
-            const {medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
-                let prescription={
-                   productId:labTest.id,
-                   medicalSpecialityId,
-                   quantity,
-                   additionalData,
-                   whenToTake,
-                   emptyStomach,
-                    type:prescriptionType,
-                    product:labTest,
-                    medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
-                };
-            if(selectedIndex<0){
-
-                this.selectedLabTests.push(
-                    prescription
-                );
-            }
-
-            else
-            this.selectedLabTests[selectedIndex]=prescription;
-        }
-        else{
-            if(selectedIndex>=0)
-            this.selectedLabTests.splice(selectedIndex,1);
-        }
-    }
+  
 
     async getPatient(getData:number=0){
       this.patientService.getById(this.patientId).subscribe(r=>{
@@ -480,18 +509,19 @@ console.log(ex);
                this.modalService.showError(r.message);
            })
     }
-    async addPrescription(){
-        const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach,prescriptionType} = this.itemForm.getRawValue();
+    async addPrescription(type:string){
+        const {productId,medicalSpecialityId,quantity,additionalData,whenToTake,emptyStomach} = this.itemForm.getRawValue();
+        var quantityByWhenToTake= whenToTake?whenToTake.toString().split('-').filter(x=>x=='1'):[];
         let prescription={
            productId,
            medicalSpecialityId,
            quantity,
-           medicinesAmount:quantity * this.whentoTakeSelections.find(x=>x.key==whenToTake).multiplier,
            additionalData,
            whenToTake,
+           medicinesAmount:(type=='M'?(quantityByWhenToTake.length * parseInt(quantity)):0),
            emptyStomach,
-            type:prescriptionType,
-            product:this.products.find(x=>x.id==productId),
+            type,
+            product:this.findProduct(productId,type),
             medicalSpeciality:this.medicalSpecialities.find(x=>x.id==medicalSpecialityId)
         };
         if(prescription.quantity && prescription.quantity>0){
@@ -505,7 +535,7 @@ console.log(ex);
                         else
                         this.selectedImages.push(prescription);
                     }
-
+    
                 break;
                 case "L":
                     if(prescription.productId){
@@ -535,9 +565,36 @@ console.log(ex);
                     }
                 break;
             }
-            this.products.sort((a, b) => (a.name > b.name) ? 1 : -1)
-            this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
+            this.itemForm.patchValue({
+                productId: null,
+                quantity:1,
+                whenToTake:'',
+                medicalSpecialityId:null,
+                emptyStomach:false,
+                additionalData:'',
+                newProduct:''
+            })
         }
+    
+        }
+    
+        findProduct(id:number,type:string):Product{
+            let result= null;
+            switch (type){
+                case 'L':
+                result = this.products.find(x=>x.id==id);
+                break;
+                case 'M':
+                result = this.medicines.find(x=>x.id==id);
+                break;
+                case 'E':
+                result = this.specilizedimages.find(x=>x.id==id);
+                break;
+                case 'C':
+                result = this.medicalSpecialities.find(x=>x.id==id);
+                break;
+            }
+            return result;
         }
       async  deleteSelectedLabTests(index:number){
         const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
@@ -545,19 +602,24 @@ console.log(ex);
             this.products[i].selected=false;
         }
         this.selectedLabTests.splice(index,1);
-
+    
         }
-
+    
         async  deleteSelectedConsultation(index:number){
             this.selectedConsultations.splice(index,1);
         }
-
+    
         async  deleteSelectedImage(index:number){
             this.selectedImages.splice(index,1);
         }
-
+    
         async  deleteSelectedMedicine(index:number){
             this.selectedMedicines.splice(index,1);
+        }
+    
+        cancel(){
+            this.clearBackupData();
+        this.router.navigateByUrl(`pages/patientcheckup/${this.patientId}/${this.appointmentId}`);
         }
 
         uploadClick(){
@@ -569,8 +631,5 @@ console.log(ex);
           }
 
 
-    cancel(){
-        this.clearBackupData();
-    this.router.navigateByUrl(`pages/patientcheckup/${this.patientId}/${this.appointmentId}`);
-    }
+ 
 }
