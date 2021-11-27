@@ -137,7 +137,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 id: [0],
 patientId:[{value:null, disabled:this.isEditing},[ Validators.required,Validators.min(1)]],
 trnType:[{value:null, disabled:this.isEditing},[ Validators.required]],
-nrc:[null,[ Validators.required]],
+nrc:[null],
 productId:[null,[ Validators.required,Validators.min(1)]],
 unitId:this.defaultUnitValidator,
 branchOfficeId:[this.hospitalId],
@@ -809,10 +809,13 @@ doctorId:[null]
                 } as QueryFilter,
               ]
               this.appointmentService.getAllFiltered(filter).subscribe(r=>{
-                this.appointments=r['value'];
-                this.appointments.forEach(a=>{
+                  this.appointments=[{id:0, dateFormatted:''}]
+                  r['value'].forEach(a=>{
                     a['dateFormatted']=new Date(a.date).toLocaleString();
+                    this.appointments.push(a);
                 });
+               
+              
               })
           }
       }

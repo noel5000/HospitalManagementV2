@@ -64,7 +64,7 @@ namespace PointOfSalesV2.Api.Controllers
                 var folderType = (ServerDirectoryType)Enum.ToObject(typeof(ServerDirectoryType), serverType);
                 string path = folderType == ServerDirectoryType.FTP ? this._appSettings.Value.I18nFolderFtp :
                     this._appSettings.Value.I18nFolder;
-                var result = languageKeyRepository.UploadI18nDictionaries(path, folderType);
+                var result = await languageKeyRepository.UploadI18nDictionaries(path, folderType);
                 return Ok(result);
             }
             catch(Exception ex)

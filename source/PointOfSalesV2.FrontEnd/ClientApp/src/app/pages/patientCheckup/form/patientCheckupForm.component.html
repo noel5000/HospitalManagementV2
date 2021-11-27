@@ -154,7 +154,7 @@
 
                 <div class="form-group col-md-4 col-xs-12 row" *ngIf="!newProduct">
                    <div class="form-group col-10">
-                    <label>{{'medicalSpeciality_lbl' | translate}}</label>
+                    <label>{{'medicalSpecialities_menu' | translate}}</label>
                     <select class="form-control"
                     [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
                     formControlName="medicalSpecialityId"
@@ -175,7 +175,7 @@
 
                 <div class="col-md-4 col-xs-12 row" *ngIf="newProduct">
                     <div class="form-group col-10" >
-                        <label>{{'medicalSpeciality_lbl' | translate}}</label>
+                        <label>{{'medicalSpecialities_menu' | translate}}</label>
                         <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
                      class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
                     <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
@@ -340,7 +340,7 @@
             </div>
             
         <div class="scrollTableMobile" *ngIf="selectedImages.length>0">
-            <h4>{{'specializedImages_lbl' | translate}}</h4>
+            <h4>{{'especializedImages_lbl' | translate}}</h4>
             <table class="table" >
                 <thead>
                     <tr>

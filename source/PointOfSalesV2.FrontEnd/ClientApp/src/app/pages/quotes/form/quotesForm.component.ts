@@ -112,7 +112,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 id: [0],
 customerId:[null,[ Validators.required,Validators.min(1)]],
 trnType:[null,[ Validators.required]],
-nrc:[null,[ Validators.required]],
+nrc:[''],
 productId:[null,[ Validators.required,Validators.min(1)]],
 unitId:this.defaultUnitValidator,
 branchOfficeId:[this.branchOfficeId],
@@ -223,7 +223,7 @@ free:[false]
             currencyId:customer.currencyId,
             currencyName:customer.currency.name,
             trnType:customer.trnType,
-            nrc:customer.cardId,
+            nrc:customer.cardId?customer.cardId:'',
             warehouseId:customer.warehouseId?customer.warehouseId:this.warehouseId
         })
         const filter = [{
