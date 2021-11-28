@@ -364,18 +364,68 @@ free:[false]
         });
     }
 
-    async getProductInventory(branchOfficeId:number,warehouseId:number=0,productId:number=0){
-        this.inventoryService.patchGenericByUrlParameters(['GetCompanyInventory',branchOfficeId.toString(),warehouseId.toString(),productId.toString()]).subscribe(r=>{
-            const result = r.data[0];
-            if(result.warehouses){
-                const warehouses = result.warehouses.filter(x=>x.code!='DEF');
-                this.inventories=[];
-                warehouses.forEach(w=>{
-                    const productInventory= w.inventory.filter(x=>x.productId == productId);
-                    if(productInventory.length>0)
-                    this.inventories = this.inventories.concat(productInventory);
-                });
-            }
+    async getProductInventory(hospitalId:number,warehouseId:number=0,productId:number=0){
+     
+        let filter = [
+            {
+                property: "BranchOffice",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:false
+            }  as QueryFilter, 
+            {
+                property: "Warehouse",
+                value: "Name,Code",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Unit",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Warehouse.Code",
+                value: 'DEF',
+                type: ObjectTypes.String,
+                comparer:ODataComparers.NotEqual,
+                isTranslated: false
+            } as QueryFilter
+        ];
+    if(hospitalId)
+    filter.push({
+        property: "BranchOfficeId",
+        value: hospitalId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+    if(warehouseId)
+    filter.push({
+        property: "WarehouseId",
+        value: warehouseId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+
+    if(productId)
+    filter.push({
+        property: "ProductId",
+        value: productId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter)
+
+
+        this.inventoryService.getAllFiltered(filter).subscribe(r=>{
+            if(r['value'].length>0)
+            this.inventories=r['value'];
+            else
+            this.modalService.showError('billingStateI_lbl');
+            
         })
     }
 
@@ -402,18 +452,14 @@ free:[false]
 
             this.itemForm.get('unitId').valueChanges.subscribe(val => {
 
-                this.inventories=[];
+             
                 if(val && val!="0"){
                     this.refreshAmounts();
                     const currentUnit = this.productUnits.find(x=>x.unitId==val);
                    const {productId,warehouseId,selectedPrice}= this.itemForm.getRawValue();
                    this.updateSelectedPrice(selectedPrice);
-                   const user = this.getUser();
-                   const product = this.products.find(x=>x.id==productId);
                   
-                   if(!product.isService){
-                    this.getProductInventory(user.branchOfficeId,warehouseId==null?0:warehouseId,productId)
-                   }
+                  
                 }
                 });
 
@@ -469,6 +515,7 @@ free:[false]
 
         this.itemForm.get('productId').valueChanges.subscribe(val => {
             if(val && val>0){
+                const form = this.itemForm.getRawValue();
                 this.inventories=[];
                 this.productUnits=[];
                 this.productPrices=[];
@@ -488,12 +535,16 @@ free:[false]
                 this.itemForm.removeControl('unitId');
                 this.itemForm.addControl('unitId',this.defaultUnitValidator)   
                 this.GetProductUnits(val);
+                const user = this.getUser();
+                
+                this.getProductInventory(user.branchOfficeId,form.warehouseId==null?0:form.warehouseId,val);
             }
                 this.productTaxes=[];
                 this.GetProductTaxes(val);
                 this.itemForm.patchValue({unitId:null});
                 
                 this.GetProductCost(val);
+               
             }
         });
       
