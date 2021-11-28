@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20211128202541_paymentTypes")]
+    partial class paymentTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -11332,106 +11334,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Observaciones"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "billingStateR_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Full Paid"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "billingStateR_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Pago Completado"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "search_btn",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Search"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "search_btn",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Buscar"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "creditNoteInfo_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Add Credit Note"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "creditNoteInfo_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Aplicar Nota de Crédito"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "newItems_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "New Items"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "newItems_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Agregar Articulos"
-                        },
-                        new
-                        {
-                            LanguageCode = "EN",
-                            Key = "invoiceInfo_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Basic Information"
-                        },
-                        new
-                        {
-                            LanguageCode = "ES",
-                            Key = "invoiceInfo_lbl",
-                            Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 2L,
-                            Value = "Información Básica"
                         });
                 });
 
