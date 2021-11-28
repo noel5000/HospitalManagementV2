@@ -59,7 +59,8 @@
                             <td><input type="number"
                                  [formControlName]="('returnQuantity_'+i)" 
                                  required 
-                                 [disabled]="isEditing"
+                                 [disabled]="isEditing || (entry.type=='C' && !entry.noCoverage)"
+                                
                                  class="form-control"
                                   min="1"
                                    [ngClass]="{ 'is-invalid':form[('returnQuantity_'+i)] && form[('returnQuantity_'+i)].errors }" />

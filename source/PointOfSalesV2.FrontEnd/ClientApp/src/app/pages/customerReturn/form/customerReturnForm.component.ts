@@ -99,14 +99,16 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                     this.itemForm.removeControl(`defectiveDetail_${i}`);
 
                 }
+                this.details= this.invoice &&  this.invoice.
+                invoiceDetails? this.invoice.invoiceDetails:[];
+
                 if( this.invoice &&  this.invoice.invoiceDetails &&  this.invoice.invoiceDetails.length>0){
                     for(let i=0; i< this.invoice.invoiceDetails.length;i++){
                         this.setDetailFormDefective(i, null);
                         this.setDetailFormAmount(i, null,this.invoice.invoiceDetails[i].quantity);
                       }
                 }
-                this.details= this.invoice &&  this.invoice.
-                invoiceDetails? this.invoice.invoiceDetails:[];
+                
                
                 this.itemForm.patchValue({
                     customerName:`${this.invoice.patient.name} - ${this.invoice.patient.code}`,
@@ -159,8 +161,8 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
       for(let i=0;i<this.details.length;i++){
           const selectedQuantity = this.itemForm.getRawValue()[`returnQuantity_${i}`] as number;
           if(selectedQuantity && selectedQuantity>0){
-              const {patientPaymentAmount,quantity} = this.details[i];
-              result+=selectedQuantity* (patientPaymentAmount/quantity);
+              const {totalAmount,quantity} = this.details[i];
+              result+=selectedQuantity* (totalAmount/quantity);
           }
       }
       form.totalAmount=result;
@@ -213,7 +215,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                 selectedDetail.invoiceNumber=this.invoice.invoiceNumber;
                 selectedDetail.taxesAmount=0;
                 selectedDetail.id=0;
-                selectedDetail.totalAmount= this.details[i].patientPaymentAmount;
+                selectedDetail.totalAmount= this.details[i].totalAmount;
                 selectedDetail.beforeTaxesAmount=selectedQuantity* this.details[i].totalAmount/this.details[i].quantity;
               
                 selectedDetail.customerId=this.invoice.customerId;
@@ -241,12 +243,12 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
 
     setDetailFormAmount(index:number,quantity:number, maxNumber:number){
         if(!this.itemForm.contains(`returnQuantity_${index}`))
-        this.itemForm.addControl(`returnQuantity_${index}`,new FormControl(quantity,[ Validators.required,Validators.min(0.0001),Validators.max(maxNumber)]));
+        this.itemForm.addControl(`returnQuantity_${index}`,new FormControl({value:quantity, disabled:(this.isEditing || (this.details[index].type=='C' && !this.details[index].noCoverage))},[ Validators.required,Validators.min(0.0001),Validators.max(maxNumber)]));
     }
 
      setDetailFormDefective(index:number,selected:boolean, isNewEntry:boolean=false){
         if(!this.itemForm.contains(`defectiveDetail_${index}`))
-        this.itemForm.addControl(`defectiveDetail_${index}`,new FormControl(selected));
+        this.itemForm.addControl(`defectiveDetail_${index}`,new FormControl({value:selected , disabled:(this.isEditing || (this.details[index].type=='C' && !this.details[index].noCoverage))}));
     }
     refreshAmounts(fromForm:boolean=false){
     
