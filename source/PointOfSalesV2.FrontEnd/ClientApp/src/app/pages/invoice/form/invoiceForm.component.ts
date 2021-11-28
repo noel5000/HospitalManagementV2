@@ -533,18 +533,72 @@ doctorId:[null]
     }
 
     async getProductInventory(hospitalId:number,warehouseId:number=0,productId:number=0){
-        this.inventoryService.patchGenericByUrlParameters(['GetCompanyInventory',hospitalId.toString(),warehouseId.toString(),productId.toString()]).subscribe(r=>{
-            const result = r.data[0];
-            if(result && result.warehouses){
-                const warehouses = result.warehouses.filter(x=>x.code!='DEF');
-                this.inventories=[];
-                warehouses.forEach(w=>{
-                    const productInventory= w.inventory.filter(x=>x.productId == productId);
-                    if(productInventory.length>0)
-                    this.inventories = this.inventories.concat(productInventory);
-                });
-            }
+     
+        let filter = [
+            {
+                property: "BranchOffice",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:false
+            }  as QueryFilter, 
+            {
+                property: "Warehouse",
+                value: "Name,Code",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Unit",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Warehouse.Code",
+                value: 'DEF',
+                type: ObjectTypes.String,
+                comparer:ODataComparers.NotEqual,
+                isTranslated: false
+            } as QueryFilter
+        ];
+    if(hospitalId)
+    filter.push({
+        property: "BranchOfficeId",
+        value: hospitalId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+    if(warehouseId)
+    filter.push({
+        property: "WarehouseId",
+        value: warehouseId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+
+    if(productId)
+    filter.push({
+        property: "ProductId",
+        value: productId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter)
+
+
+        this.inventoryService.getAllFiltered(filter).subscribe(r=>{
+            if(r['value'].length>0)
+            this.inventories=r['value'];
+            else
+            this.modalService.showError('billingStateI_lbl');
+            
         })
+    }
+    async getInventoryDescription():Promise<string>{
+        let result ='';
+        return result;
     }
 
   
@@ -615,18 +669,14 @@ doctorId:[null]
 
             this.itemForm.get('unitId').valueChanges.subscribe(val => {
 
-                this.inventories=[];
+               
                 if(val && val!="0"){
                     this.refreshAmounts();
                     const currentUnit = this.productUnits.find(x=>x.unitId==val);
                    const {productId,warehouseId,selectedPrice}= this.itemForm.getRawValue();
                    this.updateSelectedPrice(selectedPrice);
-                   const user = this.getUser();
-                   const product = this.products.find(x=>x.id==productId);
-                  
-                   if(!product.isService){
-                    this.getProductInventory(user.branchOfficeId,warehouseId==null?0:warehouseId,productId)
-                   }
+                   
+                   
                 }
                 });
 
@@ -747,6 +797,11 @@ doctorId:[null]
                 this.itemForm.removeControl('unitId');
                 this.itemForm.addControl('unitId',this.defaultUnitValidator)   
                 this.GetProductUnits(val);
+              
+                const user = this.getUser();
+                
+                    this.getProductInventory(user.branchOfficeId,form.warehouseId==null?0:form.warehouseId,val)
+                
             }
                 this.productTaxes=[];
                 this.GetProductTaxes(val);
@@ -1089,8 +1144,8 @@ doctorId:[null]
 
     addEntry(){
        let entry = this.itemForm.getRawValue() as any;
-        if(!entry.productId || !entry.unitId || !entry.quantity|| !entry.currencyId || 
-             !entry.beforeTaxesAmount || entry.taxesAmount==undefined || !entry.totalAmount || !entry.type  )
+        if(!entry.productId ||  !entry.quantity|| !entry.currencyId || 
+             !entry.beforeTaxesAmount || entry.taxesAmount===undefined || !entry.totalAmount || !entry.type  )
         return;
         const patientCurrency =entry.patientId && entry.patientId>0? this.patients.find(x=>x.id==entry.patientId).currency:null;
         const rate =!patientCurrency?0:  patientCurrency.isLocalCurrency? (this.selectedProductCurrency?this.selectedProductCurrency.exchangeRate:1):
@@ -1219,7 +1274,7 @@ doctorId:[null]
     
         let {productPrice,productCost,quantity,unitId,beforeTaxesAmount, totalAmount, taxesAmount,discountAmount, discountRate,patientId, productId, patientPaymentAmount,insuranceCoverageAmount} = this.itemForm.getRawValue() as any;
         if(productId && productId>0){
-            const equivalence =unitId && unitId>0? this.productUnits.find(x=>x.unitId==unitId).equivalence:1;
+            const equivalence =unitId && unitId>0 && this.productUnits? this.productUnits.find(x=>x.unitId==unitId).equivalence:1;
             const patientCurrency =patientId && patientId>0 && this.patients.length>0? this.patients.find(x=>x.id==patientId).currency:null;
             const rate =!patientCurrency?0:  patientCurrency.isLocalCurrency? (this.selectedProductCurrency?this.selectedProductCurrency.exchangeRate:1):
             (this.selectedProductCurrency.exchangeRate/patientCurrency.exchangeRate);

@@ -309,7 +309,7 @@ else{
                 property: "Currency",
                 value: "Name,Id,Code",
                 type: ObjectTypes.ChildObject,
-                isTranslated:false
+                isTranslated:true
             }
         ];
 

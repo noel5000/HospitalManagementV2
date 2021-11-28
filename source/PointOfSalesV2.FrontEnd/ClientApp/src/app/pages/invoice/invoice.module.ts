@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { NbCardModule, NbTreeGridModule, NbIconModule, NbInputModule } from '@nebular/theme';
+import { NbCardModule, NbTreeGridModule, NbIconModule, NbInputModule, NbAccordionModule } from '@nebular/theme';
 import { ThemeModule } from '../../@theme/theme.module';
 import { NgbPaginationModule, NgbAlertModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../@core/services/modal.service';
@@ -61,6 +61,7 @@ const routes: Routes = [
         NgbDropdownModule,
         NgbAlertModule,
         NbIconModule,
+        NbAccordionModule,
         NbInputModule,
         ThemeModule,
         CommonModule,

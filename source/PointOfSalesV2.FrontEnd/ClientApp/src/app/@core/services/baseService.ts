@@ -227,9 +227,22 @@ anchor.click();
                     switch (f.type) {
                       
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
-                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `
-                            ;
+                            switch(comparer){
+                                case 'eq':
+                                query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                case 'ne':
+                                    query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                default:
+                                    query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                    
+                            }
+                           
                             break;
                         case ObjectTypes.Number:
                             query = `${query}(${propertyDef} ${comparer} ${val}) or `;
@@ -250,9 +263,20 @@ anchor.click();
                 switch (f.type) {
 
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
-                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `
-                        ;
+                        switch(comparer){
+                            case 'eq':
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            case 'ne':
+                                query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and `:
+                                `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            default:
+                                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                            break;
+                                
+                        }
                         break;
                     case ObjectTypes.Number:
                         query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
@@ -323,9 +347,22 @@ anchor.click();
                     switch (f.type) {
                       
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
-                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `
-                            ;
+                            switch(comparer){
+                                case 'eq':
+                                query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                case 'ne':
+                                    query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                default:
+                                    query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                    
+                            }
+                            
                             break;
                         case ObjectTypes.Number:
                             query = `${query}(${propertyDef} ${comparer} ${val}) or `;
@@ -346,9 +383,21 @@ anchor.click();
                 switch (f.type) {
 
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
-                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `
-                        ;
+                        switch(comparer){
+                            case 'eq':
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            case 'ne':
+                                query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and `:
+                                `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            default:
+                                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                            break;
+                                
+                        }
+                       
                         break;
                     case ObjectTypes.Number:
                         query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
