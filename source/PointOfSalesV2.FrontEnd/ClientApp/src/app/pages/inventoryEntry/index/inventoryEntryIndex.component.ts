@@ -85,7 +85,7 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
        
         this.tableConfig=[
             {
-                visible:false,
+                visible:true,
                 id:'id',
                 type:'number',
                 isTranslated:false,

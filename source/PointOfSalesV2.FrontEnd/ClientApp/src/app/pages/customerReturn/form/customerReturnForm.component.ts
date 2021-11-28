@@ -112,7 +112,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                     customerName:`${this.invoice.patient.name} - ${this.invoice.patient.code}`,
                     currencyName:this.invoice.currency.code,
                     billingDate:this.invoice.billingDate.split('T')[0],
-                    totalAmount:this.invoice.totalAmount
+                    totalAmount:this.invoice.patientPaymentAmount
                 });
 
                
@@ -159,8 +159,8 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
       for(let i=0;i<this.details.length;i++){
           const selectedQuantity = this.itemForm.getRawValue()[`returnQuantity_${i}`] as number;
           if(selectedQuantity && selectedQuantity>0){
-              const {totalAmount,quantity} = this.details[i];
-              result+=selectedQuantity* (totalAmount/quantity);
+              const {patientPaymentAmount,quantity} = this.details[i];
+              result+=selectedQuantity* (patientPaymentAmount/quantity);
           }
       }
       form.totalAmount=result;
@@ -213,8 +213,9 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                 selectedDetail.invoiceNumber=this.invoice.invoiceNumber;
                 selectedDetail.taxesAmount=0;
                 selectedDetail.id=0;
+                selectedDetail.totalAmount= this.details[i].patientPaymentAmount;
                 selectedDetail.beforeTaxesAmount=selectedQuantity* this.details[i].totalAmount/this.details[i].quantity;
-                selectedDetail.totalAmount=selectedDetail.beforeTaxesAmount;
+              
                 selectedDetail.customerId=this.invoice.customerId;
                 selectedDetail.defective = this.itemForm.getRawValue()[`defectiveDetail_${i}`] as boolean;
                 selectedDetail.defective = selectedDetail.defective==null?false:selectedDetail.defective;

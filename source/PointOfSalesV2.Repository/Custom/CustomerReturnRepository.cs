@@ -72,7 +72,7 @@ namespace PointOfSalesV2.Repository
                     entity.Invoice = null;
                     entity.BeforeTaxesAmount = entity.ReturnDetails.Sum(x => x.BeforeTaxesAmount);
                     entity.TaxesAmount = entity.ReturnDetails.Sum(x => x.TaxesAmount);
-                    entity.TotalAmount = entity.BeforeTaxesAmount + entity.TaxesAmount;
+                    entity.TotalAmount = entity.ReturnDetails.Sum(x => x.BeforeTaxesAmount);
                     entity.InvoiceNumber = invoice.InvoiceNumber;
                     CreditNote creditNote = new CreditNote() 
                     {

@@ -48,6 +48,7 @@
                             <th>{{'discountAmount_lbl' | translate}}</th>
                             <th>{{'taxAmount_lbl' | translate}}</th>
                             <th>{{'totalAmount_lbl' | translate}}</th>
+                            <th>{{'patientPaymentAmount_lbl' | translate}}</th>
                             <th>{{'isDefective_lbl' | translate}}</th>
                         </tr>
                     </thead>
@@ -69,6 +70,7 @@
                             <td>{{entry.discountAmount | currency:""}}</td>
                             <td>{{entry.taxesAmount | currency:""}}</td>
                             <td>{{entry.totalAmount | currency:""}}</td>
+                            <td>{{entry.patientPaymentAmount | currency:""}}</td>
                             <td>
                                 <input type="checkbox"
                                  [formControlName]="('defectiveDetail_'+i)" 

@@ -398,7 +398,7 @@ else{
     });
     }
     payInvoice(e:any) {
-        this.router.navigateByUrl(`pages/payments/addPayment/0/${e.id}`);
+        this.router.navigateByUrl(`pages/invoicepayment/add/${e.id}`);
     }
     source:any={};
     onDeleteConfirm(event:any): void {

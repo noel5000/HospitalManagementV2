@@ -31,6 +31,8 @@ namespace PointOfSalesV2.Entities
         public decimal BeforeTaxesAmount { get; set; }
         [Export(Order = 5)]
         public decimal TotalAmount { get; set; }
+
+
         public long CustomerId { get; set; }
 
         [Export(Order = 6)]

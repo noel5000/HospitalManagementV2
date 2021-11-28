@@ -35,6 +35,7 @@ namespace PointOfSalesV2.Repository
                         _Context.Entry<Currency>(currency).State = EntityState.Detached;
                         e.ExchangeRate = currency.ExchangeRate;
                         e.Details = details;
+                        e.Active = true;
                         e.Date = DateTime.Now;
                         e.Reference = reference;
                         e.BeforeTaxAmount = e.ProductCost * e.Quantity;

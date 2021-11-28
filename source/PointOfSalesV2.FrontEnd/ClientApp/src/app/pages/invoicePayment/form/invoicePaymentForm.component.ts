@@ -73,6 +73,7 @@ reference:[''],
 destinationType:[0],
 paymentTypeId:[null,[Validators.required, Validators.min(1)]],
 givenAmount:[null],
+invoiceId:[null],
 returnedAmount:[0],
 positiveBalance:[0],
 paidAmount:[0]
@@ -87,6 +88,10 @@ paidAmount:[0]
         this.getCustomers();
         this.getPaymentTypes();
         this.validateFormData();
+        const urlId= parseInt( this._route.snapshot.paramMap.get('invoiceId'));
+        if(!isNaN(urlId)){
+          this.getInvoice(urlId);
+        }
     }
 
     async getinvoices(){
@@ -94,7 +99,8 @@ paidAmount:[0]
         const filter ={
             branchOfficeId:this.itemForm.get('branchOfficeId').value?this.itemForm.get('branchOfficeId').value:0,
             currencyId:this.itemForm.get('currencyId').value?this.itemForm.get('currencyId').value:0,
-            customerId:this.itemForm.get('paymentDestinationId').value?this.itemForm.get('paymentDestinationId').value:0
+            customerId:this.itemForm.get('paymentDestinationId').value?this.itemForm.get('paymentDestinationId').value:0,
+            invoiceId:this.itemForm.get('invoiceId').value?this.itemForm.get('invoiceId').value:0
         }
         this.invoices.forEach(e=>{
             this.itemForm.removeControl(`selectedInvoice-${e.id}`);
@@ -103,10 +109,13 @@ paidAmount:[0]
           
             if(r.data){
                 r.data.forEach(e=>{
+                   
                     this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
                     this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
                         this.payInvoice(val,e.id);
                     })
+                   
+                    
                 });
                 this.invoices=r.data;
             }
@@ -120,6 +129,20 @@ paidAmount:[0]
         this.currencies=r;
         if(this.currencies.length==1)
         this.itemForm.patchValue({currencyId:this.currencies[0].id});
+    });
+}
+
+async getInvoice(id:number){
+    this.service.getById(id).subscribe(r=>{
+       const invoice = r.data[0];
+       if(invoice && invoice.id)
+        this.itemForm.patchValue({
+            currencyId:invoice.currencyId,
+            paymentDestinationId:invoice.customerId,
+            branchOfficeId:invoice.branchOfficeId,
+            invoiceId:invoice.id,
+            givenAmount:(invoice.owedAmount)
+        });
     });
 }
 

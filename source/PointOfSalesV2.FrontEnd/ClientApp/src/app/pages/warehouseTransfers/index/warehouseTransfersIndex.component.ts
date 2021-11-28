@@ -87,7 +87,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
        
         this.tableConfig=[
             {
-                visible:false,
+                visible:true,
                 id:'id',
                 type:'number',
                 isTranslated:false,
