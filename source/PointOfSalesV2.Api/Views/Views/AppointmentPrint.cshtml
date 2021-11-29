@@ -2,7 +2,9 @@
 @using System.Collections.Generic;
 @using System.Linq;
 
-@{Appointment appointment = ViewBag.Appointment as Appointment;}
+@{
+    Appointment appointment = ViewBag.Appointment as Appointment;
+}
 @{
     Layout = null;
     List<LanguageKey> languageKeys = ViewBag.LanguageKeys;
@@ -185,29 +187,7 @@
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "date_lbl").Value :</th>
                                                 <th class="text-left">@(appointment.Date.ToString("dd-MM-yyyy hh:mm"))</th>
                                             </tr>
-                                            @*@{ if (appointment.Doctor != null)
-                                                {
-                                                    <tr>
 
-                                                        <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
-                                                        <th class="text-left">@(appointment.MedicalSpeciality?.Name??"")</th>
-                                                        <th class=" "></th>
-                                                        <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "doctor_lbl")?.Value?? "doctor_lbl") : @(appointment.Doctor?.FullName??"")</th>
-                                                    </tr>
-                                                }
-                                            }
-
-                                            @{ if (appointment.Product != null)
-                                                {
-                                                    <tr>
-
-                                                        <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "medicalSpeciality_lbl")?.Value?? "medicalSpeciality_lbl") :</th>
-                                                        <th class="text-left">@(appointment.MedicalSpeciality?.Name??"")</th>
-                                                        <th class=" "></th>
-                                                        <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "Procedure_lbl")?.Value?? "Procedure_lbl") : @(appointment.Product?.Name??"")</th>
-                                                    </tr>
-                                                }
-                                            }*@
 
                                             <tr>
                                                 <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "patient_lbl")?.Value?? "patient_lbl") : @appointment.Patient.NameAndCode.ToString()</th>
@@ -233,6 +213,35 @@
                                             </tr>
 
                                         </thead>
+
+
+                                    </table>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "medicalspeciality_lbl")?.Value?? "medicalspeciality_lbl")</th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "doctor_lbl")?.Value?? "doctor_lbl")</th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "medicalConsultation_lbl")?.Value?? "medicalConsultation_lbl")</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                                @{
+                                                foreach(var detail in appointment.Details)
+                                                {
+                                                    <tr>
+                                                    <td>@(detail.MedicalSpeciality?.Name??"")</td>
+                                                    <td>@(detail.Doctor?.FullName??"")</td>
+                                                    <td>@(detail.Product?.Name??"")</td>
+                                                    </tr>
+
+                                                }
+
+                                            }
+                                           
+                                        </tbody>
+                                    </table>
+                                    <table>
                                         <tfoot>
                                             <tr>
                                                 <th style="color:white !important; visibility:hidden;">sssss</th>
@@ -274,11 +283,11 @@
                                                 <th class="text-right" style=" border-bottom: 2px double black">@($"{appointment.Currency.Code} ${ appointment.PatientPaymentAmount}")</th>
                                             </tr>
 
-                                         
+
 
                                         </tfoot>
                                     </table>
-                                   
+
                                     <br /><br /><br />
                                 </div>
                                 <div class="divFooter">
