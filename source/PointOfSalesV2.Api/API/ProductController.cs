@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PointOfSalesV2.Api.Security;
 using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
+using PointOfSalesV2.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using static PointOfSalesV2.Common.Enums;
@@ -24,7 +25,7 @@ namespace PointOfSalesV2.Api.Controllers
     public class ProductController : BaseController<Product>
     {
         readonly IProductRepository _customRepo;
-        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache
+        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache
             , repositoryFactory.GetCustomDataRepositories<IProductRepository>(), AppSections.Products)
         {
             _customRepo = repositoryFactory.GetCustomDataRepositories<IProductRepository>();
@@ -39,15 +40,22 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency).Include(x=>x.MedicalSpeciality)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.AsNoTracking()
+                .Include(t => t.Currency)
+                .Include(x => x.MedicalSpeciality)
+                .Include(x => x.Currency)
+                .Include(x => x.BaseCompositeProducts).ThenInclude(b => b.BaseProduct)
+                .Include(x => x.ProductUnits).ThenInclude(u=>u.Unit)
+                .Include(x => x.SuppliersCosts).ThenInclude(s=>s.Supplier)
+                .Include(x => x.Taxes).ThenInclude(s => s.Tax)
                  , y => y.Active == true);
                 return Ok(data);
-               
+
             }
 
             catch (Exception ex)
             {
-               await SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -73,7 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-               await SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -92,7 +100,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-               await SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -101,11 +109,19 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Product>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.AsNoTracking()
+                .Include(t => t.Currency)
+                .Include(x => x.MedicalSpeciality)
+                .Include(x => x.Currency)
+                .Include(x => x.BaseCompositeProducts).ThenInclude(b => b.BaseProduct)
+                .Include(x => x.ProductUnits).ThenInclude(u => u.Unit)
+                .Include(x => x.SuppliersCosts).ThenInclude(s => s.Supplier)
+                .Include(x => x.Taxes).ThenInclude(s => s.Tax)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
@@ -127,7 +143,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-               await SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

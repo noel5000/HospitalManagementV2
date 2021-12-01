@@ -167,8 +167,9 @@ anchor.click();
     ): Observable<Blob> {
 
         const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
-        let data=this._httpClient.post(`${this.baseUrl}/exporttoexcel`,
-        {filters}
+       const url= `${this.baseUrl.replace('/api/','/odata/')}/exporttoexcel?${this.getODataQueryAll(filters)}`
+        let data=this._httpClient.post(url,
+        {}
         ,{responseType:'blob',
         headers:new HttpHeaders({
             "UserId": currentUser ? currentUser.user.userId : '',

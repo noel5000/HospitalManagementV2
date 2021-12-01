@@ -91,7 +91,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data =await _baseRepo.GetAllAsync<T>(x => x.Where(y => y.Active == true));
+                var data =await _baseRepo.GetAllAsync<T>(x => x.AsNoTracking(),y=>y.Active==true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";

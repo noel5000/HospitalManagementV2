@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Insurance>(x =>x
+                var data = await _baseRepo.GetAllAsync<Insurance>(x =>x.AsNoTracking()
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -54,12 +54,13 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [ActionAuthorize(Operations.EXPORT)]
         public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Insurance>(x => x
+                var data = await _baseRepo.GetAllAsync<Insurance>(x => x.AsNoTracking()
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];

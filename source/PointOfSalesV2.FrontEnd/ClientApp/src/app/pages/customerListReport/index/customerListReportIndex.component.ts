@@ -36,6 +36,18 @@ export class CustomerListIndexComponent extends BaseComponent implements OnInit 
             type: ObjectTypes.ChildObject,
             isTranslated:false
         },
+        {
+            property: "Insurance",
+            value: "Name,Id",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        },
+        {
+            property: "InsurancePlan",
+            value: "Name,Id",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        },
         
         {
             property: "TRNControl",
@@ -129,6 +141,32 @@ export class CustomerListIndexComponent extends BaseComponent implements OnInit 
             objectType:ObjectTypes.String,
             filterIsActive:true
           },
+          {
+            visible:true,
+            id:'insuranceId',
+            type:'text',
+            fieldToShow:'insurance.name',
+            isTranslated:false,
+            objectTypeToShow:ObjectTypes.String,
+            name:this.lang.getValueByKey('insurance_lbl'),
+            sorting:'desc',
+            toSort:false,
+            objectType:ObjectTypes.String,
+            filterIsActive:true
+          },
+          {
+            visible:true,
+            id:'insurancePlanId',
+            type:'text',
+            fieldToShow:'insurancePlan.name',
+            isTranslated:false,
+            objectTypeToShow:ObjectTypes.String,
+            name:this.lang.getValueByKey('insurancePlan_lbl'),
+            sorting:'desc',
+            toSort:false,
+            objectType:ObjectTypes.String,
+            filterIsActive:true
+          },
       {
         visible:true,
         id:'currencyId',
@@ -217,6 +255,18 @@ exportToCSV(){
             isTranslated:false
         } as QueryFilter,
         
+        {
+            property: "Insurance",
+            value: "Name,Id",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        } as QueryFilter,
+        {
+            property: "InsurancePlan",
+            value: "Name,Id",
+            type: ObjectTypes.ChildObject,
+            isTranslated:false
+        } as QueryFilter,
         
         {
             property: "TRNControl",

@@ -39,7 +39,7 @@ namespace PointOfSalesV2.Api.Controllers
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Customer>(x => x
+                var data = await _baseRepo.GetAllAsync<Customer>(x => x.AsNoTracking()
                 .Include(x => x.Currency)
                 .Include(x => x.TRNControl)
                 .Include(x=>x.Zone)
@@ -86,14 +86,19 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [ActionAuthorize(Operations.EXPORT)]
         public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<Customer>(x => x.Include(t => t.Currency)
-                .Include(x => x.TRNControl)
-                 , y => y.Active == true);
+                var data = await _baseRepo.GetAllAsync<Customer>(x => x.AsNoTracking()
+               .Include(x => x.Currency)
+               .Include(x => x.TRNControl)
+               .Include(x => x.Zone)
+               .Include(x => x.Insurance)
+               .Include(x => x.InsurancePlan)
+               .Where(y => y.Active == true));
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
