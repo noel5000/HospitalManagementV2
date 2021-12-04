@@ -44,7 +44,7 @@ namespace PointOfSalesV2.Api.Controllers
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
-            var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Patient).Include(i => i.Seller)
+            var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Patient).Include(i=>i.Insurance).Include(i=>i.InsurancePlan).Include(i => i.Seller)
             .Include(i => i.Currency).Include(i => i.InvoiceDetails).ThenInclude(d => d.Product).Include(i=>i.InvoiceDetails).ThenInclude(x=>x.Unit), y => y.Active == true && y.Id == id)?? new Invoice();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
@@ -81,7 +81,7 @@ namespace PointOfSalesV2.Api.Controllers
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = await checkupRepo.GetAsync(x => x.Include(t=>t.Doctor).ThenInclude(t=>t.MedicalSpeciality)
             .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t=>t.Patient).Include(t=>t.Insurance).Include(t=>t.Insurance).Include(t=>t.Appointment).ThenInclude(x=>x.Hospital)
+            .Include(t=>t.Patient).Include(t=>t.Insurance).Include(t=>t.InsurancePlan).Include(t=>t.Appointment).ThenInclude(x=>x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -115,7 +115,7 @@ namespace PointOfSalesV2.Api.Controllers
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup =  await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -149,7 +149,7 @@ namespace PointOfSalesV2.Api.Controllers
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup = await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -183,7 +183,7 @@ namespace PointOfSalesV2.Api.Controllers
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
             var checkup =await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();

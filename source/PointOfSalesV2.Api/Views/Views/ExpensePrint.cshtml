@@ -164,16 +164,23 @@
                                 <div class="divBody">
                                     <table class="">
                                         <thead>
-                                            <tr><th class="titulo">Compania</th></tr>
-                                            <tr><th class="titulo">Dominicana. SRL</th></tr>
+                                            <tr><th class="titulo">@(expense.BranchOffice?.Name.ToUpper())</th></tr>
                                         </thead>
                                     </table>
                                     <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : Calle # Esq.  No. #</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : 809-555-5555</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "nrc_lbl").Value : 000000000</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "email_lbl").Value : email@gmail.com</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : </th>
+                                            <td>@expense.BranchOffice?.Address</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : </th>
+                                             <td>@expense.BranchOffice?.PhoneNumber</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "nrc_lbl").Value : </th>
+                                             <td>@expense.BranchOffice?.NRC</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "email_lbl").Value : </th>
+                                             <td>@expense.BranchOffice?.Email</td>    
+                                            </tr>
                                         </thead>
                                     </table>
                                     <br />
@@ -184,26 +191,30 @@
                                                 @*<th> <img src="~/Content/images/logo.jpg" alt="header" width="230" height="60" /></th>*@
                                                 <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "date_lbl").Value :</th>
-                                                <th class="text-left">@expense.Date.ToString("dd-MM-yyyy")</th>
+                                                <td class="text-left">@expense.Date.ToString("dd-MM-yyyy")</td>
                                             </tr>
 
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "supplier_lbl").Value : @expense.Supplier.Name.ToString()</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "supplier_lbl").Value :</th>
+                                                <td>@expense.Supplier.Name.ToString()</td>
                                                 <th class=" "></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "sequence_lbl").Value :</th>
-                                                <th class="text-left">@expense.Sequence.ToUpper()</th>
+                                                <td class="text-left">@expense.Sequence.ToUpper()</td>
                                             </tr>
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "trn_lbl").Value : @expense.TRN</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "trn_lbl").Value :</th>
+                                                <td>@expense.TRN</td>
                                                 <th class=" "></th>
                                             </tr>
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : @expense.Supplier.Address</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value :</th>
+                                                <td>@expense.Supplier.Address</td>
                                                 <th class=" "></th>
 
                                             </tr>
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : @expense.Supplier.PhoneNumber</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value :</th>
+                                                <td>@expense.Supplier.PhoneNumber</td>
                                                 <th></th>
 
                                             </tr>

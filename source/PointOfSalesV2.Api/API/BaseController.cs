@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using Newtonsoft.Json;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.EntityFrameworkCore;
+﻿global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Security.Cryptography.X509Certificates;
+global using System.Threading.Tasks;
+global using Microsoft.AspNetCore.OData.Query;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.Options;
+global using PointOfSalesV2.Api.Security;
+global using PointOfSalesV2.Common;
+global using PointOfSalesV2.Entities;
+global using PointOfSalesV2.Entities.Model;
+global using PointOfSalesV2.Repository;
+global using static PointOfSalesV2.Common.Enums;
+global using Microsoft.AspNetCore.Cors;
+global using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSalesV2.Api.Controllers
 {

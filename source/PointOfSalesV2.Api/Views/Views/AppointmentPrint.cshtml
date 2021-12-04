@@ -169,12 +169,20 @@
                                             <tr><th class="titulo">@(appointment.Hospital.Name.ToUpper())</th></tr>
                                         </thead>
                                     </table>
-                                    <table>
+                                   <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : @appointment.Hospital.Address</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : @appointment.Hospital.PhoneNumber</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "nrc_lbl").Value : @appointment.Hospital.NRC</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "email_lbl").Value : @appointment.Hospital.Email</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : </th>
+                                            <td>@appointment.Hospital?.Address</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : </th>
+                                             <td>@appointment.Hospital?.PhoneNumber</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "nrc_lbl").Value : </th>
+                                             <td>@appointment.Hospital?.NRC</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "email_lbl").Value : </th>
+                                             <td>@appointment.Hospital?.Email</td>    
+                                            </tr>
                                         </thead>
                                     </table>
                                     <br />
@@ -184,36 +192,48 @@
                                                 <th></th>
                                                 @*<th> <img src="~/Content/images/logo.jpg" alt="header" width="230" height="60" /></th>*@
                                                 <th></th>
+                                                <th></th>
                                                 <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "date_lbl").Value :</th>
-                                                <th class="text-left">@(appointment.Date.ToString("dd-MM-yyyy hh:mm"))</th>
+                                                <td class="text-left">@(appointment.Date.ToString("dd-MM-yyyy"))</td>
                                             </tr>
 
-
-                                            <tr>
-                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "patient_lbl")?.Value?? "patient_lbl") : @appointment.Patient.NameAndCode.ToString()</th>
-                                                <th class=" "></th>
-                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "documentnumber_lbl")?.Value?? "documentNumber_lbl") :</th>
-                                                <th class="text-left">@(appointment.Patient.CardId.ToString())</th>
+                                           
+                                               <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "patient_lbl")?.Value?? "patient_lbl") : </th>
+                                                <td class=" ">@appointment.Patient.NameAndCode.ToString()</td>
+                                                 <th class=" "></th>
+                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "documentnumber_lbl")?.Value?? "documentNumber_lbl") :@(appointment.Patient.CardId.ToString())</th>
+                                                <td class="text-left">@(appointment.Patient.CardId.ToString())</td>
                                             </tr>
+                                             <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "age_lbl")?.Value?? "age_lbl") : </th>
+                                                <td class=" ">@appointment.Patient.Age.ToString()</td>
+                                                 <th class=" "></th>
+                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "bloodtype_lbl")?.Value?? "bloodType_lbl") :</th>
+                                                <td class="text-left">@(appointment.Patient.BloodType.ToString())</td>
+                                            </tr>
+                                             <tr>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phonenumber_lbl")?.Value?? "phoneNumber_lbl") : </th>
+                                                <td class=" ">@appointment.Patient.PhoneNumber.ToString()</td>
+                                                 <th class=" "></th>
+                                                <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "insurancecard_lbl")?.Value?? "insuranceCard_lbl") :</th>
+                                                <td class="text-left">@(appointment.Patient.InsuranceCardId.ToString())</td>
+                                            </tr>
+                                            
                                             <tr>
-                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "insurance_lbl")?.Value?? "insurance_lbl") : @(appointment.Insurance?.Name??"")</th>
-                                                <th class=" "></th>
+                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "insurance_lbl")?.Value?? "insurance_lbl") : </th>
+                                                <td class=" ">@(appointment.Insurance?.Name??"")</td>
+                                                 <th class=" "></th>
                                                 <th class="text-left">@( languageKeys.FirstOrDefault(x => x.Key.ToLower() == "insuranceplan_lbl")?.Value?? "insurancePlan_lbl") :</th>
-                                                <th class="text-left">@(appointment.InsurancePlan?.Name??"")</th>
+                                                <td class="text-left">@(appointment.InsurancePlan?.Name??"")</td>
                                             </tr>
 
-                                            <tr>
-                                                <th>@(languageKeys.FirstOrDefault(x => x.Key.ToLower() == "appointmentnumber_lbl")?.Value?? "appointmentNumber_lbl") : @appointment.Id.ToString()</th>
-                                                <th class=" "></th>
-                                                <th class="text-left"></th>
-                                                <th class="text-left"></th>
-                                            </tr>
+
                                             <tr>
                                                 <th style="color:white !important; visibility:hidden;">sssss</th>
                                             </tr>
 
                                         </thead>
-
 
                                     </table>
                                     <table class="table">
