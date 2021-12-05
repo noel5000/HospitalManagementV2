@@ -49,7 +49,9 @@ namespace PointOfSalesV2.Repository
                     }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
-                    var prescriptions = await SetEntity(entity);
+                    await UpdatePatient(entity);
+
+                     var prescriptions = await SetEntity(entity);
                     entity.Appointment = null;
                     var consultationDetail = appointment.Details.FirstOrDefault(x => x.AppointmentType == AppointmentTypes.Consultation);
                     if (appointment == null || appointment.AppointmentState== AppointmentStates.Nulled || consultationDetail==null) 
@@ -99,6 +101,25 @@ namespace PointOfSalesV2.Repository
 
         }
 
+        private async Task UpdatePatient(PatientCheckup patientCheckup) 
+        {
+            var checkupPatient = patientCheckup.Patient;
+            var customer = await _Context.Customers.AsNoTracking().FirstOrDefaultAsync(x => x.Id == patientCheckup.PatientId);
+            if (checkupPatient != null) 
+            {
+                customer.Alergies = !string.IsNullOrEmpty(checkupPatient.Alergies) ? checkupPatient.Alergies : customer.Alergies;
+                customer.BloodTransfusions = !string.IsNullOrEmpty(checkupPatient.BloodTransfusions) ? checkupPatient.BloodTransfusions : customer.BloodTransfusions;
+                customer.FamilyIllnesses = !string.IsNullOrEmpty(checkupPatient.FamilyIllnesses) ? checkupPatient.FamilyIllnesses : customer.FamilyIllnesses;
+                customer.Medications = !string.IsNullOrEmpty(checkupPatient.Medications) ? checkupPatient.Medications : customer.Medications;
+                customer.Surgeries = !string.IsNullOrEmpty(checkupPatient.Surgeries) ? checkupPatient.Surgeries : customer.Surgeries;
+                customer.Size= checkupPatient.Size>0?checkupPatient.Size:customer.Size;
+                customer.SC = checkupPatient.SC > 0 ? checkupPatient.SC : customer.SC;
+                customer.Weight = checkupPatient.Weight > 0 ? checkupPatient.Weight : customer.Weight;
+                _Context.Customers.Update(customer);
+              await  _Context.SaveChangesAsync();
+            }
+        }
+
         public override async Task< Result<PatientCheckup>> UpdateAsync(PatientCheckup entity, bool getFromDb = true)
         {
             Result<PatientCheckup> result = new Result<PatientCheckup>(-1, -1, "error_msg");
@@ -126,6 +147,7 @@ namespace PointOfSalesV2.Repository
                     }
                     appointment.Details = appointment.Details.Where(x => x.Active == true).ToList();
                     entity.Appointment = appointment;
+                    await UpdatePatient(entity);
                     var prescriptions = await SetEntity(entity);
                     entity.Appointment = null;
                     result = await base.UpdateAsync(entity);

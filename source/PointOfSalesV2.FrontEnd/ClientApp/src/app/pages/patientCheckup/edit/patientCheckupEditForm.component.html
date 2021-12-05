@@ -19,22 +19,9 @@
                     </div>
                 </div>
 
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'symptoms_lbl' | translate}}</label>
-                    <textarea formControlName="symptoms" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.symptoms.errors }"></textarea>
-                    <div *ngIf="form.symptoms.errors" class="invalid-feedback">
-                        <div *ngIf="form.symptoms.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
+              
 
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'diagnoses_lbl' | translate}}</label>
-                    <textarea formControlName="diagnoses" minlength="1" required class="form-control" [ngClass]="{ 'is-invalid': form.diagnoses.errors }"></textarea>
-                    <div *ngIf="form.diagnoses.errors" class="invalid-feedback">
-                        <div *ngIf="form.diagnoses.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-
+              
            </div>
 
 
@@ -64,6 +51,211 @@
 
            <div class="row">
             <nb-accordion style="width: 100%;" class="my-2">
+
+                <nb-accordion-item>
+                    <nb-accordion-item-header>{{'patientInfo_lbl' | translate}}</nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                   
+               <div class="row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'alergies_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="alergies" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.alergies.errors }"
+                    ></textarea>
+                    <div *ngIf="form.alergies.errors" class="invalid-feedback">
+                        <div *ngIf="form.alergies.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'bloodTransfusions_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="bloodTransfusions" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.bloodTransfusions.errors }"
+                    ></textarea>
+                    <div *ngIf="form.bloodTransfusions.errors" class="invalid-feedback">
+                        <div *ngIf="form.bloodTransfusions.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'familyIllnesses_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="familyIllnesses" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.familyIllnesses.errors }"
+                    ></textarea>
+                    <div *ngIf="form.familyIllnesses.errors" class="invalid-feedback">
+                        <div *ngIf="form.familyIllnesses.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'medications_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="medications" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.medications.errors }"
+                    ></textarea>
+                    <div *ngIf="form.medications.errors" class="invalid-feedback">
+                        <div *ngIf="form.medications.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'surgeries_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="surgeries" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.surgeries.errors }"
+                    ></textarea>
+                    <div *ngIf="form.surgeries.errors" class="invalid-feedback">
+                        <div *ngIf="form.surgeries.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'sc_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="sc"  class="form-control" [ngClass]="{ 'is-invalid': form.sc.errors }" />
+                   
+                </div>
+
+               
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'sizeCm_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="size"  class="form-control" [ngClass]="{ 'is-invalid': form.size.errors }" />
+                   
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'weightKg_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="weight"  class="form-control" [ngClass]="{ 'is-invalid': form.weight.errors }" />
+                   
+                </div>
+               </div>
+          
+                    </nb-accordion-item-body>
+                   </nb-accordion-item>
+
+                   <nb-accordion-item>
+                    <nb-accordion-item-header>{{'physicalExam_lbl' | translate}}</nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                   
+               <div class="row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamHeadNeck_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamHeadNeck"  maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamHeadNeck.errors }"></textarea>
+                    <div *ngIf="form.physicalExamHeadNeck.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamHeadNeck.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamChest_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamChest" maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamChest.errors }"></textarea>
+                    <div *ngIf="form.physicalExamChest.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamChest.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamHeart_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamHeart" maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamHeart.errors }"></textarea>
+                    <div *ngIf="form.physicalExamHeart.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamHeart.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamLungs_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamLungs" maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamLungs.errors }"></textarea>
+                    <div *ngIf="form.physicalExamLungs.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamLungs.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamStomach_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamStomach" maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamStomach.errors }"></textarea>
+                    <div *ngIf="form.physicalExamStomach.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamStomach.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'physicalExamExtremities_lbl' | translate}}</label>
+                    <textarea formControlName="physicalExamExtremities" maxlength="500"  class="form-control" [ngClass]="{ 'is-invalid': form.physicalExamExtremities.errors }"></textarea>
+                    <div *ngIf="form.physicalExamExtremities.errors" class="invalid-feedback">
+                        <div *ngIf="form.physicalExamExtremities.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+               
+               </div>
+          
+                    </nb-accordion-item-body>
+                   </nb-accordion-item>
+                   <nb-accordion-item>
+                    <nb-accordion-item-header>{{'checkupInfo_lbl' | translate}}</nb-accordion-item-header>
+                    <nb-accordion-item-body>
+                   
+               <div class="row">
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'symptoms_lbl' | translate}}</label>
+                    <textarea formControlName="symptoms" minlength="1" maxlength="2000" required class="form-control" [ngClass]="{ 'is-invalid': form.symptoms.errors }"></textarea>
+                    <div *ngIf="form.symptoms.errors" class="invalid-feedback">
+                        <div *ngIf="form.symptoms.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'diagnoses_lbl' | translate}}</label>
+                    <textarea formControlName="diagnoses" minlength="1"maxlength="2000" required class="form-control" [ngClass]="{ 'is-invalid': form.diagnoses.errors }"></textarea>
+                    <div *ngIf="form.diagnoses.errors" class="invalid-feedback">
+                        <div *ngIf="form.diagnoses.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'consultationReason_lbl' | translate}}</label>
+                    <textarea formControlName="consultationReason" maxlength="2000"  class="form-control" [ngClass]="{ 'is-invalid': form.consultationReason.errors }"></textarea>
+                    <div *ngIf="form.consultationReason.errors" class="invalid-feedback">
+                        <div *ngIf="form.consultationReason.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'plan_lbl' | translate}}</label>
+                    <textarea formControlName="plan" maxlength="2000"  class="form-control" [ngClass]="{ 'is-invalid': form.plan.errors }"></textarea>
+                    <div *ngIf="form.plan.errors" class="invalid-feedback">
+                        <div *ngIf="form.plan.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'medicalBackground_lbl' | translate}}</label>
+                    <textarea formControlName="medicalBackground" maxlength="2000"  class="form-control" [ngClass]="{ 'is-invalid': form.medicalBackground.errors }"></textarea>
+                    <div *ngIf="form.medicalBackground.errors" class="invalid-feedback">
+                        <div *ngIf="form.medicalBackground.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+               
+
+               
+               </div>
+          
+                    </nb-accordion-item-body>
+                   </nb-accordion-item>
                 <nb-accordion-item>
                  <nb-accordion-item-header>{{'medicine_lbl' | translate}}</nb-accordion-item-header>
                  <nb-accordion-item-body>
@@ -85,7 +277,7 @@
                         </div>
                     </div>
                     <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson" *ngIf="!(!editing || editing<1)" (click)="addProduct('M')">+</i>
+                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('M')">+</i>
                     </div>
                 </div>
 
@@ -101,8 +293,8 @@
                     </div>
                     </div>
                     <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-info btn-sm my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="saveNewProduct('M')">{{'add_btn' | translate}}</i>
-                        <i class="btn btn-danger btn-sm my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
+                        <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('M')">{{'add_btn' | translate}}</i>
+                        <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                     </div>
                 </div>
                
@@ -141,7 +333,7 @@
                      class="form-control" />
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <i class="btn btn-primary mr-1  my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addPrescription('M')">{{'addMedicine_btn' | translate}}</i>
+                    <i class="btn btn-primary mr-1  my-4 buttonCurson" (click)="addPrescription('M')">{{'addMedicine_btn' | translate}}</i>
                 </div>
             </div>
             <div class="scrollTableMobile" *ngIf="selectedMedicines.length>0">
@@ -164,7 +356,7 @@
                             <td>{{selectedMedicine.medicinesAmount}}</td>
                             <td>{{selectedMedicine.whenToTake | translate}}</td>
                             <td>{{selectedMedicine.emptyStomach?('yes_lbl' | translate):('no_lbl' | translate)}}</td>
-                            <td><i class="btn btn-danger"  *ngIf="!(!editing || editing<1)" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</i></td>
+                            <td><i class="btn btn-danger" (click)="deleteSelectedMedicine(i)">{{'delete_btn' | translate}}</i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -194,7 +386,7 @@
                     </div>
                    </div>
                     <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addProduct('C')">+</i>
+                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('C')">+</i>
                     </div>
                 </div>
               
@@ -208,8 +400,8 @@
                         <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                     </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;"  *ngIf="!(!editing || editing<1)">
-                        <i class="btn btn-info btn-sm my-4 buttonCurson"  (click)="saveNewProduct('C')">{{'add_btn' | translate}}</i>
+                    <div class="col-2 my-2" style="margin-left:-5%;">
+                        <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('C')">{{'add_btn' | translate}}</i>
                         <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                     </div>
                 </div>
@@ -222,7 +414,7 @@
                      class="form-control" />
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <i class="btn btn-primary mr-1  my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addPrescription('C')">{{'add_btn' | translate}}</i>
+                    <i class="btn btn-primary mr-1  my-4 buttonCurson" (click)="addPrescription('C')">{{'add_btn' | translate}}</i>
                 </div>
             </div>
             <div class="scrollTableMobile" *ngIf="selectedConsultations.length>0">
@@ -239,7 +431,7 @@
                         <tr *ngFor="let selectedConsultation of selectedConsultations; let i=index">
                             <td>{{selectedConsultation.medicalSpeciality.name}}</td>
                             <td>{{selectedConsultation.additionalData}}</td>
-                            <td><i class="btn btn-danger"  *ngIf="!(!editing || editing<1)" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</i></td>
+                            <td><i class="btn btn-danger" (click)="deleteSelectedConsultation(i)">{{'delete_btn' | translate}}</i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -257,8 +449,8 @@
                              class="form-control" />
                             </div>
                             <div class="col-3 my-2" >
-                                <i class="btn btn-info btn-sm my-4 mx-2 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="saveNewProduct('L')">{{'add_btn' | translate}}</i>
-                                <i class="btn btn-danger btn-sm my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
+                                <i class="btn btn-info btn-sm my-4 mx-2 buttonCurson" (click)="saveNewProduct('L')">{{'add_btn' | translate}}</i>
+                                <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                             </div>
                         </div>
                         <div class="scrollTableMobile" id="labTestSelection">
@@ -270,17 +462,18 @@
                                     </div>
                                     
                                       <div class="col-2" style="margin-left:-5%;">
-                                        <i class="btn btn-success btn-sm buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addProduct()">+</i>
+                                        <i class="btn btn-success btn-sm buttonCurson" (click)="addProduct()">+</i>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
+                                <div class="row" >
+                                    <div class="col-md-3 col-xs-6 " *ngFor="let selectedLabTest of products; let i=index" >
                                         <div *ngIf="selectedLabTest.id">
                                             <label for="vehicle1">{{selectedLabTest.name}}</label><br>
                                             <input type="checkbox"  [checked]="selectedLabTest.selected"  (click)="labTestSelection(i)">
                                         </div>
                                       
                                     </div>
+
                                 </div>  
                             </div>
                             
@@ -294,16 +487,28 @@
                 <thead>
                     <tr>
                         <th>{{'name_lbl' | translate}}</th>
+                        <th>{{'additionalInfo_lbl' | translate}}</th>
+                        <th>{{'results_lbl' | translate}}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let selectedLabTest of selectedLabTests; let i=index">
                         <td>{{selectedLabTest.product.name}}</td>
-                        <td><i class="btn btn-danger"  *ngIf="!(!editing || editing<1)" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</i></td>
+                        <td>{{selectedLabTest.additionalData}}</td>
+                        <td><input type="text" [formControlName]="('labResult_'+selectedLabTest.id)"  class="form-control"/></td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedLabTests(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-md-12 col-xs-12">
+                <label>{{'laboratoriesResults_lbl' | translate}}</label>
+                <textarea formControlName="laboratoriesResults" maxlength="2000"  class="form-control" ></textarea>
+               
+            </div>
         </div>
                       
                      </div>
@@ -330,7 +535,7 @@
                         </div>
                     </div>
                     <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addProduct('E')">+</i>
+                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('E')">+</i>
                     </div>
                 </div>
 
@@ -347,7 +552,7 @@
                         <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                     </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;"  *ngIf="!(!editing || editing<1)">
+                    <div class="col-2 my-2" style="margin-left:-5%;">
                         <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('E')">{{'add_btn' | translate}}</i>
                         <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                     </div>
@@ -361,7 +566,7 @@
                      class="form-control" />
                 </div>
                 <div class="col-md-3 col-xs-12">
-                    <i class="btn btn-primary mr-1  my-4 buttonCurson"  *ngIf="!(!editing || editing<1)" (click)="addPrescription('E')">{{'add_btn' | translate}}</i>
+                    <i class="btn btn-primary mr-1  my-4 buttonCurson" (click)="addPrescription('E')">{{'add_btn' | translate}}</i>
                 </div>
             </div>
             
@@ -372,6 +577,7 @@
                     <tr>
                         <th>{{'name_lbl' | translate}}</th>
                         <th>{{'additionalInfo_lbl' | translate}}</th>
+                        <th>{{'results_lbl' | translate}}</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -379,10 +585,18 @@
                     <tr *ngFor="let selectedImage of selectedImages; let i=index">
                         <td>{{selectedImage.product.name}}</td>
                         <td>{{selectedImage.additionalData}}</td>
-                        <td><i class="btn btn-danger"  *ngIf="!(!editing || editing<1)" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</i></td>
+                        <td><input type="text" [formControlName]="('imageResult_'+selectedImage.id)"  class="form-control"/></td>
+                        <td><i class="btn btn-danger" (click)="deleteSelectedImage(i)">{{'delete_btn' | translate}}</i></td>
                     </tr>
                 </tbody>
             </table>
+            <div class="row">
+                <div class="form-group col-md-12 col-xs-12">
+                    <label>{{'imagesResults_lbl' | translate}}</label>
+                    <textarea formControlName="imagesResults" maxlength="2000"  class="form-control"></textarea>
+                    
+                </div>
+            </div>
         </div>
                     </nb-accordion-item-body>
                    </nb-accordion-item>

@@ -70,7 +70,15 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             invoiceDueDays: [0],
             billingAmountLimit: [0],
             creditAmountLimit: [0],
-            id: [0]
+            id: [0],
+            alergies: ['',[ Validators.maxLength(1000)]],
+            bloodTransfusions: ['',[ Validators.maxLength(1000)]],
+            familyIllnesses: ['',[ Validators.maxLength(1000)]],
+            medications: ['',[ Validators.maxLength(1000)]],
+            sc: [0],
+            size: [0],
+            surgeries: ['',[ Validators.maxLength(1000)]],
+            weight:[0]
         });
     }
     ngOnInit(): void {
@@ -115,7 +123,15 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
                 bloodType:this.item.bloodType,
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
-                insuranceCardId:this.item.insuranceCardId
+                insuranceCardId:this.item.insuranceCardId,
+                alergies: this.item.alergies,
+                bloodTransfusions: this.item.bloodTransfusions,
+                familyIllnesses: this.item.familyIllnesses,
+                medications: this.item.medications,
+                sc: this.item.sc,
+                size: this.item.size,
+                surgeries: this.item.surgeries,
+                weight:this.item.weight
             });
 
         }

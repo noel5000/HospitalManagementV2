@@ -130,7 +130,27 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                 insuranceId:[null],
                 insurancePlanId:[null],
                 currencyId:[0],
-                newProduct:[null,[Validators.maxLength(100)]]
+                newProduct:[null,[Validators.maxLength(100)]],
+                alergies: ['',[ Validators.maxLength(1000)]],
+                bloodTransfusions: ['',[ Validators.maxLength(1000)]],
+                familyIllnesses: ['',[ Validators.maxLength(1000)]],
+                medications: ['',[ Validators.maxLength(1000)]],
+                sc: [0],
+                size: [0],
+                surgeries: ['',[ Validators.maxLength(1000)]],
+                weight:[0],
+                plan: ['',[ Validators.maxLength(1000)]],
+                medicalBackground: ['',[ Validators.maxLength(1000)]],
+                consultationReason: ['',[ Validators.maxLength(1000)]],
+                physicalExamHeadNeck: ['',[ Validators.maxLength(1000)]],
+                physicalExam: ['',[ Validators.maxLength(1000)]],
+                physicalExamChest: ['',[ Validators.maxLength(1000)]],
+                physicalExamHeart: ['',[ Validators.maxLength(1000)]],
+                physicalExamLungs: ['',[ Validators.maxLength(1000)]],
+                physicalExamStomach: ['',[ Validators.maxLength(1000)]],
+                physicalExamExtremities: ['',[ Validators.maxLength(1000)]],
+                laboratoriesResults:[''],
+                imagesResults:['']
             });
 
 
@@ -401,6 +421,16 @@ this.attachmentsService.getAllFiltered([
                     doctorName:this.appointment.doctorName,
                     patientName:this.appointment.patientName,
                     currencyId:this.appointment.currencyId,
+                    plan: this.item.plan,
+                    medicalBackground: this.item.medicalBackground,
+                    consultationReason: this.item.consultationReason,
+                    physicalExamHeadNeck: this.item.physicalExamHeadNeck,
+                    physicalExam: this.item.physicalExam,
+                    physicalExamChest: this.item.physicalExamChest,
+                    physicalExamHeart: this.item.physicalExamHeart,
+                    physicalExamLungs: this.item.physicalExamLungs,
+                    physicalExamStomach: this.item.physicalExamStomach,
+                    physicalExamExtremities: this.item.physicalExamExtremities,
 
                 })
             }
@@ -411,7 +441,19 @@ this.attachmentsService.getAllFiltered([
     async getPatient(getData:number=0){
       this.patientService.getById(this.patientId).subscribe(r=>{
         if(r.status>=0)
-        this.patient=r.data[0];
+        {
+            this.patient=r.data[0];
+            this.itemForm.patchValue({
+                alergies: this.patient.alergies,
+                bloodTransfusions: this.patient.bloodTransfusions,
+                familyIllnesses: this.patient.familyIllnesses,
+                medications: this.patient.medications,
+                sc: this.patient.sc,
+                size: this.patient.size,
+                surgeries: this.patient.surgeries,
+                weight:this.patient.weight
+             })
+        }
         else
         this.modalService.showError(r.message);
 
@@ -436,6 +478,28 @@ this.attachmentsService.getAllFiltered([
 
       }
 
+      setLabResult(index:number,value:string, isNewEntry:boolean=false){
+        if(!this.itemForm.contains(`labResult_${index}`))
+        this.itemForm.addControl(`labResult_${index}`,new FormControl(value));
+    }
+
+    setImageResult(index:number,value:string, isNewEntry:boolean=false){
+        if(!this.itemForm.contains(`imageResult_${index}`))
+        this.itemForm.addControl(`imageResult_${index}`,new FormControl(value));
+    }
+
+    removeLabResult(index:number){
+        if(this.itemForm.contains(`labResult_${index}`))
+        this.itemForm.removeControl(`labResult_${index}`)
+    }
+
+    removeImageResult(index:number){
+        if(this.itemForm.contains(`imageResult${index}`))
+        this.itemForm.removeControl(`imageResult${index}`)
+    }
+
+   
+
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         try{
@@ -446,7 +510,41 @@ this.attachmentsService.getAllFiltered([
                 this.selectedConsultations=this.item.checkupPrescriptions.filter(x=>x.type=="C");
                 this.selectedImages=this.item.checkupPrescriptions.filter(x=>x.type=="E");
                 this.patientId=this.item.patientId;
-                const {appointmentId,symptoms,diagnoses,doctorId,patientId,id,insuranceId,insurancePlanId}=this.item;
+                if(this.selectedLabTests && this.selectedLabTests.length>0){
+                    for(let i=0; i<this.selectedLabTests .length;i++){
+                        this.setLabResult(this.selectedLabTests[i].id,this.selectedLabTests[i].results);
+                      
+                      }
+                }
+
+                if(this.selectedImages && this.selectedImages.length>0){
+                    for(let i=0; i<this.selectedImages .length;i++){
+                        this.setImageResult(this.selectedImages[i].id,this.selectedImages[i].results);
+                      
+                      }
+                }
+                const {
+                    appointmentId,
+                    symptoms,
+                    diagnoses,
+                    doctorId,
+                    patientId,
+                    id,
+                    insuranceId,
+                    insurancePlanId,
+                    plan,
+                    medicalBackground,
+                    consultationReason,
+                    laboratoriesResults,
+                    imagesResults,
+                    physicalExamHeadNeck,
+                    physicalExam,
+                    physicalExamChest,
+                    physicalExamHeart,
+                    physicalExamLungs,
+                    physicalExamStomach,
+                    physicalExamExtremities
+                }=this.item;
                 this.itemForm.patchValue({
                     doctorName: this.item.doctor.fullName,
                     appointmentId,
@@ -467,6 +565,18 @@ this.attachmentsService.getAllFiltered([
                     insuranceId,
                     insurancePlanId,
                     currencyId:this.item.patient.currencyId,
+                    plan,
+                    medicalBackground,
+                    consultationReason,
+                    laboratoriesResults,
+                    imagesResults,
+                    physicalExamHeadNeck,
+                    physicalExam,
+                    physicalExamChest,
+                    physicalExamHeart,
+                    physicalExamLungs,
+                    physicalExamStomach,
+                    physicalExamExtremities
                });
 
             }
@@ -491,7 +601,27 @@ console.log(ex);
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
            this.item.id=this.id;
+           this.selectedLabTests.forEach(l=>{
+            if(this.itemForm.contains(`labResult_${l.id}`)){
+                l.results=this.itemForm.get(`labResult_${l.id}`).value;
+            }
+        });
+
+        this.selectedImages.forEach(l=>{
+         if(this.itemForm.contains(`imageResult_${l.id}`)){
+             l.results=this.itemForm.get(`imageResult_${l.id}`).value;
+         }
+     });
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
+          
+           this.patient.alergies=formValue.alergies;
+           this.patient.bloodTransfusions=formValue.bloodTransfusions;
+           this.patient.familyIllnesses=formValue.familyIllnesses;
+           this.patient.medications=formValue.medications;
+           this.patient.sc=formValue.sc;
+           this.patient.size=formValue.size;
+           this.patient.surgeries=formValue.surgeries;
+           this.patient.weight=formValue.weight;
            this.item.patient=this.patient;
            this.item.doctor=this.doctor?this.doctor:this.getUser();
            this.item.doctor.name=this.item.doctor.name?this.item.doctor.name:'Name';
@@ -600,7 +730,10 @@ console.log(ex);
         const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
         if(i>=0){
             this.products[i].selected=false;
+           
         }
+        const test= this.selectedLabTests[index];
+        this.itemForm.removeControl(`labResult_${test.id}`);
         this.selectedLabTests.splice(index,1);
     
         }
@@ -610,6 +743,8 @@ console.log(ex);
         }
     
         async  deleteSelectedImage(index:number){
+            const test= this.selectedImages[index];
+            this.itemForm.removeControl(`imageResult_${test.id}`);
             this.selectedImages.splice(index,1);
         }
     

@@ -23,7 +23,11 @@ namespace PointOfSalesV2.Entities
         public long PatientCheckupId { get; set; }
         public string WhenToTake { get; set; }
         public bool EmptyStomach { get; set; }
+        [MaxLength(1000)]
         public string AdditionalData { get; set; }
+
+        [MaxLength(1000)]
+        public string Results { get; set; }
 
         [ForeignKey("ProductId")]
         public Product Product { get; set; }

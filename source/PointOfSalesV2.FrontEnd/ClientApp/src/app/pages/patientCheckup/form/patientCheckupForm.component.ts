@@ -95,7 +95,25 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
             insuranceId:[null],
             insurancePlanId:[null],
             currencyId:[0],
-            newProduct:[null,[Validators.maxLength(100)]]
+            newProduct:[null,[Validators.maxLength(100)]],
+            alergies: ['',[ Validators.maxLength(1000)]],
+            bloodTransfusions: ['',[ Validators.maxLength(1000)]],
+            familyIllnesses: ['',[ Validators.maxLength(1000)]],
+            medications: ['',[ Validators.maxLength(1000)]],
+            sc: [0],
+            size: [0],
+            surgeries: ['',[ Validators.maxLength(1000)]],
+            weight:[0],
+            plan: ['',[ Validators.maxLength(1000)]],
+            medicalBackground: ['',[ Validators.maxLength(1000)]],
+            consultationReason: ['',[ Validators.maxLength(1000)]],
+            physicalExamHeadNeck: ['',[ Validators.maxLength(1000)]],
+            physicalExam: ['',[ Validators.maxLength(1000)]],
+            physicalExamChest: ['',[ Validators.maxLength(1000)]],
+            physicalExamHeart: ['',[ Validators.maxLength(1000)]],
+            physicalExamLungs: ['',[ Validators.maxLength(1000)]],
+            physicalExamStomach: ['',[ Validators.maxLength(1000)]],
+            physicalExamExtremities: ['',[ Validators.maxLength(1000)]],
         });
     }
     addProduct(type:string){
@@ -106,8 +124,20 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     }
    async getPatient(getData:number=0){
     this.patientService.getById(this.patientId).subscribe(r=>{
-      if(r.status>=0)
-      this.patient=r.data[0];
+      if(r.status>=0){
+        this.patient=r.data[0];
+        this.itemForm.patchValue({
+           alergies: this.patient.alergies,
+           bloodTransfusions: this.patient.bloodTransfusions,
+           familyIllnesses: this.patient.familyIllnesses,
+           medications: this.patient.medications,
+           sc: this.patient.sc,
+           size: this.patient.size,
+           surgeries: this.patient.surgeries,
+           weight:this.patient.weight
+        })
+      }
+    
       else
       this.modalService.showError(r.message);
 
@@ -381,6 +411,17 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
                 currencyId:this.item.currencyId,
+
+                plan: this.item.plan,
+                medicalBackground: this.item.medicalBackground,
+                consultationReason: this.item.consultationReason,
+                physicalExamHeadNeck: this.item.physicalExamHeadNeck,
+                physicalExam: this.item.physicalExam,
+                physicalExamChest: this.item.physicalExamChest,
+                physicalExamHeart: this.item.physicalExamHeart,
+                physicalExamLungs: this.item.physicalExamLungs,
+                physicalExamStomach: this.item.physicalExamStomach,
+                physicalExamExtremities: this.item.physicalExamExtremities,
             });
 
         }
@@ -400,6 +441,14 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
+           this.patient.alergies=formValue.alergies;
+           this.patient.bloodTransfusions=formValue.bloodTransfusions;
+           this.patient.familyIllnesses=formValue.familyIllnesses;
+           this.patient.medications=formValue.medications;
+           this.patient.sc=formValue.sc;
+           this.patient.size=formValue.size;
+           this.patient.surgeries=formValue.surgeries;
+           this.patient.weight=formValue.weight;
            this.item.patient=this.patient;
            this.item.doctor=this.doctor?this.doctor:this.getUser();
            this.item.doctor.name=this.item.doctor.name?this.item.doctor.name:'Name';
