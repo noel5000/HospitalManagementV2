@@ -1,15 +1,5 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using PointOfSalesV2.Common;
+﻿
 using PointOfSalesV2.Repository.Helpers;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using static PointOfSalesV2.Common.Enums;
-using NPOI.SS.Formula.Functions;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace PointOfSalesV2.Repository

@@ -1,12 +1,6 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text; using System.Threading.Tasks;
-using System.Linq;
+﻿
 using Newtonsoft.Json;
 using System.IO;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSalesV2.Repository
 {

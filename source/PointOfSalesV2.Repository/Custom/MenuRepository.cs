@@ -1,12 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NPOI.HSSF.Record;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
+﻿
 using PointOfSalesV2.Repository.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text; using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {

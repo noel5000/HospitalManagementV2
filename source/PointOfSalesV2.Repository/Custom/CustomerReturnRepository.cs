@@ -1,12 +1,4 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text; using System.Threading.Tasks;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using static PointOfSalesV2.Common.Enums;
-using PointOfSalesV2.Common;
-
+﻿
 namespace PointOfSalesV2.Repository
 {
     public class CustomerReturnRepository : Repository<CustomerReturn>, ICustomerReturnRepository

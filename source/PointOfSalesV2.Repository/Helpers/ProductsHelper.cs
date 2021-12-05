@@ -1,11 +1,10 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text; using System.Threading.Tasks;
-namespace PointOfSalesV2.Repository.Helpers
+﻿
+namespace PointOfSalesV2.Repository
 {
-  public  class ProductsRepoHelper
+
+
+
+public  class ProductsRepoHelper
     {
 
         public static async Task<bool> ExistProductInInvoices(int productId, IDataRepositoryFactory dataRepositoryFactory)

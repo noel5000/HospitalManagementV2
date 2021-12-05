@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text; using System.Threading.Tasks;
-using static PointOfSalesV2.Common.Enums;
+﻿
+
+global using PointOfSalesV2.Common;
 
 namespace PointOfSalesV2.Repository
 {

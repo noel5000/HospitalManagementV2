@@ -1,14 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
 using Microsoft.Extensions.Options;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using PointOfSalesV2.Entities.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text; using System.Threading.Tasks;
-using static PointOfSalesV2.Common.Enums;
-
 namespace PointOfSalesV2.Repository
 {
     public class InsuranceRepository : Repository<Insurance>, IInsuranceRepository

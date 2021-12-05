@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+
+using Microsoft.IdentityModel.Tokens;
+using PointOfSalesV2.Repository.Helpers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using PointOfSalesV2.Repository.Helpers;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PointOfSalesV2.Api.Controllers
 {

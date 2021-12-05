@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using PointOfSalesV2.Common;
-using NPOI.SS.Formula.Functions;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.EntityFrameworkCore;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
