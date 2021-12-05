@@ -1193,6 +1193,7 @@ doctorId:[null]
       this.appointmentDetails=this.entries;
     }
     deleteEntry(index:number){
+        const entry = this.entries[index];
         this.itemForm.removeControl(`unitQuantity_${index}`);
         this.itemForm.removeControl(`unitDiscountRate_${index}`);
         this.itemForm.removeControl(`insuranceApprovalCode_${index}`);
