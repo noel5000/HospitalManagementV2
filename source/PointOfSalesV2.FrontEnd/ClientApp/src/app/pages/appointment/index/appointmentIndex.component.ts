@@ -139,18 +139,43 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
        this.changes.detectChanges();
       })
     }
-    async getPatients(){
-      this.patientsService.getAll().subscribe(r=>{
+    async getPatients(name:string){
       
-        this.patients=r;
-        if(this.patients.length==1)
-        this.itemForm.patchValue({
-          patientId:this.patients[0].id
-         });
-         this.changes.detectChanges();
-      })
-    }
+      let filter :QueryFilter[]=[];
 
+      if(name){
+        filter.push(
+          {
+            property: "Name",
+            value: name.toString(),
+            type: ObjectTypes.String,
+            isTranslated: false
+        } as QueryFilter
+        );
+        this.patientsService.getAllFiltered(filter).subscribe(r=>{
+          this.patients=(r['value']);
+        })
+      }
+      else{
+        this.patients=[];
+        this.itemForm.patchValue({patientId:0});
+        this.changes.detectChanges();
+      }
+    
+
+     
+     
+    }
+    async selectPatient(patient:any){
+      if(patient){
+        this.itemForm.patchValue({patientId:patient.id})
+        
+      }
+      else
+      this.itemForm.patchValue({patientId:0})
+
+      this.changes.detectChanges();
+    }
     
     async getDoctors(specialityId:number, hospitalId:number){
       let filter :QueryFilter[]=[];
@@ -226,7 +251,6 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.verifyUser();
         this.getHospitals();
-        this.getPatients();
         this.getMonthAppointments();
         this.getSpecialtities();
         this.OnChanges();

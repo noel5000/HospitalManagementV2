@@ -28,18 +28,7 @@
                 </div>
                 <div class="form-group col-md-12 col-xs-12">
                     <label>{{'patient_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.patientId.errors }"
-                    formControlName="patientId"
-                    disabled
-                    >
-                    <option *ngFor="let customer of customers"
-                     [value]="customer.id"
-                     >{{customer.name}}</option>
-                    </select>
-                    <div *ngIf="form.patientId.errors" class="invalid-feedback">
-                        <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
+                    <input type="text" formControlName="patientName" class="form-control" disabled>
                 </div>
                 <div class="form-group col-md-12 col-xs-12">
                     <label>{{'insurance_lbl' | translate}}</label>

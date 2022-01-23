@@ -45,6 +45,9 @@ import { LanguageService } from '../@core/services/translateService';
 import { PaginationCompoment, NgbdSortableHeader } from './components/pagination/pagination.component';
 import { NgbPaginationModule, NgbDropdownModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from './components/modal/modal.component';
+import { AutoCompleteComponent } from './components/auto-complete/auto-complete.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -65,6 +68,7 @@ const COMPONENTS = [
   LayoutDirectionSwitcherComponent,
   HeaderComponent,
   PaginationCompoment,
+  AutoCompleteComponent,
   NgbdModalConfirmAutofocus,
   FooterComponent,
   SearchInputComponent,
@@ -81,7 +85,7 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES,TranslateModule,NgbPaginationModule, NgbDropdownModule, NgbModalModule],
+  imports: [CommonModule, ...NB_MODULES,TranslateModule,NgbPaginationModule, NgbDropdownModule, NgbModalModule, FormsModule, HttpClientModule],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES,NgbdSortableHeader],
   providers: [LanguageService]

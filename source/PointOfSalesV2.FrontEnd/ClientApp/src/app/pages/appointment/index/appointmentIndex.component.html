@@ -51,13 +51,24 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'patient_lbl' | translate}}</label>
-  <select class="form-control"
+  <custom-auto-complete
+ 
+  [items]="patients"
+  [externalSearch]="true"
+  [propertyToShow]="'name'"
+  (onSelectedItem)="selectPatient($event)"
+  (onFilter)="getPatients($event)"
+  
+  >
+  
+  </custom-auto-complete>
+  <!-- <select class="form-control"
   formControlName="patientId"
   >
   <option *ngFor="let patient of patients"
    [value]="patient.id"
    >{{patient.name}}</option>
-  </select>
+  </select> -->
 </div>
 
    </div>

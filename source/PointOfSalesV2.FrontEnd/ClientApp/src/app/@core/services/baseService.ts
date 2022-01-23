@@ -34,6 +34,9 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     }
     _headers: HttpHeaders;
     httpOptions = {};
+   public get headers(){
+        return this._headers;
+    }
 
     tempHttpOptions = {};
 

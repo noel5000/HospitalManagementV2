@@ -144,7 +144,7 @@ grandPatientPaymentAmount:  [0],
      this.onChanges();
         this.verifyUser();
         this.getEspecialities();
-        this.getPatients();
+       
         this.getHospitals();
     }
 
@@ -294,8 +294,9 @@ grandPatientPaymentAmount:  [0],
         });
     }
 
-    async getPatients(){
+    async getPatients(name:string){
 
+       if(name){
         const filter = [
             {
                 property: "InsurancePlan",
@@ -314,28 +315,60 @@ grandPatientPaymentAmount:  [0],
                 value: "Id,Name",
                 type: ObjectTypes.ChildObject,
                 isTranslated: false
-            } as QueryFilter,
-          
+            } as QueryFilter
         ]
+        if(name)
+        filter.push( {
+            property: "Name",
+            value: name.toString(),
+            type: ObjectTypes.String,
+            isTranslated: false
+        } as QueryFilter);
+        
             this.customerService.getAllFiltered(filter).subscribe(r=>{
-                this.customers=[{id:null, name:""} as Customer];
+                this.customers=[];
                 this.customers=this.customers.concat(r["value"]);
-                if(r["value"].length==1){
-                    this.itemForm.patchValue({
-                        patientId:r["value"][0].id,
-                        insuranceId:r["value"][0].insuranceId,
-                        insurancePlanId:r["value"][0].insurancePlanId,
-                        insuranceName:r["value"][0].insurance?r["value"][0].insurance.name:'',
-                        insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
-                        currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
-                        currencyId:r["value"][0].currencyId,
-                        insuranceCoverageAmount:0
-                    });
-                }
+               
             });
+       }
+            else{
+                this.itemForm.patchValue({
+                    patientId:null,
+                    insuranceId:null,
+                    insurancePlanId:null,
+                    insuranceName:'',
+                    insurancePlanName:'',
+                    insuranceCoverageAmount:0,
+        
+                });
+                this.refreshAmounts(false);
+            }
 
 
+       
     }
+
+    async selectPatient(patient:any){
+        if(patient){
+          this.itemForm.patchValue({patientId:patient.id})
+          
+        }
+        else{
+            this.itemForm.patchValue({
+                patientId:null,
+                insuranceId:null,
+                insurancePlanId:null,
+                insuranceName:'',
+                insurancePlanName:'',
+                insuranceCoverageAmount:0,
+    
+            });
+            this.refreshAmounts(false);
+        }
+       
+  
+        this.changes.detectChanges();
+      }
 
     onChanges(): void {
       

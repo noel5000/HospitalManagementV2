@@ -132,6 +132,7 @@ productPrice:[0],
 totalAmount:[0],
 insuranceCoverageAmount:[0],
 insuranceName:[""],
+patientName:[""],
 insurancePlanName:[""],
 patientPaymentAmount:[0],
 currencyId:[null,[Validators.required, Validators.min(1)]],
@@ -151,9 +152,22 @@ grandPatientPaymentAmount:  [0],
      this.onChanges();
         this.verifyUser();
         this.getEspecialities();
-        this.getPatients();
+       
         this.getHospitals();
     }
+
+ 
+      async selectPatient(patient:any){
+        if(patient){
+          this.itemForm.patchValue({patientId:patient.id})
+          
+        }
+        else
+        this.itemForm.patchValue({patientId:null})
+  
+        this.changes.detectChanges();
+      }
+         
 
     async getItem(){
         this.appointmentService.getById(this.id).subscribe(r=>{
@@ -171,6 +185,7 @@ grandPatientPaymentAmount:  [0],
             appointment.insuranceCoverageAmount=0;
             appointment.patientPaymentAmount=0;
             this.itemForm.patchValue(appointment);
+            this.itemForm.patchValue({patientName:appointment.patient.name});
             this.details=appointment.details;
             if(appointment.productId)
             this.GetProductTaxes(appointment.productId)
@@ -321,7 +336,7 @@ grandPatientPaymentAmount:  [0],
         });
     }
 
-    async getPatients(){
+    async getPatients(name:string){
 
         const filter = [
             {
@@ -341,24 +356,20 @@ grandPatientPaymentAmount:  [0],
                 value: "Id,Name",
                 type: ObjectTypes.ChildObject,
                 isTranslated: false
-            } as QueryFilter,
-          
+            } as QueryFilter
         ]
+        if(name)
+        filter.push( {
+            property: "Name",
+            value: name.toString(),
+            type: ObjectTypes.String,
+            isTranslated: false
+        } as QueryFilter);
+
             this.customerService.getAllFiltered(filter).subscribe(r=>{
-                this.customers=[{id:null, name:""} as Customer];
+                this.customers=[];
                 this.customers=this.customers.concat(r["value"]);
-                if(r["value"].length==1){
-                    this.itemForm.patchValue({
-                        patientId:r["value"][0].id,
-                        insuranceId:r["value"][0].insuranceId,
-                        insurancePlanId:r["value"][0].insurancePlanId,
-                        insuranceName:r["value"][0].insurance?r["value"][0].insurance.name:'',
-                        insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
-                        currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
-                        currencyId:r["value"][0].currencyId,
-                        insuranceCoverageAmount:0
-                    });
-                }
+               
             });
 
 
