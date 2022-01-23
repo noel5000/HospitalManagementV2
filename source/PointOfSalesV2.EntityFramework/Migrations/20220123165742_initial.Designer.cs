@@ -6,26 +6,202 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20210305040006_Initial")]
-    partial class Initial
+    [Migration("20220123165742_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Appointment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("BeforeTaxesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("HospitalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("InsuranceCoverageAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PatientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("PatientPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<decimal>("TaxesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("HospitalId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.AppointmentDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("AppointmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("BeforeTaxesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("InsuranceCoverageAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("MedicalSpecialityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PatientPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("TaxesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("MedicalSpecialityId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("AppointmentDetails");
+                });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.BranchOffice", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -34,21 +210,33 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("NRC")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -62,8 +250,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -72,15 +261,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -89,8 +278,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -109,8 +298,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -122,8 +312,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -135,8 +325,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -151,7 +341,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -171,8 +361,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -190,8 +381,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -206,14 +397,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OpeningClosureDifference")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("OpeningDate")
                         .HasColumnType("datetime2");
@@ -223,20 +414,20 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<decimal>("TotalClosureAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalOpeningAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalPaymentsAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -255,8 +446,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -268,8 +460,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -284,14 +476,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -303,12 +495,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("CashRegisterOpeningDetails");
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
+            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupAttachment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -317,8 +510,135 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("FileAttachementId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PatientChekupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileAttachementId");
+
+                    b.HasIndex("PatientChekupId");
+
+                    b.ToTable("CheckupAttachments");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupPrescription", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AdditionalData")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EmptyStomach")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("MedicalSpecialityId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("MedicinesAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PatientCheckupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProductId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Results")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<string>("WhenToTake")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalSpecialityId");
+
+                    b.HasIndex("PatientCheckupId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CheckupPrescriptions");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -333,33 +653,33 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("GivenAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OutstandingAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("PaymentDestinationId")
                         .HasColumnType("bigint");
@@ -368,22 +688,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PositiveBalance")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -398,8 +718,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -414,8 +735,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -427,8 +748,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -437,13 +758,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalCost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -462,28 +783,29 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("Applied")
                         .HasColumnType("bit");
 
                     b.Property<string>("AppliedInvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -501,19 +823,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OriginInvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -526,28 +848,29 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(3)")
-                        .HasMaxLength(3);
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsLocalCurrency")
                         .HasColumnType("bit");
@@ -556,8 +879,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -580,50 +903,66 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Alergies")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<decimal>("BillingAmountLimit")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BloodTransfusions")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("BloodType")
-                        .HasColumnType("nvarchar(4)")
-                        .HasMaxLength(4);
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("CardId")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("CreditAmountLimit")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("CurrencyId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("FamilyIllnesses")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<string>("InsuranceCardId")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long?>("InsuranceId")
                         .HasColumnType("bigint");
@@ -634,36 +973,53 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("InvoiceDueDays")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Medications")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("SC")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Size")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Surgeries")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<long>("TRNControlId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("TRNType")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("WarehouseId")
                         .HasColumnType("bigint");
+
+                    b.Property<decimal>("Weight")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("ZoneId")
                         .HasColumnType("bigint");
@@ -687,8 +1043,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -697,8 +1054,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -713,14 +1070,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -735,22 +1092,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("CheckbookNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -765,11 +1123,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("InvoiceCurrencyId")
                         .HasColumnType("bigint");
@@ -778,24 +1136,24 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OutstandingAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
@@ -804,18 +1162,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -836,14 +1194,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
@@ -852,8 +1211,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -862,8 +1221,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("CreditNoteNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("CurrencyId")
                         .HasColumnType("bigint");
@@ -878,24 +1237,24 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -916,21 +1275,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -948,15 +1308,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -965,17 +1325,17 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("UnitId")
                         .HasColumnType("bigint");
@@ -996,18 +1356,73 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("CustomersReturnDetails");
                 });
 
+            modelBuilder.Entity("PointOfSalesV2.Entities.ExceptionLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Section")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SectionName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
+                });
+
             modelBuilder.Entity("PointOfSalesV2.Entities.Expense", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
@@ -1016,8 +1431,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1029,47 +1444,47 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ExpenseReference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("GivenAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("PaymentTypeId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("ReturnedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -1079,14 +1494,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("TRN")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1101,79 +1516,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.ExpenseTax", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CurrencyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<long>("ExpenseId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("TRN")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<decimal>("TaxAmount")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<long>("TaxId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurrencyId");
-
-                    b.HasIndex("ExpenseId");
-
-                    b.HasIndex("TaxId");
-
-                    b.ToTable("ExpenseTaxes");
-                });
-
             modelBuilder.Entity("PointOfSalesV2.Entities.ExpensesPayment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -1182,8 +1531,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1195,14 +1544,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ExpenseCurrencyId")
                         .HasColumnType("bigint");
@@ -1211,44 +1560,44 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("ExpenseReference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("GivenAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OutstandingAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PaymentSequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PositiveBalance")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -1258,7 +1607,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1277,46 +1626,162 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("ExpensesPayments");
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+            modelBuilder.Entity("PointOfSalesV2.Entities.ExpenseTax", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Contact1")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Contact2")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("Contact3")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CurrencyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("ExchangeRateAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("ExpenseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TRN")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("TaxId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("ExpenseId");
+
+                    b.HasIndex("TaxId");
+
+                    b.ToTable("ExpenseTaxes");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.FileAttachment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FilePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileAttachments");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("AccountNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Contact1")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Contact2")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Contact3")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1325,19 +1790,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -1351,8 +1816,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -1361,8 +1827,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1374,15 +1840,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -1398,24 +1864,25 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("ConsultationPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("CoverageAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1433,8 +1900,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -1462,8 +1929,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -1475,8 +1943,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1485,8 +1953,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -1495,7 +1963,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -1520,14 +1988,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("BeforeTaxAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
@@ -1536,8 +2005,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1549,21 +2018,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -1572,30 +2041,30 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("ProductCost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TaxAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -1624,17 +2093,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("AppliedCreditNoteAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("AppointmentId")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("BillingDate")
                         .HasColumnType("datetime2");
@@ -1646,14 +2119,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1665,24 +2138,27 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("DiscountRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("DocumentNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("InsuranceCardId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("InsuranceCoverageAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("InsuranceId")
                         .HasColumnType("bigint");
@@ -1694,15 +2170,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -1711,55 +2187,60 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("NRC")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("PaidDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("PatientPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("ReceivedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ReturnedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("SellerId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("TRN")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("TRNControlId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("TRNType")
-                        .HasColumnType("nvarchar(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("WarehouseId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
 
                     b.HasIndex("BranchOfficeId");
 
@@ -1782,86 +2263,112 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long?>("AppointmentId")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("CreditNoteAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("DiscountRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Free")
                         .HasColumnType("bit");
 
+                    b.Property<string>("InsuranceApprovalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("InsuranceCoverageAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<long>("InvoiceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("MedicalSpecialityId")
                         .HasColumnType("bigint");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("NoCoverage")
+                        .HasColumnType("bit");
+
                     b.Property<long?>("ParentId")
                         .HasColumnType("bigint");
 
+                    b.Property<decimal>("PatientPaymentAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("PrincipalCurrencyAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<long?>("UnitId")
                         .HasColumnType("bigint");
@@ -1871,7 +2378,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoctorId");
+
                     b.HasIndex("InvoiceId");
+
+                    b.HasIndex("MedicalSpecialityId");
 
                     b.HasIndex("ProductId");
 
@@ -1884,17 +2395,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("AppliedCreditNoteAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("BillingDate")
                         .HasColumnType("datetime2");
@@ -1906,14 +2418,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1931,18 +2443,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("DiscountRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("DocumentNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("InventoryModified")
                         .HasColumnType("bit");
@@ -1951,8 +2463,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long?>("MenuId")
                         .HasColumnType("bigint");
@@ -1961,23 +2473,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ReceivedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ReturnedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("SchoolId")
                         .HasColumnType("bigint");
@@ -1986,21 +2498,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("TRN")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("WarehouseId")
                         .HasColumnType("bigint");
@@ -2036,8 +2548,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -2046,8 +2559,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2062,25 +2575,25 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("TRN")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TaxAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("TaxId")
                         .HasColumnType("bigint");
@@ -2099,8 +2612,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
             modelBuilder.Entity("PointOfSalesV2.Entities.Language", b =>
                 {
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -2109,8 +2622,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2122,8 +2635,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -2165,12 +2678,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
             modelBuilder.Entity("PointOfSalesV2.Entities.LanguageKey", b =>
                 {
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("nvarchar(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<string>("Key")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -2179,8 +2692,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2192,8 +2705,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -2209,22 +2722,32 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
-                            Key = "accountsReceivable_menu",
+                            Key = "administration_menu",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Accounts Receivable"
+                            Value = "Administration"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "administration_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Administración"
                         },
                         new
                         {
                             LanguageCode = "EN",
-                            Key = "accountState_menu",
+                            Key = "accountNumber_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Account State"
+                            Value = "Account number"
                         },
                         new
                         {
@@ -2239,7 +2762,17 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
-                            Key = "add_btn",
+                            Key = "additionalInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Additional linfo"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "addMedicine_btn",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -2279,12 +2812,42 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "age_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Age"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "all_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "All"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "AlreadyExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Already exist"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "alreadyNull_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Already nulled"
                         },
                         new
                         {
@@ -2319,6 +2882,96 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "appointment_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentAlreadyProcessed_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment already processed"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentExist_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment already exist"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "AppointmentIsProcess_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment is processed already"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentNotValid_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment not valid"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentNulled_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment is nulled"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentNumber_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment number"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointments"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "appointmentType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Appointment type"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "april_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -2344,7 +2997,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Are you sure ? "
+                            Value = "Are you sure?"
                         },
                         new
                         {
@@ -2355,6 +3008,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Assigned Warehouse"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "attachments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Attachments"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "attend_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Attend"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "attendedBy_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Attended by"
                         },
                         new
                         {
@@ -2385,6 +3068,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Balance"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "banktransfer_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Bank transfer"
                         },
                         new
                         {
@@ -2519,6 +3212,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "billingStateF_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "In Progress"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "billingStateG_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -2599,12 +3302,42 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "billingStateS_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Scheduled"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "birthDate_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Birth date"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "birthDay_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Birth day"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "bloodType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Blood type"
                         },
                         new
                         {
@@ -2794,7 +3527,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Opening / Closing"
+                            Value = "Opening/Closing"
                         },
                         new
                         {
@@ -2825,6 +3558,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Checkbook number"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "checkupNumber_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Checkup number"
                         },
                         new
                         {
@@ -2939,6 +3682,76 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "consultation_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Consultation"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "consultation_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Consultation"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "consultations_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Consultations"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "consultationType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Consultation type"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "contact1_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Contact 1"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "contact2_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Contact 2"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "contact3_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Contact 3"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "contacts_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -2965,6 +3778,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Cost"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "coverageAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Coverage amount"
                         },
                         new
                         {
@@ -3014,7 +3837,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Credit limit reached.Cannot continue."
+                            Value = "Credit limit reached. Cannot continue."
                         },
                         new
                         {
@@ -3314,7 +4137,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Defective warehouse does not exist.Please create one with 'DEF' as code first. "
+                            Value = "Defective warehouse does not exist. Please create one with 'DEF' as code first. "
                         },
                         new
                         {
@@ -3334,7 +4157,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Are you sure you want to delete ? "
+                            Value = "Are you sure you want to delete?"
                         },
                         new
                         {
@@ -3389,6 +4212,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "details_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Details"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "details_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3409,12 +4242,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "diagnoses_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Diagnoses"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "differentCurrency_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
-                            Value = "Currencies are different.You can only apply the same currency. "
+                            Value = "Currencies are different. You can only apply the same currency. "
                         },
                         new
                         {
@@ -3449,6 +4292,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "doctor_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Doctor"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "doctorRequired_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Doctor required"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "documentDoesntExist_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Document does not exist"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "documentNumber_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3465,6 +4338,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Edit"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "editAppointment_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Edit Appointment"
                         },
                         new
                         {
@@ -3489,12 +4372,32 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "emptyAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Empty apointment"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "emptyInvoice_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Invoice doesn't have any details. Cannot be empty."
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "emptyStomach_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Empty stomach"
                         },
                         new
                         {
@@ -3535,6 +4438,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Error dictionary"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "especializedImages_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Especialized images"
                         },
                         new
                         {
@@ -3659,6 +4572,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "fieldsRequired_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Fields required"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "fixedComission_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3709,6 +4632,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "history_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "History"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "hospital_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Hospital"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "hospitals_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Hospitals"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "id_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -3735,6 +4688,106 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Income Receipts"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insurance_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceApprovalCode_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance approval code"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceCard_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance card"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceCardId_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance card ID"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceCoverage_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance coverage"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceCoverageAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance coverage amount"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insuranceCoveragesReport_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Coverages report"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insurancePlan_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurance plan"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "insurances_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Insurances"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "invalidConsultationAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Invalid consultation APPOINTMENT"
                         },
                         new
                         {
@@ -3969,6 +5022,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "laboratory_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Laboratory"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "labTests_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Lab tests"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "language_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4089,6 +5162,86 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "medicalConsultation_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medical consultation"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medicalSpecialities_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medical specialities"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medicalSpeciality_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medical speciality"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medicalSpecialty_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medical speciality"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medication_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medication"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medications_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medications"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medicine_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medicine"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "medicineWarehouse_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Medicine warehouses"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "menu_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4169,6 +5322,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "nameRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Name required"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "no_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4179,12 +5342,32 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "noCoverage_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "No coverage"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "notExistingClass_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Cannot process this product/Service. Class does not exist."
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "notFound_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Not found"
                         },
                         new
                         {
@@ -4275,6 +5458,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Operation completed successfully."
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "onlyOneConsultationPerAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Only one medical consultation per appointment."
                         },
                         new
                         {
@@ -4439,6 +5632,56 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "patient_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Patient"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "patientAppointments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Active patient's appointments"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "patientCheckups_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Patient checkups"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "patientPaymentAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Patient payment amount"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "patients_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Patients"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "pay_btn",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4509,6 +5752,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "plans_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Plans"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "pleaseSelect_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4539,6 +5792,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "prescriptionTypes_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Prescription types"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "price_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -4559,7 +5822,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
-                            Key = "Price3_lbl",
+                            Key = "price3_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -4989,6 +6252,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "selectedDate_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Selected date"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "selectedlabTests_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Selected lab tests"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "seller_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5089,6 +6372,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "specializedImages_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Specialized images"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "start_menu",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5175,6 +6468,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Suppliers Returns"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "symptoms_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Symptoms"
                         },
                         new
                         {
@@ -5279,6 +6582,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "time_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Time"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "totalAmount_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5325,6 +6638,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 1L,
                             Value = "Total income"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "totalInsuranceCoverage_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Total Coverage amount"
                         },
                         new
                         {
@@ -5489,6 +6812,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "upload_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Upload"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "user_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5589,6 +6922,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "EN",
+                            Key = "whenToTake_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "When to Take"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
                             Key = "yes_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5619,6 +6962,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "accountNumber_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Número de cuenta"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "accountsReceivable_menu",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5634,7 +6987,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Estado de cuentas"
+                            Value = "estádo de cuentas"
                         },
                         new
                         {
@@ -5650,6 +7003,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         {
                             LanguageCode = "ES",
                             Key = "add_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Agregar"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "additionalInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Informacion adicional"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "addMedicine_btn",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -5689,12 +7062,42 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "age_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Edad"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "all_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Todos"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "AlreadyExist_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Ya existe un registro"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "alreadyNull_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Ya se encuentra anulado"
                         },
                         new
                         {
@@ -5725,6 +7128,96 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Monto NC aplicada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointment_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Citas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentAlreadyProcessed_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "La cita ya se encuentra procesada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentExist_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Ya existe una cita para la fecha y hora seleccionada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "AppointmentIsProcess_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "La cita ya se encuentra en proceso"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentNotValid_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Cita no válida"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentNulled_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "La cita está anulada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentNumber_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "No. de cita"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Citas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "appointmentType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tipo de cita"
                         },
                         new
                         {
@@ -5769,6 +7262,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "attachments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Adjuntos"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "attend_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Atender"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "attendedBy_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Atendido por"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "aug_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -5795,6 +7318,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Balance"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "banktransfer_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Transferencia bancaria"
                         },
                         new
                         {
@@ -5833,7 +7366,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Facturar Cotización"
                         },
                         new
@@ -5843,8 +7376,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Está seguro de facturar esta cotización?"
+                            LanguageId = 2L,
+                            Value = "Está seguro de facturar la cotización?"
                         },
                         new
                         {
@@ -5929,6 +7462,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "billingStateF_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "En progreso"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "billingStateG_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6009,12 +7552,42 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "billingStateS_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Agendado"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "birthDate_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Fecha de nacimiento"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "birthDay_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Fecha de nacimiento"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "bloodType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tipo de sangre"
                         },
                         new
                         {
@@ -6133,7 +7706,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Identificación ya existe."
                         },
                         new
@@ -6235,6 +7808,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Número de talonario"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "checkupNumber_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Secuencia de chequeo"
                         },
                         new
                         {
@@ -6349,6 +7932,76 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "consultation_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Consulta"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "consultation_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Consultas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "consultations_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Consultas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "consultationType_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tipo de consulta"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "contact1_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Contacto 1"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "contact2_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Contacto 2"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "contact3_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Contacto 3"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "contacts_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6375,6 +8028,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Costo"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "coverageAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Monto Cobertura"
                         },
                         new
                         {
@@ -6433,7 +8096,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Nota de crédito"
                         },
                         new
@@ -6443,7 +8106,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Moto de Nota de crédito"
                         },
                         new
@@ -6583,7 +8246,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Devolución de clientes"
                         },
                         new
@@ -6799,6 +8462,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "details_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Detalles"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "details_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6813,8 +8486,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Detalles son obligatorios"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "diagnoses_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Diagnostico"
                         },
                         new
                         {
@@ -6859,6 +8542,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "doctor_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Doctor"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "doctorRequired_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "El doctor es un campo obligatorio. Favor seleccionar uno"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "documentDoesntExist_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Documento no existe"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "documentNumber_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -6875,6 +8588,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Editar"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "editAppointment_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Editar Cita"
                         },
                         new
                         {
@@ -6899,12 +8622,32 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "emptyAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "La cita no puede estár vacía"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "emptyInvoice_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "La factura no tiene detalles, esta no puede ser vacía."
+                            Value = "La factura no tiene detalles"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "emptyStomach_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Estómago vacio"
                         },
                         new
                         {
@@ -6945,6 +8688,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Error de diccionario"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "especializedImages_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Imágenes especializadas"
                         },
                         new
                         {
@@ -7069,6 +8822,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "fieldsRequired_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Campos obligatorios antes de continuar"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "fixedComission_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7119,6 +8882,36 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "history_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Historial Médico"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "hospital_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Clínica"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "hospitals_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Clínicas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "id_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7149,6 +8942,106 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "insurance_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Aseguradora"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceApprovalCode_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Código de aprobación aseguradora"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceCard_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Carnet de asegurado"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceCardId_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Carnet de asegurado"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceCoverage_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Coberturas aseguradoras"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceCoverageAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Monto de Cobertura"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insuranceCoveragesReport_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Reporte de Coberturas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insurancePlan_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Plan"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "insurances_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Aseguradoras"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "invalidConsultationAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Cita no válida"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "invalidInvoice_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7159,12 +9052,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
-                            Key = "invalidInvoiceStateReturn_error",
+                            Key = "invalidInvoicestáteReturn_error",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Estado de factura no es válido"
+                            LanguageId = 2L,
+                            Value = "estádo de factura no es válido"
                         },
                         new
                         {
@@ -7213,7 +9106,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Número de factura no exixste"
                         },
                         new
@@ -7263,7 +9156,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Número de factura es requerido"
                         },
                         new
@@ -7375,6 +9268,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Junio"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "laboratory_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Laboratorio"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "labTests_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Pruebas de laboratorios"
                         },
                         new
                         {
@@ -7499,6 +9412,86 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "medicalConsultation_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Consulta médica"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medicalSpecialities_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Especialidades médicas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medicalSpeciality_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Especialidad médica"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medicalSpecialty_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Especialidad médica"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medication_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "medicamento"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medications_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "medicación"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medicine_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Medicina"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "medicineWarehouse_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Almacenes medicinas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "menu_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7579,6 +9572,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "nameRequired_error",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Nombre es requerido"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "no_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7589,12 +9592,32 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "noCoverage_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Sin cobertura"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "notExistingClass_msg",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "No se puede procesar este producto/servicio. La clase no existe."
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "notFound_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "No encontrado"
                         },
                         new
                         {
@@ -7624,7 +9647,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "RNC"
+                            Value = "NRC"
                         },
                         new
                         {
@@ -7685,6 +9708,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Operación completada con éxito."
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "onlyOneConsultationPerAppointment_msg",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Solo se permite una consulta médica por cita"
                         },
                         new
                         {
@@ -7849,6 +9882,56 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "patient_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Paciente"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "patientAppointments_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Citas Activas del paciente"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "patientCheckups_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Chequeo de paciente"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "patientPaymentAmount_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Monto a pagar paciente"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "patients_menu",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Pacientes"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "pay_btn",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7919,6 +10002,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "plans_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Planes"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "pleaseSelect_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7949,6 +10042,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "prescriptionTypes_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tipos de prescripciones médicas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "price_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -7969,7 +10072,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
-                            Key = "Price3_lbl",
+                            Key = "price3_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -8114,7 +10217,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Cotizaciones"
+                            Value = "Conduces"
                         },
                         new
                         {
@@ -8234,7 +10337,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Estado resultado"
+                            Value = "estádo resultado"
                         },
                         new
                         {
@@ -8243,7 +10346,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "La devolución ya se encuentra aplicada"
                         },
                         new
@@ -8333,7 +10436,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
+                            LanguageId = 2L,
                             Value = "Existe información guardada en este formulario. Desea recuperarla?"
                         },
                         new
@@ -8395,6 +10498,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Seleccionar columnas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "selectedDate_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Fecha seleccionada"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "selectedlabTests_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Pruebas de laboratorios seleccionadas"
                         },
                         new
                         {
@@ -8493,8 +10616,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LanguageId = 1L,
-                            Value = "Session expired. Please login again."
+                            LanguageId = 2L,
+                            Value = "La sesión ha expirado. Favor iniciar sesión nuevamente."
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "specializedImages_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Imágenes especializadas"
                         },
                         new
                         {
@@ -8524,7 +10657,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
-                            Value = "Estado"
+                            Value = "estádo"
                         },
                         new
                         {
@@ -8585,6 +10718,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Devoluciones a suplidor"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "symptoms_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Sintomas"
                         },
                         new
                         {
@@ -8689,6 +10832,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "time_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Hora"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "totalAmount_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -8735,6 +10888,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Monto total de entradas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "totalInsuranceCoverage_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Monto total de Cobertura"
                         },
                         new
                         {
@@ -8899,6 +11062,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "upload_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Cargar"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "user_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -8999,6 +11172,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         new
                         {
                             LanguageCode = "ES",
+                            Key = "whenToTake_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Cuando tomar?"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
                             Key = "yes_lbl",
                             Active = true,
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -9025,6 +11208,266 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LanguageId = 2L,
                             Value = "Zonas"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "1-0-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Mañana"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "1-1-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Mañana - Tarde"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "1-0-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Mañana - Noche"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "1-1-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Mañana - Tarde - Noche"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "0-1-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tarde"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "0-1-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Tarde - Noche"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "0-0-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Noche"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "1-0-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Morning"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "1-1-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Morning - Afternoon"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "1-0-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Morning - Night"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "1-1-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Morning - Afternoon - Night"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "0-1-0",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Afternoon"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "0-1-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Afternoon - Night"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "0-0-1",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Night"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "observations_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Observations"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "observations_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Observaciones"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "billingStateR_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Full Paid"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "billingStateR_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Pago Completado"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "search_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Search"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "search_btn",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Buscar"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "creditNoteInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Add Credit Note"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "creditNoteInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Aplicar Nota de Crédito"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "newItems_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "New Items"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "newItems_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Agregar Articulos"
+                        },
+                        new
+                        {
+                            LanguageCode = "EN",
+                            Key = "invoiceInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 1L,
+                            Value = "Basic Information"
+                        },
+                        new
+                        {
+                            LanguageCode = "ES",
+                            Key = "invoiceInfo_lbl",
+                            Active = true,
+                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LanguageId = 2L,
+                            Value = "Información Básica"
                         });
                 });
 
@@ -9032,49 +11475,50 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("CreditNoteAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("DiscountRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -9090,8 +11534,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9100,22 +11544,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PrincipalCurrencyAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("UnitId")
                         .HasColumnType("bigint");
@@ -9140,8 +11584,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9150,8 +11595,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9160,8 +11605,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9178,8 +11623,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9188,8 +11634,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9201,15 +11647,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("WeekNumber")
                         .HasColumnType("tinyint");
@@ -9223,34 +11669,35 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("BeforeTaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9262,8 +11709,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9272,19 +11719,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("PrincipalCurrencyAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TaxesAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long?>("UnitId")
                         .HasColumnType("bigint");
@@ -9307,8 +11754,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9320,8 +11768,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9330,8 +11778,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9370,21 +11818,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9393,8 +11842,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9411,8 +11860,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9421,8 +11871,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9431,8 +11881,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9449,181 +11899,323 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         {
                             Id = 1L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""LEER""}],""EN"":[{""PropertyName"":""Name"",""Value"":""READ""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"READ\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"READ\"}]}"
                         },
                         new
                         {
                             Id = 2L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""AGREGAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""ADD""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ADD\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ADD\"}]}"
                         },
                         new
                         {
                             Id = 3L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""ACTUALIZAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""UPDATE""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"UPDATE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"UPDATE\"}]}"
                         },
                         new
                         {
                             Id = 4L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""BORRAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""DELETE""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DELETE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DELETE\"}]}"
                         },
                         new
                         {
                             Id = 5L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""LEER TODOS""}],""EN"":[{""PropertyName"":""Name"",""Value"":""READ ALL""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"READALL\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"READALL\"}]}"
                         },
                         new
                         {
                             Id = 6L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""EXPORTAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""EXPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"EXPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"EXPORT\"}]}"
                         },
                         new
                         {
                             Id = 7L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""TODO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""ALL""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ALL\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ALL\"}]}"
                         },
                         new
                         {
                             Id = 8L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""NINGUNO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""NONE""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"NONE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"NONE\"}]}"
                         },
                         new
                         {
                             Id = 9L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE ESTADO DE CUENTA""}],""EN"":[{""PropertyName"":""Name"",""Value"":""ACCOUNT STATE REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTSTATEREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTSTATEREPORT\"}]}"
                         },
                         new
                         {
                             Id = 10L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE RECIBOS INGRESOS""}],""EN"":[{""PropertyName"":""Name"",""Value"":""RECEIPTS REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"RECEIPTSREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"RECEIPTSREPORT\"}]}"
                         },
                         new
                         {
                             Id = 11L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""CUENTAS POR PAGAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""DEBTS TO PAY REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DEBTSTOPAYREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DEBTSTOPAYREPORT\"}]}"
                         },
                         new
                         {
                             Id = 12L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""MENU""}],""EN"":[{""PropertyName"":""Name"",""Value"":""MENU""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"MENU\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"MENU\"}]}"
                         },
                         new
                         {
                             Id = 13L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE DE INVENTARIO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""INVENTORY REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"INVENTORYREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"INVENTORYREPORT\"}]}"
                         },
                         new
                         {
                             Id = 14L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""CUENTAS POR COBRAR""}],""EN"":[{""PropertyName"":""Name"",""Value"":""ACCOUNT RECEIVABLES""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTRECEIVABLES\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTRECEIVABLES\"}]}"
                         },
                         new
                         {
                             Id = 15L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE DE VENTAS""}],""EN"":[{""PropertyName"":""Name"",""Value"":""SALES REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SALESREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SALESREPORT\"}]}"
                         },
                         new
                         {
                             Id = 16L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE IMPUESTOS""}],""EN"":[{""PropertyName"":""Name"",""Value"":""TAX REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TAXREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TAXREPORT\"}]}"
                         },
                         new
                         {
                             Id = 17L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""GENERAR DICCIONARIO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""GENERATE DICTIONARY""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"GENERATEDICTIONARY\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"GENERATEDICTIONARY\"}]}"
                         },
                         new
                         {
                             Id = 18L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""REPORTE COMISIONES""}],""EN"":[{""PropertyName"":""Name"",""Value"":""COMISSIONS REPORT""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"COMISSIONSREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"COMISSIONSREPORT\"}]}"
                         },
                         new
                         {
                             Id = 19L,
                             Active = true,
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""MOVIMIENTOS DE PRODUCTO""}],""EN"":[{""PropertyName"":""Name"",""Value"":""PRODUCT MOVEMENTS""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PRODUCTMOVEMENTS\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PRODUCTMOVEMENTS\"}]}"
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            Active = true,
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PATIENSHISTORY\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PATIENSHISTORY\"}]}"
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            Active = true,
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ATTENDPATIENT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ATTENDPATIENT\"}]}"
                         });
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.PatientCheckup", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("AppointmentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ConsultationReason")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Diagnoses")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagesResults")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<long?>("InsuranceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("InsurancePlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("LaboratoriesResults")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("MedicalBackground")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("PatientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PhysicalExam")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamChest")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamExtremities")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamHeadNeck")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamHeart")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamLungs")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PhysicalExamStomach")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Plan")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Symptoms")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("InsurancePlanId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("PatientCheckups");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Payment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9632,8 +12224,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9648,54 +12240,54 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("InvoiceCurrencyId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("ReceiptNumber")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long?>("SellerId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("SellerPercentage")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -9716,8 +12308,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9729,8 +12322,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9742,23 +12335,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("PaidAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -9773,8 +12366,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -9786,8 +12380,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9796,15 +12390,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -9822,8 +12412,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "CASH",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CASH\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CASH\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Efectivo\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Cash\"}]}"
                         },
                         new
                         {
@@ -9833,8 +12422,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "CHECK",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CHECK\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CHECK\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Cheque\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Check\"}]}"
                         },
                         new
                         {
@@ -9844,8 +12432,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "CREDITCARD",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CREDITCARD\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CREDITCARD\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Tarjeta de Crédito\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Credit Card\"}]}"
                         },
                         new
                         {
@@ -9855,8 +12442,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "BANKTRANSFER",
-                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"BANKTRANSFER\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"BANKTRANSFER\"}]}"
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Transferencia Bancaria\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Bank Transfer\"}]}"
                         });
                 });
 
@@ -9864,25 +12450,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9897,7 +12484,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Existence")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsCompositeProduct")
                         .HasColumnType("bit");
@@ -9905,38 +12492,47 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<bool>("IsService")
                         .HasColumnType("bit");
 
+                    b.Property<long?>("MedicalSpecialityId")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price2")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Price3")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("SellerRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
+
+                    b.HasIndex("MedicalSpecialityId");
 
                     b.ToTable("Products");
                 });
@@ -9945,21 +12541,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -9968,8 +12565,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -9996,8 +12593,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -10006,8 +12604,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -10016,8 +12614,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -10041,8 +12639,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -10051,8 +12650,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -10061,8 +12660,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -10409,8 +13008,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -10419,8 +13019,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -10429,8 +13029,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -12310,15 +14910,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<long?>("AssignedWarehouseId")
                         .HasColumnType("bigint");
@@ -12327,15 +14928,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -12353,19 +14954,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -12392,22 +14993,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -12416,23 +15018,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Position")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("SchoolId")
                         .HasColumnType("bigint");
@@ -12451,22 +15053,23 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Controllers")
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -12475,8 +15078,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -12494,520 +15097,590 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Id = 1L,
                             Active = true,
                             Controllers = "User,UserClaims,Role,RoleSection,Section,SectionOperation",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Permisos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Permissions""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Permissions\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Permissions\"}]}"
                         },
                         new
                         {
                             Id = 2L,
                             Active = true,
                             Controllers = "Customer,CustomerRate",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Tarifas de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customer Rates""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerRates\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerRates\"}]}"
                         },
                         new
                         {
                             Id = 3L,
                             Active = true,
-                            Controllers = "Product,ProductTax,ProductUnit,CompositeProduct,ProductCost",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Products""}]}
-"
+                            Controllers = "Product,ProductTax,MedicalSpeciality,Tax,ProductUnit,ProductCost,ProductComposite",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}]}"
                         },
                         new
                         {
                             Id = 4L,
                             Active = true,
                             Controllers = "Customer,CustomerPayment",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customer Payments""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}]}"
                         },
                         new
                         {
                             Id = 5L,
                             Active = true,
                             Controllers = "Currency",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Monedas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Currencies""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Currencies\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Currencies\"}]}"
                         },
                         new
                         {
                             Id = 6L,
                             Active = true,
                             Controllers = "Tax",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Impuestos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Taxes""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Taxes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Taxes\"}]}"
                         },
                         new
                         {
                             Id = 7L,
                             Active = true,
-                            Controllers = "Invoice,InvoiceDetail,TRNControl,Unit,UnitProductEquivalence,Seller,BranchOffice,Warehouse,CreditNote,Currency,Customer,Inventory,PaymentType",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Facturas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Invoices""}]}
-"
+                            Controllers = "Invoice,InvoiceDetail,TRNControl,Unit,UnitProductEquivalence,Seller,BranchOffice,Warehouse,CreditNote,Currency,Customer,Inventory,PaymentType,Insurance,InsurancePlan",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}]}"
                         },
                         new
                         {
                             Id = 8L,
                             Active = true,
-                            Controllers = "Invoice,InvoiceDetail,Unit,UnitProductEquivalence,Seller,Currency,Customer",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cotizaciones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Quotes""}]}
-"
+                            Controllers = "Invoice,InvoiceDetail,Unit,UnitProductEquivalence,Seller,Currency,Customer,Insurance,InsurancePlan",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}]}"
                         },
                         new
                         {
                             Id = 9L,
                             Active = true,
-                            Controllers = "Customer,BranchOffice,Warehouse,TRNControl,Zone",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""CLientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customers""}]}
-"
+                            Controllers = "Customer,BranchOffice,Warehouse,TRNControl,Zone,Invoice,InvoicePlan,Insurance,InsurancePlan",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}]}"
                         },
                         new
                         {
                             Id = 10L,
                             Active = true,
                             Controllers = "BranchOffice,Warehouse",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Almacenes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Warehouses""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Warehouses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Warehouses\"}]}"
                         },
                         new
                         {
                             Id = 11L,
                             Active = true,
                             Controllers = "*",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Todos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""All""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"All\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"All\"}]}"
                         },
                         new
                         {
                             Id = 12L,
                             Active = true,
                             Controllers = "Inventory,Product,BranchOffice,Warehouse,Supplier",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Inventarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Inventories""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Inventories\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Inventories\"}]}"
                         },
                         new
                         {
                             Id = 13L,
                             Active = true,
                             Controllers = "TRNControl",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Control NCF""}],""EN"":[{""PropertyName"":""Name"",""Value"":""TRN Control""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TRNControl\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TRNControl\"}]}"
                         },
                         new
                         {
                             Id = 14L,
                             Active = true,
                             Controllers = "Supplier,Expense,Tax,ExpenseTax,Currency",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Gastos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Expenses""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}]}"
                         },
                         new
                         {
                             Id = 15L,
                             Active = true,
                             Controllers = "BranchOffice,Warehouse",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Oficinas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""BranchOffices""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"BranchOffices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"BranchOffices\"}]}"
                         },
                         new
                         {
                             Id = 16L,
                             Active = true,
-                            Controllers = "ExpensesPayment,Supplier,BranchOffice,User,Currency,Tax",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos a suplidores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Expenses Payments""}]}
-"
+                            Controllers = "Supplier,BranchOffice,User,Currency,Tax,ExpensesPayment",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensesPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensesPayments\"}]}"
                         },
                         new
                         {
                             Id = 17L,
                             Active = true,
                             Controllers = "Supplier",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Suplidores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Suppliers""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Suppliers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Suppliers\"}]}"
                         },
                         new
                         {
                             Id = 18L,
                             Active = true,
                             Controllers = "Unit",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Units""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Units\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Units\"}]}"
                         },
                         new
                         {
                             Id = 19L,
                             Active = true,
-                            Controllers = "User,BranchOffice,Warehouse,CashRegister",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Users""}]}
-"
+                            Controllers = "User,BranchOffice,Warehouse,CashRegister,MedicalSpeciality",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Users\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Users\"}]}"
                         },
                         new
                         {
                             Id = 20L,
                             Active = true,
                             Controllers = "PaymentType",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Tipos de pagos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Payment Types""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PaymentTypes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PaymentTypes\"}]}"
                         },
                         new
                         {
                             Id = 21L,
                             Active = true,
                             Controllers = "CashRegister,BranchOffice",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cajas registradoras""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Registers""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisters\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisters\"}]}"
                         },
                         new
                         {
                             Id = 22L,
                             Active = true,
-                            Controllers = "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Aperturas / cierre de cajas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings""}]}
-"
+                            Controllers = "CashRegister,User,CashRegisterOpening",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpenings\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpenings\"}]}"
                         },
                         new
                         {
                             Id = 23L,
                             Active = true,
-                            Controllers = "CashRegister,User,CashRegisterOpening,CashRegisterOpeningDetail",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Montos de aperturas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Cash Register Openings Amounts""}]}
-"
+                            Controllers = "CashRegister,User,CashRegisterOpening",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpeningsAmounts\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpeningsAmounts\"}]}"
                         },
                         new
                         {
                             Id = 24L,
                             Active = true,
                             Controllers = "Supplier,Product,Tax,User",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Movimientos de entrada""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Income Movements""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeMovements\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeMovements\"}]}"
                         },
                         new
                         {
                             Id = 25L,
                             Active = true,
                             Controllers = "Invoice,Product,InvoiceDetail,Customer",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Devolucion de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customers Returns""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}]}"
                         },
                         new
                         {
                             Id = 26L,
                             Active = true,
                             Controllers = "Supplier,Expense,Tax,Currency,SupplierReturn",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Devoluciones a suplidor""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Suppliers Returns""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SuppliersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SuppliersReturns\"}]}"
                         },
                         new
                         {
                             Id = 27L,
                             Active = true,
                             Controllers = "BranchOffice,Warehouse,User,Product,Unit,WarehouseTransfer",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Transferencias entre almacenes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Warehouse Transfers""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}]}"
                         },
                         new
                         {
                             Id = 28L,
                             Active = true,
-                            Controllers = "Product,Unit,ProductUnit",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Unidades de productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Product Units""}]}
-"
+                            Controllers = "Product,Unit,",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductUnits\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductUnits\"}]}"
                         },
                         new
                         {
                             Id = 29L,
                             Active = true,
                             Controllers = "Role",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Roles""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Roles\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Roles\"}]}"
                         },
                         new
                         {
                             Id = 30L,
                             Active = true,
                             Controllers = "Section",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Secciones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sections""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sections\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sections\"}]}"
                         },
                         new
                         {
                             Id = 31L,
                             Active = true,
                             Controllers = "Operation",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Operaciones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Operations""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Operations\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Operations\"}]}"
                         },
                         new
                         {
                             Id = 32L,
                             Active = true,
                             Controllers = "Seller,Zone,BranchOffice",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Vendedores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sellers""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}]}"
                         },
                         new
                         {
                             Id = 33L,
                             Active = true,
                             Controllers = "Zone",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Zonas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Zones""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Zones\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Zones\"}]}"
                         },
                         new
                         {
                             Id = 34L,
                             Active = true,
                             Controllers = "Users,Role,UserRole",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Roles de usuarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""User Roles""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"UserRoles\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"UserRoles\"}]}"
                         },
                         new
                         {
                             Id = 35L,
                             Active = true,
                             Controllers = "",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pantalla principal""}],""EN"":[{""PropertyName"":""Name"",""Value"":""DashBoard""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DashBoard\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DashBoard\"}]}"
                         },
                         new
                         {
                             Id = 36L,
                             Active = true,
                             Controllers = "Invoice",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Reporte de ventas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Sales Report""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SalesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SalesReport\"}]}"
                         },
                         new
                         {
                             Id = 37L,
                             Active = true,
                             Controllers = "Invoice",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cuentas por cobrar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Accounts Receivable""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountsReceivable\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountsReceivable\"}]}"
                         },
                         new
                         {
                             Id = 38L,
                             Active = true,
-                            Controllers = "CustomerPayment",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Recibos de ingresos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Income Receipts""}]}
-"
+                            Controllers = "CustomerPayment,Invoice",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeReceipts\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeReceipts\"}]}"
                         },
                         new
                         {
                             Id = 39L,
                             Active = true,
                             Controllers = "Invoice,CustomerPayment,Seller",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Comisiones""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Commisions""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Commisions\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Commisions\"}]}"
                         },
                         new
                         {
                             Id = 40L,
                             Active = true,
                             Controllers = "Product,Inventory,WarehouseMovement",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Movimientos de productos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Product Movements""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductMovements\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductMovements\"}]}"
                         },
                         new
                         {
                             Id = 41L,
                             Active = true,
                             Controllers = "Expense",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Cuentas por pagar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Debst To Pay""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DebstToPay\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DebstToPay\"}]}"
                         },
                         new
                         {
                             Id = 42L,
                             Active = true,
                             Controllers = "Product",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Listado de precios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Price List""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PriceList\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PriceList\"}]}"
                         },
                         new
                         {
                             Id = 43L,
                             Active = true,
                             Controllers = "Customer",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Listado de clientes""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Customers List""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersList\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersList\"}]}"
                         },
                         new
                         {
                             Id = 44L,
                             Active = true,
-                            Controllers = "Invoice,Expense,CustomerPayment",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Estado de cuentas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Account State""}]}
-"
+                            Controllers = "Customer,Invoice,CustomerPayment",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountState\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountState\"}]}"
                         },
                         new
                         {
                             Id = 45L,
                             Active = true,
                             Controllers = "Invoice,Expense,CompanyState",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Estado compania""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Result State""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ResultState\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ResultState\"}]}"
                         },
                         new
                         {
                             Id = 46L,
                             Active = true,
-                            Controllers = "Tax,Invoice,InvoiceTax",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Reportes de impuestos""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Taxes Report""}]}
-"
+                            Controllers = "Tax,InvoiceTax",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TaxesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TaxesReport\"}]}"
                         },
                         new
                         {
                             Id = 47L,
                             Active = true,
                             Controllers = "InventoryEntry",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Entrada de inventarios""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Inventory Incomes""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}]}"
                         },
                         new
                         {
                             Id = 48L,
                             Active = true,
-                            Controllers = "Expense,Payment",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Pagos a suplidores""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Company Payments""}]}
-"
+                            Controllers = "CompanyPayment",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}]}"
                         },
                         new
                         {
                             Id = 49L,
                             Active = true,
                             Controllers = "",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Menu""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Menu""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menu\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menu\"}]}"
                         },
                         new
                         {
                             Id = 50L,
                             Active = true,
                             Controllers = "School,BranchOffice,Zone,Customer",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Escuelas""}],""EN"":[{""PropertyName"":""Name"",""Value"":""School""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"School\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"School\"}]}"
                         },
                         new
                         {
                             Id = 51L,
                             Active = true,
-                            Controllers = "Product,Inventory,BranchOffice,Menu",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Menu escolar""}],""EN"":[{""PropertyName"":""Name"",""Value"":""School Menu""}]}
-"
+                            Controllers = "",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SchoolMenu\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SchoolMenu\"}]}"
                         },
                         new
                         {
                             Id = 52L,
                             Active = true,
                             Controllers = "InvoiceLead,Product,Customer,BranchOffice",
-                            CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            TranslationData = @"{""ES"":[{""PropertyName"":""Name"",""Value"":""Conduces""}],""EN"":[{""PropertyName"":""Name"",""Value"":""Invoice Lead""}]}
-"
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InvoiceLeads\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InvoiceLeads\"}]}"
+                        },
+                        new
+                        {
+                            Id = 53L,
+                            Active = true,
+                            Controllers = "Insurance,InsurancePlan,Currency",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurance\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurance\"}]}"
+                        },
+                        new
+                        {
+                            Id = 54L,
+                            Active = true,
+                            Controllers = "InsurancePlan",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancePlan\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancePlan\"}]}"
+                        },
+                        new
+                        {
+                            Id = 55L,
+                            Active = true,
+                            Controllers = "InsuranceServiceCoverage,Insurance,InsurancePlan,Product,Currency",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsuranceCoverage\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsuranceCoverage\"}]}"
+                        },
+                        new
+                        {
+                            Id = 56L,
+                            Active = true,
+                            Controllers = "MedicalSpeciality,Appointment,User,ProductUnit,ProductTax,InsuranceServiceCoverage,BranchOffice,Customer,Product",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Appointment\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Appointment\"}]}"
+                        },
+                        new
+                        {
+                            Id = 57L,
+                            Active = true,
+                            Controllers = "PatientCheckup,CheckupAttachment,Appointment,MedicalSpeciality,Product,Customer",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PatientCheckup\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PatientCheckup\"}]}"
+                        },
+                        new
+                        {
+                            Id = 58L,
+                            Active = true,
+                            Controllers = "MedicalSpeciality",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"MedicalSpecialities\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"MedicalSpecialities\"}]}"
+                        },
+                        new
+                        {
+                            Id = 59L,
+                            Active = true,
+                            Controllers = "Invoice,Insurance,Currency,BranchOffice",
+                            CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
+                            CreatedByName = "admin",
+                            CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancesCoveragesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancesCoveragesReport\"}]}"
                         });
                 });
 
@@ -13015,8 +15688,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -13025,8 +15699,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -13035,8 +15709,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -21954,36 +24628,37 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("CardId")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("ComissionByProduct")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("ComissionRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -21995,19 +24670,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -22026,8 +24701,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22036,15 +24712,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("smallint");
 
                     b.Property<string>("CodeName")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22053,15 +24729,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("NumericControl")
                         .HasColumnType("bigint");
@@ -22301,26 +24977,27 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("CardId")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22329,19 +25006,19 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20);
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -22355,8 +25032,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22365,8 +25043,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22378,14 +25056,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("OwedAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
@@ -22403,14 +25081,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("BeforeTaxAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("BranchOfficeId")
                         .HasColumnType("bigint");
@@ -22419,8 +25098,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22432,14 +25111,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<decimal>("ExchangeRate")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("ExchangeRateAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDefective")
                         .HasColumnType("bit");
@@ -22448,8 +25127,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22458,30 +25137,30 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bit");
 
                     b.Property<decimal>("ProductCost")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TaxAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -22506,12 +25185,13 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.ToTable("SuppliersReturns");
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.TRNControl", b =>
+            modelBuilder.Entity("PointOfSalesV2.Entities.Tax", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22520,8 +25200,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22530,8 +25210,50 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Rate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TranslationData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Taxes");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.TRNControl", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CreatedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ModifiedByName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22553,61 +25275,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
-                        .HasColumnType("nvarchar(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.HasKey("Id");
 
                     b.ToTable("TRNsControl");
                 });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.Tax", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Rate")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("TranslationData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Taxes");
-                });
-
             modelBuilder.Entity("PointOfSalesV2.Entities.Unit", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22616,8 +25298,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22626,8 +25308,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22644,27 +25326,28 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<decimal>("CostPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Equivalence")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("bit");
@@ -22673,8 +25356,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22686,7 +25369,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("SellingPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -22711,8 +25394,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("BirthDay")
                         .HasColumnType("datetime2");
@@ -22727,8 +25410,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ContentType")
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -22740,8 +25423,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(150)")
-                        .HasMaxLength(150);
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -22754,20 +25437,20 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("nvarchar(2)")
-                        .HasMaxLength(2);
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<long?>("MedicalSpecialityId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Mobile")
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
@@ -22780,16 +25463,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<double?>("Size")
                         .HasColumnType("float");
@@ -22800,8 +25483,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<long?>("WarehouseId")
                         .HasColumnType("bigint");
@@ -22852,15 +25535,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
@@ -22869,8 +25553,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22879,8 +25563,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22899,8 +25583,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Controllers")
                         .HasColumnType("nvarchar(max)");
@@ -22934,8 +25619,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22944,8 +25630,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -22954,8 +25640,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -22977,8 +25663,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -22987,15 +25674,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -23004,8 +25691,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -23024,8 +25711,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -23037,21 +25725,21 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("CurrentBalance")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -23063,11 +25751,11 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -23092,8 +25780,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -23102,8 +25791,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -23118,15 +25807,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<Guid?>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -23141,15 +25830,15 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Sequence")
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -23175,8 +25864,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
@@ -23185,8 +25875,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -23198,8 +25888,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModifiedByName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
@@ -23219,6 +25909,84 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasDiscriminator().HasValue("ReturnDetail");
                 });
 
+            modelBuilder.Entity("PointOfSalesV2.Entities.Appointment", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.BranchOffice", "Hospital")
+                        .WithMany()
+                        .HasForeignKey("HospitalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany()
+                        .HasForeignKey("InsuranceId");
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany()
+                        .HasForeignKey("InsurancePlanId");
+
+                    b.HasOne("PointOfSalesV2.Entities.Customer", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Hospital");
+
+                    b.Navigation("Insurance");
+
+                    b.Navigation("InsurancePlan");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.AppointmentDetail", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Appointment", "Appointment")
+                        .WithMany("Details")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.User", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
+                        .WithMany()
+                        .HasForeignKey("MedicalSpecialityId");
+
+                    b.HasOne("PointOfSalesV2.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("MedicalSpeciality");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegister", b =>
                 {
                     b.HasOne("PointOfSalesV2.Entities.BranchOffice", "BranchOffice")
@@ -23226,6 +25994,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("BranchOfficeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterFlowDetail", b =>
@@ -23247,6 +26017,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("CashRegisterOpening");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("PaymentType");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterOpening", b =>
@@ -23274,6 +26050,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("CashRegister");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterOpeningDetail", b =>
@@ -23283,6 +26067,50 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("CashRegisterOpeningId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("CashRegisterOpening");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupAttachment", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.FileAttachment", "FileAttachment")
+                        .WithMany()
+                        .HasForeignKey("FileAttachementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.PatientCheckup", "PatientCheckup")
+                        .WithMany("Attachments")
+                        .HasForeignKey("PatientChekupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("FileAttachment");
+
+                    b.Navigation("PatientCheckup");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CheckupPrescription", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
+                        .WithMany()
+                        .HasForeignKey("MedicalSpecialityId");
+
+                    b.HasOne("PointOfSalesV2.Entities.PatientCheckup", "PatientCheckup")
+                        .WithMany("CheckupPrescriptions")
+                        .HasForeignKey("PatientCheckupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("MedicalSpeciality");
+
+                    b.Navigation("PatientCheckup");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
@@ -23298,6 +26126,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("PaymentType");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CompositeProduct", b =>
@@ -23324,6 +26156,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BaseProduct");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UnitProductEquivalence");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CreditNote", b =>
@@ -23333,6 +26173,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Customer", b =>
@@ -23362,6 +26204,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Zone", "Zone")
                         .WithMany()
                         .HasForeignKey("ZoneId");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Insurance");
+
+                    b.Navigation("InsurancePlan");
+
+                    b.Navigation("TRNControl");
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerBalance", b =>
@@ -23377,6 +26229,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerPayment", b =>
@@ -23407,6 +26263,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Seller", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("InvoiceCurrency");
+
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerReturn", b =>
@@ -23440,6 +26306,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("CreditNote");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerReturnDetail", b =>
@@ -23463,6 +26339,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Warehouse", "Warehouse")
                         .WithMany()
                         .HasForeignKey("WarehouseId");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Expense", b =>
@@ -23489,27 +26371,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("PointOfSalesV2.Entities.ExpenseTax", b =>
-                {
-                    b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
-                        .WithMany()
-                        .HasForeignKey("CurrencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("BranchOffice");
 
-                    b.HasOne("PointOfSalesV2.Entities.Expense", "Expense")
-                        .WithMany("Taxes")
-                        .HasForeignKey("ExpenseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("Currency");
 
-                    b.HasOne("PointOfSalesV2.Entities.Tax", "Tax")
-                        .WithMany()
-                        .HasForeignKey("TaxId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.Navigation("PaymentType");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ExpensesPayment", b =>
@@ -23549,6 +26418,45 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Expense");
+
+                    b.Navigation("ExpenseCurrency");
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("PaymentType");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.ExpenseTax", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Expense", "Expense")
+                        .WithMany("Taxes")
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Tax", "Tax")
+                        .WithMany()
+                        .HasForeignKey("TaxId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Expense");
+
+                    b.Navigation("Tax");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
@@ -23558,6 +26466,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("InsuranceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Insurance");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
@@ -23581,6 +26491,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Insurance");
+
+                    b.Navigation("InsurancePlan");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
@@ -23608,6 +26526,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InventoryEntry", b =>
@@ -23647,10 +26573,26 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
+
+                    b.Navigation("Unit");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Invoice", b =>
                 {
+                    b.HasOne("PointOfSalesV2.Entities.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId");
+
                     b.HasOne("PointOfSalesV2.Entities.BranchOffice", "BranchOffice")
                         .WithMany()
                         .HasForeignKey("BranchOfficeId")
@@ -23663,7 +26605,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PointOfSalesV2.Entities.Customer", "Customer")
+                    b.HasOne("PointOfSalesV2.Entities.Customer", "Patient")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -23686,15 +26628,39 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("TRNControlId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Insurance");
+
+                    b.Navigation("InsurancePlan");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Seller");
+
+                    b.Navigation("TRNControl");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceDetail", b =>
                 {
+                    b.HasOne("PointOfSalesV2.Entities.User", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
+
                     b.HasOne("PointOfSalesV2.Entities.Invoice", "Invoice")
                         .WithMany("InvoiceDetails")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
+                        .WithMany()
+                        .HasForeignKey("MedicalSpecialityId");
 
                     b.HasOne("PointOfSalesV2.Entities.Product", "Product")
                         .WithMany()
@@ -23705,6 +26671,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("MedicalSpeciality");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceLead", b =>
@@ -23750,6 +26726,22 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("ZoneId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("School");
+
+                    b.Navigation("Seller");
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceTax", b =>
@@ -23771,6 +26763,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("TaxId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Tax");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.LanguageKey", b =>
@@ -23780,6 +26778,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("LanguageCode")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Language");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.LeadDetail", b =>
@@ -23799,6 +26799,12 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId");
+
+                    b.Navigation("Lead");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.MenuDetail", b =>
@@ -23818,6 +26824,49 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Unit", "Unit")
                         .WithMany()
                         .HasForeignKey("UnitId");
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.PatientCheckup", b =>
+                {
+                    b.HasOne("PointOfSalesV2.Entities.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId");
+
+                    b.HasOne("PointOfSalesV2.Entities.User", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.Insurance", "Insurance")
+                        .WithMany()
+                        .HasForeignKey("InsuranceId");
+
+                    b.HasOne("PointOfSalesV2.Entities.InsurancePlan", "InsurancePlan")
+                        .WithMany()
+                        .HasForeignKey("InsurancePlanId");
+
+                    b.HasOne("PointOfSalesV2.Entities.Customer", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Insurance");
+
+                    b.Navigation("InsurancePlan");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Payment", b =>
@@ -23849,6 +26898,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Seller", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("InvoiceCurrency");
+
+                    b.Navigation("PaymentType");
+
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.PaymentDetail", b =>
@@ -23864,6 +26923,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("PaymentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Invoice");
+
+                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Product", b =>
@@ -23873,6 +26936,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("CurrencyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("PointOfSalesV2.Entities.MedicalSpeciality", "MedicalSpeciality")
+                        .WithMany()
+                        .HasForeignKey("MedicalSpecialityId");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("MedicalSpeciality");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ProductSupplierCost", b =>
@@ -23888,6 +26959,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ProductTax", b =>
@@ -23903,6 +26978,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("TaxId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Tax");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.RoleSectionOperation", b =>
@@ -23918,6 +26997,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SectionOperationId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("SectionOperation");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.School", b =>
@@ -23945,6 +27028,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Zone", "Zone")
                         .WithMany()
                         .HasForeignKey("ZoneId");
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Warehouse");
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SchoolContact", b =>
@@ -23954,6 +27047,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SectionOperation", b =>
@@ -23968,6 +27063,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .WithMany("Operations")
                         .HasForeignKey("SectionId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Operation");
+
+                    b.Navigation("Section");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Seller", b =>
@@ -23975,6 +27074,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Zone", "Zone")
                         .WithMany()
                         .HasForeignKey("ZoneId");
+
+                    b.Navigation("Zone");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SupplierBalance", b =>
@@ -23990,6 +27091,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SupplierReturn", b =>
@@ -24029,6 +27134,18 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Currency");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Supplier");
+
+                    b.Navigation("Unit");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.UnitProductEquivalence", b =>
@@ -24044,6 +27161,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.User", b =>
@@ -24069,6 +27190,16 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasOne("PointOfSalesV2.Entities.Warehouse", "Warehouse")
                         .WithMany()
                         .HasForeignKey("WarehouseId");
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("CashRegister");
+
+                    b.Navigation("Language");
+
+                    b.Navigation("MedicalSpeciality");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.UserClaims", b =>
@@ -24094,6 +27225,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Warehouse", b =>
@@ -24103,6 +27236,8 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("BranchOfficeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.WarehouseMovement", b =>
@@ -24130,6 +27265,14 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("BranchOffice");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.WarehouseTransfer", b =>
@@ -24169,6 +27312,165 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasForeignKey("UnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Destiny");
+
+                    b.Navigation("DestinyBranchOffice");
+
+                    b.Navigation("Origin");
+
+                    b.Navigation("OriginBranchOffice");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Unit");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Appointment", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.BranchOffice", b =>
+                {
+                    b.Navigation("CashRegisters");
+
+                    b.Navigation("Users");
+
+                    b.Navigation("Warehouses");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterOpening", b =>
+                {
+                    b.Navigation("CashFlow");
+
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Customer", b =>
+                {
+                    b.Navigation("CustomerBalances");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.CustomerReturn", b =>
+                {
+                    b.Navigation("ReturnDetails");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Expense", b =>
+                {
+                    b.Navigation("Payments");
+
+                    b.Navigation("Taxes");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
+                {
+                    b.Navigation("Affiliates");
+
+                    b.Navigation("Coverages");
+
+                    b.Navigation("InsurancePlans");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
+                {
+                    b.Navigation("SubscribedPatients");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Invoice", b =>
+                {
+                    b.Navigation("InvoiceDetails");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("Taxes");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceLead", b =>
+                {
+                    b.Navigation("LeadDetails");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.MedicalSpeciality", b =>
+                {
+                    b.Navigation("Doctors");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Menu", b =>
+                {
+                    b.Navigation("MenuDetails");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Operation", b =>
+                {
+                    b.Navigation("Sections");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.PatientCheckup", b =>
+                {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("CheckupPrescriptions");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.PaymentType", b =>
+                {
+                    b.Navigation("Expenses");
+
+                    b.Navigation("ExpensesPayments");
+
+                    b.Navigation("InvoicesPayments");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Product", b =>
+                {
+                    b.Navigation("BaseCompositeProducts");
+
+                    b.Navigation("ProductUnits");
+
+                    b.Navigation("SuppliersCosts");
+
+                    b.Navigation("Taxes");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Role", b =>
+                {
+                    b.Navigation("SectionOperations");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.School", b =>
+                {
+                    b.Navigation("Contacts");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Section", b =>
+                {
+                    b.Navigation("Operations");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Supplier", b =>
+                {
+                    b.Navigation("ProductsCosts");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.UnitProductEquivalence", b =>
+                {
+                    b.Navigation("CompositeProducts");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.User", b =>
+                {
+                    b.Navigation("CashRegisterOpeningClosings");
+
+                    b.Navigation("Claims");
+
+                    b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("PointOfSalesV2.Entities.Warehouse", b =>
+                {
+                    b.Navigation("Inventory");
                 });
 #pragma warning restore 612, 618
         }

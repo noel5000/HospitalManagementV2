@@ -16,7 +16,7 @@
                 <thead>
                     <tr class="dontPrint">
                         <td *ngFor="let header of tableConfig" [hidden]="!header.visible && !header.filterIsActive">
-                            <input class="form-control"  [type]="header.type"  (input)="addFilter(header,$event)" >
+                            <input class="form-control headersFilter"  [type]="header.type" [id]="header.id"   >
                         </td>
                         <td></td>
                     </tr>
