@@ -12,6 +12,7 @@ import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,7 +26,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}customerReturn`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}customerReturn`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -66,6 +67,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private http: HttpClient,
         langService: LanguageService,
@@ -322,7 +324,7 @@ else{
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }

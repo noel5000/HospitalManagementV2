@@ -17,6 +17,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -31,11 +32,12 @@ export class TaxReportIndexComponent extends BaseComponent implements OnInit {
         this.onChanges();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}InvoiceTax`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}InvoiceTax`);
     result:any[]=[];
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

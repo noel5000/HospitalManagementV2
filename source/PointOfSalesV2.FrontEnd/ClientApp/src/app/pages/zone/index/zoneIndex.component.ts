@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Zone } from '../../../@core/data/zoneModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -39,6 +40,7 @@ export class ZoneIndexComponent extends BaseComponent implements OnInit {
         route: Router,
         langService: LanguageService,
         private service: ZoneService,
+        private config: AppConfig,
         private modals:NgbModal,
        modalService:ModalService
     ) {

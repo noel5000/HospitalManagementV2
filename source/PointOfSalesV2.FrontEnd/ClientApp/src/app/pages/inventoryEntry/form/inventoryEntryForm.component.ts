@@ -25,6 +25,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { Product } from '../../../@core/data/product';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { ProductService } from '../../../@core/services/ProductService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -44,13 +45,14 @@ export class InventoryEntryFormComponent extends BaseComponent implements OnInit
     entries:any[]=[];
     defaultTaxAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
     currentProductCost:any={cost:0};
-    inventoryEntryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InventoryEntry`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    productCostService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductCost`);
+    inventoryEntryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InventoryEntry`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
+    productCostService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductCost`);
     oldProductCost:number=0;
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

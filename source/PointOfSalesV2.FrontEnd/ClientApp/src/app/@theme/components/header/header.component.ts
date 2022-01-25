@@ -11,6 +11,7 @@ import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointControllers, endpointUrl } from '../../../@core/common/constants';
 import { AuthModel } from '../../../@core/data/authModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 @Component({
   selector: 'ngx-header',
@@ -67,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       target: 'logoutBtn'
     }];
 
-  constructor(private sidebarService: NbSidebarService,
+  constructor(private sidebarService: NbSidebarService, private config: AppConfig,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private userService: UserData,
@@ -75,7 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     http: HttpClient,
     private lang: LanguageService,
     private breakpointService: NbMediaBreakpointsService) {
-    this.languageService = new BaseService(http, `${endpointUrl}${endpointControllers.languages}`);
+    this.languageService = new BaseService(http, `${this.config.config.endpointUrl}${endpointControllers.languages}`);
 
 
     this.languageService.get().subscribe(r => {

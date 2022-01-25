@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -73,9 +74,10 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     WarehouseTransfers:any[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}WarehouseTransfer`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}WarehouseTransfer`);
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private  http: HttpClient,
         langService: LanguageService,

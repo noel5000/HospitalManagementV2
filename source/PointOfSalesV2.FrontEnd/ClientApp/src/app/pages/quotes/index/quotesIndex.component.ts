@@ -13,6 +13,7 @@ import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../../@core/data/users';
 import { truncate } from 'fs';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -26,7 +27,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -65,6 +66,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private http: HttpClient,
         langService: LanguageService,
@@ -396,7 +398,7 @@ else{
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }

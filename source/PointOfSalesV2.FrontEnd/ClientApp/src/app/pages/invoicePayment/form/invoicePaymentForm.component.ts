@@ -23,6 +23,7 @@ import { BranchOfficeService } from '../../../@core/services/branchOfficeService
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Customer } from '../../../@core/data/customer';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -41,13 +42,14 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
     customers:Customer[]=[];
     branchOffices:BranchOffice[]=[];
     paymentWithReference:boolean=false;
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}paymentType`);
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
-    paymentService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CustomerPayment`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
+    paymentService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

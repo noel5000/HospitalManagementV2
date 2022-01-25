@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { Expense } from '../data/expenseModel';
 import { BaseResultModel } from '../data/baseResultModel';
 import { Observable } from 'rxjs';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -12,9 +13,10 @@ import { Observable } from 'rxjs';
 
 export class ExpenseService extends BaseService<Expense, number>{
     constructor(
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.expenses}`);
+        super(http, `${config.config.endpointUrl}${endpointControllers.expenses}`);
     }
 
 

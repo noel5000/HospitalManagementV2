@@ -33,6 +33,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { SellerService } from '../../../@core/services/SellerService';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -50,13 +51,14 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
 
   
-    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Invoice`);
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CustomerReturn`);
+    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CustomerReturn`);
    
     isEditing:boolean=false;
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

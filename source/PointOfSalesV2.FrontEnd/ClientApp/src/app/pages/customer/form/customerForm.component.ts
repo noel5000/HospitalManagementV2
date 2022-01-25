@@ -19,6 +19,7 @@ import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -35,12 +36,13 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     trnControls:TRNControl[]=[];
     currencies:Currency[]=[];
     bloodTypes:string[]=["A+","A-","B+","B-","O+","O-","AB+","AB-"];
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
 
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: CustomerService,

@@ -28,6 +28,7 @@ import { ProductService } from '../../../@core/services/ProductService';
 import { Item } from '../../../@core/data/itemModel';
 import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -44,10 +45,11 @@ export class InvoicePaymentPrintComponent extends BaseComponent implements OnIni
     sequence:string='';
     paidInvoices:any[]=[];
     _route:ActivatedRoute;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CustomerPayment`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CustomerPayment`);
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

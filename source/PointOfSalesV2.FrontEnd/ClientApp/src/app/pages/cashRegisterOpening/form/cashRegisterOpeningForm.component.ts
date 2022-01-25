@@ -20,6 +20,7 @@ import { CashRegisterService } from '../../../@core/services/CashRegisterService
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { CashRegisterOpening, OpeningType } from '../../../@core/data/cashRegisterOpening';
 import { UserService } from '../../../@core/services/UserService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 
@@ -36,9 +37,9 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
     user:User;
     currentCurrency:Currency=null;
     isClosing:boolean =false;
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening`);
-    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening/CloseCashRegister`);
-    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}CashRegisterOpeningDetail`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening`);
+    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening/CloseCashRegister`);
+    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpeningDetail`);
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
     users:User[]=[];
@@ -116,6 +117,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
+        private config: AppConfig,
         private  http: HttpClient,
         langService: LanguageService,
         private currencyService:CurrencyService,

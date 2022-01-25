@@ -13,6 +13,7 @@ import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
@@ -26,7 +27,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     }
     _route:ActivatedRoute;
     modalRef:NgbModalRef=null;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
@@ -51,6 +52,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
 
     constructor(
         route: Router,
+        private config: AppConfig,
         langService: LanguageService,
         private modals:NgbModal,
         router: ActivatedRoute,
@@ -103,19 +105,19 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
                 const user = JSON.parse(localStorage.getItem("currentUser"));
 
                 if(selectedMedicines && selectedMedicines.length>0)
-                window.open(`${endpointViewsUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+                window.open(`${this.config.config.endpointFilesUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedLabTests && selectedLabTests.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedConsultations && selectedConsultations.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedImages && selectedImages.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
             }
         }

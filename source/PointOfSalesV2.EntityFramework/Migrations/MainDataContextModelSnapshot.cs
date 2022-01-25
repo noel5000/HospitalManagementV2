@@ -104,7 +104,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.AppointmentDetail", b =>
@@ -190,7 +190,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("AppointmentDetails");
+                    b.ToTable("AppointmentDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.BranchOffice", b =>
@@ -241,7 +241,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BranchOffices");
+                    b.ToTable("BranchOffices", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegister", b =>
@@ -289,7 +289,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("BranchOfficeId");
 
-                    b.ToTable("CashRegisters");
+                    b.ToTable("CashRegisters", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterFlowDetail", b =>
@@ -352,7 +352,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PaymentTypeId");
 
-                    b.ToTable("CashRegisterFlowDetails");
+                    b.ToTable("CashRegisterFlowDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterOpening", b =>
@@ -437,7 +437,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CashRegisterOpenings");
+                    b.ToTable("CashRegisterOpenings", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CashRegisterOpeningDetail", b =>
@@ -490,7 +490,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("CashRegisterOpeningId");
 
-                    b.ToTable("CashRegisterOpeningDetails");
+                    b.ToTable("CashRegisterOpeningDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CheckupAttachment", b =>
@@ -539,7 +539,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PatientChekupId");
 
-                    b.ToTable("CheckupAttachments");
+                    b.ToTable("CheckupAttachments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CheckupPrescription", b =>
@@ -617,7 +617,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CheckupPrescriptions");
+                    b.ToTable("CheckupPrescriptions", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CompanyPayments", b =>
@@ -709,7 +709,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PaymentTypeId");
 
-                    b.ToTable("CompanyPayments");
+                    b.ToTable("CompanyPayments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CompositeProduct", b =>
@@ -774,7 +774,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CompositeProducts");
+                    b.ToTable("CompositeProducts", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CreditNote", b =>
@@ -839,7 +839,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("CurrencyId");
 
-                    b.ToTable("CreditNotes");
+                    b.ToTable("CreditNotes", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Currency", b =>
@@ -894,7 +894,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Customer", b =>
@@ -1034,7 +1034,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerBalance", b =>
@@ -1083,7 +1083,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomersBalance");
+                    b.ToTable("CustomersBalance", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerPayment", b =>
@@ -1185,7 +1185,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("CustomersPayments");
+                    b.ToTable("CustomersPayments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerReturn", b =>
@@ -1266,7 +1266,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("CustomersReturns");
+                    b.ToTable("CustomersReturns", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.CustomerReturnDetail", b =>
@@ -1351,7 +1351,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("CustomersReturnDetails");
+                    b.ToTable("CustomersReturnDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ExceptionLog", b =>
@@ -1405,7 +1405,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExceptionLogs");
+                    b.ToTable("ExceptionLogs", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Expense", b =>
@@ -1511,7 +1511,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("Expenses");
+                    b.ToTable("Expenses", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ExpensesPayment", b =>
@@ -1621,7 +1621,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("ExpensesPayments");
+                    b.ToTable("ExpensesPayments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ExpenseTax", b =>
@@ -1689,7 +1689,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("ExpenseTaxes");
+                    b.ToTable("ExpenseTaxes", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.FileAttachment", b =>
@@ -1736,7 +1736,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileAttachments");
+                    b.ToTable("FileAttachments", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Insurance", b =>
@@ -1807,7 +1807,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Insurances");
+                    b.ToTable("Insurances", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InsurancePlan", b =>
@@ -1855,7 +1855,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("InsuranceId");
 
-                    b.ToTable("InsurancePlans");
+                    b.ToTable("InsurancePlans", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InsuranceServiceCoverage", b =>
@@ -1920,7 +1920,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("InsuranceServiceCoverages");
+                    b.ToTable("InsuranceServiceCoverages", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Inventory", b =>
@@ -1979,7 +1979,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Inventory");
+                    b.ToTable("Inventory", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InventoryEntry", b =>
@@ -2084,7 +2084,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("InventoryEntries");
+                    b.ToTable("InventoryEntries", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Invoice", b =>
@@ -2254,7 +2254,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("TRNControlId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceDetail", b =>
@@ -2386,7 +2386,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("InvoiceDetails");
+                    b.ToTable("InvoiceDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceLead", b =>
@@ -2539,7 +2539,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("InvoicesLeads");
+                    b.ToTable("InvoicesLeads", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.InvoiceTax", b =>
@@ -2604,7 +2604,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("InvoicesTaxes");
+                    b.ToTable("InvoicesTaxes", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Language", b =>
@@ -2648,7 +2648,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
 
                     b.HasData(
                         new
@@ -2714,7 +2714,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("LanguageCode", "Key");
 
-                    b.ToTable("LanguageKeys");
+                    b.ToTable("LanguageKeys", (string)null);
 
                     b.HasData(
                         new
@@ -11573,7 +11573,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("LeadsDetails");
+                    b.ToTable("LeadsDetails", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("LeadDetail");
                 });
@@ -11614,7 +11614,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicalSpecialities");
+                    b.ToTable("MedicalSpecialities", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Menu", b =>
@@ -11660,7 +11660,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.MenuDetail", b =>
@@ -11745,7 +11745,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("MenuDetails");
+                    b.ToTable("MenuDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.MovementType", b =>
@@ -11787,7 +11787,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovementTypes");
+                    b.ToTable("MovementTypes", (string)null);
 
                     b.HasData(
                         new
@@ -11851,7 +11851,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OpeningsAmounts");
+                    b.ToTable("OpeningsAmounts", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Operation", b =>
@@ -11890,7 +11890,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Operations");
+                    b.ToTable("Operations", (string)null);
 
                     b.HasData(
                         new
@@ -12204,7 +12204,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("PatientCheckups");
+                    b.ToTable("PatientCheckups", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Payment", b =>
@@ -12299,7 +12299,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.PaymentDetail", b =>
@@ -12357,7 +12357,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("PaymentId");
 
-                    b.ToTable("PaymentDetails");
+                    b.ToTable("PaymentDetails", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.PaymentType", b =>
@@ -12399,7 +12399,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentTypes");
+                    b.ToTable("PaymentTypes", (string)null);
 
                     b.HasData(
                         new
@@ -12532,7 +12532,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("MedicalSpecialityId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ProductSupplierCost", b =>
@@ -12584,7 +12584,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("ProductSupplierCosts");
+                    b.ToTable("ProductSupplierCosts", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ProductTax", b =>
@@ -12630,7 +12630,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("TaxId");
 
-                    b.ToTable("ProductTaxes");
+                    b.ToTable("ProductTaxes", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Role", b =>
@@ -12669,7 +12669,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -13045,7 +13045,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SectionOperationId");
 
-                    b.ToTable("RoleSectionOperations");
+                    b.ToTable("RoleSectionOperations", (string)null);
 
                     b.HasData(
                         new
@@ -14984,7 +14984,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("Schools");
+                    b.ToTable("Schools", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SchoolContact", b =>
@@ -15044,7 +15044,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SchoolId");
 
-                    b.ToTable("SchoolContacts");
+                    b.ToTable("SchoolContacts", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Section", b =>
@@ -15087,7 +15087,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sections");
+                    b.ToTable("Sections", (string)null);
 
                     b.HasData(
                         new
@@ -15725,7 +15725,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("SectionOperations");
+                    b.ToTable("SectionOperations", (string)null);
 
                     b.HasData(
                         new
@@ -24692,7 +24692,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("ZoneId");
 
-                    b.ToTable("Sellers");
+                    b.ToTable("Sellers", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SequenceControl", b =>
@@ -24745,7 +24745,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SequencesControl");
+                    b.ToTable("SequencesControl", (string)null);
 
                     b.HasData(
                         new
@@ -25023,7 +25023,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SupplierBalance", b =>
@@ -25072,7 +25072,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("SuppliersBalances");
+                    b.ToTable("SuppliersBalances", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.SupplierReturn", b =>
@@ -25180,7 +25180,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("SuppliersReturns");
+                    b.ToTable("SuppliersReturns", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Tax", b =>
@@ -25222,7 +25222,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Taxes");
+                    b.ToTable("Taxes", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.TRNControl", b =>
@@ -25278,7 +25278,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TRNsControl");
+                    b.ToTable("TRNsControl", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Unit", b =>
@@ -25317,7 +25317,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.UnitProductEquivalence", b =>
@@ -25378,7 +25378,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("UnitProductsEquivalences");
+                    b.ToTable("UnitProductsEquivalences", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.User", b =>
@@ -25502,7 +25502,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -25574,7 +25574,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersClaims");
+                    b.ToTable("UsersClaims", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.UserOperation", b =>
@@ -25610,7 +25610,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserOperation");
+                    b.ToTable("UserOperation", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.UserRole", b =>
@@ -25654,7 +25654,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Warehouse", b =>
@@ -25702,7 +25702,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("BranchOfficeId");
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.WarehouseMovement", b =>
@@ -25771,7 +25771,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("WarehousesMovements");
+                    b.ToTable("WarehousesMovements", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.WarehouseTransfer", b =>
@@ -25855,7 +25855,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("WarehousesTransfers");
+                    b.ToTable("WarehousesTransfers", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Zone", b =>
@@ -25897,7 +25897,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Zones");
+                    b.ToTable("Zones", (string)null);
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.ReturnDetail", b =>

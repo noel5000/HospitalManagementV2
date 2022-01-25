@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -29,7 +30,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
     pageSize:number=10;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
     maxCount:number=0;
   filters: QueryFilter[] = [
       
@@ -40,6 +41,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private  http: HttpClient,
         langService: LanguageService,

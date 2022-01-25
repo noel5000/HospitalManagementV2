@@ -12,6 +12,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -55,9 +56,9 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     orderDirection: string = 'desc';
     CashRegisterOpenings:CashRegisterOpening[]=[];
 
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening`);
 
-    constructor(
+    constructor( private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,

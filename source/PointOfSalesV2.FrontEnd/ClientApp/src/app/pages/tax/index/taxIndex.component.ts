@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Tax } from '../../../@core/data/taxModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -36,6 +37,7 @@ export class TaxIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: TaxService,

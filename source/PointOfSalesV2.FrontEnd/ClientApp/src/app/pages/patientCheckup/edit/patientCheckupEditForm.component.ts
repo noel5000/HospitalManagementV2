@@ -20,6 +20,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Product } from '../../../@core/data/product';
 import { FileUploader } from 'ng2-file-upload';
 import { appointmentIndexComponent } from '../../appointment/index/appointmentIndex.component';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -36,7 +37,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
    
     editing:number=1;
-    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CheckupAttachment`);
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CheckupAttachment`);
     attachments:any[]=[];
     public uploader: FileUploader;
 
@@ -69,13 +70,14 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
 
 
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
-    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
+    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Appointment`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
     newProduct:boolean=false;
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -154,7 +156,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             });
 
 
-        this.uploader=new FileUploader({ url:  `${endpointViewsUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
+        this.uploader=new FileUploader({ url:  `${this.config.config.endpointFilesUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
 
     addProduct(type:string){
@@ -313,7 +315,7 @@ this.attachmentsService.getAllFiltered([
     }
 
     setLink(attachment:any){
-        return `${endpointViewsUrl}Files/${attachment.fileAttachment.fileName}`
+        return `${this.config.config.endpointFilesUrl}Files/${attachment.fileAttachment.fileName}`
     }
 
     removeAttachment(id:number){

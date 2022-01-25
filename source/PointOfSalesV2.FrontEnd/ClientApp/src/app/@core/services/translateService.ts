@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { AuthModel } from './../data/authModel';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AppConfig } from './app.config';
 
 
 
@@ -15,8 +16,8 @@ import { Observable } from 'rxjs';
     providedIn: "root"
 })
 export class LanguageService extends BaseService<any, string> {
-    constructor(public http: HttpClient, private translate: TranslateService, private route: Router) {
-        super(http, `${endpointUrl}${endpointControllers.languages}`);
+    constructor(public http: HttpClient, private config: AppConfig, private translate: TranslateService, private route: Router) {
+        super(http, `${config.config.endpointUrl}${endpointControllers.languages}`);
 
 
 
@@ -86,7 +87,7 @@ export class LanguageService extends BaseService<any, string> {
     //     }
 
     generateJson() {
-        return this.http.get(`${endpointUrl}${endpointControllers.languages}/GenerateJsonFile`);
+        return this.http.get(`${this.config.config.endpointUrl}${endpointControllers.languages}/GenerateJsonFile`);
     }
 
 

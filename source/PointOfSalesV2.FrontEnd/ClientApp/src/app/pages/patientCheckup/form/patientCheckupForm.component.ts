@@ -18,6 +18,7 @@ import { UserService } from '../../../@core/mock/users.service';
 import { ProductService } from '../../../@core/services/ProductService';
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Product } from '../../../@core/data/product';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -55,12 +56,13 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
 
 
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
-    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
+    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Appointment`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
     zones:Zone[]=[];
     newProduct:boolean=false;
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

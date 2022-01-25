@@ -45,6 +45,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { FormBuilder, Validators } from '@angular/forms';
 import { medicalSpecialityModule } from '../../medicalSpeciality/medicalSpeciality.module';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -61,11 +62,11 @@ declare const $: any;
 export class appointmentIndexComponent extends BaseComponent implements OnInit {
     
     @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}Appointment`);
-    hospitalService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}branchoffice`);
-    medicalSpecialitiesService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}medicalSpeciality`);
-    doctorService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}user`);
-    patientsService: BaseService<any,number> = new BaseService<any,number>(this.http,`${endpointUrl}Customer`);
+    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Appointment`);
+    hospitalService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}branchoffice`);
+    medicalSpecialitiesService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}medicalSpeciality`);
+    doctorService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}user`);
+    patientsService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Customer`);
     visible:boolean=true;
     hospitals:any[]=[];
     medicalSpecialities:any[]=[];
@@ -107,6 +108,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     
       activeDayIsOpen: boolean = false;
       constructor(
+        private config: AppConfig,
         private zone:NgZone,
         private changes:ChangeDetectorRef,
         private formBuilder: FormBuilder,
@@ -325,14 +327,14 @@ this.service.delete(appointment.id).subscribe(r=>{
 }
 printAppointment(appointment:any){
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/AppointmentPrint?id=${appointment.id}&language=${user.languageId}` }], {
+  this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/AppointmentPrint?id=${appointment.id}&language=${user.languageId}` }], {
     skipLocationChange: true,
 });
 }
 
 print(e: any) {
   const user = JSON.parse(localStorage.getItem("currentUser"));
-  this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/AppointmentPrint?id=${e.id}&language=${user.languageId}` }], {
+  this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/AppointmentPrint?id=${e.id}&language=${user.languageId}` }], {
     skipLocationChange: true,
 });
   }

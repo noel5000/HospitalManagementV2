@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Seller } from '../../../@core/data/seller';
+import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
@@ -43,6 +44,7 @@ export class SellerIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: SellerService,

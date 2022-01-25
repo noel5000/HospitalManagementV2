@@ -3,6 +3,7 @@ import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Product, UnitProductEquivalence } from '../data/product';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -10,9 +11,10 @@ import { Product, UnitProductEquivalence } from '../data/product';
 
 export class ProductService extends BaseService<Product, number>{
     constructor(
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.products}`);
+        super(http, `${config.config.endpointUrl}${endpointControllers.products}`);
     }
 
     ConvertFromProductPrincipalUnit(quantity:number, unitId:number,units:UnitProductEquivalence[]):number{

@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -29,7 +30,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CustomerPayment`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
@@ -53,6 +54,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,
@@ -310,7 +312,7 @@ else{
     }
     print(e:any) {
      const user = JSON.parse(localStorage.getItem("currentUser"));
-     this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
+     this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }

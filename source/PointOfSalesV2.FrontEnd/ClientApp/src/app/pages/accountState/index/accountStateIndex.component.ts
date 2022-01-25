@@ -21,6 +21,7 @@ import { Currency } from '../../../@core/data/currencyModel';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { Supplier } from '../../../@core/data/Supplier';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -36,13 +37,13 @@ export class AccountStateIndexComponent extends BaseComponent implements OnInit 
         this.onChanges();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Customer`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Customer`);
     states:any[]=[];
     result:any={};
     customers:Customer[]=[];
 
 
-    constructor(
+    constructor( private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

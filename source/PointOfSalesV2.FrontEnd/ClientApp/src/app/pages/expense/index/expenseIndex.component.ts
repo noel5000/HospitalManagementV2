@@ -11,6 +11,7 @@ import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/moda
 import { ModalService } from '../../../@core/services/modal.service';
 import { Expense } from '../../../@core/data/expenseModel';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -56,6 +57,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ExpenseService,
@@ -327,7 +329,7 @@ else{
     print(e:any){
 
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
     }

@@ -13,6 +13,7 @@ import { Expense } from '../../../@core/data/expenseModel';
 import { ExpensePayment } from '../../../@core/data/expensePayment';
 import { ExpensePaymentService } from '../../../@core/services/expensePaymentService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -52,6 +53,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ExpensePaymentService,
@@ -177,7 +179,7 @@ this.actions=[
     }
     print(e:any) {
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
        }

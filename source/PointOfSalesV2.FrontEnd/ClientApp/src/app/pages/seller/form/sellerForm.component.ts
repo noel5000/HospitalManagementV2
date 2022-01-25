@@ -12,6 +12,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { Seller } from '../../../@core/data/seller';
 import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,6 +26,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     zones:Zone[]=[];
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

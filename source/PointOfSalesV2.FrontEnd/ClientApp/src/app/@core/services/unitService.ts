@@ -3,6 +3,7 @@ import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Unit } from '../data/unitModel';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -10,8 +11,9 @@ import { Unit } from '../data/unitModel';
 
 export class UnitService extends BaseService<Unit, number>{
     constructor(
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.units}`);
+        super(http, `${config.config.endpointUrl}${endpointControllers.units}`);
     }
 }

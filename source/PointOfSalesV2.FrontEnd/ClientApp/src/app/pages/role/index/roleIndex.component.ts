@@ -12,6 +12,7 @@ import { Role } from '../../../@core/data/roleModel';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -35,9 +36,10 @@ export class RoleIndexComponent extends BaseComponent implements OnInit {
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     Roles:Role[]=[];
-    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}Role`);
+    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Role`);
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private  http: HttpClient,

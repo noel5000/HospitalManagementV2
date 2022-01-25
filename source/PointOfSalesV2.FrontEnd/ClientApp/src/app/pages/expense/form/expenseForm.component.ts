@@ -23,6 +23,7 @@ import { endpointUrl } from '../../../@core/common/constants';
 import { Expense } from '../../../@core/data/expenseModel';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
 import { BranchOffice } from '../../../@core/data/branchOffice';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -42,12 +43,13 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
     expenseTaxes:any[]=[];//
     suppliers:Supplier[]=[];//
     taxes:Tax[]=[];//
-    expenseTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}expenseTax`);
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}paymentType`);
+    expenseTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}expenseTax`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

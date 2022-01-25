@@ -10,6 +10,7 @@ import { AppSections } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Supplier } from '../../../@core/data/Supplier';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -23,6 +24,7 @@ export class SupplierFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

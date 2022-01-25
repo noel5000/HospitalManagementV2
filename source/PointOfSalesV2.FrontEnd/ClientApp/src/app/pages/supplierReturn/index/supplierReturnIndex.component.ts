@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -71,10 +72,11 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     SupplierReturns:any[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}SupplierReturn`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}SupplierReturn`);
 
     constructor(
         route: Router,
+        private config: AppConfig,
         private  http: HttpClient,
         langService: LanguageService,
         private modals:NgbModal,

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl, endpointControllers } from '../../../../@core/common/constants';
 import { LanguageService } from './../../../../@core/services/translateService';
+import { AppConfig } from '../../../../@core/services/app.config';
 
 
 
@@ -81,13 +82,14 @@ export class LoginComponent extends NbLoginComponent implements OnInit {
     baseService: BaseService<AuthModel, number>;
 
     constructor(baseService: NbAuthService,
+        private config: AppConfig,
         changeDet: ChangeDetectorRef,
         router: Router,
         private lang: LanguageService,
         httpClient: HttpClient
     ) {
         super(baseService, defaultAuthOptions, changeDet, router);
-        this.baseService = new BaseService(httpClient, `${endpointUrl}${endpointControllers.login}`);
+        this.baseService = new BaseService(httpClient, `${this.config.config.endpointUrl}${endpointControllers.login}`);
     }
   ngOnInit(): void {
 

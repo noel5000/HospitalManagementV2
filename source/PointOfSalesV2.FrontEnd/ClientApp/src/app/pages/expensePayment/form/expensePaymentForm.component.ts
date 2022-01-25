@@ -25,6 +25,7 @@ import { BranchOfficeService } from '../../../@core/services/branchOfficeService
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { ExpensePayment } from '../../../@core/data/expensePayment';
 import { ExpensePaymentService, ISupplierPayment } from '../../../@core/services/expensePaymentService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -42,11 +43,12 @@ export class ExpensePaymentFormComponent extends BaseComponent implements OnInit
     currencies:Currency[]=[];
     paymentWithReference:boolean=false;
     suppliers:Supplier[]=[];
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}paymentType`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

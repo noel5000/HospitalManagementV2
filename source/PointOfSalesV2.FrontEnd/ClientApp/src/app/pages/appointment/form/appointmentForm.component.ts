@@ -30,6 +30,7 @@ import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Customer } from '../../../@core/data/customer';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -74,15 +75,15 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
     currentProductCost:any={cost:0};
     currentProductPrice:any={sellingPrice:0,costPrice:0};
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
-    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Appointment`);
-    userService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}User`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductTax`);
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
+    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Appointment`);
+    userService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}User`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductTax`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsuranceServiceCoverage`);
    
 
-    constructor(
+    constructor( private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         private changes:ChangeDetectorRef,

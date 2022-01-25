@@ -11,6 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Zone } from '../../../@core/data/zoneModel';
 import { ThrowStmt } from '@angular/compiler';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -28,6 +29,7 @@ export class ZoneFormComponent extends BaseComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ZoneService,

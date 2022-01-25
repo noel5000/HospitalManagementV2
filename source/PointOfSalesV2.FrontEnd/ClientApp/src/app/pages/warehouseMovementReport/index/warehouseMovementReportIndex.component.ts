@@ -15,6 +15,7 @@ import { endpointUrl } from '../../../@core/common/constants';
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { Warehouse } from '../../../@core/data/Warehouse';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -32,7 +33,7 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}WarehouseMovement`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}WarehouseMovement`);
     movements:any[]=[];
     branchOffices:BranchOffice[]=[];
     warehouses:Warehouse[]=[];
@@ -41,6 +42,7 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
 
     constructor(
         route: Router,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         langService: LanguageService,
         private modals:NgbModal,

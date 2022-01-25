@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
@@ -36,10 +36,13 @@ import { ToastrModule } from 'ngx-toastr';
 import { NotFoundComponent } from './not-found.component';
 import { httpInterceptorProviders } from './@core/services/baseService';
 import { FormsModule } from '@angular/forms';
+import { AppConfig } from './@core/services/app.config';
 
 
 @NgModule({
   providers:[
+    AppConfig,
+    { provide: APP_INITIALIZER, useFactory: (config: AppConfig) => () => config.load(), deps: [AppConfig], multi: true },
     httpInterceptorProviders
   ],
   declarations: [AppComponent, NotFoundComponent],

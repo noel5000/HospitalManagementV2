@@ -19,6 +19,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { CashRegisterService } from '../../../@core/services/CashRegisterService';
 import { CashRegister } from '../../../@core/data/cashRegister';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -48,8 +49,8 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         }
     ]
     languages:any[]=[];
-    languagesService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}language`);
-    medicalSpecService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
+    languagesService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}language`);
+    medicalSpecService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
     genders:any[]=[
         {
             name:this.lang.getValueByKey('male_lbl'),
@@ -62,6 +63,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
     ]
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

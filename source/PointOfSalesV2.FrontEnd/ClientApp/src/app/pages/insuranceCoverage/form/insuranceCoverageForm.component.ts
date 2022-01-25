@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { HttpClient } from '@angular/common/http';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -21,11 +22,11 @@ declare const $: any;
 export class insuranceCoverageFormComponent extends BaseComponent implements OnInit {
 
     _route:ActivatedRoute;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
-    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Product`);
-    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Currency`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsuranceServiceCoverage`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
+    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Product`);
+    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Currency`);
     insurances:any=[];
     insurancePlans:any=[];
     products:any[]=[];
@@ -34,6 +35,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,6 +38,7 @@ export class UserIndexComponent extends BaseComponent implements OnInit {
 
     constructor(
         route: Router,
+        private config: AppConfig,
         langService: LanguageService,
         private service: UserService,
         private modals:NgbModal,

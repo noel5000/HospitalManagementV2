@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Product } from '../../../@core/data/product';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -46,6 +47,7 @@ export class PriceListIndexComponent extends BaseComponent implements OnInit {
 
     constructor(
         route: Router,
+        private config: AppConfig,
         langService: LanguageService,
         private service: ProductService,
         private modals:NgbModal,
