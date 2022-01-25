@@ -193,7 +193,6 @@ doctorId:[null]
    
      this.onChanges();
         this.verifyUser();
-        this.getPatients();
         this.getTrnControls();
         this.getWarehouses();
        this.getLocalCurrency();
@@ -240,47 +239,7 @@ doctorId:[null]
         });
     }
 
-    async getPatients(){
-
-        const filter = [
-            {
-                property: "InsurancePlan",
-                value: "Id,Name",
-                type: ObjectTypes.ChildObject,
-                isTranslated: false
-            } as QueryFilter,
-            {
-                property: "Insurance",
-                value: "Id,Name",
-                type: ObjectTypes.ChildObject,
-                isTranslated: false
-            } as QueryFilter,
-            {
-                property: "Currency",
-                value: "Id,Name,IsLocalCurrency,Code,ExchangeRate",
-                type: ObjectTypes.ChildObject,
-                isTranslated: false
-            } as QueryFilter,
-          
-        ]
-            this.patientService.getAllFiltered(filter).subscribe(r=>{
-                this.patients=[{id:null, name:""} as Customer];
-                this.patients=this.patients.concat(r["value"]);
-                if(r["value"].length==1){
-                    this.itemForm.patchValue({
-                        patientId:r["value"][0].id,
-                        insuranceId:r["value"][0].insuranceId,
-                        insurancePlanId:r["value"][0].insurancePlanId,
-                        insuranceName:r["value"][0].insurance?r["value"][0].insurance.name:'',
-                        insurancePlanName:r["value"][0].insurancePlan?r["value"][0].insurancePlan.name:'',
-                        currencyName:r["value"][0].currency?r["value"][0].currency.name:'',
-                        currencyId:r["value"][0].currencyId,
-                        insuranceCoverageAmount:0
-                    });
-                }
-            });
-
-    }
+ 
     setAdditionalBackupData(){
         for(let i=0; i<this.entries.length;i++){
             this.setDetailFormAmount(i,this.entries[i].quantity);
@@ -488,6 +447,97 @@ doctorId:[null]
             this.products=this.products.concat( r['value']);
         });
     }
+
+    async getPatients(name:string){
+
+        if(name){
+         const filter = [
+             {
+                 property: "InsurancePlan",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Insurance",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Currency",
+                 value: "Id,Name, IsLocalCurrency",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter
+         ]
+         if(name)
+         filter.push( {
+             property: "Name",
+             value: name.toString(),
+             type: ObjectTypes.String,
+             isTranslated: false
+         } as QueryFilter);
+         
+             this.patientService.getAllFiltered(filter).subscribe(r=>{
+                 this.patients=[];
+                 this.patients=this.patients.concat(r["value"]);
+                
+             });
+        }
+             else{
+                 this.itemForm.patchValue({
+                     customerId:null,
+                     trnType:null,
+                     currencyId:null,
+                     trnControlId:null,
+                    sellerId:null,
+                    insuranceName:'',
+                    insurancePlanName:'',
+                    currencyName:'',
+                    nrc:'',
+                 });
+                 this.refreshAmounts(false);
+             }
+ 
+ 
+        
+     }
+ 
+     async selectPatient(patient:any){
+         if(patient){
+           this.itemForm.patchValue({
+            patientId:patient.id,
+               trnType:patient.trnType,
+               currencyId:patient.currencyId,
+               currencyName:patient.currency.name,
+               trnControlId:patient.trnControlId,
+                insurancePlanName:patient.insurancePlan.name,
+                insuranceName:patient.insurance.name,
+                insuranceId:patient.insuranceId,
+                insurancePlanId:patient.insurancePlanId,
+                insuranceCoverageAmount:0
+            })
+           
+         }
+         else{
+             this.itemForm.patchValue({
+                customerId:null,
+                trnType:null,
+                currencyName:'',
+                currencyId:null,
+                trnControlId:null,
+               sellerId:null,
+               insuranceName:'',
+               insurancePlanName:'',
+               nrc:''
+     
+             });
+             this.refreshAmounts(false);
+         }
+        
+   
+       }
 
     async getCreditNote(){
         const formVal= this.itemForm.getRawValue();

@@ -143,6 +143,8 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
 productCost:[0],
 productPrice:[0],
 selectedPrice:[0],
+insuranceName:[''],
+insurancePlanName:[''],
 beforeTaxesAmount:[0],
 paidAmount:[0],
 returnedAmount:[0],
@@ -157,30 +159,99 @@ free:[false]
    
      this.onChanges();
         this.verifyUser();
-        this.getProducts();
-        this.getCustomers();
+        
+       // this.getCustomers();
         this.getTrnControls();
         this.getWarehouses();
        this.getLocalCurrency();
     }
 
-    async getCustomers(){
-        const filter = [
-        {
-            property: "Currency",
-            value: "Id,Name,Code,ExchangeRate,IsLocalCurrency",
-            type: ObjectTypes.ChildObject,
-            isTranslated: false
-        } as QueryFilter
-    ]
-        this.customerService.getAllFiltered(filter).subscribe(r=>{
-            this.customers=[{id:0, name:''} as Customer];
-            this.customers=this.customers.concat( r['value']);
-            const {customerId} = this.itemForm.getRawValue();
-            if(customerId && customerId>0)
-            this.getSellers(customerId);
-        });
-    }
+    async getPatients(name:string){
+
+        if(name){
+         const filter = [
+             {
+                 property: "InsurancePlan",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Insurance",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Currency",
+                 value: "Id,Name, IsLocalCurrency",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter
+         ]
+         if(name)
+         filter.push( {
+             property: "Name",
+             value: name.toString(),
+             type: ObjectTypes.String,
+             isTranslated: false
+         } as QueryFilter);
+         
+             this.customerService.getAllFiltered(filter).subscribe(r=>{
+                 this.customers=[];
+                 this.customers=this.customers.concat(r["value"]);
+                
+             });
+        }
+             else{
+                 this.itemForm.patchValue({
+                     customerId:null,
+                     trnType:null,
+                     currencyId:null,
+                     trnControlId:null,
+                    sellerId:null,
+                    insuranceName:'',
+                    insurancePlanName:'',
+                    currencyName:'',
+                    nrc:'',
+                 });
+                 this.refreshAmounts(false);
+             }
+ 
+ 
+        
+     }
+ 
+     async selectPatient(patient:any){
+         if(patient){
+           this.itemForm.patchValue({
+               customerId:patient.id,
+               trnType:patient.trnType,
+               currencyId:patient.currencyId,
+               trnControlId:patient.trnControlId,
+                insurancePlanName:patient.insurancePlan.name,
+                insuranceName:patient.insurance.name
+            })
+           
+         }
+         else{
+             this.itemForm.patchValue({
+                customerId:null,
+                trnType:null,
+                currencyName:'',
+                currencyId:null,
+                trnControlId:null,
+               sellerId:null,
+               insuranceName:'',
+               insurancePlanName:'',
+               nrc:''
+     
+             });
+             this.refreshAmounts(false);
+         }
+        
+   
+       }
     setAdditionalBackupData(){
         for(let i=0; i<this.entries.length;i++){
             this.setDetailFormAmount(i,this.entries[i].quantity);
@@ -349,20 +420,52 @@ free:[false]
 
   
 
-    async getProducts(){
-        const filter = [
-        {
-            property: "Currency",
-            value: "Id,Name,Code,ExchangeRate",
-            type: ObjectTypes.ChildObject,
-            isTranslated: false
-        } as QueryFilter
-    ]
-        this.productService.getAllFiltered(filter).subscribe(r=>{
-            this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
-        });
+    async getProducts(name:string){
+        if(name){
+            const filter = [
+                {
+                    property: "Currency",
+                    value: "Id,Name,Code,ExchangeRate",
+                    type: ObjectTypes.ChildObject,
+                    isTranslated: false
+                } as QueryFilter,
+                {
+                    property: "Name",
+                    value: name.toString(),
+                    type: ObjectTypes.String,
+                    isTranslated: true
+                } as QueryFilter
+            ]
+                this.productService.getAllFiltered(filter).subscribe(r=>{
+                    this.products=[];
+                    this.products=this.products.concat( r['value']);
+                });
+        }
+        else{
+            this.itemForm.patchValue({
+                productId:null
+            });
+
+           
+        }
+       
     }
+
+    async selectProduct(product:any){
+        if(product){
+          this.itemForm.patchValue({productId:product.id})
+          
+        }
+        else{
+            this.itemForm.patchValue({
+                productId:null,
+               
+    
+            });
+         
+        }
+       
+      }
 
     async getProductInventory(hospitalId:number,warehouseId:number=0,productId:number=0){
      
@@ -546,6 +649,14 @@ free:[false]
                 this.GetProductCost(val);
                
             }
+            else{
+                this.productUnits=[];
+                this.productPrices=[];
+                this.inventories=[];
+                this.oldProductCost =0;
+                this.currentProductCost=0;
+            }
+            
         });
       
       }

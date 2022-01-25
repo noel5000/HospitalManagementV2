@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
  
   <input type="text"[(ngModel)]="filterString"
    class="form-control2" placeholder="...."
+   [ngClass]="!selectedItem?'isInvalid':''"
     id="myInput"
     #textInputSearch
     >
@@ -24,6 +25,9 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
   styles: [`
   .autoComplete{
     max-width: 300px;
+  }
+  .isInvalid{
+    border-color:red !important;
   }
   .selectOption{
     cursor: pointer;
@@ -142,6 +146,7 @@ this.changes.detectChanges();
     }
     else{
       this.itemsToShow=[];
+      this.selectedItem=null;
       this.changes.detectChanges();
     }
    
@@ -155,6 +160,7 @@ this.changes.detectChanges();
       selectItem(item:any){
         if(!this.propertyToShow){
           alert('propertyToShow needs an initial value');
+          this.selectedItem=null;
           return;
         }
         if(item && item[this.propertyToShow]){
@@ -164,6 +170,8 @@ this.changes.detectChanges();
           this.changes.detectChanges();
           this.filterString=item[this.propertyToShow].toString();
         }
+        else
+        this.selectedItem=null;
         
       }
 

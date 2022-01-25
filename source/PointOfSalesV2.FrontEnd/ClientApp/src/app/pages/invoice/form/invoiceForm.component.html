@@ -10,15 +10,15 @@
                         <div class="form-row">
                             <div class="form-group col-md-6 col-xs-12">
                                 <label>{{'patient_lbl' | translate}}</label>
-                                <select class="form-control"
-                                [ngClass]="{ 'is-invalid': form.patientId.errors }"
-                                formControlName="patientId"
-                                required
-                                >
-                                <option *ngFor="let patient of patients"
-                                 [value]="patient.id"
-                                 >{{patient.name}} {{patient.code}}</option>
-                                </select>
+                                <custom-auto-complete
+                                
+                                [items]="patients"
+                                [externalSearch]="true"
+                                [propertyToShow]="'name'"
+                                (onSelectedItem)="selectPatient($event)"
+                                (onFilter)="getPatients($event)"
+                                
+                                ></custom-auto-complete>
                                 <div *ngIf="form.patientId.errors" class="invalid-feedback">
                                     <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
                                 </div>

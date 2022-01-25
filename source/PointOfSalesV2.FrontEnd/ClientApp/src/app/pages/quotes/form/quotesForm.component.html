@@ -10,15 +10,16 @@
                         <div class="form-row">
                             <div class="form-group col-md-6 col-xs-12">
                                 <label>{{'patient_lbl' | translate}}</label>
-                                <select class="form-control"
-                                [ngClass]="{ 'is-invalid': form.customerId.errors }"
-                                formControlName="customerId"
-                                required
-                                >
-                                <option *ngFor="let patient of customers"
-                                 [value]="patient.id"
-                                 >{{patient.name}} {{patient.code}}</option>
-                                </select>
+                                <custom-auto-complete
+                                
+                                [items]="customers"
+                                [externalSearch]="true"
+                                [propertyToShow]="'name'"
+                                (onSelectedItem)="selectPatient($event)"
+                                (onFilter)="getPatients($event)"
+                                
+                                ></custom-auto-complete>
+                                
                                 <div *ngIf="form.customerId.errors" class="invalid-feedback">
                                     <div *ngIf="form.customerId.errors.required">{{'required_lbl' | translate}}</div>
                                 </div>
@@ -106,15 +107,15 @@
                                
                                 <div class="form-group col-md-6 col-xs-12">
                                     <label>{{'product_lbl' | translate}}</label>
-                                    <select class="form-control"
-                                    [ngClass]="{ 'is-invalid': form.productId.errors }"
-                                    formControlName="productId"
-                                    required
-                                    >
-                                    <option *ngFor="let product of products"
-                                     [value]="product.id"
-                                     >{{product.name}}</option>
-                                    </select>
+                                    <custom-auto-complete
+                    
+                                    [items]="products"
+                                    [externalSearch]="true"
+                                    [propertyToShow]="'name'"
+                                    (onSelectedItem)="selectProduct($event)"
+                                    (onFilter)="getProducts($event)"
+                                    
+                                    ></custom-auto-complete>
                                     <div class="invalid-feedback">
                                         <div *ngIf="form.productId.errors">{{'required_lbl' | translate}}</div>
                                     </div>
