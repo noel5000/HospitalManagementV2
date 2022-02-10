@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29509.3
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Api", "PointOfSalesV2.Api\PointOfSalesV2.Api.csproj", "{E11BB432-D256-4D20-8855-71ECDB3843FF}"
 EndProject
@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Common", "Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Test", "PointOfSalesV2.Test\PointOfSalesV2.Test.csproj", "{2F4343E2-1FA5-4656-81CB-18F27A3C8177}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointOfSalesV2.Console", "PointOfSalesV2.Console\PointOfSalesV2.Console.csproj", "{FD8E1476-5627-441A-8308-422C0D237907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Console", "PointOfSalesV2.Console\PointOfSalesV2.Console.csproj", "{FD8E1476-5627-441A-8308-422C0D237907}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointOfSalesV2.Repository.Tests", "PointOfSalesV2.Repository.Tests\PointOfSalesV2.Repository.Tests.csproj", "{AB433BB3-1AC1-40D6-8E42-9977E8796405}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{FD8E1476-5627-441A-8308-422C0D237907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD8E1476-5627-441A-8308-422C0D237907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD8E1476-5627-441A-8308-422C0D237907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

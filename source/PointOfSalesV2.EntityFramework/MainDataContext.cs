@@ -20,6 +20,12 @@ public class MainDataContext : DbContext
     //    CanUseSessionContext = true;
     //}
 
+    public MainDataContext()
+      : base(new DbContextOptions<MainDataContext>())
+    {
+       
+    }
+
     public MainDataContext(DbContextOptions<MainDataContext> options, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
         : base(options)
     {
