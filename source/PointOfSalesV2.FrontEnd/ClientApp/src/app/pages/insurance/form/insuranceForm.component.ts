@@ -17,6 +17,7 @@ import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -31,10 +32,11 @@ export class InsuranceFormComponent extends BaseComponent implements OnInit {
     insurancePlans:any[]=[];
     _route:ActivatedRoute;
     currencies:Currency[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

@@ -19,6 +19,7 @@ import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Currency } from '../../../@core/data/currencyModel';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -38,15 +39,16 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CustomerPayment`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     currencies:Currency[]=[];
     paymentTypes:any[]=[];
     customers:Customer[]=[];
-    paymentTypeService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}paymentType`);
+    paymentTypeService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}paymentType`);
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

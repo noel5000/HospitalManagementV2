@@ -33,6 +33,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { SellerService } from '../../../@core/services/SellerService';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -50,13 +51,14 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
 
   
-    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Invoice`);
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}CustomerReturn`);
+    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CustomerReturn`);
    
     isEditing:boolean=false;
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -99,20 +101,22 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                     this.itemForm.removeControl(`defectiveDetail_${i}`);
 
                 }
+                this.details= this.invoice &&  this.invoice.
+                invoiceDetails? this.invoice.invoiceDetails:[];
+
                 if( this.invoice &&  this.invoice.invoiceDetails &&  this.invoice.invoiceDetails.length>0){
                     for(let i=0; i< this.invoice.invoiceDetails.length;i++){
                         this.setDetailFormDefective(i, null);
                         this.setDetailFormAmount(i, null,this.invoice.invoiceDetails[i].quantity);
                       }
                 }
-                this.details= this.invoice &&  this.invoice.
-                invoiceDetails? this.invoice.invoiceDetails:[];
+                
                
                 this.itemForm.patchValue({
                     customerName:`${this.invoice.patient.name} - ${this.invoice.patient.code}`,
                     currencyName:this.invoice.currency.code,
                     billingDate:this.invoice.billingDate.split('T')[0],
-                    totalAmount:this.invoice.totalAmount
+                    totalAmount:this.invoice.patientPaymentAmount
                 });
 
                
@@ -213,8 +217,9 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                 selectedDetail.invoiceNumber=this.invoice.invoiceNumber;
                 selectedDetail.taxesAmount=0;
                 selectedDetail.id=0;
+                selectedDetail.totalAmount= this.details[i].totalAmount;
                 selectedDetail.beforeTaxesAmount=selectedQuantity* this.details[i].totalAmount/this.details[i].quantity;
-                selectedDetail.totalAmount=selectedDetail.beforeTaxesAmount;
+              
                 selectedDetail.customerId=this.invoice.customerId;
                 selectedDetail.defective = this.itemForm.getRawValue()[`defectiveDetail_${i}`] as boolean;
                 selectedDetail.defective = selectedDetail.defective==null?false:selectedDetail.defective;
@@ -240,12 +245,12 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
 
     setDetailFormAmount(index:number,quantity:number, maxNumber:number){
         if(!this.itemForm.contains(`returnQuantity_${index}`))
-        this.itemForm.addControl(`returnQuantity_${index}`,new FormControl(quantity,[ Validators.required,Validators.min(0.0001),Validators.max(maxNumber)]));
+        this.itemForm.addControl(`returnQuantity_${index}`,new FormControl({value:quantity, disabled:(this.isEditing || (this.details[index].type=='C' && !this.details[index].noCoverage))},[ Validators.required,Validators.min(0.0001),Validators.max(maxNumber)]));
     }
 
      setDetailFormDefective(index:number,selected:boolean, isNewEntry:boolean=false){
         if(!this.itemForm.contains(`defectiveDetail_${index}`))
-        this.itemForm.addControl(`defectiveDetail_${index}`,new FormControl(selected));
+        this.itemForm.addControl(`defectiveDetail_${index}`,new FormControl({value:selected , disabled:(this.isEditing || (this.details[index].type=='C' && !this.details[index].noCoverage))}));
     }
     refreshAmounts(fromForm:boolean=false){
     

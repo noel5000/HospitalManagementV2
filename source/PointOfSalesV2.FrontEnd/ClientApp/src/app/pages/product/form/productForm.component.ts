@@ -21,6 +21,7 @@ import { UnitService } from '../../../@core/services/UnitService';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { TaxService } from '../../../@core/services/TaxService';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -64,15 +65,16 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
     medicalSpecialities:any[]=[];
     productTaxes:any[]=[];//
     selectedBaseProduct:number=0;
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}ProductCost`);
-    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CompositeProduct`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}ProductTax`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
+    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}ProductCost`);
+    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CompositeProduct`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}ProductTax`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

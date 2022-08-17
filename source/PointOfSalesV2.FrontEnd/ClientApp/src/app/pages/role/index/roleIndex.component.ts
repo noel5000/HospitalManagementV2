@@ -12,6 +12,7 @@ import { Role } from '../../../@core/data/roleModel';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -35,9 +36,10 @@ export class RoleIndexComponent extends BaseComponent implements OnInit {
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     Roles:Role[]=[];
-    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}Role`);
+    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Role`);
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private  http: HttpClient,
@@ -122,9 +124,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

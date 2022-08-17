@@ -19,6 +19,7 @@ import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Currency } from '../../../@core/data/currencyModel';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,7 +38,7 @@ export class SalesReportIndexComponent extends BaseComponent implements OnInit {
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     customers:Customer[]=[];
@@ -45,6 +46,7 @@ export class SalesReportIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

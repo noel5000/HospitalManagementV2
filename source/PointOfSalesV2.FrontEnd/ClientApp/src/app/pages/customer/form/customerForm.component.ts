@@ -19,6 +19,7 @@ import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -35,12 +36,13 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     trnControls:TRNControl[]=[];
     currencies:Currency[]=[];
     bloodTypes:string[]=["A+","A-","B+","B-","O+","O-","AB+","AB-"];
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
 
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: CustomerService,
@@ -51,7 +53,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         private currencyService:CurrencyService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Customers,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -59,9 +61,9 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             phoneNumber: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
             cardId: ['',[Validators.maxLength(20)]],
             address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
-            bloodType: ['',[ Validators.required,Validators.minLength(1), Validators.maxLength(4)]],
+            bloodType: ['',[Validators.maxLength(4)]],
             code: [''],
-            birthDate:['', Validators.required],
+            birthDate:['', [Validators.required]],
             insuranceCardId:[''],
             insuranceId:[null],
             currencyId: [0,[Validators.required,Validators.min(1)]],
@@ -70,7 +72,15 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             invoiceDueDays: [0],
             billingAmountLimit: [0],
             creditAmountLimit: [0],
-            id: [0]
+            id: [0],
+            alergies: ['',[ Validators.maxLength(1000)]],
+            bloodTransfusions: ['',[ Validators.maxLength(1000)]],
+            familyIllnesses: ['',[ Validators.maxLength(1000)]],
+            medications: ['',[ Validators.maxLength(1000)]],
+            sc: [0],
+            size: [0],
+            surgeries: ['',[ Validators.maxLength(1000)]],
+            weight:[0]
         });
     }
     ngOnInit(): void {
@@ -83,7 +93,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getTrnControls();
         this.getCurrencies();
@@ -94,26 +104,36 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
             this.itemForm.patchValue({insurancePlanId:null});
                 this.getPlans(val);
         });
-      
+
     }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
+            const dateObj = this.item.birthDate?new Date(this.item.birthDate):new Date();
+            const dateObjString= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
             this.itemForm.patchValue({
                 id:this.item.id,
                 name: this.item.name,
                 phoneNumber: this.item.phoneNumber,
                 cardId: this.item.cardId,
                 address: this.item.address,
-                birthDate:this.item.birthDate,
+                birthDate:dateObjString,
                 code: this.item.code,
                 currencyId: this.item.currencyId,
                 trnControlId: this.item.trnControlId,
                 bloodType:this.item.bloodType,
                 insuranceId:this.item.insuranceId,
                 insurancePlanId:this.item.insurancePlanId,
-                insuranceCardId:this.item.insuranceCardId
+                insuranceCardId:this.item.insuranceCardId,
+                alergies: this.item.alergies,
+                bloodTransfusions: this.item.bloodTransfusions,
+                familyIllnesses: this.item.familyIllnesses,
+                medications: this.item.medications,
+                sc: this.item.sc,
+                size: this.item.size,
+                surgeries: this.item.surgeries,
+                weight:this.item.weight
             });
 
         }
@@ -143,33 +163,33 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
                 } as QueryFilter
             ]).subscribe(r=>{
                 this.insurancePlans = r['value'];
-                
+
             },error=>{
-    
+
             })
         }
     }
 
     getInsurances(){
-        
+
             this.insuranceService.getAll().subscribe(r=>{
                 this.insurances = [{name:'', id:null}]
                this.insurances=this.insurances.concat(r);
-                
+
             },error=>{
-    
+
             })
-        
+
     }
 
-   
+
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
             return;
         }
        const formValue = this.itemForm.value as Customer;
-      
+
            if(!this.item)
            this.item = formValue;
            this.item=  this.updateModel<Customer>(formValue,this.item);

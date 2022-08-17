@@ -3,6 +3,7 @@ import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { School } from '../data/school';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -10,8 +11,9 @@ import { School } from '../data/school';
 
 export class SchoolService extends BaseService<School, number>{
     constructor(
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.schools}`);
+        super(http, `${config.config.endpointUrl}${endpointControllers.schools}`);
     }
 }

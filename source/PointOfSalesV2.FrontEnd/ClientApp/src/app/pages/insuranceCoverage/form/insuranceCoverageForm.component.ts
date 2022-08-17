@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { HttpClient } from '@angular/common/http';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -21,11 +22,11 @@ declare const $: any;
 export class insuranceCoverageFormComponent extends BaseComponent implements OnInit {
 
     _route:ActivatedRoute;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsuranceServiceCoverage`);
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InsurancePlan`);
-    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Product`);
-    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Currency`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsuranceServiceCoverage`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
+    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Product`);
+    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Currency`);
     insurances:any=[];
     insurancePlans:any=[];
     products:any[]=[];
@@ -34,6 +35,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -78,7 +80,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         const product = this.products.find(x=>x.id==productId);
                     const principalCurrency = this.currencies.find(x=>x.isLocalCurrency);
                     const currency= this.currencies.find(x=>x.id==currencyId);
-                    const rate = principalCurrency.exchangeRate/currency.exchangeRate;
+                    const rate =(principalCurrency && currency)? principalCurrency.exchangeRate/currency.exchangeRate:1;
                     if(product){
                         this.productPrices=[product.price/rate,product.price2/rate,product.price3/rate];
                         this.productPrices=this.productPrices.filter(x=>x && x>0);
@@ -129,8 +131,12 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:null,name:""}];
             this.products=this.products.concat(r["value"]);
-            if(r["value"].length==1)
-            this.itemForm.patchValue({productId:this.products[1].id});
+            if(r["value"].length==1&& (!this.item || !this.item.productId))
+            this.itemForm.patchValue({productId:r["value"][0].id});
+            else
+            this.itemForm.patchValue({
+                productId: this.item?this.item.productId:null
+            })
         })
     }
 
@@ -140,8 +146,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.insuranceService.getAll().subscribe(r=>{
             this.insurances=[{id:null,name:""}];
             this.insurances=this.insurances.concat(r);
-            if(r.length==1)
-            this.itemForm.patchValue({insuranceId:this.insurances[1].id});
+            if(r.length==1&& (!this.item || !this.item.insuranceId))
+            this.itemForm.patchValue({insuranceId:r[0].id});
+           
+            else
+            this.itemForm.patchValue({
+                insuranceId: this.item?this.item.insuranceId:null
+            })
         })
     }
     async getCurrencies(){
@@ -149,8 +160,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.currencyService.getAll().subscribe(r=>{
             this.currencies=[{id:null,name:""}];
             this.currencies=this.currencies.concat(r);
-            if(r.length==1)
-            this.itemForm.patchValue({currencyId:this.currencies[1].id});
+            if(r.length==1 && (!this.item || !this.item.currencyId))
+            this.itemForm.patchValue({currencyId:r[0].id});
+            else
+            this.itemForm.patchValue({
+               currencyId: this.item?this.item.currencyId:null
+            })
+            
         })
     }
     async getInsurancePlans(id:number){
@@ -168,8 +184,13 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         this.insurancePlanService.getAllFiltered(filter).subscribe(r=>{
             this.insurancePlans=[{id:null,name:""}];
             this.insurancePlans=this.insurancePlans.concat(r["value"]);
-            if(this.insurancePlans.length==1)
-            this.itemForm.patchValue({insurancePlanId:this.insurancePlans[0].id});
+            if(r["value"].length==1&& (!this.item || !this.item.insurancePlanId))
+            this.itemForm.patchValue({insurancePlanId:r["value"][0].id});
+
+            else
+            this.itemForm.patchValue({
+                insurancePlanId: this.item.insurancePlanId
+            })
         })
     }
 
@@ -180,6 +201,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             this.itemForm.patchValue({
                 insuranceId: this.item.insuranceId,
                 id: this.item.id,
+                currencyId:this.item.currencyId,
                 insurancePlanId:this.item.insurancePlanId,
                 coverageAmount:this.item.coverageAmount,
                 productId:this.item.productId,

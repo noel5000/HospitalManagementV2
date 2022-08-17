@@ -12,8 +12,8 @@ namespace PointOfSalesV2.Common
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(text, QRCodeGenerator.ECCLevel.Q);
-            Base64QRCode qrCode = new Base64QRCode(qrCodeData);
-            string result = qrCode.GetGraphic(20);
+            var qrCode = new PngByteQRCode(qrCodeData);
+            string result = Encoding.Default.GetString(qrCode.GetGraphic(20));
             return result;
         }
     }

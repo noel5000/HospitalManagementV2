@@ -13,6 +13,7 @@ import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
@@ -26,7 +27,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     }
     _route:ActivatedRoute;
     modalRef:NgbModalRef=null;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
@@ -42,7 +43,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
             isTranslated:false
         },
     ];
-    
+
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     patient:Customer= {} as Customer;
@@ -51,6 +52,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
 
     constructor(
         route: Router,
+        private config: AppConfig,
         langService: LanguageService,
         private modals:NgbModal,
         router: ActivatedRoute,
@@ -65,7 +67,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
        this.appointmentId= parseInt( this._route.snapshot.paramMap.get('appointmentid'));
         this.getPatient(this.patientId);
         this.getPatientCheckups(this.patientId);
-       
+
     }
 
   async getPatient(id:number){
@@ -78,7 +80,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
         })
     }
    }
-   
+
   async getPatientCheckups(id:number){
     if(id>0){
         this.service.getByUrlParameters(["GetPatientHistory",id.toString()]).subscribe(r=>{
@@ -101,21 +103,21 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
                 const selectedConsultations=checkup.checkupPrescriptions.filter(x=>x.type=="C");
                 const selectedImages=checkup.checkupPrescriptions.filter(x=>x.type=="E");
                 const user = JSON.parse(localStorage.getItem("currentUser"));
-               
+
                 if(selectedMedicines && selectedMedicines.length>0)
-                window.open(`${endpointViewsUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
-               
+                window.open(`${this.config.config.endpointFilesUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+
 
                if(selectedLabTests && selectedLabTests.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
-              
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+
 
                if(selectedConsultations && selectedConsultations.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
-             
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+
 
                if(selectedImages && selectedImages.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.config.config.endpointFilesUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
             }
         }
@@ -125,7 +127,7 @@ console.log(ex);
 
     });
    }
-   
+
 
     addNew() {
         this.router.navigateByUrl(`pages/patientcheckup/add/${this.patientId}/${this.appointmentId}`);
@@ -140,7 +142,7 @@ console.log(ex);
     editCheckup(e:any) {
         this.router.navigateByUrl(`pages/patientcheckup/edit/${e.patientId}/${e.appointmentId}/${e.id}/1`);
     }
-    
+
     source:any={};
     onDeleteConfirm(event:any): void {
  var result =       this.modalService.confirmationModal({
@@ -153,14 +155,14 @@ console.log(ex);
       if(r)
       this.delete(event.id);
   })
-   
+
     }
 
     delete(id: number) {
         this.service.delete(id).subscribe(r => {
             if (r.status >= 0) {
                 this.modalService.showSuccess(this.lang.getValueByKey('success_msg'))
-        
+
             }
             else
              this.modalService.showError(r.message);

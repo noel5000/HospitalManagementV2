@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Unit } from '../../../@core/data/unitModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -36,6 +37,7 @@ export class UnitIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: UnitService,
@@ -121,9 +123,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

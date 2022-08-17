@@ -13,6 +13,7 @@ import { Expense } from '../../../@core/data/expenseModel';
 import { ExpensePayment } from '../../../@core/data/expensePayment';
 import { ExpensePaymentService } from '../../../@core/services/expensePaymentService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -52,6 +53,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ExpensePaymentService,
@@ -78,12 +80,13 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
       id:'supplierId',
       type:'text',
       fieldToShow:'supplier.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('supplier_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
@@ -94,19 +97,20 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'currencyId',
         type:'text',
         fieldToShow:'currency.code',
+        objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -117,7 +121,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -128,7 +132,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -139,7 +143,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
@@ -175,7 +179,7 @@ this.actions=[
     }
     print(e:any) {
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
        }
@@ -194,9 +198,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

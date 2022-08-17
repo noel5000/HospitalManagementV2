@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -21,24 +22,29 @@ declare const $: any;
 export class LogoutIndexComponent  implements OnInit {
     ngOnInit(): void {
      this.service.post({}).subscribe(r=>{
-         if(r.status>=0)
-         this.router.navigateByUrl('auth/login');
+         if(r.status>=0){
+           localStorage.removeItem('currentUser')
+          this.router.navigateByUrl('auth/login');
+
+         }
+
          else
          this.modalService.showError(r.message);
      })
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Logout`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Logout`);
 
 
     constructor(
+        private config: AppConfig,
         langService: LanguageService,
         private modals:NgbModal,
        private router: Router,
       private modalService:ModalService,
        private  http: HttpClient,
     ) {
-    
-    
+
+
     }
 
 }

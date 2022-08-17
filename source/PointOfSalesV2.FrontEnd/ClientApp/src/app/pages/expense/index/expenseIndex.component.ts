@@ -11,6 +11,7 @@ import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/moda
 import { ModalService } from '../../../@core/services/modal.service';
 import { Expense } from '../../../@core/data/expenseModel';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -56,6 +57,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ExpenseService,
@@ -80,26 +82,28 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
 {
     visible:true,
     id:'branchOfficeId',
-    type:'text',
     fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    objectTypeToShow:ObjectTypes.String,
+    type:'text',
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'supplierId',
       type:'text',
       fieldToShow:'supplier.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('supplier_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
@@ -110,7 +114,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
@@ -118,11 +122,12 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
         type:'text',
         fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -133,7 +138,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -144,7 +149,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -155,7 +160,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
@@ -219,9 +224,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -324,7 +329,7 @@ else{
     print(e:any){
 
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
     }

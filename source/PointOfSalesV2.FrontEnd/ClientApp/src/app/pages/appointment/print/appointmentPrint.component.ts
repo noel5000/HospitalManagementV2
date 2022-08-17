@@ -28,6 +28,7 @@ import { ProductService } from '../../../@core/services/ProductService';
 import { Item } from '../../../@core/data/itemModel';
 import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -46,7 +47,7 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
     currentDate:string='';
     sequence:string='';
     _route:ActivatedRoute;
-    appointmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}appointment`);
+    appointmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}appointment`);
     weeksOfMonth:Item[]=[
         {
             id:null,
@@ -101,7 +102,7 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
         },
     ];
 
-    constructor(
+    constructor( private config: AppConfig,
         router: ActivatedRoute,
         route: Router,
         langService: LanguageService,

@@ -6,6 +6,7 @@ import { Expense } from '../data/expenseModel';
 import { Observable } from 'rxjs';
 import { BaseResultModel } from '../data/baseResultModel';
 import { ExpensePayment } from '../data/expensePayment';
+import { AppConfig } from './app.config';
 
 export interface ISupplierPayment{
     payment:any;
@@ -17,9 +18,10 @@ export interface ISupplierPayment{
 })
 export class ExpensePaymentService extends BaseService<ExpensePayment, number>{
     constructor(
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.expensePayment}`);
+        super(http, `${config.config.endpointUrl}${endpointControllers.expensePayment}`);
     }
 
     PayExpenses(payment:ISupplierPayment,lang:string=''):Observable<any>{

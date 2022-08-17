@@ -33,6 +33,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { SellerService } from '../../../@core/services/SellerService';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -66,17 +67,18 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
     currentProductCost:any={cost:0};
     currentProductPrice:any={sellingPrice:0,costPrice:0, equivalence:0};
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Inventory`);
-    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Invoice`);
-    menuService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Menu`);
-    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Currency`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductTax`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Inventory`);
+    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
+    menuService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Menu`);
+    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Currency`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductTax`);
     oldProductCost:number=0;
     oldProductPrice:number=0;
     selectedProductCurrency:Currency=null;
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -112,7 +114,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 id: [0],
 customerId:[null,[ Validators.required,Validators.min(1)]],
 trnType:[null,[ Validators.required]],
-nrc:[null,[ Validators.required]],
+nrc:[''],
 productId:[null,[ Validators.required,Validators.min(1)]],
 unitId:this.defaultUnitValidator,
 branchOfficeId:[this.branchOfficeId],
@@ -143,6 +145,8 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
 productCost:[0],
 productPrice:[0],
 selectedPrice:[0],
+insuranceName:[''],
+insurancePlanName:[''],
 beforeTaxesAmount:[0],
 paidAmount:[0],
 returnedAmount:[0],
@@ -157,30 +161,99 @@ free:[false]
    
      this.onChanges();
         this.verifyUser();
-        this.getProducts();
-        this.getCustomers();
+        
+       // this.getCustomers();
         this.getTrnControls();
         this.getWarehouses();
        this.getLocalCurrency();
     }
 
-    async getCustomers(){
-        const filter = [
-        {
-            property: "Currency",
-            value: "Id,Name,Code,ExchangeRate,IsLocalCurrency",
-            type: ObjectTypes.ChildObject,
-            isTranslated: false
-        } as QueryFilter
-    ]
-        this.customerService.getAllFiltered(filter).subscribe(r=>{
-            this.customers=[{id:0, name:''} as Customer];
-            this.customers=this.customers.concat( r['value']);
-            const {customerId} = this.itemForm.getRawValue();
-            if(customerId && customerId>0)
-            this.getSellers(customerId);
-        });
-    }
+    async getPatients(name:string){
+
+        if(name){
+         const filter = [
+             {
+                 property: "InsurancePlan",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Insurance",
+                 value: "Id,Name",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter,
+             {
+                 property: "Currency",
+                 value: "Id,Name, IsLocalCurrency",
+                 type: ObjectTypes.ChildObject,
+                 isTranslated: false
+             } as QueryFilter
+         ]
+         if(name)
+         filter.push( {
+             property: "Name",
+             value: name.toString(),
+             type: ObjectTypes.String,
+             isTranslated: false
+         } as QueryFilter);
+         
+             this.customerService.getAllFiltered(filter).subscribe(r=>{
+                 this.customers=[];
+                 this.customers=this.customers.concat(r["value"]);
+                
+             });
+        }
+             else{
+                 this.itemForm.patchValue({
+                     customerId:null,
+                     trnType:null,
+                     currencyId:null,
+                     trnControlId:null,
+                    sellerId:null,
+                    insuranceName:'',
+                    insurancePlanName:'',
+                    currencyName:'',
+                    nrc:'',
+                 });
+                 this.refreshAmounts(false);
+             }
+ 
+ 
+        
+     }
+ 
+     async selectPatient(patient:any){
+         if(patient){
+           this.itemForm.patchValue({
+               customerId:patient.id,
+               trnType:patient.trnType,
+               currencyId:patient.currencyId,
+               trnControlId:patient.trnControlId,
+                insurancePlanName:patient.insurancePlan.name,
+                insuranceName:patient.insurance.name
+            })
+           
+         }
+         else{
+             this.itemForm.patchValue({
+                customerId:null,
+                trnType:null,
+                currencyName:'',
+                currencyId:null,
+                trnControlId:null,
+               sellerId:null,
+               insuranceName:'',
+               insurancePlanName:'',
+               nrc:''
+     
+             });
+             this.refreshAmounts(false);
+         }
+        
+   
+       }
     setAdditionalBackupData(){
         for(let i=0; i<this.entries.length;i++){
             this.setDetailFormAmount(i,this.entries[i].quantity);
@@ -223,7 +296,7 @@ free:[false]
             currencyId:customer.currencyId,
             currencyName:customer.currency.name,
             trnType:customer.trnType,
-            nrc:customer.cardId,
+            nrc:customer.cardId?customer.cardId:'',
             warehouseId:customer.warehouseId?customer.warehouseId:this.warehouseId
         })
         const filter = [{
@@ -349,33 +422,115 @@ free:[false]
 
   
 
-    async getProducts(){
-        const filter = [
-        {
-            property: "Currency",
-            value: "Id,Name,Code,ExchangeRate",
-            type: ObjectTypes.ChildObject,
-            isTranslated: false
-        } as QueryFilter
-    ]
-        this.productService.getAllFiltered(filter).subscribe(r=>{
-            this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
-        });
+    async getProducts(name:string){
+        if(name){
+            const filter = [
+                {
+                    property: "Currency",
+                    value: "Id,Name,Code,ExchangeRate",
+                    type: ObjectTypes.ChildObject,
+                    isTranslated: false
+                } as QueryFilter,
+                {
+                    property: "Name",
+                    value: name.toString(),
+                    type: ObjectTypes.String,
+                    isTranslated: true
+                } as QueryFilter
+            ]
+                this.productService.getAllFiltered(filter).subscribe(r=>{
+                    this.products=[];
+                    this.products=this.products.concat( r['value']);
+                });
+        }
+        else{
+            this.itemForm.patchValue({
+                productId:null
+            });
+
+           
+        }
+       
     }
 
-    async getProductInventory(branchOfficeId:number,warehouseId:number=0,productId:number=0){
-        this.inventoryService.patchGenericByUrlParameters(['GetCompanyInventory',branchOfficeId.toString(),warehouseId.toString(),productId.toString()]).subscribe(r=>{
-            const result = r.data[0];
-            if(result.warehouses){
-                const warehouses = result.warehouses.filter(x=>x.code!='DEF');
-                this.inventories=[];
-                warehouses.forEach(w=>{
-                    const productInventory= w.inventory.filter(x=>x.productId == productId);
-                    if(productInventory.length>0)
-                    this.inventories = this.inventories.concat(productInventory);
-                });
-            }
+    async selectProduct(product:any){
+        if(product){
+          this.itemForm.patchValue({productId:product.id})
+          
+        }
+        else{
+            this.itemForm.patchValue({
+                productId:null,
+               
+    
+            });
+         
+        }
+       
+      }
+
+    async getProductInventory(hospitalId:number,warehouseId:number=0,productId:number=0){
+     
+        let filter = [
+            {
+                property: "BranchOffice",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:false
+            }  as QueryFilter, 
+            {
+                property: "Warehouse",
+                value: "Name,Code",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Unit",
+                value: "Name",
+                type: ObjectTypes.ChildObject,
+                isTranslated:true
+            }  as QueryFilter, 
+            {
+                property: "Warehouse.Code",
+                value: 'DEF',
+                type: ObjectTypes.String,
+                comparer:ODataComparers.NotEqual,
+                isTranslated: false
+            } as QueryFilter
+        ];
+    if(hospitalId)
+    filter.push({
+        property: "BranchOfficeId",
+        value: hospitalId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+    if(warehouseId)
+    filter.push({
+        property: "WarehouseId",
+        value: warehouseId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter);
+
+    if(productId)
+    filter.push({
+        property: "ProductId",
+        value: productId.toString(),
+        type: ObjectTypes.Number,
+        comparer:ODataComparers.equals,
+        isTranslated: false
+    } as QueryFilter)
+
+
+        this.inventoryService.getAllFiltered(filter).subscribe(r=>{
+            if(r['value'].length>0)
+            this.inventories=r['value'];
+            else
+            this.modalService.showError('billingStateI_lbl');
+            
         })
     }
 
@@ -402,18 +557,14 @@ free:[false]
 
             this.itemForm.get('unitId').valueChanges.subscribe(val => {
 
-                this.inventories=[];
+             
                 if(val && val!="0"){
                     this.refreshAmounts();
                     const currentUnit = this.productUnits.find(x=>x.unitId==val);
                    const {productId,warehouseId,selectedPrice}= this.itemForm.getRawValue();
                    this.updateSelectedPrice(selectedPrice);
-                   const user = this.getUser();
-                   const product = this.products.find(x=>x.id==productId);
                   
-                   if(!product.isService){
-                    this.getProductInventory(user.branchOfficeId,warehouseId==null?0:warehouseId,productId)
-                   }
+                  
                 }
                 });
 
@@ -469,6 +620,7 @@ free:[false]
 
         this.itemForm.get('productId').valueChanges.subscribe(val => {
             if(val && val>0){
+                const form = this.itemForm.getRawValue();
                 this.inventories=[];
                 this.productUnits=[];
                 this.productPrices=[];
@@ -488,13 +640,25 @@ free:[false]
                 this.itemForm.removeControl('unitId');
                 this.itemForm.addControl('unitId',this.defaultUnitValidator)   
                 this.GetProductUnits(val);
+                const user = this.getUser();
+                
+                this.getProductInventory(user.branchOfficeId,form.warehouseId==null?0:form.warehouseId,val);
             }
                 this.productTaxes=[];
                 this.GetProductTaxes(val);
                 this.itemForm.patchValue({unitId:null});
                 
                 this.GetProductCost(val);
+               
             }
+            else{
+                this.productUnits=[];
+                this.productPrices=[];
+                this.inventories=[];
+                this.oldProductCost =0;
+                this.currentProductCost=0;
+            }
+            
         });
       
       }

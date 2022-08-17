@@ -7,10 +7,11 @@ import {
   EventEmitter,
   Directive,
   QueryList, 
-  ViewChildren 
+  ViewChildren, 
+  AfterViewInit
 } from '@angular/core';
 
-import { map, takeUntil, filter } from 'rxjs/operators';
+import { map, takeUntil, filter, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -21,6 +22,7 @@ import { endpointControllers, endpointUrl } from '../../../@core/common/constant
 import { AuthModel } from '../../../@core/data/authModel';
 import { AppSections, ObjectTypes, BillingStates } from '../../../@core/common/enums';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { fromEvent } from 'rxjs';
 
 
 
@@ -31,6 +33,7 @@ export interface IPaginationModel{
   type:string;
   isTranslated:boolean,
   fieldToShow?:string;
+  objectTypeToShow?:ObjectTypes,
   name:string;
   sorting:string;
   toSort:boolean;
@@ -80,7 +83,7 @@ rotate() {
   styleUrls: ['./pagination.component.scss'],
   templateUrl: './pagination.component.html',
 })
-export class PaginationCompoment{
+export class PaginationCompoment implements AfterViewInit{
   datePipe = new DatePipe('en-US');
   currencyPipe = new CurrencyPipe('en-US');
     @Input() tableConfig:IPaginationModel[]=[];
@@ -98,6 +101,22 @@ export class PaginationCompoment{
     @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 
     constructor(private lang:LanguageService){}
+  ngAfterViewInit(): void {
+ 
+
+ fromEvent(document.getElementsByClassName('headersFilter'),'keyup')
+    .pipe(
+       
+        debounceTime(400),
+        distinctUntilChanged(),
+        tap((el) => {
+         const id = el['path'][0].id
+         const value = el['path'][0].value
+         this.addFilter(this.tableConfig.find(x=>x.id==id),value);
+        })
+    )
+    .subscribe();
+  }
 
     getTranslation(key:string){
       return this.lang.getValueByKey(key);
@@ -107,7 +126,7 @@ export class PaginationCompoment{
       this.getPagedDataEvent.emit(e);
     }
     addFilter(config:IPaginationModel,val:any){
-      this.addFilterEvent.emit({config:config,value:val.target.value});
+      this.addFilterEvent.emit({config:config,value:val.target?val.target.value:val});
     }
     onSort(e){
       this.onSortEvent.emit(e);

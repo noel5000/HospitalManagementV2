@@ -25,6 +25,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { Product } from '../../../@core/data/product';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { ProductService } from '../../../@core/services/ProductService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -45,15 +46,16 @@ export class WarehouseTransferFormComponent extends BaseComponent implements OnI
     entries:any[]=[];
     originInventory:any={id:0,currentUnitEquivalence:0};
     destinyInventory:any={id:0,currentUnitEquivalence:0};
-    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}WarehouseTransfer`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Inventory`);
+    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}WarehouseTransfer`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Inventory`);
   
 
 
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,

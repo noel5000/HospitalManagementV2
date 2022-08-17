@@ -1,33 +1,32 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-namespace PointOfSalesV2.Repository.Helpers
+﻿
+namespace PointOfSalesV2.Repository
 {
-  public  class ProductsRepoHelper
+
+
+
+public  class ProductsRepoHelper
     {
 
-        public static bool ExistProductInInvoices(int productId, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<bool> ExistProductInInvoices(int productId, IDataRepositoryFactory dataRepositoryFactory)
         {
             var detailsRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceDetailRepository>();
-            if (detailsRepo.GetByProductId(productId).ToList().Count > 0)
+            if ((await detailsRepo.GetByProductId(productId)).ToList().Count > 0)
                 return true;
             return false;
         }
 
-        public static bool IsProductInWarehouse(int productId, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<bool> IsProductInWarehouse(int productId, IDataRepositoryFactory dataRepositoryFactory)
         {
             var inventoryRepo = dataRepositoryFactory.GetCustomDataRepositories<IInventoryRepository>();
-            if (inventoryRepo.GetProductInventory(productId).Where(e => e.Quantity > 0).Count() > 0)
+            if ((await inventoryRepo.GetProductInventory(productId)).Where(e => e.Quantity > 0).Count() > 0)
                 return true;
             return false;
         }
 
-        public static bool IsBaseProduct(int productId, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<bool> IsBaseProduct(int productId, IDataRepositoryFactory dataRepositoryFactory)
         {
             var repo = dataRepositoryFactory.GetCustomDataRepositories<ICompositeProductRepository>();
-            if (repo.GetDerivedProducts(productId).Count() > 0)
+            if ( (await repo.GetDerivedProducts(productId)).Count() > 0)
                 return true;
             return false;
         }
@@ -78,11 +77,11 @@ namespace PointOfSalesV2.Repository.Helpers
             return true;
         }
 
-        public static bool UpdateProductUnits(Product product, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<bool> UpdateProductUnits(Product product, IDataRepositoryFactory dataRepositoryFactory)
         {
             var unitsRepo = dataRepositoryFactory.GetCustomDataRepositories<IUnitProductEquivalenceRepository>();
             List<UnitProductEquivalence> productUnits = product.ProductUnits!=null?product.ProductUnits.ToList(): new List<UnitProductEquivalence>();
-            var previousUnits = unitsRepo.GetProductUnits(product.Id).ToList();
+            var previousUnits = ( await unitsRepo.GetProductUnits(product.Id)).ToList();
 
             if (product.IsService)
             {
@@ -149,7 +148,7 @@ namespace PointOfSalesV2.Repository.Helpers
         {
             List<ProductTax> productTaxes = product.Taxes!=null?product.Taxes.ToList() : new List<ProductTax>();
             var taxesRepo = dataRepositoryFactory.GetCustomDataRepositories<IProductTaxRepository>();
-            var previousTaxes = taxesRepo.GetProductTaxes(product.Id).ToList();
+            var previousTaxes = taxesRepo.GetProductTaxes(product.Id).Result.ToList();
 
 
             if (previousTaxes != null)
@@ -196,11 +195,11 @@ namespace PointOfSalesV2.Repository.Helpers
             return true;
         }
 
-        public static bool UpdateProductBases(Product product, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<bool> UpdateProductBases(Product product, IDataRepositoryFactory dataRepositoryFactory)
         {
             var repo = dataRepositoryFactory.GetCustomDataRepositories<ICompositeProductRepository>();
             List<CompositeProduct> productBases = product.BaseCompositeProducts!=null?product.BaseCompositeProducts.ToList() : new List<CompositeProduct>();
-            var previousBases = repo.GetProductBases(product.Id).ToList() ?? new List<CompositeProduct>();
+            var previousBases = (await repo.GetProductBases(product.Id)).ToList() ?? new List<CompositeProduct>();
 
             if (!product.IsService)
             {

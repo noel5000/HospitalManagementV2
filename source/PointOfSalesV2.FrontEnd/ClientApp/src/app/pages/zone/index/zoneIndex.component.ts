@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Zone } from '../../../@core/data/zoneModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -39,6 +40,7 @@ export class ZoneIndexComponent extends BaseComponent implements OnInit {
         route: Router,
         langService: LanguageService,
         private service: ZoneService,
+        private config: AppConfig,
         private modals:NgbModal,
        modalService:ModalService
     ) {
@@ -121,9 +123,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

@@ -12,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -28,6 +29,7 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
     constructor(
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: WarehouseService,

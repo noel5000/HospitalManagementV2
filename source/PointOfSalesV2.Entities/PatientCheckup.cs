@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using PointOfSalesV2.Common;
+global using System;
+global using System.Collections.Generic;
+global using System.ComponentModel.DataAnnotations.Schema;
+global using System.ComponentModel.DataAnnotations;
+global using PointOfSalesV2.Common;
 
 namespace PointOfSalesV2.Entities
 {
@@ -16,9 +13,39 @@ namespace PointOfSalesV2.Entities
         public Guid DoctorId { get; set; }
         public long? InsuranceId { get; set; }
         public long? InsurancePlanId { get; set; }
-        public long AppointmentId { get; set; }
+        public long? AppointmentId { get; set; }
+        [MaxLength(2000)]
         public string Symptoms { get; set; }
+        [MaxLength(2000)]
         public string Diagnoses { get; set; }
+        [MaxLength(2000)]
+        public string Plan { get; set; }
+
+        [MaxLength(2000)]
+        public string MedicalBackground { get; set; }
+        [MaxLength(2000)]
+        public string ConsultationReason { get; set; }
+
+        [MaxLength(2000)]
+        public string LaboratoriesResults { get; set; }
+
+        [MaxLength(2000)]
+        public string ImagesResults { get; set; }
+
+        [MaxLength(500)]
+        public string PhysicalExamHeadNeck { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExam { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExamChest { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExamHeart { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExamLungs { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExamStomach { get; set; }
+        [MaxLength(500)]
+        public string PhysicalExamExtremities { get; set; }
 
         public DateTime Date { get; set; }
 

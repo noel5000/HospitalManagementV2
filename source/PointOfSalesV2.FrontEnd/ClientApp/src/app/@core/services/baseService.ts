@@ -1,14 +1,11 @@
 
-import { isNullOrUndefined } from 'util';
-import { of, Observable, from } from "rxjs";
-import { map, filter, finalize, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { finalize, tap } from "rxjs/operators";
 import { Injectable } from "@angular/core";
-import { HttpHeaders, HttpClient, HttpParams, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } from "@angular/common/http";
-import { IPagedList } from '../data/pagedList';
+import { HttpHeaders, HttpClient, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } from "@angular/common/http";
 import { BaseResultModel } from '../data/baseResultModel';
 import { AuthModel } from './../data/authModel';
 import { QueryFilter, ObjectTypes } from '../common/enums';
-import { ModalService } from './modal.service';
 
 
 
@@ -37,6 +34,9 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     }
     _headers: HttpHeaders;
     httpOptions = {};
+   public get headers(){
+        return this._headers;
+    }
 
     tempHttpOptions = {};
 
@@ -44,7 +44,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
         private _baseUrl: string) {
         this.setHttpOptions();
         this._httpClient.request.bind(x=>{
-            
+
         });
     }
 
@@ -56,7 +56,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
             responseType:responseType?responseType:'application/json'
         };
 
-        
+
 
 
         this._headers = new HttpHeaders({
@@ -72,11 +72,11 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     }
 
 
- 
+
 
     get(languageId: string = ""): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
         let promise =  this._httpClient.get<any>(
             this.baseUrl,
@@ -87,7 +87,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
     getGeneral(languageId: string = ""): Observable<any> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
         let data =this._httpClient.get<any>(
             this.baseUrl,
@@ -98,7 +98,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
     getAll(languageId: string = ""): Observable<TEntity[]> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<TEntity[]>(
             this.baseUrl,
@@ -113,7 +113,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
         languageId: string = ""
     ): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<BaseResultModel<TEntity>>(
             `${this.baseUrl}/${page}/${max}`,
@@ -130,7 +130,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
         direction: string = 'desc',
         languageId: string = ""
     ): Observable<any> {
-       
+
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<any>(
@@ -147,14 +147,14 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 anchor.download = `${fileName}.${fileExt}`;
 anchor.href = url;
 anchor.click();
-        
+
     }
 
     getAllFiltered(
         filters: QueryFilter[] = [],
         languageId: string = ""
     ): Observable<any> {
-       
+
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<any>(
@@ -168,10 +168,11 @@ anchor.click();
         filters: QueryFilter[] = [],
         languageId: string = ""
     ): Observable<Blob> {
-       
+
         const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
-        let data=this._httpClient.post(`${this.baseUrl}/exporttoexcel`,
-        {filters}
+       const url= `${this.baseUrl.replace('/api/','/odata/')}/exporttoexcel?${this.getODataQueryAll(filters)}`
+        let data=this._httpClient.post(url,
+        {}
         ,{responseType:'blob',
         headers:new HttpHeaders({
             "UserId": currentUser ? currentUser.user.userId : '',
@@ -179,7 +180,7 @@ anchor.click();
             "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
         })});
         return data;
-        
+
     }
 
     exportToExcel(
@@ -187,7 +188,7 @@ anchor.click();
         url:string="",
         languageId: string = "",
     ): Observable<Blob> {
-       
+
         const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
 
 
@@ -214,29 +215,49 @@ anchor.click();
           result+=expandResult;
         }
         let query = '$filter=';
-        filters.forEach(f => {
+        const filterData= filters.filter(x=>x.type!=ObjectTypes.ChildObject);
+        filterData.forEach(f => {
             let comparer= f.comparer?f.comparer.toString():'eq';
+            const propertyDef=f.property.indexOf('.')>=0?f.property.replace('.','/'):f.property;
+            let propertyDefArr=propertyDef.split('/');
+            let newSearch=propertyDefArr;
+            if(f.isTranslated && newSearch.length>1)
+            newSearch[newSearch.length-1]='TranslationData';
             if(comparer=="in"){
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
+                   
                     switch (f.type) {
-                
+                      
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
-                            ;
+                            switch(comparer){
+                                case 'eq':
+                                query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                case 'ne':
+                                    query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                default:
+                                    query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                    
+                            }
+                           
                             break;
                         case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                         case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
+                            query = `${query}(${propertyDef} ${comparer} '${val}') or `;
                             break;
                         case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
-                    }  
+                    }
                 });
                 if (query.endsWith(" or '")|| query.endsWith(" or ")) {
                     query = query.substring(0, query.length - 4);
@@ -244,24 +265,35 @@ anchor.click();
             }
             else{
                 switch (f.type) {
-                
+
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
-                        ;
+                        switch(comparer){
+                            case 'eq':
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            case 'ne':
+                                query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and `:
+                                `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            default:
+                                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                            break;
+                                
+                        }
                         break;
                     case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                     case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
+                        query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
                         break;
                     case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                 }
             }
-         
+
         })
         result = query.length > 8 ? `${result}${query}` : result;
         if (result.endsWith(" and '")|| result.endsWith(" and ")) {
@@ -303,29 +335,49 @@ anchor.click();
           result+=expandResult;
         }
         let query = '$filter=';
-        filters.forEach(f => {
+        const filterData= filters.filter(x=>x.type!=ObjectTypes.ChildObject);
+        filterData.forEach(f => {
             let comparer= f.comparer?f.comparer.toString():'eq';
+            const propertyDef=f.property.indexOf('.')>=0?f.property.replace('.','/'):f.property;
+            let propertyDefArr=propertyDef.split('/');
+            let newSearch=propertyDefArr;
+            if(f.isTranslated && newSearch.length>1)
+            newSearch[newSearch.length-1]='TranslationData';
             if(comparer=="in"){
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
+                   
                     switch (f.type) {
-                
+                      
                         case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
-                            ;
+                            switch(comparer){
+                                case 'eq':
+                                query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                            `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                case 'ne':
+                                    query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                default:
+                                    query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
+                                    `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
+                                break;
+                                    
+                            }
+                            
                             break;
                         case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
                         case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
+                            query = `${query}(${propertyDef} ${comparer} '${val}') or `;
                             break;
                         case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
+                            query = `${query}(${propertyDef} ${comparer} ${val}) or `;
                             break;
-                    }  
+                    }
                 });
                 if (query.endsWith(" or '")|| query.endsWith(" or ")) {
                     query = query.substring(0, query.length - 4);
@@ -333,24 +385,36 @@ anchor.click();
             }
             else{
                 switch (f.type) {
-                
+
                     case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
-                        ;
+                        switch(comparer){
+                            case 'eq':
+                            query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and `:
+                        `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            case 'ne':
+                                query =!f.isTranslated? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and `:
+                                `${query}(not contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${f.value}')) and `;
+                            break;
+                            default:
+                                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                            break;
+                                
+                        }
+                       
                         break;
                     case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                     case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
+                        query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
                         break;
                     case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
+                        query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                         break;
                 }
             }
-         
+
         })
         result = query.length > 8 ? `${result}${query}` : result;
         if (result.endsWith(" and '")|| result.endsWith(" and ")) {
@@ -360,7 +424,7 @@ anchor.click();
         if (result.endsWith("&")) {
             result = result.substring(0, result.length - 1);
         }
-      
+
         result = `${result}`;
 
         return result;
@@ -368,7 +432,7 @@ anchor.click();
 
     getById(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
 
 
@@ -394,7 +458,7 @@ anchor.click();
     post(entity: TEntity, languageId: string = "", optionalUrl=""): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-       
+
 
         let promise=this._httpClient.post<BaseResultModel<TEntity>>(
             optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
@@ -407,10 +471,10 @@ anchor.click();
     postList(entity: TEntity[], languageId: string = "", optionalUrl:string=''): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-       
 
 
-        
+
+
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
             optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
@@ -420,8 +484,8 @@ anchor.click();
         return promise;
     }
     putList(entity: TEntity[], languageId: string = "", optionalUrl:string=""): Observable<BaseResultModel<TEntity>> {
-    
-        
+
+
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
             optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
@@ -436,7 +500,7 @@ anchor.click();
         languageId: string = ""
     ): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
-       
+
         this.setLanguageInHeaders(languageId);
         let data=this._httpClient.patch<BaseResultModel<TEntity>>(this.baseUrl + "/" + id, entity);
         return data;
@@ -445,24 +509,24 @@ anchor.click();
     put(entity: TEntity, languageId: string = "",optionalUrl:string=""): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-       
+
 
         entity=this.SetTranslationData(entity);
-        
+
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
             optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
-        );        
-      
+        );
+
         return promise;
     }
 
     delete(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-        
-       
+
+
         let promise=this._httpClient.delete<BaseResultModel<TEntity>>(
             this.baseUrl + "/" + id,
             !languageId ? this.httpOptions : this.tempHttpOptions
@@ -487,7 +551,7 @@ anchor.click();
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
 
-       
+
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
             `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
@@ -509,7 +573,7 @@ anchor.click();
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
 
-       
+
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
             `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
@@ -524,7 +588,7 @@ anchor.click();
         let urlParams = params.join("/");
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-       
+
         let promise=this._httpClient.get<any>(
             `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
@@ -540,7 +604,7 @@ anchor.click();
         let urlParams = params.join("/");
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
-       
+
         let promise=this._httpClient.patch<any>(
             `${this.baseUrl}/${urlParams}`,
             data,
@@ -548,6 +612,16 @@ anchor.click();
         );
         return promise;
     }
+
+    showSpinner(){
+        let spinnerObj = document.getElementById("nb-global-spinner");
+        spinnerObj.style.display="block";
+     }
+    
+     hideSpinner(){
+         let spinnerObj = document.getElementById("nb-global-spinner");
+         spinnerObj.style.display="none";
+      }
 }
 @Injectable()
 export class NoopInterceptor implements HttpInterceptor {
@@ -565,7 +639,7 @@ export class NoopInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
         tap(
           // Succeeds when there is a response; ignore other events
-          event =>{ 
+          event =>{
               if(event.type>0)
               this.hideSpinner();
               ok = event instanceof HttpResponse ? 'succeeded' : '';
@@ -591,12 +665,12 @@ export class NoopInterceptor implements HttpInterceptor {
 
   showSpinner(){
     let spinnerObj = document.getElementById("nb-global-spinner");
-    spinnerObj.style.display="block"; 
+    spinnerObj.style.display="block";
  }
 
  hideSpinner(){
      let spinnerObj = document.getElementById("nb-global-spinner");
-     spinnerObj.style.display="none"; 
+     spinnerObj.style.display="none";
   }
 
   logout() {

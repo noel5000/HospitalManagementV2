@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using PointOfSalesV2.Common;
-using System.Runtime.Serialization;
-using static PointOfSalesV2.Common.Enums;
 
 namespace PointOfSalesV2.Entities
 {

@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
 import { BaseService } from '../../../@core/services/baseService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -26,7 +27,7 @@ export class medicalSpecialityIndexComponent extends BaseComponent implements On
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];    
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
@@ -37,6 +38,7 @@ export class medicalSpecialityIndexComponent extends BaseComponent implements On
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,
@@ -122,9 +124,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

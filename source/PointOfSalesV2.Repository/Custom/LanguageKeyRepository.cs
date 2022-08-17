@@ -1,12 +1,6 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+﻿
 using Newtonsoft.Json;
 using System.IO;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace PointOfSalesV2.Repository
 {
@@ -16,7 +10,7 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public Result<object> UploadI18nDictionaries(string path, ServerDirectoryType serverDirectoryType = ServerDirectoryType.Folder)
+        public async Task<Result<object>> UploadI18nDictionaries(string path, ServerDirectoryType serverDirectoryType = ServerDirectoryType.Folder)
         {
             Result<object> result = new Result<object>(-1, -1, "error_msg");
             try
@@ -29,7 +23,7 @@ namespace PointOfSalesV2.Repository
                 }
 
                 Dictionary<string, Dictionary<string, string>> dictionaries = new Dictionary<string, Dictionary<string, string>>();
-                var languages = _Context.Languages.ToList();
+                var languages = await _Context.Languages.ToListAsync();
                 foreach (var language in languages)
                 {
                     var keys = _Context.LanguageKeys.AsNoTracking().Where(k => k.Active == true && k.LanguageCode.ToLower() == language.Code.ToLower()).ToList();
@@ -49,7 +43,7 @@ namespace PointOfSalesV2.Repository
                         throw new NotImplementedException();
                         break;
                     default:
-                    result=    this.WriteDictionaryInFolder(path, dictionaries);
+                    result=  await  this.WriteDictionaryInFolder(path, dictionaries);
                         break;
                 }
 
@@ -62,7 +56,7 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        Result<object> WriteDictionaryInFolder(string path, Dictionary<string, Dictionary<string, string>> dictionaries) 
+        async Task<Result<object>> WriteDictionaryInFolder(string path, Dictionary<string, Dictionary<string, string>> dictionaries) 
         {
             try
             {
@@ -74,7 +68,7 @@ namespace PointOfSalesV2.Repository
                     if (File.Exists(transPath))
                         File.Delete(transPath);
 
-                    File.WriteAllText(transPath, content);
+                  await  File.WriteAllTextAsync(transPath, content);
                 }
 
                 return new Result<object>(0, 0, "ok_msg");

@@ -6,6 +6,8 @@ using PointOfSalesV2.Entities;
 using PointOfSalesV2.EntityFramework;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class MainDataContext : DbContext
 {
@@ -17,6 +19,12 @@ public class MainDataContext : DbContext
     //{
     //    CanUseSessionContext = true;
     //}
+
+    public MainDataContext()
+      : base(new DbContextOptions<MainDataContext>())
+    {
+       
+    }
 
     public MainDataContext(DbContextOptions<MainDataContext> options, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
         : base(options)
@@ -406,6 +414,120 @@ public class MainDataContext : DbContext
         }
 
         return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        // Get the entries that are auditable
+        var auditableEntitySet = ChangeTracker.Entries<ICommonData>();
+
+        if (auditableEntitySet != null)
+        {
+
+            DateTime currentDate = DateTime.Now;
+
+            // Audit set the audit information foreach record
+            foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
+            {
+
+                if (auditableEntity.State == EntityState.Added)
+                {
+                    auditableEntity.Entity.Active = true;
+                    auditableEntity.Entity.CreatedDate = currentDate;
+                }
+
+                auditableEntity.Entity.ModifiedDate = currentDate;
+                if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
+                {
+                    var currentToken = _HttpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
+                    if (!string.IsNullOrEmpty(currentToken) && currentToken.Contains("Bearer"))
+                    {
+                        var currentUser = _cache.Get(currentToken.Split(" ").LastOrDefault()) as User;
+                        if (currentUser != null)
+                        {
+                            if (auditableEntity.State == EntityState.Added)
+                            {
+                                auditableEntity.Entity.CreatedBy = currentUser.UserId;
+                                auditableEntity.Entity.CreatedByName = currentUser.FullName;
+                            }
+                            auditableEntity.Entity.ModifiedBy = currentUser.UserId;
+                            auditableEntity.Entity.ModifiedByName = currentUser.FullName;
+
+                        }
+                    }
+                }
+                if (auditableEntity.State == EntityState.Deleted)
+                {
+                    auditableEntity.Entity.Active = false;
+                    auditableEntity.State = EntityState.Modified;
+                }
+
+                if (auditableEntity.State == EntityState.Modified)
+                {
+                    auditableEntity.Property(nameof(ICommonData.CreatedDate)).IsModified = false;
+                    auditableEntity.Property(nameof(ICommonData.CreatedBy)).IsModified = false;
+                    auditableEntity.Property(nameof(ICommonData.CreatedByName)).IsModified = false;
+                }
+            }
+        }
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        // Get the entries that are auditable
+        var auditableEntitySet = ChangeTracker.Entries<ICommonData>();
+
+        if (auditableEntitySet != null)
+        {
+
+            DateTime currentDate = DateTime.Now;
+
+            // Audit set the audit information foreach record
+            foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
+            {
+
+                if (auditableEntity.State == EntityState.Added)
+                {
+                    auditableEntity.Entity.Active = true;
+                    auditableEntity.Entity.CreatedDate = currentDate;
+                }
+
+                auditableEntity.Entity.ModifiedDate = currentDate;
+                if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
+                {
+                    var currentToken = _HttpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
+                    if (!string.IsNullOrEmpty(currentToken) && currentToken.Contains("Bearer"))
+                    {
+                        var currentUser = _cache.Get(currentToken.Split(" ").LastOrDefault()) as User;
+                        if (currentUser != null)
+                        {
+                            if (auditableEntity.State == EntityState.Added)
+                            {
+                                auditableEntity.Entity.CreatedBy = currentUser.UserId;
+                                auditableEntity.Entity.CreatedByName = currentUser.FullName;
+                            }
+                            auditableEntity.Entity.ModifiedBy = currentUser.UserId;
+                            auditableEntity.Entity.ModifiedByName = currentUser.FullName;
+
+                        }
+                    }
+                }
+                if (auditableEntity.State == EntityState.Deleted)
+                {
+                    auditableEntity.Entity.Active = false;
+                    auditableEntity.State = EntityState.Modified;
+                }
+
+                if (auditableEntity.State == EntityState.Modified)
+                {
+                    auditableEntity.Property(nameof(ICommonData.CreatedDate)).IsModified = false;
+                    auditableEntity.Property(nameof(ICommonData.CreatedBy)).IsModified = false;
+                    auditableEntity.Property(nameof(ICommonData.CreatedByName)).IsModified = false;
+                }
+            }
+        }
+        return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     #endregion

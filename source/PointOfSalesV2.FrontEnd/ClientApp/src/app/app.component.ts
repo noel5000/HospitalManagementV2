@@ -14,6 +14,7 @@ import { BaseService } from './@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from './@core/common/constants';
 import { ModalService } from './@core/services/modal.service';
+import { AppConfig } from './@core/services/app.config';
 
 @Component({
   selector: 'ngx-app',
@@ -22,10 +23,11 @@ import { ModalService } from './@core/services/modal.service';
 export class AppComponent extends BaseComponent implements OnInit {
 
   
-  sessionService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Login`);
+  sessionService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Login`);
   constructor(private analytics: AnalyticsService, 
     translate: TranslateService,
     route: Router,
+    private config: AppConfig,
    modalService:ModalService,
     private  http: HttpClient,
     langService: LanguageService,) {

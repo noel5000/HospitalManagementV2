@@ -399,14 +399,15 @@ const routes: Routes = [{
       path: 'invoicepayment',
      component: InvoicePaymentIndexComponent
     },
-   {
-     path: 'invoicepayment/edit/:id',
-     component: InvoicePaymentFormComponent
-   },
+  
    {
      path: 'invoicepayment/add',
      component: InvoicePaymentFormComponent
    },
+   {
+    path: 'invoicepayment/add/:invoiceId',
+    component: InvoicePaymentFormComponent
+  },
    {
      path: 'invoicepayment/print/:sequence',
      component: InvoicePaymentPrintComponent

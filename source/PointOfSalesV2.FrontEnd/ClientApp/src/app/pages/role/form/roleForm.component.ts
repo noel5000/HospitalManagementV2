@@ -20,6 +20,7 @@ import { SupplierService } from '../../../@core/services/supplierService';
 import { TaxService } from '../../../@core/services/TaxService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { Role } from '../../../@core/data/roleModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,14 +38,15 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
     roleSectionOperations:any[]=[];
     sections:any[]=[];
     sectionOperations:any[]=[];
-    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Role`);
-    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}SectionOperation`);
-    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Section`);
-    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}RoleSectionOperation`);
+    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Role`);
+    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}SectionOperation`);
+    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Section`);
+    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}RoleSectionOperation`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

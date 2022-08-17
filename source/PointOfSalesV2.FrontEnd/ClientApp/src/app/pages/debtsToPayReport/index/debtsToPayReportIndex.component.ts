@@ -21,6 +21,7 @@ import { Currency } from '../../../@core/data/currencyModel';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { Supplier } from '../../../@core/data/Supplier';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -39,7 +40,7 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Expense`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Expense`);
     expenses:any[]=[];
     branchOffices:BranchOffice[]=[];
     suppliers:Supplier[]=[];
@@ -47,6 +48,7 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

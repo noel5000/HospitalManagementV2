@@ -28,6 +28,7 @@ import { ProductService } from '../../../@core/services/ProductService';
 import { Item } from '../../../@core/data/itemModel';
 import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -44,7 +45,7 @@ export class InvoicePrintComponent extends BaseComponent implements OnInit {
     Id:number=0;
     sequence:string='';
     _route:ActivatedRoute;
-    invoicesService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Invoice`);
+    invoicesService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
     weeksOfMonth:Item[]=[
         {
             id:null,
@@ -100,6 +101,7 @@ export class InvoicePrintComponent extends BaseComponent implements OnInit {
     ];
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using static PointOfSalesV2.Common.Enums;
+﻿
 
 namespace PointOfSalesV2.Entities
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using PointOfSalesV2.Common;
+﻿
 
 namespace PointOfSalesV2.Entities
 {
@@ -16,6 +9,7 @@ namespace PointOfSalesV2.Entities
         public long? ProductId { get; set; }
         public long? MedicalSpecialityId { get; set; }
         public decimal Quantity { get; set; }
+        public decimal MedicinesAmount { get; set; }
         public char Type { get; set; }
 
         [NotMapped]
@@ -29,7 +23,11 @@ namespace PointOfSalesV2.Entities
         public long PatientCheckupId { get; set; }
         public string WhenToTake { get; set; }
         public bool EmptyStomach { get; set; }
+        [MaxLength(1000)]
         public string AdditionalData { get; set; }
+
+        [MaxLength(1000)]
+        public string Results { get; set; }
 
         [ForeignKey("ProductId")]
         public Product Product { get; set; }

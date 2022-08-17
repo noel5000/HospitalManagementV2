@@ -1,11 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static PointOfSalesV2.Common.Enums;
+﻿
 
 namespace PointOfSalesV2.Repository
 {
@@ -19,22 +12,23 @@ namespace PointOfSalesV2.Repository
             this.warehouseMovements = repositoryFactory.GetCustomDataRepositories<IWarehouseMovementRepository>();
         }
 
-        public Result<object> AddInventoryList(List<InventoryEntry> entries, string reference, string details)
+        public async Task<Result<object>> AddInventoryList(List<InventoryEntry> entries, string reference, string details)
         {
             var result = new Result<object>(-1, -1, "error_msg");
 
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    string sequence = sequenceRepo.CreateSequence(SequenceTypes.InventoryIncomes);
+                    string sequence = await sequenceRepo.CreateSequence(SequenceTypes.InventoryIncomes);
                     List<Inventory> inventories = new List<Inventory>();
-                    entries.ForEach(e =>
+                    entries.ForEach( e =>
                     {
-                        var currency = e.Currency ?? _Context.Currencies.Find(e.CurrencyId);
+                        var currency = e.Currency ??  _Context.Currencies.Find(e.CurrencyId);
                         _Context.Entry<Currency>(currency).State = EntityState.Detached;
                         e.ExchangeRate = currency.ExchangeRate;
                         e.Details = details;
+                        e.Active = true;
                         e.Date = DateTime.Now;
                         e.Reference = reference;
                         e.BeforeTaxAmount = e.ProductCost * e.Quantity;
@@ -48,7 +42,7 @@ namespace PointOfSalesV2.Repository
 
                         int inventoryIndex = inventories.FindIndex(x => x.ProductId == e.ProductId && x.WarehouseId == e.WarehouseId);
                         e.Product = e.Product != null ? e.Product : new Product() { Id = e.ProductId };
-                        e.Product.ProductUnits = _Context.UnitProductsEquivalences.Include(x => x.Unit).AsNoTracking().Where(x => x.Active == true && x.ProductId == e.ProductId);
+                        e.Product.ProductUnits =  _Context.UnitProductsEquivalences.Include(x => x.Unit).AsNoTracking().Where(x => x.Active == true && x.ProductId == e.ProductId).ToList();
                         var convertionResult = ProductsHelper.ConvertToProductPrincipalUnit(
             e.Quantity,
             e.UnitId,
@@ -78,7 +72,7 @@ namespace PointOfSalesV2.Repository
                     if (entries.Count > 0) 
                     {
                         _Context.InventoryEntries.AddRange(entries);
-                        _Context.SaveChanges();
+                     await   _Context.SaveChangesAsync();
                     }
 
 
@@ -109,12 +103,12 @@ namespace PointOfSalesV2.Repository
                         };
                         warehouseMovements.Add(movement);
                     });
-                    tran.Commit();
+                   await tran.CommitAsync();
                     return new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                  await  tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -122,14 +116,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<object> RemoveEntries(string sequence)
+        public async Task<Result<object>> RemoveEntries(string sequence)
         {
             Result<object> result = new Result<object>(-1, -1, "error_msg");
-            using (var tran = _Context.Database.BeginTransaction())
+            using (var tran = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var entries = _Context.InventoryEntries.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToList();
+                    var entries = await _Context.InventoryEntries.AsNoTracking().Where(x => x.Active == true && x.Sequence == sequence).ToListAsync();
                     entries.ForEach(e =>
                     {
                         e.Active = false;
@@ -160,25 +154,25 @@ productUnits
 
                     });
                     _Context.InventoryEntries.UpdateRange(entries);
-                    _Context.SaveChanges();
-                    tran.Commit();
+                    await _Context.SaveChangesAsync();
+                    await tran.CommitAsync();
                     result = new Result<object>(0, 0, "ok_msg");
                 }
                 catch (Exception ex)
                 {
-                    tran.Rollback();
+                    await tran.RollbackAsync();
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
             return result;
         }
 
-        public override Result<InventoryEntry> Add(InventoryEntry entity)
+        public override async Task< Result<InventoryEntry>> AddAsync(InventoryEntry entity)
         {
             throw new NotImplementedException();
         }
 
-        public override Result<InventoryEntry> Update(InventoryEntry entity, bool fromDb = true)
+        public override async Task< Result<InventoryEntry>> UpdateAsync(InventoryEntry entity, bool fromDb = true)
         {
             throw new NotImplementedException();
         }

@@ -1,14 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NPOI.SS.Formula.Functions;
-using PointOfSalesV2.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using static PointOfSalesV2.Common.ExcelImport;
 
 namespace PointOfSalesV2.Entities

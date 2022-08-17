@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using PointOfSalesV2.Entities;
+﻿
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace PointOfSalesV2.Repository
@@ -39,6 +33,11 @@ namespace PointOfSalesV2.Repository
         IDbContextTransaction IUnitOfWork.CreateTransaction()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _DataContext.SaveChangesAsync();
         }
     }
 }

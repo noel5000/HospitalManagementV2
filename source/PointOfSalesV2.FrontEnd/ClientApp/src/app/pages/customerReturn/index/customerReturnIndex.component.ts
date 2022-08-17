@@ -12,6 +12,7 @@ import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,7 +26,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}customerReturn`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}customerReturn`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -66,6 +67,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private http: HttpClient,
         langService: LanguageService,
@@ -90,14 +92,15 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
 {
     visible:true,
     id:'branchOfficeId',
-    type:'text',
     fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    objectTypeToShow:ObjectTypes.String,
+    type:'text',
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
 
   {
@@ -105,12 +108,13 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
       id:'customerId',
       type:'text',
       fieldToShow:'customer.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('customer_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     
     {
@@ -122,7 +126,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
 {
     visible:true,
@@ -157,19 +161,20 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
       {
         visible:true,
         id:'currencyId',
         type:'text',
         fieldToShow:'currency.code',
+        objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
         ];
 this.actions=[
@@ -210,9 +215,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -319,7 +324,7 @@ else{
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }

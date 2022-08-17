@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace PointOfSalesV2.Repository
 {
     public class CompositeProductRepository : Repository<CompositeProduct>, ICompositeProductRepository
@@ -13,14 +7,14 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public IEnumerable<CompositeProduct> GetDerivedProducts(long productId)
+        public async Task<IEnumerable<CompositeProduct>> GetDerivedProducts(long productId)
         {
-            return base._Context.CompositeProducts.AsNoTracking().Where(x => x.Active == true && x.BaseProductId == productId);
+            return await base._Context.CompositeProducts.AsNoTracking().Where(x => x.Active == true && x.BaseProductId == productId).ToListAsync();
         }
 
-        public IEnumerable<CompositeProduct> GetProductBases(long productId)
+        public async Task<IEnumerable<CompositeProduct>> GetProductBases(long productId)
         {
-            return _Context.CompositeProducts.AsNoTracking().Where(x => x.Active == true && x.ProductId == productId);
+            return await _Context.CompositeProducts.AsNoTracking().Where(x => x.Active == true && x.ProductId == productId).ToListAsync();
         }
     }
 }

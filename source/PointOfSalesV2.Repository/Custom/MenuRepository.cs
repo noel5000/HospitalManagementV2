@@ -1,12 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NPOI.HSSF.Record;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
+﻿
 using PointOfSalesV2.Repository.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PointOfSalesV2.Repository
 {
@@ -19,10 +12,10 @@ namespace PointOfSalesV2.Repository
             this._repoFactory = dataRepositoryFactory;
             this._sequenceRepo = sequenceManagerRepository;
         }
-        public override Result<Menu> Add(Menu entity)
+        public override async  Task<Result<Menu>> AddAsync(Menu entity)
         {
             var result = new Result<Menu>(-1, -1, "error_msg");
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
@@ -32,11 +25,11 @@ namespace PointOfSalesV2.Repository
                         result = new Result<Menu>(-1, -1, "invalidMenu_msg");
                         return result;
                     }
-                    var existingMenu = _Context.Menus.Include(x => x.MenuDetails).AsNoTracking().FirstOrDefault(x => x.Active == true && x.DayOfWeek == entity.DayOfWeek && x.WeekNumber == entity.WeekNumber);
+                    var existingMenu = await _Context.Menus.Include(x => x.MenuDetails).AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.DayOfWeek == entity.DayOfWeek && x.WeekNumber == entity.WeekNumber);
                     if (existingMenu != null)
                     {
                         _Context.MenuDetails.RemoveRange(existingMenu.MenuDetails);
-                        _Context.SaveChanges();
+                       await _Context.SaveChangesAsync();
                         entity.MenuDetails.ForEach(d =>
                         {
                             d.MenuId = existingMenu.Id;
@@ -47,11 +40,11 @@ namespace PointOfSalesV2.Repository
 
                         });
                         _Context.MenuDetails.AddRange(entity.MenuDetails);
-                        _Context.SaveChanges();
+                     await    _Context.SaveChangesAsync();
                     }
                     else
                     {
-                        entity.Sequence = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Menus);
+                        entity.Sequence = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Menus);
                         entity.MenuDetails.ForEach(d =>
                         {
                             d.Product = null;
@@ -60,25 +53,25 @@ namespace PointOfSalesV2.Repository
                         });
 
                         _Context.Menus.Add(entity);
-                        _Context.SaveChanges();
+                    await    _Context.SaveChangesAsync();
                     }
                     result = new Result<Menu>(entity.Id, 0, "ok_msg");
-                    trans.Commit();
+                   await trans.CommitAsync();
                 }
                 catch (Exception ex)
                 {
                     result = new Result<Menu>(-1, -1, "error_msg", null, new Exception(ex.Message));
-                    trans.Rollback();
+                   await trans.RollbackAsync();
                 }
             }
 
             return result;
         }
 
-        public override Result<Menu> Update(Menu entity, bool fromDb = true)
+        public override async Task< Result<Menu>> UpdateAsync(Menu entity, bool fromDb = true)
         {
             var result = new Result<Menu>(-1, -1, "error_msg");
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
@@ -88,10 +81,10 @@ namespace PointOfSalesV2.Repository
                         result = new Result<Menu>(-1, -1, "invalidMenu_msg");
                         return result;
                     }
-                    var existingMenu = _Context.Menus.AsNoTracking().FirstOrDefault(x => x.Active == true && x.Id == entity.Id);
+                    var existingMenu = await _Context.Menus.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.Id == entity.Id);
                     if (existingMenu != null)
                     {
-                        var existinDetails = _Context.MenuDetails.AsNoTracking().Where(x => x.Active == true && x.MenuId == existingMenu.Id).ToList();
+                        var existinDetails = await _Context.MenuDetails.AsNoTracking().Where(x => x.Active == true && x.MenuId == existingMenu.Id).ToListAsync();
                         existingMenu.DayOfWeek = entity.DayOfWeek;
                         existingMenu.WeekNumber = existingMenu.WeekNumber;
                         entity.MenuDetails.ForEach(d =>
@@ -119,85 +112,85 @@ namespace PointOfSalesV2.Repository
                             }
                         });
                         _Context.MenuDetails.AddRange(entity.MenuDetails.Where(x => x.Id == 0));
-                        _Context.SaveChanges();
+                    await    _Context.SaveChangesAsync();
                     }
                     else
                     {
-                        trans.Rollback();
+                   await     trans.RollbackAsync();
                         result = new Result<Menu>(-1, -1, "invalidMenu_msg");
                         return result;
                     }
                     result = new Result<Menu>(entity.Id, 0, "ok_msg");
-                    trans.Commit();
+                 await   trans.CommitAsync();
                 }
                 catch (Exception ex)
                 {
                     result = new Result<Menu>(-1, -1, "error_msg", null, new Exception(ex.Message));
-                    trans.Rollback();
+                await    trans.RollbackAsync();
                 }
             }
 
             return result;
         }
 
-        public Result<object> DeleteMenuEntry(byte weekNo, DayOfWeek dayOfWeek)
+        public async Task< Result<object>> DeleteMenuEntry(byte weekNo, DayOfWeek dayOfWeek)
         {
             var result = new Result<object>(-1, -1, "error_msg");
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var entity = _Context.Menus.AsNoTracking().FirstOrDefault(m => m.Active == true
+                    var entity = await _Context.Menus.AsNoTracking().FirstOrDefaultAsync(m => m.Active == true
                         && m.WeekNumber == weekNo && m.DayOfWeek == dayOfWeek);
                     if (entity == null)
                     {
-                        trans.Rollback();
+                       await trans.RollbackAsync();
                         return new Result<object>(-1, -1, "menuNotExisting_msg");
                     }
                     if ((int)entity.DayOfWeek > 6 || entity.WeekNumber > 4)
                     {
-                        trans.Rollback();
+                      await  trans.RollbackAsync();
                         result = new Result<object>(-1, -1, "invalidMenu_msg");
                         return result;
                     }
-                    var existingMenu = _Context.MenuDetails.AsNoTracking().Where(x => x.Active == true && x.MenuId == entity.Id);
+                    var existingMenu = await _Context.MenuDetails.AsNoTracking().Where(x => x.Active == true && x.MenuId == entity.Id).ToListAsync();
                     if (existingMenu != null)
                     {
                         _Context.MenuDetails.RemoveRange(existingMenu);
-                        _Context.SaveChanges();
+                      await  _Context.SaveChangesAsync();
 
 
                     }
                     entity.Active = false;
                     _Context.Menus.Update(entity);
-                    _Context.SaveChanges();
+                 await   _Context.SaveChangesAsync();
                     result = new Result<object>(entity.Id, 0, "ok_msg");
-                    trans.Commit();
+                 await   trans.CommitAsync();
                 }
                 catch (Exception ex)
                 {
                     result = new Result<object>(-1, -1, "error_msg", null, new Exception(ex.Message));
-                    trans.Rollback();
+                  await  trans.RollbackAsync();
                 }
             }
 
             return result;
         }
 
-        public List<InvoiceLeadProjection> MonthProjection(DateTime currentDate, long branchOfficeId = 0, long warehouseId = 0)
+        public async Task<List<InvoiceLeadProjection>> MonthProjection(DateTime currentDate, long branchOfficeId = 0, long warehouseId = 0)
         {
 
             var startDate = new DateTime(currentDate.Year, currentDate.Month, 1);
             var endDate = startDate.AddMonths(1);
             List<InvoiceLeadProjection> result = new List<InvoiceLeadProjection>();
 
-            var monthLeads = _Context.InvoicesLeads.AsNoTracking().Where(x => x.Active == true &&
-            x.Date >= startDate && x.Date <= endDate && x.State != (char)Enums.BillingStates.Nulled).ToList();
+            var monthLeads = await _Context.InvoicesLeads.AsNoTracking().Where(x => x.Active == true &&
+            x.Date >= startDate && x.Date <= endDate && x.State != (char)Enums.BillingStates.Nulled).ToListAsync();
 
-            var schools = _Context.Schools.AsNoTracking().Where(x => x.Active == true).ToList();
-            var menus = _Context.Menus.AsNoTracking().Where(x => x.Active == true).ToList();
+            var schools = await _Context.Schools.AsNoTracking().Where(x => x.Active == true).ToListAsync();
+            var menus =await _Context.Menus.AsNoTracking().Where(x => x.Active == true).ToListAsync();
 
-            var projectedSequences = _Context.SequencesControl.AsNoTracking().FirstOrDefault(x => x.Active == true
+            var projectedSequences = await _Context.SequencesControl.AsNoTracking().FirstOrDefaultAsync(x => x.Active == true
             && x.Code == (byte)Enums.SequenceTypes.Leads);
 
             while (startDate <= endDate)
@@ -263,14 +256,14 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<Menu> Get(long id)
+        public override async Task< Result<Menu>> GetAsync(long id)
         {
-            var entity = _Context.Menus.Find(id);
+            var entity = await _Context.Menus.FindAsync(id);
             _Context.Entry<Menu>(entity).State = EntityState.Detached;
-            entity.MenuDetails = _Context.MenuDetails.AsNoTracking()
+            entity.MenuDetails = await _Context.MenuDetails.AsNoTracking()
                 .Include(x => x.Product).ThenInclude(x=>x.Taxes).ThenInclude(x=>x.Tax)
                 .Include(x=>x.Product).ThenInclude(x => x.ProductUnits).ThenInclude(x=>x.Unit)
-                .Include(x => x.Unit).Where(x => x.Active == true && x.MenuId == id).ToList();
+                .Include(x => x.Unit).Where(x => x.Active == true && x.MenuId == id).ToListAsync();
 
             return new Result<Menu>(id, 0, "ok_msg", new List<Menu>() { entity });
         }

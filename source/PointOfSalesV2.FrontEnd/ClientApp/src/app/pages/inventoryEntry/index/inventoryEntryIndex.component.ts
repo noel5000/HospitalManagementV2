@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -71,10 +72,11 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     InventoryEntries:any[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}InventoryEntry`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InventoryEntry`);
 
     constructor(
         route: Router,
+        private config: AppConfig,
         private  http: HttpClient,
         langService: LanguageService,
         private modals:NgbModal,
@@ -85,7 +87,7 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
        
         this.tableConfig=[
             {
-                visible:false,
+                visible:true,
                 id:'id',
                 type:'number',
                 isTranslated:false,
@@ -93,7 +95,7 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
                 sorting:'desc',
                 toSort:true,
                 objectType:ObjectTypes.Number,
-                filterIsActive:false
+                filterIsActive:true
               },
 {
   visible:true,
@@ -109,38 +111,41 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
 {
     visible:true,
     id:'branchOfficeId',
-    type:'text',
     fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    objectTypeToShow:ObjectTypes.String,
+    type:'text',
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'warehouseId',
       type:'text',
       fieldToShow:'warehouse.name',
-      isTranslated:false,
+      objectTypeToShow:ObjectTypes.String,
+      isTranslated:true,
       name:this.lang.getValueByKey('warehouse_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
 {
     visible:true,
     id:'productId',
     type:'text',
     fieldToShow:'product.name',
-    isTranslated:false,
+    objectTypeToShow:ObjectTypes.String,
+    isTranslated:true,
     name:this.lang.getValueByKey('product_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
     {
         visible:true,
@@ -151,19 +156,20 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'unitId',
         type:'text',
         fieldToShow:'unit.name',
-        isTranslated:false,
+        isTranslated:true,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('unit_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
     {
         visible:true,
@@ -174,7 +180,7 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
@@ -182,11 +188,12 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
         type:'text',
         fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -197,7 +204,7 @@ export class InventoryEntryIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   }
         ];
 this.actions=[
@@ -239,9 +246,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

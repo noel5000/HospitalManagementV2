@@ -2,7 +2,7 @@
   <nb-card-header>
     <div class="form-row">
       <div class="col-md-6 col-xs-12">{{'appointments_lbl' | translate}}</div>
-      
+
     </div>
     <br>
     <form [formGroup]="itemForm" (ngSubmit)="save()">
@@ -51,21 +51,32 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'patient_lbl' | translate}}</label>
-  <select class="form-control"
+  <custom-auto-complete
+ 
+  [items]="patients"
+  [externalSearch]="true"
+  [propertyToShow]="'name'"
+  (onSelectedItem)="selectPatient($event)"
+  (onFilter)="getPatients($event)"
+  
+  >
+  
+  </custom-auto-complete>
+  <!-- <select class="form-control"
   formControlName="patientId"
   >
   <option *ngFor="let patient of patients"
    [value]="patient.id"
    >{{patient.name}}</option>
-  </select>
+  </select> -->
 </div>
 
    </div>
-     
+
   </form>
-   
-   
-   
+
+
+
   </nb-card-header>
 
   <nb-card-body>
@@ -102,7 +113,7 @@
       <div class="col-md-4">
         <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
       </div>
-     
+
     </div>
     <br />
     <div >
@@ -118,13 +129,13 @@
       >
       </mwl-calendar-month-view>
     </div>
-    
+
     <!-- Everything you see below is just for the demo, you don't need to include it in your app -->
-    
+
     <br /><br /><br />
-    
- 
-    
+
+
+
     <div class="table-responsive scrollTableMobile">
       <div class="row" *ngIf="selectedDate && selectedDate>=today">
         <div class=" col-4">
@@ -139,17 +150,17 @@
             <h6>{{getSelectedDateFormatted()}}</h6>
           </div>
          </div>
-          
+
        </div>
-        
+
       </div>
-      
+
       <br /><br />
       <table class="table table-bordered">
         <thead>
           <tr>
             <th>{{'doctor_lbl' | translate}}</th>
-            <th>{{'medicalSpeciality_lbl' | translate}}</th>
+            <th>{{'medicalSpecialities_menu' | translate}}</th>
             <th>{{'consultation_lbl' | translate}}</th>
             <th>{{'patient_lbl' | translate}}</th>
             <th>{{'insurance_lbl' | translate}}</th>
@@ -160,7 +171,7 @@
             <th></th>
           </tr>
         </thead>
-    
+
         <tbody>
           <tr *ngFor="let appointment of selectedAppointments">
             <td>{{appointment.doctorName}}</td>
@@ -175,18 +186,18 @@
             <td>
               <button mat-button [matMenuTriggerFor]="menu">{{'actions_lbl' | translate}}</button>
 <mat-menu #menu="matMenu">
-  <button *ngIf="(appointment.state=='S' || appointment.state=='F') && appointment.appointmentType=='C' && isUserValidOperation(21)" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
-  <button *ngIf="appointment.state=='S' || appointment.state=='F' && this.permits.update" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
-  <button *ngIf="appointment.state=='S' && this.permits.delete" (click)="removeAppointment(appointment)"  mat-menu-item>{{'delete_btn' | translate}}</button>
+  <button *ngIf="(appointment.state=='S' || appointment.state=='F'  || appointment.state=='E') && appointment.appointmentType=='C' && isUserValidOperation(21)" (click)="attendAppointment(appointment)"  mat-menu-item>{{'attend_btn' | translate}}</button>
+  <button *ngIf="(appointment.state=='S' || appointment.state=='F'  || appointment.state=='E') && this.permits.update" (click)="editAppointment(appointment)"  mat-menu-item>{{'edit_btn' | translate}}</button>
+  <button *ngIf="(appointment.state=='S'  || appointment.state=='E') && this.permits.delete" (click)="removeAppointment(appointment)"  mat-menu-item>{{'delete_btn' | translate}}</button>
   <button (click)="printAppointment(appointment)" mat-menu-item>{{'print_lbl' | translate}}</button>
 </mat-menu>
             </td>
-        
+
           </tr>
         </tbody>
       </table>
     </div>
-    
+
     <ng-template #modalContent let-close="close">
       <div class="modal-header">
         <h5 class="modal-title">Event action occurred</h5>

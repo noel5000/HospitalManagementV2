@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.EntityFrameworkCore;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -27,13 +13,14 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<CheckupAttachment>(x => x.Include(t => t.FileAttachment)
+                var data = await _baseRepo.GetAllAsync<CheckupAttachment>(x => x.Include(t => t.FileAttachment)
                 .Include(t => t.PatientCheckup)
                 , y => y.Active == true);
                 return Ok(data);
@@ -41,7 +28,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

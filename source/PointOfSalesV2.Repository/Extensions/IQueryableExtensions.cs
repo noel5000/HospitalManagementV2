@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using PointOfSalesV2.Entities;
-
 namespace PointOfSalesV2.Repository
 {
     public static class IQueryableExtensions

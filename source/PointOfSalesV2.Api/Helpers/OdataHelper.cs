@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Query;
+﻿
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OData.Edm;
 using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
@@ -7,12 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.OData.ModelBuilder;
 
 namespace PointOfSalesV2.Api.Helpers
 {
     public class OdataHelper
     {
-        public static IEdmModel GetEdmModel(IApplicationBuilder app)
+        public static IEdmModel GetEdmModel()
         {
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
             builder.EnableLowerCamelCase();

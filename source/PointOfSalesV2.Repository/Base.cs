@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using PointOfSalesV2.Entities;
-using static PointOfSalesV2.Common.Enums;
-using System.Threading.Tasks;
+﻿global using Microsoft.EntityFrameworkCore;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Linq.Expressions;
+global using PointOfSalesV2.Entities.Model;
+global using PointOfSalesV2.Entities;
+global using static PointOfSalesV2.Common.Enums;
+global using System.Threading.Tasks;
 
 namespace PointOfSalesV2.Repository
 {
@@ -281,6 +281,23 @@ namespace PointOfSalesV2.Repository
                 return new Result<T>(-1, -1, ex.Message, null, ex);
             }
 
+        }
+
+        public virtual async Task<IQueryable<TResult>> GetAllAsync<TResult>(Func<IQueryable<T>, IQueryable<TResult>> transform, Expression<Func<T, bool>> filter = null, string sortExpression = null)
+        {
+            var t_work= (Task.Factory.StartNew<IQueryable<TResult>>((arg) => {
+                var arguments = arg as Tuple<Func<IQueryable<T>, IQueryable<TResult>>, Expression<Func<T, bool>>, string>;
+
+                var query = arguments.Item2 == null ? _DbSet.AsNoTracking().OrderBy(arguments.Item3) : _DbSet.AsNoTracking().Where(arguments.Item2).OrderBy(arguments.Item3);
+
+                var notSortedResults = arguments.Item1(query);
+
+                var sortedResults = arguments.Item3 == null ? notSortedResults : notSortedResults.OrderBy(arguments.Item3);
+
+                return sortedResults.AsQueryable();
+            },
+                new Tuple<Func<IQueryable<T>, IQueryable<TResult>>, Expression<Func<T, bool>>, string>(transform, filter, sortExpression)));
+            return await t_work;
         }
 
         public virtual async Task AddRangeAsync(IEnumerable<T> entities)

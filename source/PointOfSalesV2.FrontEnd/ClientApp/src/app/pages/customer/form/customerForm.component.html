@@ -23,7 +23,7 @@
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'bloodType_lbl' | translate}}</label>
                     <select class="form-control"
-                    required
+                    
                     [ngClass]="{ 'is-invalid': form.bloodType.errors }"
                     formControlName="bloodType"
                     >
@@ -133,6 +133,93 @@
                     <input type="text" formControlName="code" maxlength="50" disabled class="form-control" />
                    
                 </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'alergies_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="alergies" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.alergies.errors }"
+                    ></textarea>
+                    <div *ngIf="form.alergies.errors" class="invalid-feedback">
+                        <div *ngIf="form.alergies.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'bloodTransfusions_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="bloodTransfusions" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.bloodTransfusions.errors }"
+                    ></textarea>
+                    <div *ngIf="form.bloodTransfusions.errors" class="invalid-feedback">
+                        <div *ngIf="form.bloodTransfusions.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'familyIllnesses_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="familyIllnesses" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.familyIllnesses.errors }"
+                    ></textarea>
+                    <div *ngIf="form.familyIllnesses.errors" class="invalid-feedback">
+                        <div *ngIf="form.familyIllnesses.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'medications_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="medications" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.medications.errors }"
+                    ></textarea>
+                    <div *ngIf="form.medications.errors" class="invalid-feedback">
+                        <div *ngIf="form.medications.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'surgeries_lbl' | translate}}</label>
+                    <textarea 
+                    formControlName="surgeries" 
+                    maxlength="1000" 
+                    class="form-control" 
+                    [ngClass]="{ 'is-invalid': form.surgeries.errors }"
+                    ></textarea>
+                    <div *ngIf="form.surgeries.errors" class="invalid-feedback">
+                        <div *ngIf="form.surgeries.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'sc_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="sc"  class="form-control" [ngClass]="{ 'is-invalid': form.sc.errors }" />
+                   
+                </div>
+
+               
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'sizeCm_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="size"  class="form-control" [ngClass]="{ 'is-invalid': form.size.errors }" />
+                   
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'weightKg_lbl' | translate}}</label>
+                    <input type="number" min="0" step="0.1" formControlName="weight"  class="form-control" [ngClass]="{ 'is-invalid': form.weight.errors }" />
+                   
+                </div>
+
+               
                
             </div>
           

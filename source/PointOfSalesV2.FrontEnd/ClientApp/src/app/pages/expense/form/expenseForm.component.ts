@@ -23,6 +23,7 @@ import { endpointUrl } from '../../../@core/common/constants';
 import { Expense } from '../../../@core/data/expenseModel';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
 import { BranchOffice } from '../../../@core/data/branchOffice';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -42,12 +43,13 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
     expenseTaxes:any[]=[];//
     suppliers:Supplier[]=[];//
     taxes:Tax[]=[];//
-    expenseTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}expenseTax`);
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}paymentType`);
+    expenseTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}expenseTax`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -156,7 +158,10 @@ async getSuppliers(){
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
+            const dateObj = this.item.date?new Date(this.item.date):new Date();
+            const date= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
             this.itemForm.patchValue(this.item);
+            this.itemForm.patchValue({date})
            this.getExpenseTaxes(this.item.id);
            
            

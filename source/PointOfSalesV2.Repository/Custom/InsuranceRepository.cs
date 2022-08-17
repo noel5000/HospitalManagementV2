@@ -1,15 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
 using Microsoft.Extensions.Options;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using PointOfSalesV2.Entities.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static PointOfSalesV2.Common.Enums;
-
 namespace PointOfSalesV2.Repository
 {
     public class InsuranceRepository : Repository<Insurance>, IInsuranceRepository
@@ -25,14 +15,14 @@ namespace PointOfSalesV2.Repository
 
 
 
-        public override Result<Insurance> Add(Insurance entity)
+        public override async Task<Result<Insurance>> AddAsync(Insurance entity)
         {
-            if (_Context.Insurances.AsNoTracking().Count(x => x.Active == true && x.Name.ToUpper() == entity.Name.ToUpper()) > 0)
+            if ( await _Context.Insurances.AsNoTracking().CountAsync(x => x.Active == true && x.Name.ToUpper() == entity.Name.ToUpper()) > 0)
             {
                 return new Result<Insurance>(-1, -1, "AlreadyExist_error");
             }
-            entity.Code = sequence.CreateSequence(SequenceTypes.Insurances);
-            return base.Add(entity);
+            entity.Code = await sequence.CreateSequence(SequenceTypes.Insurances);
+            return await base.AddAsync(entity);
         }
 
         public async Task<InsuranceServiceCoverage> GetInsuranceCoverage(long productId, long? insuranceId, long? insurancePlanId)
@@ -63,14 +53,14 @@ namespace PointOfSalesV2.Repository
                 return result.FirstOrDefault(x => x.InsuranceId == null) ?? new InsuranceServiceCoverage();
         }
 
-        public override Result<Insurance> Update(Insurance entity, bool fromDb = true)
+        public override async Task< Result<Insurance>> UpdateAsync(Insurance entity, bool fromDb = true)
         {
-            if (_Context.Insurances.AsNoTracking().Count(x => x.Active == true && x.Id != entity.Id
+            if ( await _Context.Insurances.AsNoTracking().CountAsync(x => x.Active == true && x.Id != entity.Id
             && x.Name.ToUpper() == entity.Name.ToUpper()) > 0)
             {
                 return new Result<Insurance>(-1, -1, "AlreadyExist_error");
             }
-            return base.Update(entity);
+            return await base.UpdateAsync(entity);
         }
     }
 }

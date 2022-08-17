@@ -19,6 +19,7 @@ import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Currency } from '../../../@core/data/currencyModel';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,8 +38,8 @@ export class insuranceCoveragesReportComponent extends BaseComponent implements 
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
-  insuranceService: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Insurance`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
+  insuranceService: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Insurance`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     customers:Customer[]=[];
@@ -48,6 +49,7 @@ export class insuranceCoveragesReportComponent extends BaseComponent implements 
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

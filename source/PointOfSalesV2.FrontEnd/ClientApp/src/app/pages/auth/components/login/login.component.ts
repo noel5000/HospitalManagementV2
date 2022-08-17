@@ -1,11 +1,12 @@
 import { NbLoginComponent, NbAuthService } from '@nebular/auth';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { BaseService } from '../../../../@core/services/baseService';
 import { AuthModel } from '../../../../@core/data/authModel';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl, endpointControllers } from '../../../../@core/common/constants';
 import { LanguageService } from './../../../../@core/services/translateService';
+import { AppConfig } from '../../../../@core/services/app.config';
 
 
 
@@ -77,18 +78,25 @@ const defaultAuthOptions: any = {
     selector: "app-login-page",
     templateUrl: "../../../../../../node_modules/@nebular/auth/components/login/login.component.html"
 })
-export class LoginComponent extends NbLoginComponent {
+export class LoginComponent extends NbLoginComponent implements OnInit {
     baseService: BaseService<AuthModel, number>;
 
     constructor(baseService: NbAuthService,
+        private config: AppConfig,
         changeDet: ChangeDetectorRef,
         router: Router,
         private lang: LanguageService,
         httpClient: HttpClient
     ) {
         super(baseService, defaultAuthOptions, changeDet, router);
-        this.baseService = new BaseService(httpClient, `${endpointUrl}${endpointControllers.login}`);
+        this.baseService = new BaseService(httpClient, `${this.config.config.endpointUrl}${endpointControllers.login}`);
     }
+  ngOnInit(): void {
+
+if(localStorage.getItem('currentUser')){
+  this.router.navigateByUrl('');
+}
+  }
 
 
 
@@ -105,7 +113,7 @@ export class LoginComponent extends NbLoginComponent {
                 localStorage.setItem('currentUser', JSON.stringify(r));
                 this.lang.setLanguageInHeaders(r['languageId']);
                 this.lang.setCurrentLanguage(r['languageId'],false);
-               
+
             }
 
             else

@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Models;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -31,12 +16,13 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
-        [EnableQuery()]
-        public override IActionResult Get()
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<MenuDetail>(x =>x.Include(t=>t.Product)
+                var data = await _baseRepo.GetAllAsync<MenuDetail>(x =>x.Include(t=>t.Product)
                 .Include(t=>t.Unit)
                 .Include(t=>t.Menu)
                 , y => y.Active == true);
@@ -45,7 +31,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

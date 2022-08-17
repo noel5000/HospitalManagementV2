@@ -17,6 +17,7 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -34,13 +35,14 @@ export class AccountsReceivableIndexComponent extends BaseComponent implements O
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     customers:Customer[]=[];
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

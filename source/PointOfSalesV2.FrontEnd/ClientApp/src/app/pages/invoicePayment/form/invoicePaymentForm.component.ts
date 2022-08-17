@@ -23,6 +23,7 @@ import { BranchOfficeService } from '../../../@core/services/branchOfficeService
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { Customer } from '../../../@core/data/customer';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -41,13 +42,14 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
     customers:Customer[]=[];
     branchOffices:BranchOffice[]=[];
     paymentWithReference:boolean=false;
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}paymentType`);
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
-    paymentService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CustomerPayment`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
+    paymentService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
     
 
 
     constructor(
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -73,6 +75,7 @@ reference:[''],
 destinationType:[0],
 paymentTypeId:[null,[Validators.required, Validators.min(1)]],
 givenAmount:[null],
+invoiceId:[null],
 returnedAmount:[0],
 positiveBalance:[0],
 paidAmount:[0]
@@ -87,26 +90,38 @@ paidAmount:[0]
         this.getCustomers();
         this.getPaymentTypes();
         this.validateFormData();
+        const urlId= parseInt( this._route.snapshot.paramMap.get('invoiceId'));
+        if(!isNaN(urlId)){
+          this.getInvoice(urlId);
+        }
     }
 
     async getinvoices(){
+        this.invoices=!this.invoices?[]:this.invoices;
         const filter ={
             branchOfficeId:this.itemForm.get('branchOfficeId').value?this.itemForm.get('branchOfficeId').value:0,
             currencyId:this.itemForm.get('currencyId').value?this.itemForm.get('currencyId').value:0,
-            customerId:this.itemForm.get('paymentDestinationId').value?this.itemForm.get('paymentDestinationId').value:0
+            customerId:this.itemForm.get('paymentDestinationId').value?this.itemForm.get('paymentDestinationId').value:0,
+            invoiceId:this.itemForm.get('invoiceId').value?this.itemForm.get('invoiceId').value:0
         }
         this.invoices.forEach(e=>{
             this.itemForm.removeControl(`selectedInvoice-${e.id}`);
         });
         this.service.getByUrlParameters(['GetInvoicesToPay',filter.branchOfficeId,filter.customerId,filter.currencyId]).subscribe(r=>{
-
-            r.data.forEach(e=>{
-                this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
-                this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
-                    this.payInvoice(val,e.id);
-                })
-            });
-            this.invoices=r.data;
+          
+            if(r.data){
+                r.data.forEach(e=>{
+                   
+                    this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
+                    this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
+                        this.payInvoice(val,e.id);
+                    })
+                   
+                    
+                });
+                this.invoices=r.data;
+            }
+           
         });
     }
 
@@ -116,6 +131,20 @@ paidAmount:[0]
         this.currencies=r;
         if(this.currencies.length==1)
         this.itemForm.patchValue({currencyId:this.currencies[0].id});
+    });
+}
+
+async getInvoice(id:number){
+    this.service.getById(id).subscribe(r=>{
+       const invoice = r.data[0];
+       if(invoice && invoice.id)
+        this.itemForm.patchValue({
+            currencyId:invoice.currencyId,
+            paymentDestinationId:invoice.customerId,
+            branchOfficeId:invoice.branchOfficeId,
+            invoiceId:invoice.id,
+            givenAmount:(invoice.owedAmount)
+        });
     });
 }
 

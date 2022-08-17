@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -27,13 +13,14 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(new Operations[] { Operations.READALL, Operations.READ })]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<ProductSupplierCost>(x => x.Include(t => t.Supplier)
+                var data = await _baseRepo.GetAllAsync<ProductSupplierCost>(x => x.Include(t => t.Supplier)
                 .Include(t => t.Product)
                 , y => y.Active == true);
                 return Ok(data);
@@ -41,7 +28,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -49,7 +36,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] ProductSupplierCost model)
+        public override async Task<IActionResult> Post([FromBody] ProductSupplierCost model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }
@@ -58,7 +45,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public override IActionResult Put([FromBody] ProductSupplierCost model)
+        public override async Task<IActionResult> Put([FromBody] ProductSupplierCost model)
         {
             return BadRequest(new { Status = -1, Message = "notValid_msg" });
         }

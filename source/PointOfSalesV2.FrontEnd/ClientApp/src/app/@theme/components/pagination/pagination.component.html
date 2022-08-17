@@ -15,9 +15,12 @@
               <table class="table table-striped table-vcenter " id="pagedTable" >
                 <thead>
                     <tr class="dontPrint">
-                        <td *ngFor="let header of tableConfig" [hidden]="!header.visible && !header.filterIsActive">
-                            <input class="form-control"  [type]="header.type"  (input)="addFilter(header,$event)" >
-                        </td>
+                      <ng-container *ngFor="let header of tableConfig" >
+                        <td  *ngIf="header.visible">
+                          <input class="form-control headersFilter"  [type]="header.type" [id]="header.id"   >
+                      </td>
+                      </ng-container>
+                        
                         <td></td>
                     </tr>
                     <tr>

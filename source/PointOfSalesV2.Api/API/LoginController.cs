@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+
+using Microsoft.IdentityModel.Tokens;
+using PointOfSalesV2.Repository.Helpers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using PointOfSalesV2.Repository.Helpers;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -41,12 +29,12 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult Post([FromBody] Login model)
+       public async Task<IActionResult> Post([FromBody] Login model)
         {
             try
             {
                 UsersHelper.VerifyAdminUser(this.dataRepositoryFactory);
-                User user = userRepository.Login(model, _appSettings.Value.TokenKey);
+                User user = await userRepository.Login(model, _appSettings.Value.TokenKey);
                 if (user == null)
                     return Ok(new { status = -1, message = "Invalid credentials" });
                 var claims = new[]
@@ -90,7 +78,7 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet("VerifySession")]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult VerifySession()
+       public async Task<IActionResult> VerifySession()
         {
             try
             {

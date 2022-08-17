@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static PointOfSalesV2.Common.Enums;
+﻿
 
 namespace PointOfSalesV2.Repository
 {
@@ -16,16 +10,39 @@ namespace PointOfSalesV2.Repository
             this._sequenceRepo = sequenceRepo;
         }
 
-        public override Result<Seller> Add(Seller entity)
+        public override async Task<Result<Seller>> AddAsync(Seller entity)
         {
-            entity.Code = _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers);
-            return base.Add(entity);
+            using (var transaction = await this._Context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    entity.Code = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers);
+                    var result = await base.AddAsync(entity);
+                    if (result.Status < 0) 
+                    {
+                      await  transaction.RollbackAsync();
+                    }
+                    else
+                        await transaction.CommitAsync();
+
+
+                    return result;
+                }
+                catch (Exception ex) 
+                {
+                  await  transaction.RollbackAsync();
+                    return new Result<Seller>(-1,-1,"error_msg",null,ex);
+                }
+               
+            }
+           
+        
         }
 
-        public ComissionsReport PaymentsComissions(ComissionsSearch search)
+        public async Task<ComissionsReport> PaymentsComissions(ComissionsSearch search)
         {
             var result = new ComissionsReport() { ComissionsByCyrrencies = new List<ComissionsByCurrency>() };
-            var invoices = _Context.CustomersPayments.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x=>x.Customer)
+            var invoices = (await _Context.CustomersPayments.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x=>x.Customer)
                 .Where(x => 
                 x.Active == true && x.State!=(char)BillingStates.Nulled &&
                 (search.CustomerId.HasValue && search.CustomerId.Value>0?x.CustomerId== search.CustomerId.Value:x.CustomerId>0) &&
@@ -35,7 +52,7 @@ namespace PointOfSalesV2.Repository
                 (search.FinalDate.HasValue  ? x.Date <= search.FinalDate.Value : x.Date < DateTime.Now) &&
                 (string.IsNullOrEmpty(search.InvoiceNumber)?x.InvoiceNumber!="":x.InvoiceNumber.ToUpper()== search.InvoiceNumber.ToUpper())
                 && x.SellerRate>0
-                ).ToList().GroupBy(x => x.CurrencyId).ToList();
+                ).ToListAsync()).GroupBy(x => x.CurrencyId).ToList();
 
             invoices.ForEach(r => {
                 result.ComissionsByCyrrencies.Add(new ComissionsByCurrency()
@@ -62,10 +79,10 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public ComissionsReport SalesComissions(ComissionsSearch search)
+        public async Task<ComissionsReport> SalesComissions(ComissionsSearch search)
         {
             var result = new ComissionsReport() { ComissionsByCyrrencies = new List<ComissionsByCurrency>() };
-            var invoices = _Context.Invoices.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x => x.Patient)
+            var invoices =(await _Context.Invoices.AsNoTracking().Include(x => x.Currency).Include(x => x.Seller).Include(x => x.Patient)
                 .Where(x =>
                 x.Active == true && (x.State == (char)BillingStates.Billed || x.State == (char)BillingStates.Paid || x.State == (char)BillingStates.FullPaid) &&
                 (search.CustomerId.HasValue && search.CustomerId.Value > 0 ? x.CustomerId == search.CustomerId.Value : x.CustomerId > 0) &&
@@ -75,7 +92,7 @@ namespace PointOfSalesV2.Repository
                 (search.FinalDate.HasValue ? x.BillingDate <= search.FinalDate.Value : x.BillingDate < DateTime.Now) &&
                 (string.IsNullOrEmpty(search.InvoiceNumber) ? x.InvoiceNumber != "" : x.InvoiceNumber.ToUpper() == search.InvoiceNumber.ToUpper())
                 && x.SellerRate > 0
-                ).ToList().GroupBy(x => x.CurrencyId).ToList();
+                ).ToListAsync()).GroupBy(x => x.CurrencyId).ToList();
 
             invoices.ForEach(r => {
                 result.ComissionsByCyrrencies.Add(new ComissionsByCurrency()
@@ -102,10 +119,10 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<Seller> Update(Seller entity, bool fromDb = true)
+        public override async Task<Result<Seller>> UpdateAsync(Seller entity, bool fromDb = true)
         {
-            entity.Code = string.IsNullOrEmpty(entity.Code) ? _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers) : entity.Code;
-            return base.Update(entity);
+            entity.Code = string.IsNullOrEmpty(entity.Code) ? await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers) : entity.Code;
+            return await base.UpdateAsync(entity);
         }
 
     }

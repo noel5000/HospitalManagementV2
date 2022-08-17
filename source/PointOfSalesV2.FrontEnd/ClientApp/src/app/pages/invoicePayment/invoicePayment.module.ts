@@ -34,6 +34,10 @@ const routes: Routes = [
         component: InvoicePaymentFormComponent
     },
     {
+        path: "add/:id/:patientid",
+        component: InvoicePaymentFormComponent
+    },
+    {
         path: "edit/:id",
         component: InvoicePaymentFormComponent
     },

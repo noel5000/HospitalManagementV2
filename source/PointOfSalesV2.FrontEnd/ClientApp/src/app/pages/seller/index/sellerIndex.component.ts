@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/modal.component';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Seller } from '../../../@core/data/seller';
+import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
@@ -43,6 +44,7 @@ export class SellerIndexComponent extends BaseComponent implements OnInit {
 
 
     constructor(
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: SellerService,
@@ -113,12 +115,13 @@ export class SellerIndexComponent extends BaseComponent implements OnInit {
                         id:'zoneId',
                         type:'text',
                         fieldToShow:'zone.name',
-                        isTranslated:false,
+                        isTranslated:true,
+                        objectTypeToShow:ObjectTypes.String,
                         name:this.lang.getValueByKey('zone_lbl'),
                         sorting:'desc',
                         toSort:true,
                         objectType:ObjectTypes.String,
-                        filterIsActive:false
+                        filterIsActive:true
                       },
                     ];
 this.actions=[
@@ -172,9 +175,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
