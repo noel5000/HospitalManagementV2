@@ -37,7 +37,7 @@ export class PagesComponent {
           {
             title: this.lang.getValueByKey('changePass_menu'),
             link: '/auth/changePass',
-            hidden: true
+            hidden: false
           },
           {
             title: this.lang.getValueByKey('login_menu'),
@@ -138,7 +138,17 @@ export class PagesComponent {
                 hidden: !this.securityService.isUserValidInMenu(AppSections.Customers)
               },
 
+              {
+                title: this.lang.getValueByKey('sellers_menu'),
+                link: 'seller',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Sellers)
+              },
 
+              {
+                title: this.lang.getValueByKey('zones_menu'),
+                link: 'zone',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Zones)
+              },
             ],
           },
           {

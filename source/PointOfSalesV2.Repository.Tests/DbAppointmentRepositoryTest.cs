@@ -16,12 +16,9 @@ namespace PointOfSalesV2.Repository.Tests
         public void Setup()
         {
         }
-
-       
-        [Test]
-        public void GetAppointmentByIdAsync()
+        private Mock<MainDataContext> MockDb() 
         {
-            List<Appointment> appointments = new List<Appointment>() 
+            List<Appointment> appointments = new List<Appointment>()
             {
              new Appointment(){Id=1, Active=true, CurrencyId=1, HospitalId=1, InsuranceId=1, InsurancePlanId=1, PatientId=1 }
             };
@@ -67,6 +64,14 @@ namespace PointOfSalesV2.Repository.Tests
             mockDb.Setup(ctx => ctx.InsurancePlans).ReturnsDbSet(insurancePlans);
             mockDb.Setup(ctx => ctx.Insurances).ReturnsDbSet(insurances);
 
+            return mockDb;
+        }
+
+       [Test]
+        public void GetAppointmentByIdAsync()
+        {
+
+            var mockDb = this.MockDb();
             IAppointmentRepository repo = new AppointmentRepository(mockDb.Object);
 
             var t_appointment = repo.GetAsync(1);

@@ -45,7 +45,12 @@
       "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
       "DisplayName": "Miscellaneous Files",
       "ColorIndex": -1
+    },
+    "ab433bb3-1ac1-40d6-8e42-9977e8796405": {
+      "ProjectGuid": "ab433bb3-1ac1-40d6-8e42-9977e8796405",
+      "DisplayName": "PointOfSalesV2.Repository.Tests",
+      "ColorIndex": 8
     }
   },
-  "NextColorIndex": 8
+  "NextColorIndex": 9
 }

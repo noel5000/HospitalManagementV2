@@ -1,10 +1,10 @@
 import { AppSections } from './enums';
 
 //export const endpointUrl = 'https://localhost:44386/api/';
- export const endpointUrl = 'https://hospitaltestback.solucionesrn.com/api/';
+ export const endpointUrl = 'https://localhost:44386/api/';
 
 //export const endpointViewsUrl = 'https://localhost:44386/';
- export const endpointViewsUrl = 'https://hospitaltestback.solucionesrn.com/';
+ export const endpointViewsUrl = 'https://localhost:44386/';
 
 export const endpointControllers = {
     login: 'Login',

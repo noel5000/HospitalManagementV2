@@ -45,7 +45,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
             cardId: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
             address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
             code: [''],
-            zoneId: [0,[ Validators.required]],
+            zoneId: [null,[ Validators.required, Validators.min(1)]],
             comissionRate: [0],
             comissionByProduct: [false],
             fixedComission: [false],

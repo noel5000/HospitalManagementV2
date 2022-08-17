@@ -12,8 +12,31 @@ namespace PointOfSalesV2.Repository
 
         public override async Task<Result<Seller>> AddAsync(Seller entity)
         {
-            entity.Code = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers);
-            return await base.AddAsync(entity);
+            using (var transaction = await this._Context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    entity.Code = await _sequenceRepo.CreateSequence(Common.Enums.SequenceTypes.Sellers);
+                    var result = await base.AddAsync(entity);
+                    if (result.Status < 0) 
+                    {
+                      await  transaction.RollbackAsync();
+                    }
+                    else
+                        await transaction.CommitAsync();
+
+
+                    return result;
+                }
+                catch (Exception ex) 
+                {
+                  await  transaction.RollbackAsync();
+                    return new Result<Seller>(-1,-1,"error_msg",null,ex);
+                }
+               
+            }
+           
+        
         }
 
         public async Task<ComissionsReport> PaymentsComissions(ComissionsSearch search)
