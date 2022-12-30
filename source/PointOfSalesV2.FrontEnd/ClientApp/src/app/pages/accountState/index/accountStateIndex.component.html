@@ -9,7 +9,7 @@
       <button type="button" class="btn btn-success" (click)="exportToCSV()">{{'export_btn' | translate}}</button>
   </div>
     </div>
-   
+
   </nb-card-header>
 
   <nb-card-body>
@@ -21,7 +21,7 @@
     <select class="form-control"
     formControlName="customerId"
     [ngClass]="{ 'is-invalid': form.customerId.errors }"
-    
+
     >
     <option *ngFor="let customer of customers"
      [value]="customer.id"
