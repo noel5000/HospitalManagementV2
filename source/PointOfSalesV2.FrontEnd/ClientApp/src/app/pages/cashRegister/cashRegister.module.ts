@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { CashRegisterIndexComponent } from './index/cashRegisterIndex.component';
 import { CashRegisterFormComponent } from './form/cashRegisterForm.component';
 import { LanguageService } from './../../@core/services/translateService';

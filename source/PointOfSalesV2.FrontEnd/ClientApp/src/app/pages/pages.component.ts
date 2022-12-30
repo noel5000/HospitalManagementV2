@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component , Inject } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
 import { NbMenuItem } from '@nebular/theme';
@@ -19,7 +19,7 @@ import { AppSections } from '../@core/common/enums';
   `,
 })
 export class PagesComponent {
-  constructor(private lang: LanguageService, private securityService: SecurityService) {
+  constructor(@Inject('BASE_URL') private baseUrl: string,private lang: LanguageService, private securityService: SecurityService) {
     this.menu=null;
     this.menu=[
       {

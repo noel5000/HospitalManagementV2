@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -52,7 +52,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
     ExpensePayments:ExpensePayment[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         langService: LanguageService,

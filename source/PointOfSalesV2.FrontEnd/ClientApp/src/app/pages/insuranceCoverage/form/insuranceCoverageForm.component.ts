@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,11 +22,11 @@ declare const $: any;
 export class insuranceCoverageFormComponent extends BaseComponent implements OnInit {
 
     _route:ActivatedRoute;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsuranceServiceCoverage`);
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
-    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Product`);
-    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Currency`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/InsuranceServiceCoverage`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/InsurancePlan`);
+    productService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Product`);
+    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Currency`);
     insurances:any=[];
     insurancePlans:any=[];
     products:any[]=[];
@@ -34,7 +34,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
     productPrices:number[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

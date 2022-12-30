@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -32,11 +32,11 @@ export class TaxReportIndexComponent extends BaseComponent implements OnInit {
         this.onChanges();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}InvoiceTax`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/InvoiceTax`);
     result:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,

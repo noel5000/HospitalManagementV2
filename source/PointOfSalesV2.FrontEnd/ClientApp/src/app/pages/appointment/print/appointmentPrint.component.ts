@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -47,7 +47,7 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
     currentDate:string='';
     sequence:string='';
     _route:ActivatedRoute;
-    appointmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}appointment`);
+    appointmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/appointment`);
     weeksOfMonth:Item[]=[
         {
             id:null,
@@ -102,7 +102,7 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
         },
     ];
 
-    constructor( private config: AppConfig,
+    constructor(@Inject('BASE_URL') private baseUrl: string, private config: AppConfig,
         router: ActivatedRoute,
         route: Router,
         langService: LanguageService,

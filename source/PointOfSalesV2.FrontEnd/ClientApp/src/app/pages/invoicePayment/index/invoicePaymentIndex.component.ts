@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -30,7 +30,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CustomerPayment`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
@@ -53,7 +53,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     InvoicePayments:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         langService: LanguageService,

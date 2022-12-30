@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component , Inject } from '@angular/core';
 import { BaseComponent } from './../../@core/common/baseComponent';
 import { Router } from '@angular/router';
 import { AppSections } from '../../@core/common/enums';
@@ -10,7 +10,7 @@ import { ModalService } from '../../@core/services/modal.service';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent extends BaseComponent {
-  constructor(route: Router, lang: LanguageService, modaService:ModalService) {
+  constructor(@Inject('BASE_URL') private baseUrl: string,route: Router, lang: LanguageService, modaService:ModalService) {
     super(route, lang, AppSections.DashBoard,modaService);
   }
 }

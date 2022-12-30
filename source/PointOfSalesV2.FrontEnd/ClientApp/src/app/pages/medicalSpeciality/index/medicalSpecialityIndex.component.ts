@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -27,7 +27,7 @@ export class medicalSpecialityIndexComponent extends BaseComponent implements On
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];    
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
@@ -37,7 +37,7 @@ export class medicalSpecialityIndexComponent extends BaseComponent implements On
     medicalSpecialities:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         langService: LanguageService,

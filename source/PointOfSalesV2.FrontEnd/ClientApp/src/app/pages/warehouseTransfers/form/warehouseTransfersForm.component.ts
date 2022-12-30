@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -46,13 +46,13 @@ export class WarehouseTransferFormComponent extends BaseComponent implements OnI
     entries:any[]=[];
     originInventory:any={id:0,currentUnitEquivalence:0};
     destinyInventory:any={id:0,currentUnitEquivalence:0};
-    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}WarehouseTransfer`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Inventory`);
+    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/WarehouseTransfer`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Inventory`);
   
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         private config: AppConfig,

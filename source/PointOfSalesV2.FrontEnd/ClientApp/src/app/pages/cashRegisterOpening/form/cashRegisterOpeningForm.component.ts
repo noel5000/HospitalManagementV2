@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,9 +37,9 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
     user:User;
     currentCurrency:Currency=null;
     isClosing:boolean =false;
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening`);
-    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening/CloseCashRegister`);
-    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpeningDetail`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening`);
+    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening/CloseCashRegister`);
+    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/CashRegisterOpeningDetail`);
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
     users:User[]=[];
@@ -113,7 +113,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
         }
     ];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ProductService } from '../../../@core/services/ProductService';
@@ -65,15 +65,15 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
     medicalSpecialities:any[]=[];
     productTaxes:any[]=[];//
     selectedBaseProduct:number=0;
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
-    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}ProductCost`);
-    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CompositeProduct`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}ProductTax`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductCost`);
+    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CompositeProduct`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductTax`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

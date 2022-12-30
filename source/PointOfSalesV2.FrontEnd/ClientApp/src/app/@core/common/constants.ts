@@ -1,17 +1,17 @@
 import { AppSections } from './enums';
 
 //export const endpointUrl = 'https://localhost:44386/api/';
- export const endpointUrl = 'https://localhost:44386/api/';
+export const endpointUrl = document.getElementsByTagName('base')[0].href;
 
 //export const endpointViewsUrl = 'https://localhost:44386/';
  export const endpointViewsUrl = 'https://localhost:44386/';
 
 export const endpointControllers = {
-    login: 'Login',
+    login: 'login',
     products: 'product',
     logout: 'logout',
     languages: 'language',
-    branchOffices: 'branchOffice',
+    branchOffices: 'branchoffice',
     units: 'unit',
     taxes: 'tax',
     currencies: 'currency',
@@ -21,11 +21,11 @@ export const endpointControllers = {
     sellers:'seller',
     suppliers:'supplier',
     customers:'customer',
-    productTaxes:'productTax',
+    productTaxes:'producttax',
     users:'user',
-    cashRegister:'cashRegister',
+    cashRegister:'cashregister',
     expenses:'expense',
-    expensePayment:'expensesPayment',
+    expensePayment:'expensespayment',
     schools:'school'
 }
 

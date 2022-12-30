@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -33,14 +33,14 @@ export class InventoryReportIndexComponent extends BaseComponent implements OnIn
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Inventory`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Inventory`);
     inventory:any[]=[];
     branchOffices:BranchOffice[]=[];
     warehouses:Warehouse[]=[];
     products:Product[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         route: Router,
         private config: AppConfig,
         private formBuilder: FormBuilder,

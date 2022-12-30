@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, PaymentTypes } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -39,15 +39,15 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}CustomerPayment`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CustomerPayment`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     currencies:Currency[]=[];
     paymentTypes:any[]=[];
     customers:Customer[]=[];
-    paymentTypeService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}paymentType`);
+    paymentTypeService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/paymentType`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, Validator, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -67,17 +67,17 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
     currentProductCost:any={cost:0};
     currentProductPrice:any={sellingPrice:0,costPrice:0, equivalence:0};
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Inventory`);
-    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
-    menuService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Menu`);
-    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Currency`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductTax`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Inventory`);
+    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Invoice`);
+    menuService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Menu`);
+    currencyService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Currency`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductTax`);
     oldProductCost:number=0;
     oldProductPrice:number=0;
     selectedProductCurrency:Currency=null;
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

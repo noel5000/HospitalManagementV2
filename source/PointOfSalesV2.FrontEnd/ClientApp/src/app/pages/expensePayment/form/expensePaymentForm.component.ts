@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ExpenseService } from '../../../@core/services/ExpenseService';
@@ -43,11 +43,11 @@ export class ExpensePaymentFormComponent extends BaseComponent implements OnInit
     currencies:Currency[]=[];
     paymentWithReference:boolean=false;
     suppliers:Supplier[]=[];
-    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}paymentType`);
+    paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/paymentType`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

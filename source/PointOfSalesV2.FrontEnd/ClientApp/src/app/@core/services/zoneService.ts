@@ -1,7 +1,7 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Zone } from '../data/zoneModel';
 import { AppConfig } from './app.config';
 
@@ -10,9 +10,10 @@ import { AppConfig } from './app.config';
 })
 
 export class ZoneService extends BaseService<Zone, number>{
-    constructor( private config: AppConfig,
+  constructor(private config: AppConfig,
+    @Inject('BASE_URL') private baseUrl2: string,
         http: HttpClient
     ) {
-        super(http, `${config.config.endpointUrl}${endpointControllers.zones}`);
+    super(http, `${baseUrl2}api/${endpointControllers.zones}`);
     }
 }

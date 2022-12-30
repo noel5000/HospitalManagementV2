@@ -116,7 +116,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${page}/${max}`,
+            `${this.baseUrl}api/${page}/${max}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return data;
@@ -192,7 +192,7 @@ anchor.click();
         const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
 
 
-        let promise=this._httpClient.post(`${this.baseUrl}${url?'/'+url:''}`,
+        let promise=this._httpClient.post(`${this.baseUrl}api/${url?'/'+url:''}`,
         data
         ,{responseType:'blob',
         headers:new HttpHeaders({
@@ -227,9 +227,9 @@ anchor.click();
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
-                   
+
                     switch (f.type) {
-                      
+
                         case ObjectTypes.String:
                             switch(comparer){
                                 case 'eq':
@@ -244,9 +244,9 @@ anchor.click();
                                     query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
                             `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
                                 break;
-                                    
+
                             }
-                           
+
                             break;
                         case ObjectTypes.Number:
                             query = `${query}(${propertyDef} ${comparer} ${val}) or `;
@@ -279,7 +279,7 @@ anchor.click();
                             default:
                                 query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                             break;
-                                
+
                         }
                         break;
                     case ObjectTypes.Number:
@@ -347,9 +347,9 @@ anchor.click();
                 let  values = f.value.split(',');
                 values = !values?[]:values;
                 values.forEach(val=>{
-                   
+
                     switch (f.type) {
-                      
+
                         case ObjectTypes.String:
                             switch(comparer){
                                 case 'eq':
@@ -364,9 +364,9 @@ anchor.click();
                                     query =!f.isTranslated? `${query}(contains(toLower(${propertyDef}), '${val}')) or `:
                                     `${query}(contains(toLower(${newSearch.length>1?newSearch.join('/'):'TranslationData'}), '${val}')) or `;
                                 break;
-                                    
+
                             }
-                            
+
                             break;
                         case ObjectTypes.Number:
                             query = `${query}(${propertyDef} ${comparer} ${val}) or `;
@@ -399,9 +399,9 @@ anchor.click();
                             default:
                                 query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
                             break;
-                                
+
                         }
-                       
+
                         break;
                     case ObjectTypes.Number:
                         query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
@@ -461,7 +461,7 @@ anchor.click();
 
 
         let promise=this._httpClient.post<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
               entity,
               !languageId ? this.httpOptions : this.tempHttpOptions
           );
@@ -476,7 +476,7 @@ anchor.click();
 
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -487,7 +487,7 @@ anchor.click();
 
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -514,7 +514,7 @@ anchor.click();
         entity=this.SetTranslationData(entity);
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -538,7 +538,7 @@ anchor.click();
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
         return this._httpClient.delete<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}/${id}`:  `${this.baseUrl}/${id}`,
+            optionalUrl?`${this.baseUrl}api/${optionalUrl}/${id}`:  `${this.baseUrl}api/${id}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
     }
@@ -553,7 +553,7 @@ anchor.click();
 
 
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${urlParams}`,
+            `${this.baseUrl}api/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -575,7 +575,7 @@ anchor.click();
 
 
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${urlParams}`,
+            `${this.baseUrl}api/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -590,7 +590,7 @@ anchor.click();
         this.setLanguageInHeaders(languageId);
 
         let promise=this._httpClient.get<any>(
-            `${this.baseUrl}/${urlParams}`,
+            `${this.baseUrl}api/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -606,7 +606,7 @@ anchor.click();
         this.setLanguageInHeaders(languageId);
 
         let promise=this._httpClient.patch<any>(
-            `${this.baseUrl}/${urlParams}`,
+            `${this.baseUrl}api/${urlParams}`,
             data,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -617,7 +617,7 @@ anchor.click();
         let spinnerObj = document.getElementById("nb-global-spinner");
         spinnerObj.style.display="block";
      }
-    
+
      hideSpinner(){
          let spinnerObj = document.getElementById("nb-global-spinner");
          spinnerObj.style.display="none";

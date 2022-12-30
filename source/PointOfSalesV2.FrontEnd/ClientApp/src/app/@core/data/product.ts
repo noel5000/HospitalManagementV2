@@ -20,7 +20,7 @@ export class Product extends BaseModel {
     name:string;
     details:string;
     currency :Currency
-    medicalSpecialityId:number=null;
+    medicalSpecialityId:number=0;
     taxes:any[];
     type:string;
     medicalSpeciality:any;
@@ -38,11 +38,11 @@ export class ProductTax extends BaseModel {
 
 export class UnitProductEquivalence extends BaseModel {
 
-         unitId:number; 
-         productId:number; 
+         unitId:number;
+         productId:number;
          equivalence:number;
          isPrimary :boolean;
-         order :number; 
+         order :number;
          costPrice :number;
          sellingPrice :number;
          unit:Unit;
@@ -52,13 +52,13 @@ export class CompositeProduct extends BaseModel {
 
         ProductId :number;
         currencyId:number;
-        BaseProductId:number; 
+        BaseProductId:number;
         BaseProductUnitId :number;
         Quantity :number;
         TotalCost :number;
         TotalPrice :number;
         BaseProduct:Product;
-        Product:Product; 
+        Product:Product;
         UnitProductEquivalence: UnitProductEquivalence;
-        Currency: Currency; 
+        Currency: Currency;
 }

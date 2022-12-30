@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,7 +37,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
    
     editing:number=1;
-    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CheckupAttachment`);
+    attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/CheckupAttachment`);
     attachments:any[]=[];
     public uploader: FileUploader;
 
@@ -70,13 +70,13 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
 
 
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
-    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Appointment`);
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/PatientCheckUp`);
+    appointmentService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Appointment`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
     zones:Zone[]=[];
     newProduct:boolean=false;
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

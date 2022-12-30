@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { CustomerService } from '../../../@core/services/CustomerService';
@@ -36,10 +36,10 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     trnControls:TRNControl[]=[];
     currencies:Currency[]=[];
     bloodTypes:string[]=["A+","A-","B+","B-","O+","O-","AB+","AB-"];
-    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
-    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}InsurancePlan`);
+    insuranceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Insurance`);
+    insurancePlanService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/InsurancePlan`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         private config: AppConfig,

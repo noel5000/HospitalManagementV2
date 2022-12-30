@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,15 +45,15 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
     entries:any[]=[];
     defaultTaxAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
     currentProductCost:any={cost:0};
-    SupplierReturnService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}SupplierReturn`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductUnit`);
-    productCostService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}ProductCost`);
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Inventory`);
+    SupplierReturnService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/SupplierReturn`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    productCostService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductCost`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Inventory`);
     oldProductCost:number=0;
     originInventory:any={id:0,currentUnitEquivalence:0};
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

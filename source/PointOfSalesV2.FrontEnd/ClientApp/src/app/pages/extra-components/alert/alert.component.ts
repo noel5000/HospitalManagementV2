@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input , Inject } from '@angular/core';
 import { LanguageService } from '../../../@core/services/translateService';
 
 @Component({
@@ -7,7 +7,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 })
 export class AlertComponent {
 
-    constructor(private lang:LanguageService){
+    constructor(@Inject('BASE_URL') private baseUrl: string,private lang:LanguageService){
 
     }
    @Input() title:string;

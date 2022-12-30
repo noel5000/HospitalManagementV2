@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -27,7 +27,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     }
     _route:ActivatedRoute;
     modalRef:NgbModalRef=null;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}PatientCheckUp`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/PatientCheckUp`);
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
@@ -50,7 +50,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     patientCheckups:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         route: Router,
         private config: AppConfig,
         langService: LanguageService,

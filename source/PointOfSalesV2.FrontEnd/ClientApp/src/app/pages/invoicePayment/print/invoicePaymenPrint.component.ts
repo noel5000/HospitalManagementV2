@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -45,10 +45,10 @@ export class InvoicePaymentPrintComponent extends BaseComponent implements OnIni
     sequence:string='';
     paidInvoices:any[]=[];
     _route:ActivatedRoute;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CustomerPayment`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/CustomerPayment`);
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

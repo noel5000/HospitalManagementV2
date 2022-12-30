@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { WarehouseIndexComponent } from './index/warehouseIndex.component';
 import { WarehouseFormComponent } from './form/warehouseForm.component';
 import { LanguageService } from './../../@core/services/translateService';

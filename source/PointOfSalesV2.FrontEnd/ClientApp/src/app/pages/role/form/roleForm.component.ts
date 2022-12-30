@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,14 +38,14 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
     roleSectionOperations:any[]=[];
     sections:any[]=[];
     sectionOperations:any[]=[];
-    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Role`);
-    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}SectionOperation`);
-    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Section`);
-    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}RoleSectionOperation`);
+    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Role`);
+    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/SectionOperation`);
+    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Section`);
+    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/RoleSectionOperation`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Warehouse } from '../../../@core/data/Warehouse';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -26,7 +26,7 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         private config: AppConfig,

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, Validator, FormControl, AbstractControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -51,13 +51,13 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
 
   
-    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Invoice`);
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}CustomerReturn`);
+    invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/CustomerReturn`);
    
     isEditing:boolean=false;
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

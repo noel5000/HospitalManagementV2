@@ -8,7 +8,7 @@ import {
  Directive,
  QueryList, 
  ViewChildren 
-} from '@angular/core';
+, Inject } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IModalConfig, IAlertConfig } from '../../../@core/data/interfaces/iModalConfig';
 
@@ -37,7 +37,7 @@ import { IModalConfig, IAlertConfig } from '../../../@core/data/interfaces/iModa
   `
 })
 export class NgbdModalConfirmAutofocus {
-  constructor(public modal: NgbActiveModal) {}
+  constructor(@Inject('BASE_URL') private baseUrl: string,public modal: NgbActiveModal) {}
   @Input() config:IModalConfig;
   @Output() resultEvent:EventEmitter<boolean>= new EventEmitter<boolean>();
 
@@ -57,7 +57,7 @@ this.modal.close();
   `
 })
 export class NgbdModalAlertAutofocus {
-  constructor(public modal: NgbActiveModal) {}
+  constructor(@Inject('BASE_URL') private baseUrl: string,public modal: NgbActiveModal) {}
   @Input() config:IAlertConfig;
 
   result(val:boolean){

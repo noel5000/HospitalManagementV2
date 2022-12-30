@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { SellerService } from '../../../@core/services/SellerService';
@@ -25,7 +25,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
  
     _route:ActivatedRoute;
     zones:Zone[]=[];
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

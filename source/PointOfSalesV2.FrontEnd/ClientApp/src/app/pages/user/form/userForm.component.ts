@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { UserService } from '../../../@core/services/UserService';
@@ -49,8 +49,8 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         }
     ]
     languages:any[]=[];
-    languagesService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}language`);
-    medicalSpecService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}MedicalSpeciality`);
+    languagesService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/language`);
+    medicalSpecService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
     genders:any[]=[
         {
             name:this.lang.getValueByKey('male_lbl'),
@@ -62,7 +62,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         }    
     ]
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input } from '@angular/core';
+import { Component, OnDestroy, Input , Inject } from '@angular/core';
 import { NbLayoutDirectionService, NbLayoutDirection } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -26,7 +26,7 @@ export class LayoutDirectionSwitcherComponent implements OnDestroy {
 
   @Input() vertical: boolean = false;
 
-  constructor(private directionService: NbLayoutDirectionService) {
+  constructor(@Inject('BASE_URL') private baseUrl: string,private directionService: NbLayoutDirectionService) {
     this.currentDirection = this.directionService.getDirection();
 
     this.directionService.onDirectionChange()

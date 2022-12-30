@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PointOfSalesV2.Api.Controllers
+namespace PointOfSalesV2.FrontEnd.Controllers
 {
     public class FilesController : Controller
     {

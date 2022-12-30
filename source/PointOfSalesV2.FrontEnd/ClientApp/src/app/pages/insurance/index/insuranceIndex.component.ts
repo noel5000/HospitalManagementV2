@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -30,7 +30,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
     pageSize:number=10;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Insurance`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Insurance`);
     maxCount:number=0;
   filters: QueryFilter[] = [
       
@@ -40,7 +40,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     insurances:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         private  http: HttpClient,

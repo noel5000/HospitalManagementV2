@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -26,7 +26,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Invoice`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -64,7 +64,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     Invoices:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         private http: HttpClient,

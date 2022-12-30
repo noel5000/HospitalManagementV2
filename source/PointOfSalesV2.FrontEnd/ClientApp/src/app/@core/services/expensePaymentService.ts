@@ -1,7 +1,7 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Expense } from '../data/expenseModel';
 import { Observable } from 'rxjs';
 import { BaseResultModel } from '../data/baseResultModel';
@@ -18,17 +18,18 @@ export interface ISupplierPayment{
 })
 export class ExpensePaymentService extends BaseService<ExpensePayment, number>{
     constructor(
-        private config: AppConfig,
+      private config: AppConfig,
+      @Inject('BASE_URL') private baseUrl2: string,
         http: HttpClient
     ) {
-        super(http, `${config.config.endpointUrl}${endpointControllers.expensePayment}`);
+      super(http, `${baseUrl2}api/${endpointControllers.expensePayment}`);
     }
 
     PayExpenses(payment:ISupplierPayment,lang:string=''):Observable<any>{
         this.setHttpOptions();
         this.setLanguageInHeaders(lang);
         return this._httpClient.post<BaseResultModel<any>>(
-            `${this.baseUrl}/AddPayments`,
+            `${this.baseUrl}api/AddPayments`,
             payment,
             !lang ? this.httpOptions : this.tempHttpOptions
         );

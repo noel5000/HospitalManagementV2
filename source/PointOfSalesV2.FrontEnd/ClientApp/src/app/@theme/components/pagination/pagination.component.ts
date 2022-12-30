@@ -6,10 +6,10 @@ import {
   Output,
   EventEmitter,
   Directive,
-  QueryList, 
-  ViewChildren, 
+  QueryList,
+  ViewChildren,
   AfterViewInit
-} from '@angular/core';
+, Inject } from '@angular/core';
 
 import { map, takeUntil, filter, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -100,13 +100,13 @@ export class PaginationCompoment implements AfterViewInit{
     @Output() actionFuncEvent:EventEmitter<any>= new EventEmitter<any>();
     @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 
-    constructor(private lang:LanguageService){}
+    constructor(@Inject('BASE_URL') private baseUrl: string,private lang:LanguageService){}
   ngAfterViewInit(): void {
- 
+
 
  fromEvent(document.getElementsByClassName('headersFilter'),'keyup')
     .pipe(
-       
+
         debounceTime(400),
         distinctUntilChanged(),
         tap((el) => {
@@ -121,7 +121,7 @@ export class PaginationCompoment implements AfterViewInit{
     getTranslation(key:string){
       return this.lang.getValueByKey(key);
     }
-   
+
     getPagedData(e){
       this.getPagedDataEvent.emit(e);
     }
@@ -146,7 +146,7 @@ export class PaginationCompoment implements AfterViewInit{
         return "";
         properties.forEach(p=>{
           if(!temp[p])
-          return '';
+          temp='';
 
           temp= temp[p];
         });
@@ -179,7 +179,7 @@ export class PaginationCompoment implements AfterViewInit{
 
     hideColumn(config:IPaginationModel,e:any){
       const index= this.tableConfig.findIndex(x=>x.id==config.id);
-     
+
       if(index>=0){
         let currentConfig=this.tableConfig[index];
         currentConfig.visible=e.target.checked;

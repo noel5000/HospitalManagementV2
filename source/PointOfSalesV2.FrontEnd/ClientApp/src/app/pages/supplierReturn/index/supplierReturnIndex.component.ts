@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -72,9 +72,9 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     SupplierReturns:any[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}SupplierReturn`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/SupplierReturn`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         route: Router,
         private config: AppConfig,
         private  http: HttpClient,

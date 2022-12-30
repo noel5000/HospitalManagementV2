@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -33,16 +33,17 @@ export class AccountsReceivableIndexComponent extends BaseComponent implements O
         this.getCustomers();
         this.onChanges();
         this.getData();
-    }
+  }
+
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Invoice`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/invoice`);
     invoices:any[]=[];
     branchOffices:BranchOffice[]=[];
     customers:Customer[]=[];
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+      private config: AppConfig,
 
 
-    constructor(
-        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

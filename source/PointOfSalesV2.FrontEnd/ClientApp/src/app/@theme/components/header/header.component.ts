@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit , Inject } from '@angular/core';
 import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeService } from '@nebular/theme';
 
 import { User, UserData } from '../../../@core/data/users';
@@ -68,7 +68,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       target: 'logoutBtn'
     }];
 
-  constructor(private sidebarService: NbSidebarService, private config: AppConfig,
+  constructor(@Inject('BASE_URL') private baseUrl: string,private sidebarService: NbSidebarService, private config: AppConfig,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private userService: UserData,
@@ -76,7 +76,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     http: HttpClient,
     private lang: LanguageService,
     private breakpointService: NbMediaBreakpointsService) {
-    this.languageService = new BaseService(http, `${this.config.config.endpointUrl}${endpointControllers.languages}`);
+    this.languageService = new BaseService(http, `${this.baseUrl}api/${endpointControllers.languages}`);
 
 
     this.languageService.get().subscribe(r => {

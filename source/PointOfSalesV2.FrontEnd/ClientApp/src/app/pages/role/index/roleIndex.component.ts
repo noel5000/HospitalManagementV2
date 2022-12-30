@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -36,9 +36,9 @@ export class RoleIndexComponent extends BaseComponent implements OnInit {
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     Roles:Role[]=[];
-    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.config.config.endpointUrl}Role`);
+    service:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/Role`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         route: Router,
         langService: LanguageService,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -56,9 +56,9 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     orderDirection: string = 'desc';
     CashRegisterOpenings:CashRegisterOpening[]=[];
 
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.config.config.endpointUrl}CashRegisterOpening`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening`);
 
-    constructor( private config: AppConfig,
+    constructor(@Inject('BASE_URL') private baseUrl: string, private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,

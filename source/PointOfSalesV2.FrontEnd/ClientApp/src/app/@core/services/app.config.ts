@@ -8,7 +8,7 @@ export class AppConfig {
 
     public config: ConfigModel = null;
 
-    constructor(private http: HttpClient) {
+    constructor(@Inject('BASE_URL') private baseUrl: string,private http: HttpClient) {
 
     }
 

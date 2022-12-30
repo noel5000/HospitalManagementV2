@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { AppSections, Operations } from '../common/enums';
 import { AuthModel } from '../data/authModel';
 
@@ -9,7 +9,7 @@ import { AuthModel } from '../data/authModel';
 export class SecurityService {
 
    
-    constructor() {
+  constructor() {
         
     }
     isUserValidInMenu(section: AppSections): boolean {

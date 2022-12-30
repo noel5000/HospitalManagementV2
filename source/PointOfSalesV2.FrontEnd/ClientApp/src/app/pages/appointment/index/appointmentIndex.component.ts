@@ -1,11 +1,11 @@
-import { 
-    Component, 
-    OnInit, 
+import {
+    Component,
+    OnInit,
     ChangeDetectionStrategy,
     ViewChild,
     TemplateRef,
     NgZone,
-    ChangeDetectorRef, } from '@angular/core';
+    ChangeDetectorRef, Inject } from '@angular/core';
     import {
         startOfDay,
         endOfDay,
@@ -57,16 +57,16 @@ declare const $: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: "./appointmentIndex.component.html",
     styleUrls: ["../appointmentStyles.component.scss"],
-   
+
 })
 export class appointmentIndexComponent extends BaseComponent implements OnInit {
-    
+
     @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
-    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Appointment`);
-    hospitalService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}branchoffice`);
-    medicalSpecialitiesService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}medicalSpeciality`);
-    doctorService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}user`);
-    patientsService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.config.config.endpointUrl}Customer`);
+    service: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.baseUrl}api/Appointment`);
+    hospitalService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.baseUrl}api/branchoffice`);
+    medicalSpecialitiesService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.baseUrl}api/medicalSpeciality`);
+    doctorService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.baseUrl}api/user`);
+    patientsService: BaseService<any,number> = new BaseService<any,number>(this.http,`${this.baseUrl}api/Customer`);
     visible:boolean=true;
     hospitals:any[]=[];
     medicalSpecialities:any[]=[];
@@ -80,9 +80,9 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
 
     CalendarView = CalendarView;
 
-  
+
     viewDate: Date = new Date();
-  
+
     modalData: {
       action: string;
       event: CalendarEvent;
@@ -105,9 +105,9 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       refresh: Subject<any> = new Subject();
 
       events: CalendarEvent[] = [];
-    
+
       activeDayIsOpen: boolean = false;
-      constructor(
+      constructor(@Inject('BASE_URL') private baseUrl: string,
         private config: AppConfig,
         private zone:NgZone,
         private changes:ChangeDetectorRef,
@@ -119,20 +119,20 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
          modalService:ModalService,
       private  http: HttpClient
         ){
-      super(route, langService, AppSections.Appointment,modalService);  
+      super(route, langService, AppSections.Appointment,modalService);
       this.itemForm = this.formBuilder.group({
         branchOfficeId: [0],
         doctorId: ["null"],
         type:[null],
         medicalSpecialityId:[0],
-        patientId:[0]        
+        patientId:[0]
     });
     const dateRef=new Date()
     this.today= new Date(dateRef.getFullYear(),(dateRef.getMonth()),dateRef.getDate());
     }
     async getHospitals(){
       this.hospitalService.getAll().subscribe(r=>{
- 
+
         this.hospitals=r;
         if(this.hospitals.length==1)
        this.itemForm.patchValue({
@@ -142,7 +142,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       })
     }
     async getPatients(name:string){
-      
+
       let filter :QueryFilter[]=[];
 
       if(name){
@@ -163,22 +163,22 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
         this.itemForm.patchValue({patientId:0});
         this.changes.detectChanges();
       }
-    
 
-     
-     
+
+
+
     }
     async selectPatient(patient:any){
       if(patient){
         this.itemForm.patchValue({patientId:patient.id})
-        
+
       }
       else
       this.itemForm.patchValue({patientId:0})
 
       this.changes.detectChanges();
     }
-    
+
     async getDoctors(specialityId:number, hospitalId:number){
       let filter :QueryFilter[]=[];
 
@@ -220,7 +220,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
 
     async getSpecialtities(){
       this.medicalSpecialitiesService.getAll().subscribe(r=>{
-      
+
         this.medicalSpecialities=[{id:0, name:''}];
         this.medicalSpecialities= this.medicalSpecialities.concat(r);
         if(this.medicalSpecialities.length==1)
@@ -257,7 +257,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
         this.getSpecialtities();
         this.OnChanges();
     }
-  
+
     async OnChanges(){
       this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
         this.selectedAppointments=[];
@@ -267,17 +267,17 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
           this.changes.detectChanges();
           this.getMonthAppointments();
         }
-        
-        
+
+
           });
       this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
         this.selectedAppointments=[];
-       
+
           const {branchOfficeId}=this.itemForm.getRawValue();
           this.getDoctors(val,branchOfficeId);
           this.changes.detectChanges();
           this.getMonthAppointments();
-        
+
           });
       this.itemForm.get('doctorId').valueChanges.subscribe(val => {
         this.selectedAppointments=[];
@@ -296,7 +296,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
             this.getMonthAppointments();
               });
   }
-  
+
 
 
 getStatusDescription(state:string):string{
@@ -323,7 +323,7 @@ this.service.delete(appointment.id).subscribe(r=>{
   this.getDayAppointments(this.viewDate);
 });
 });
- 
+
 }
 printAppointment(appointment:any){
   const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -378,7 +378,7 @@ print(e: any) {
           // }
         });
       }
-    
+
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     this.selectedDate=date;
  this.getDayAppointments(date);
