@@ -116,7 +116,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
         this.setLanguageInHeaders(languageId);
         let data = this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}api/${page}/${max}`,
+            `${this.baseUrl}/${page}/${max}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return data;
@@ -192,7 +192,7 @@ anchor.click();
         const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
 
 
-        let promise=this._httpClient.post(`${this.baseUrl}api/${url?'/'+url:''}`,
+        let promise=this._httpClient.post(`${this.baseUrl}/${url?'/'+url:''}`,
         data
         ,{responseType:'blob',
         headers:new HttpHeaders({
@@ -461,7 +461,7 @@ anchor.click();
 
 
         let promise=this._httpClient.post<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
               entity,
               !languageId ? this.httpOptions : this.tempHttpOptions
           );
@@ -476,7 +476,7 @@ anchor.click();
 
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -487,7 +487,7 @@ anchor.click();
 
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -514,7 +514,7 @@ anchor.click();
         entity=this.SetTranslationData(entity);
 
         let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}api/${optionalUrl}`:  this.baseUrl,
+            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
             entity,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
@@ -538,7 +538,7 @@ anchor.click();
         this.setHttpOptions();
         this.setLanguageInHeaders(languageId);
         return this._httpClient.delete<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}api/${optionalUrl}/${id}`:  `${this.baseUrl}api/${id}`,
+            optionalUrl?`${this.baseUrl}/${optionalUrl}/${id}`:  `${this.baseUrl}/${id}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
     }
@@ -553,7 +553,7 @@ anchor.click();
 
 
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}api/${urlParams}`,
+            `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -575,7 +575,7 @@ anchor.click();
 
 
         let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}api/${urlParams}`,
+            `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -590,7 +590,7 @@ anchor.click();
         this.setLanguageInHeaders(languageId);
 
         let promise=this._httpClient.get<any>(
-            `${this.baseUrl}api/${urlParams}`,
+            `${this.baseUrl}/${urlParams}`,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );
         return promise;
@@ -606,7 +606,7 @@ anchor.click();
         this.setLanguageInHeaders(languageId);
 
         let promise=this._httpClient.patch<any>(
-            `${this.baseUrl}api/${urlParams}`,
+            `${this.baseUrl}/${urlParams}`,
             data,
             !languageId ? this.httpOptions : this.tempHttpOptions
         );

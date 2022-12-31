@@ -27,7 +27,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
         {
             try
             {
-                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
+                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.Active==true && y.UserId.ToString()!=new Guid().ToString()));
                 return Ok(data);
             }
 

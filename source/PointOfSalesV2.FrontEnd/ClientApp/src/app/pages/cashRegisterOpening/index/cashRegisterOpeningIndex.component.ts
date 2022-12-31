@@ -180,7 +180,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
 this.actions=[
     {
         title:scope.lang.getValueByKey('edit_btn'),
-        class:'btn btn-primary',
+        class:'btn btn-primary mx-1 my-1',
         icon:'',
         id:'edit',
         visible:(item)=>{
@@ -190,7 +190,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('closeCashRegister_btn'),
-        class:'btn btn-warning',
+        class:'btn btn-warning mx-1 my-1',
         icon:'',
         id:'closeRegister',
         visible:(item)=>{
@@ -199,7 +199,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:(item)=>{

@@ -210,7 +210,7 @@ export class SupplierReturnIndexComponent extends BaseComponent implements OnIni
 this.actions=[
     {
         title:scope.lang.getValueByKey('reverse_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:()=>{

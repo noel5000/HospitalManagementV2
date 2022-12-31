@@ -119,7 +119,7 @@ export class UserIndexComponent extends BaseComponent implements OnInit {
 this.actions=[
     {
         title:scope.lang.getValueByKey('edit_btn'),
-        class:'btn btn-primary',
+        class:'btn btn-primary mx-1 my-1',
         icon:'',
         id:'edit',
         visible:()=>{
@@ -127,7 +127,7 @@ this.actions=[
         }
     },{
         title:scope.lang.getValueByKey('addRole_btn'),
-        class:'btn btn-warning',
+        class:'btn btn-warning mx-1 my-1',
         icon:'',
         id:'addRole',
         visible:()=>{
@@ -136,7 +136,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:()=>{

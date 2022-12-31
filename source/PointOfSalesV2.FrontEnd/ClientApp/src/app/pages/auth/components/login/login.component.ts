@@ -89,7 +89,7 @@ export class LoginComponent extends NbLoginComponent implements OnInit {
         httpClient: HttpClient
     ) {
         super(baseService, defaultAuthOptions, changeDet, router);
-    this.baseService = new BaseService(httpClient, `${this.baseUrl}api/api/${endpointControllers.login}`);
+    this.baseService = new BaseService(httpClient, `${this.baseUrl}api/${endpointControllers.login}`);
     }
   ngOnInit(): void { 
 

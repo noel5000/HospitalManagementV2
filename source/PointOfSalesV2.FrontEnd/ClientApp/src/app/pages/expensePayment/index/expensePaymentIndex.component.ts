@@ -149,7 +149,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
 this.actions=[
        {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:(item)=>{
@@ -158,7 +158,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('print_btn'),
-        class:'btn btn-success',
+        class:'btn btn-success mx-1 my-1',
         icon:'',
         id:'print'
     }

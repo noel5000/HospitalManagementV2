@@ -20,7 +20,7 @@ import { AppSections } from '../@core/common/enums';
 })
 export class PagesComponent {
   constructor(@Inject('BASE_URL') private baseUrl: string,private lang: LanguageService, private securityService: SecurityService) {
-    this.menu=null;
+    this.menu=[];
     this.menu=[
       {
         title: this.lang.getValueByKey('start_menu'),

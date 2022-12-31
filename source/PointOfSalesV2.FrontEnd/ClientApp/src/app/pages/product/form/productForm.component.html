@@ -13,7 +13,7 @@
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'description_lbl' | translate}}</label>
-                    <input type="text" formControlName="description" maxlength="200" required minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.description.errors }" />
+                    <input type="text" formControlName="description" maxlength="200" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.description.errors }" />
                     <div *ngIf="form.description.errors" class="invalid-feedback">
                         <div *ngIf="form.description.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
@@ -107,19 +107,19 @@
             </div>
             <div class="row">
                 <div class="form-check form-group col-md-3  col-xs-4 mx-4">
-                    <input class="form-check-input" type="checkbox"  formControlName="isService"    >
+                    <input class="form-check-input" type="checkbox"  formControlName="isService">
                     <label class="form-check-label" for="defaultCheck2">
                         {{'isService_lbl' | translate}}
                     </label>
                   </div>
                   <div class="form-check form-group col-md-3  col-xs-4">
-                    <input class="form-check-input" type="checkbox"  formControlName="isCompositeProduct"   >
+                    <input class="form-check-input" type="checkbox"  formControlName="isCompositeProduct">
                     <label class="form-check-label" for="defaultCheck2">
                         {{'isCompositeProduct_lbl' | translate}}
                     </label>
                   </div>
             </div>
-            <div *ngIf="!isServiceFlag"  class="scrollTableMobile">
+            <div [hidden]="form.isService.value"  class="scrollTableMobile">
                 <h5 class="row mx-2">{{'units_menu' | translate}}</h5>
                 <div class="row">
                     <div class="form-group col-md-3 col-xs-12">
@@ -172,7 +172,7 @@
                 </table>
             </div>
 
-            <div *ngIf="!isServiceFlag"  class="scrollTableMobile">
+            <div [hidden]="form.isService.value"  class="scrollTableMobile">
                 <h5 class="row mx-2">{{'supplierCosts_lbl' | translate}}</h5>
                 <div class="row">
                     <div class="form-group col-md-3 col-xs-12">
@@ -218,7 +218,7 @@
                 </table>
             </div>
            
-            <div *ngIf="isCompositeFlag"  class="scrollTableMobile">
+            <div [hidden]="form.isService.value"  class="scrollTableMobile">
                 <h5 class="row mx-2">{{'baseProducts_lbl' | translate}}</h5>
                 <div class="row">
                     <div class="form-group col-md-3 col-xs-12">

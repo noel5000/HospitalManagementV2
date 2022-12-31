@@ -123,12 +123,7 @@ namespace PointOfSalesV2.FrontEnd
 
             //New instance for injection
             services.AddTransient(typeof(IBase<>), typeof(Repository<>));
-
-        
-
-
             services.AddMvc(a => { });
-
             services.AddControllers().AddNewtonsoftJson(options =>
      options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
  );

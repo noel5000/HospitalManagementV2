@@ -61,7 +61,7 @@ export class BaseComponent  {
 
     }
     validateFormData(){
-    const stringForm=   localStorage.getItem(`${this.getUser().userId} - ${this.section.toString()}`);
+        const stringForm= this.getUser().userId?  localStorage.getItem(`${this.getUser().userId} - ${this.section.toString()}`):null;
     if(stringForm && JSON.parse(stringForm)!=null){
         const savedForm = JSON.parse(stringForm);
       var result =       this.modalService.confirmationModal({
@@ -81,6 +81,7 @@ export class BaseComponent  {
             this.setAdditionalBackupData();
             this.itemForm.patchValue(savedForm.form);
             this.onChanges();
+            if(this.getUser() && this.getUser().userId)
             localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
          
             }
@@ -101,6 +102,7 @@ export class BaseComponent  {
 
      }
     clearBackupData(){
+        if(this.getUser() && this.getUser().userId)
         localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
     }
 
