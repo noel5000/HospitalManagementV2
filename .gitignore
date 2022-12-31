@@ -31,3 +31,4 @@ source/.vs/ProjectEvaluation/pointofsalesv2.projects.v3
 source/PointOfSalesV2.FrontEnd/ClientApp/package-lock.json
 source/PointOfSalesV2.FrontEnd/ClientApp/package-lock.json
 source/.vs/PointOfSalesV2/v17/fileList.bin
+*.vsidx
