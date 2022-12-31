@@ -34,16 +34,7 @@ export class PagesComponent {
         icon: 'person-outline',
         hidden: false,
         children: [
-          {
-            title: this.lang.getValueByKey('changePass_menu'),
-            link: '/auth/changePass',
-            hidden: false
-          },
-          {
-            title: this.lang.getValueByKey('login_menu'),
-            link: '/auth/login',
-            hidden: false
-          },
+          
           {
             title: this.lang.getValueByKey('logOut_btn'),
             link: '/pages/logout',

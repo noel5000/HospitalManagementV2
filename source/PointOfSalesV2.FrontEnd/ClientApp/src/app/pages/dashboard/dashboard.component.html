@@ -1,9 +1,20 @@
 <div class="row">
-  
-  
-  <nb-card>
-    <div class="col-3">
-      <i class="fa-regular fa-users-medical"></i>
-    </div>
-  </nb-card>
+
+  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('patients')">
+    <img style="max-width:40%;" src="../../../../assets/images/patients.svg">
+    <h3 class="">Pacientes</h3>
+  </div>
+  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('appointments')">
+    <img style="max-width:40%;" src="../../../../assets/images/appointments.svg">
+    <h3 class="">Citas</h3>
+  </div>
+  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('invoices')">
+    <img style="max-width:40%;" src="../../../../assets/images/invoice.svg">
+    <h3 class="">Facturas</h3>
+  </div>
+  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('payments')">
+    <img style="max-width:40%;" src="../../../../assets/images/hand_with_bills.svg">
+    <h3 class="">Pagos</h3>
+  </div>
+
 </div>

@@ -13,4 +13,22 @@ export class DashboardComponent extends BaseComponent {
   constructor(@Inject('BASE_URL') private baseUrl: string,route: Router, lang: LanguageService, modaService:ModalService) {
     super(route, lang, AppSections.DashBoard,modaService);
   }
+
+  async navigate(e: string) {
+    switch (e) {
+      case 'patients':
+        this.router.navigateByUrl(`pages/customer`);
+        break;
+      case 'appointments':
+        this.router.navigateByUrl(`pages/appointment`);
+        break;
+      case 'invoices':
+        this.router.navigateByUrl(`pages/invoice`);
+        break;
+      case 'payments':
+        this.router.navigateByUrl(`pages/invoicepayment`);
+        break;
+    }
+    
+  }
 }
