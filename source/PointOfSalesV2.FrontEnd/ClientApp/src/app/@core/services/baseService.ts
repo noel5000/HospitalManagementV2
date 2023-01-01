@@ -640,7 +640,6 @@ export class NoopInterceptor implements HttpInterceptor {
         tap(
           // Succeeds when there is a response; ignore other events
           event =>{
-              if(event.type>0)
               this.hideSpinner();
               ok = event instanceof HttpResponse ? 'succeeded' : '';
             },

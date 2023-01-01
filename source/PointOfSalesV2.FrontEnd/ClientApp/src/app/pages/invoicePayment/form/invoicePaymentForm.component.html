@@ -105,21 +105,17 @@
                                 <th>{{'totalAmount_lbl' | translate}}</th>
                                 <th>{{'owedAmount_lbl' | translate}}</th>
                                 <th>{{'paidAmount_lbl' | translate}}</th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let invoice of invoices; let i=index">
+                            <tr *ngFor="let invoice of invoices; let i=index"
+                                [ngClass]="invoice.selected?'selectedInvoice':''"
+                                style="cursor:pointer" (click)="payInvoice(invoice)">
                                 <td>{{invoice.invoiceNumber}}</td>
                                 <td>{{invoice.billingDate | date : "yyyy-MM-dd"}}</td>
                                 <td>{{invoice.totalAmount | currency : ""}}</td>
                                 <td>{{invoice.owedAmount | currency : ""}}</td>
                                 <td><i class="form-control">{{invoice.currentPaidAmount}}</i></td>
-                                <td><input type="checkbox" style="margin-top:1% !important;" 
-                                    class="form-check-input"
-                                     [id]="('invoiceCheck'+i.toString())" 
-                                     [attr.disabled]="!canPay? '' : null"
-                                     [formControlName]="('selectedInvoice-'+invoice.id)"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -132,3 +128,8 @@
         </form>
     </div>
 </div>
+<style>
+  .selectedInvoice{
+    background-color:darkseagreen;
+  }
+</style>

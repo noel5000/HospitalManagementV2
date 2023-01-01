@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { FileUploadModule } from 'ng2-file-upload';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -52,6 +53,7 @@ import { AppConfig } from './@core/services/app.config';
     CommonModule,
     NgbPaginationModule,  
     NgbAlertModule,
+    MatAutocompleteModule,
     NgbDropdownModule,
     BrowserAnimationsModule,
     HttpClientModule,

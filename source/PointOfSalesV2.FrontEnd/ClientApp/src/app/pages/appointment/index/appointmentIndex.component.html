@@ -51,24 +51,18 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'patient_lbl' | translate}}</label>
-  <custom-auto-complete
- 
-  [items]="patients"
-  [externalSearch]="true"
-  [propertyToShow]="'name'"
-  (onSelectedItem)="selectPatient($event)"
-  (onFilter)="getPatients($event)"
-  
-  >
-  
-  </custom-auto-complete>
-  <!-- <select class="form-control"
-  formControlName="patientId"
-  >
-  <option *ngFor="let patient of patients"
-   [value]="patient.id"
-   >{{patient.name}}</option>
-  </select> -->
+  <input type="text"
+         class="busqueda-cliente form-control"
+         placeholder="Buscar"
+         aria-label="Number"
+         matInput
+         formControlName="customerSearch"
+         [matAutocomplete]="auto">
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let customer of patients" style="background-color:white;" (click)="selectPatient(customer)" [value]="customer.name">
+      {{customer.name + ' - '+customer.code}}
+    </mat-option>
+  </mat-autocomplete>
 </div>
 
    </div>

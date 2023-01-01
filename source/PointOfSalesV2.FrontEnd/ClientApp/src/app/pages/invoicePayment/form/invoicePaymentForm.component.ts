@@ -110,15 +110,6 @@ paidAmount:[0]
         this.service.getByUrlParameters(['GetInvoicesToPay',filter.branchOfficeId,filter.customerId,filter.currencyId]).subscribe(r=>{
           
             if(r.data){
-                r.data.forEach(e=>{
-                   
-                    this.itemForm.addControl(`selectedInvoice-${e.id}`,new FormControl(0));
-                    this.itemForm.controls[`selectedInvoice-${e.id}`].valueChanges.subscribe(val=>{
-                        this.payInvoice(val,e.id);
-                    })
-                   
-                    
-                });
                 this.invoices=r.data;
             }
            
@@ -261,21 +252,22 @@ async getCustomers(){
     this.router.navigateByUrl('pages/invoicepayment');
     }
 
-    payInvoice(checked:boolean,id:number){
-        const index = this.invoices.findIndex(x=>x.id==id);
-        if(checked){
+    payInvoice(invoice:any){
+        const index = this.invoices.findIndex(x=>x.id==invoice.id);
+      if (!this.invoices[index].selected) {
+        this.invoices[index].selected = true;
         const givenAmount = this.itemForm.get('givenAmount').value;
-        const paidAmount=this.itemForm.get('paidAmount').value;
-        if((givenAmount-paidAmount)>0)
-            this.invoices[index].currentPaidAmount=(givenAmount-paidAmount)>this.invoices[index].owedAmount?this.invoices[index].owedAmount:(givenAmount-paidAmount);
-            else{
-                let toUpdate ={};
-                toUpdate[`selectedInvoice-${id}`]=false;
-                this.itemForm.patchValue(toUpdate);
-            }            
-          
-        }
-        this.refreshTotalAmount(index,checked);
+        const paidAmount = this.itemForm.get('paidAmount').value;
+        if ((givenAmount - paidAmount) > 0)
+          this.invoices[index].currentPaidAmount =
+            (givenAmount - paidAmount) > this.invoices[index].owedAmount ? this.invoices[index].owedAmount : (givenAmount - paidAmount);
+        else
+          this.invoices[index].selected = false;
+      }
+      else {
+        this.invoices[index].selected = false;
+      }
+      this.refreshTotalAmount(index, this.invoices[index].selected);
       
     }
 

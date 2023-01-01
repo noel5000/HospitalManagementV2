@@ -38,7 +38,7 @@ import { InventoryReportModule } from './inventoryReport/inventoryReport.module'
 import { WarehouseMovementReportModule } from './warehouseMovementReport/warehouseMovementReport.module';
 import{MatMenuModule} from '@angular/material/menu'
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonToggleModule, MatInputModule } from '@angular/material';
 import { InvoiceModule } from './invoice/invoice.module';
 import { InvoicePaymentModule } from './invoicePayment/invoicePayment.module';
 import { AccountsReceivableModule } from './accountsReceivablesReport/accountsReceivable.module';
@@ -62,7 +62,7 @@ import { LogoutModule } from './logout/logout.module';
 
 @NgModule({
   imports: [
-
+    MatAutocompleteModule,
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,
@@ -121,7 +121,9 @@ import { LogoutModule } from './logout/logout.module';
     SecurityService,
   ],
   entryComponents:[NgbdModalConfirmAutofocus],
-  exports:[MatMenuModule,
+  exports: [MatMenuModule,
+    MatAutocompleteModule,
+    MatInputModule,
     MatButtonModule,
     MatButtonToggleModule,],
 })
