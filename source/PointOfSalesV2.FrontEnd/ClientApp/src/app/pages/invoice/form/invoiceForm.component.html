@@ -8,7 +8,7 @@
                      <nb-accordion-item-header>{{'invoiceInfo_lbl' | translate}}</nb-accordion-item-header>
                      <nb-accordion-item-body>
                         <div class="form-row">
-                            <div class="form-group col-md-6 col-xs-12">
+                            <div class="form-group col-md-6 col-xs-12" [hidden]="id && id>0">
                                 <label>{{'patient_lbl' | translate}}</label>
                                 <custom-auto-complete
                                 
@@ -23,6 +23,14 @@
                                     <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
                                 </div>
                             </div>
+                            <div class="form-group col-md-6 col-xs-12" [hidden]="!id">
+                                <label>{{'patient_lbl' | translate}}</label>
+                                <input type="text" formControlName="patientName" [attr.disabled]="true" class="form-control" />
+     
+                                <div *ngIf="form.customerId.errors" class="invalid-feedback">
+                                  <div *ngIf="form.customerId.errors.required">{{'required_lbl' | translate}}</div>
+                                </div>
+                              </div>
                             <div class="form-group col-md-6 col-xs-12">
                                 <label>{{'trnControl_lbl' | translate}}</label>
                                 <select class="form-control"

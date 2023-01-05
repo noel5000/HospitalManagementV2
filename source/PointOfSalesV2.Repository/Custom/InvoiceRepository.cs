@@ -633,7 +633,7 @@ namespace PointOfSalesV2.Repository
                     var newDetails = SetDetailsProperties(entity);
                     var dbEntity = await _Context.Invoices.FindAsync(entity.Id);
                     _Context.Entry<Invoice>(dbEntity).State = EntityState.Detached;
-                    if (dbEntity.BillingState != BillingStates.Quoted || dbEntity.BillingState != BillingStates.Billed || dbEntity.PaidAmount > 0)
+                    if ((dbEntity.BillingState != BillingStates.Quoted && dbEntity.BillingState != BillingStates.Billed )|| dbEntity.PaidAmount > 0)
                     {
                         await trans.RollbackAsync();
                         return new Result<Invoice>(-1, -1, "cannotUpdate_msg");

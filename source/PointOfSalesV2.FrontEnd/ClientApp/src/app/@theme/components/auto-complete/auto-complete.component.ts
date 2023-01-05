@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild , Inject } from '@angular/core';
-import {  fromEvent } from 'rxjs';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, Inject } from '@angular/core';
+import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
@@ -43,7 +43,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
   }
   
   .form-control2 {
-    display: block;
+    display: inline-block;
     width: 100%;
     height: calc(1.5em + 0.75rem + 2px);
     padding: 0.375rem 0.75rem;
@@ -62,118 +62,117 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 })
 export class AutoCompleteComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('textInputSearch',{static:false}) textInputSearch: ElementRef<HTMLInputElement> = {} as ElementRef;
-  _items:any[]=[];
-  get items(){
-   return this._items;
+  @ViewChild('textInputSearch', { static: false }) textInputSearch: ElementRef<HTMLInputElement> = {} as ElementRef;
+  _items: any[] = [];
+  get items() {
+    return this._items;
   }
-  @Input() set items(data:any[]){
-this._items=data;
-if(this.filterString)
-this.itemsToShow= this._items.filter(x=>x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
-this.changes.detectChanges();
+  @Input() set items(data: any[]) {
+    this._items = data;
+    if (this.filterString)
+      this.itemsToShow = this._items.filter(x => x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
+    this.changes.detectChanges();
   }
 
 
-  itemsToShow:any[]=[];
-  @Input() urlSearch:boolean=false;
-  @Input() externalSearch:boolean=false;
-  @Input() dataUrl:string='';
-  @Input() requestHeader:HttpHeaders=  new HttpHeaders({
-    "Content-Type":"application/json"
-});
-  @Input() inputRequestParam:string='';
-  @Input() propertyToShow:string='';
-  showDrop:boolean=true;
- filterString:string='';
- @Output() onFilter:EventEmitter<string>= new EventEmitter<string>();
- @Output() onSelectedItem: EventEmitter<any> = new EventEmitter<any>();
- @Output() selectedItem: any=null;
- 
- constructor(@Inject('BASE_URL') private baseUrl: string,private _http:HttpClient,
-  private changes:ChangeDetectorRef,
+  itemsToShow: any[] = [];
+  @Input() urlSearch: boolean = false;
+  @Input() externalSearch: boolean = false;
+  @Input() dataUrl: string = '';
+  @Input() requestHeader: HttpHeaders = new HttpHeaders({
+    "Content-Type": "application/json"
+  });
+  @Input() inputRequestParam: string = '';
+  @Input() propertyToShow: string = '';
+  showDrop: boolean = true;
+  filterString: string = '';
+  @Output() onFilter: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onSelectedItem: EventEmitter<any> = new EventEmitter<any>();
+  @Output() selectedItem: any = null;
+
+  constructor(@Inject('BASE_URL') private baseUrl: string, private _http: HttpClient,
+    private changes: ChangeDetectorRef,
   ) { }
 
   ngAfterViewInit(): void {
-       fromEvent(this.textInputSearch.nativeElement,'keyup')
-    .pipe(
-       
+    fromEvent(this.textInputSearch.nativeElement, 'keyup')
+      .pipe(
+
         debounceTime(100),
         distinctUntilChanged(),
         tap((text) => {
-         this.searchItem();
+          this.searchItem();
         })
-    )
-    .subscribe();
+      )
+      .subscribe();
   }
 
   ngOnInit(): void {
   }
 
-  toggleDrop(){
-    this.showDrop=!this.showDrop;
+  toggleDrop() {
+    this.showDrop = !this.showDrop;
   }
 
-  searchItem(){
-    if(!this.propertyToShow){
+  searchItem() {
+    if (!this.propertyToShow) {
       alert('"propertyToShow" input needs an initial value');
       return;
     }
-    if(this.externalSearch){
+    if (this.externalSearch) {
       this.onFilter.emit(this.filterString);
     }
-    if(this.filterString.length>1){
-     
-    
-        if(!this.urlSearch){
-          this.itemsToShow= this._items.filter(x=>x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
+    if (this.filterString.length > 1) {
+
+
+      if (!this.urlSearch) {
+        this.itemsToShow = this._items.filter(x => x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
+        this.changes.detectChanges();
+      }
+      else {
+        const url = this.dataUrl.replace('{}', this.filterString);
+        this._http.get<any>(url, {
+          headers: this.requestHeader
+        }).subscribe(r => {
+          this.items = this.inputRequestParam ? r[this.inputRequestParam] : r;
+          this.itemsToShow = this._items.filter(x => x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
           this.changes.detectChanges();
-        }
-        else
-        {
-          const url=this.dataUrl.replace('{}',this.filterString);
-          this._http.get<any>(url,{
-            headers:this.requestHeader
-          }).subscribe(r=>{
-            this.items=this.inputRequestParam?r[this.inputRequestParam]: r;
-            this.itemsToShow=this._items.filter(x=>x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
-            this.changes.detectChanges();
-          })
-        }
-      
-     
-     
+        })
+      }
+
+
+
     }
-    else{
-      this.itemsToShow=[];
-      this.selectedItem=null;
+    else {
+      this.itemsToShow = [];
+      this.selectedItem = null;
       this.changes.detectChanges();
     }
-   
+
   }
 
-  showData(item:any){
-    if(this.propertyToShow)
-    return item[this.propertyToShow];
-      }
+  showData(item: any) {
+    if (this.propertyToShow)
+      return item[this.propertyToShow];
+  }
 
-      selectItem(item:any){
-        if(!this.propertyToShow){
-          alert('propertyToShow needs an initial value');
-          this.selectedItem=null;
-          return;
-        }
-        if(item && item[this.propertyToShow]){
-          this.onSelectedItem.emit(item);
-          this.selectedItem=item;
-          this.itemsToShow=[];
-          this.changes.detectChanges();
-          this.filterString=item[this.propertyToShow].toString();
-        }
-        else
-        this.selectedItem=null;
-        
-      }
+  selectItem(item: any) {
+    if (!this.propertyToShow) {
+      alert('propertyToShow needs an initial value');
+      this.selectedItem = null;
+      return;
+    }
+    if (item && item[this.propertyToShow]) {
+      this.onSelectedItem.emit(item);
+      this.selectedItem = item;
+      this.itemsToShow = [];
+      this.changes.detectChanges();
+      this.filterString = item[this.propertyToShow].toString();
+    }
+    else
+      this.selectedItem = null;
+
+  }
 
 
 }

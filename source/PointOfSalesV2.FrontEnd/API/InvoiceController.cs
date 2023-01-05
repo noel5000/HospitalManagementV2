@@ -44,7 +44,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
             try
             {
               
-                var invoice = (await _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient)
+                var invoice = (await _baseRepo.GetAllAsync<Invoice>(x => x.AsNoTracking().Include(i => i.Patient).Include(i=>i.Insurance).Include(i=>i.InsurancePlan)
                 .Include(i => i.BranchOffice).Include(i => i.Seller).Include(i => i.Currency).Include(i => i.TRNControl)
                 .Where(y => y.Active == true && y.Id == id))).FirstOrDefault();
                 invoice.InvoiceDetails =(await _repositoryFactory.GetDataRepositories<InvoiceDetail>().GetAllAsync<InvoiceDetail>(x =>
