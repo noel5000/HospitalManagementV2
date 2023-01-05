@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, Validator, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,7 +34,7 @@ import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { SellerService } from '../../../@core/services/SellerService';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { AppConfig } from '../../../@core/services/app.config';
-
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
 
 declare const $: any;
 @Component({
@@ -43,8 +43,10 @@ declare const $: any;
   styleUrls: ["../invoiceStyles.component.scss"]
 })
 export class InvoiceFormComponent extends BaseComponent implements OnInit {
-
+  @ViewChild('productSearch', { static: false })
+  private productSearch: AutoCompleteComponent;
   hospitalId: number = 0;
+  product: any = null;
   warehouseId: number = 0;
   currentDate: string = '';
   productQuantity: number = 0;
@@ -154,6 +156,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       invoiceNumber: [''],
       documentNumber: [''],
       currencyId: [0],
+      patientName: [''],
       active: [true],
       exchangeRate: [0],
       sellerRate: [0],
@@ -322,7 +325,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     } as QueryFilter
     ]
     this.productUnitService.getAllFiltered(filter).subscribe(r => {
-      this.productUnits = [{ id: 0, unitId: 0, unit: { id: 0, name: '' }, sellingPrice: 0, costPrice: 0, equivalence: 0 }];
+      this.productUnits = r['value'].lenght > 0 ? [{ id: 0, unitId: 0, unit: { id: 0, name: '' }, sellingPrice: 0, costPrice: 0, equivalence: 0 }] : [];
       this.productUnits = this.productUnits.concat(r['value']);
     });
   }
@@ -407,7 +410,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
 
   async GetProductCost(productId: number) {
-    const currentProduct = this.products.find(x => x.id == productId);
+    const currentProduct = this.product;
     this.currentProductCost.cost = currentProduct.cost;
     const { unitId, productPrice } = this.itemForm.getRawValue();
     this.currentProductPrice.sellingPrice = unitId && unitId > 0 && this.productUnits.length > 0 ? currentProduct.price / this.productUnits.find(x => x.unitId == unitId).equivalence : currentProduct.price;
@@ -416,38 +419,35 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
 
 
-  async getProducts(medicalSpecialityId: number, type: string = 'C') {
-    let filter = [
-      {
-        property: "Currency",
-        value: "Id,Name,Code,ExchangeRate",
-        type: ObjectTypes.ChildObject,
-        isTranslated: false
-      } as QueryFilter
-
-    ]
-    if (medicalSpecialityId && medicalSpecialityId > 0)
-      filter.push({
-        property: "MedicalSpecialityId",
-        value: medicalSpecialityId.toString(),
-        type: ObjectTypes.Number,
-        isTranslated: false,
-        comparer: ODataComparers.equals
-      } as QueryFilter);
-    if (type)
-      filter.push(
-
+  async getProducts(name: string) {
+    if (name) {
+      const filter = [
         {
-          property: "Type",
-          value: type,
+          property: "Currency",
+          value: "Id,Name,Code,ExchangeRate",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter,
+        {
+          property: "Name",
+          value: name.toString(),
           type: ObjectTypes.String,
-          isTranslated: false,
-          comparer: ODataComparers.equals
-        } as QueryFilter)
-    this.productService.getAllFiltered(filter).subscribe(r => {
-      this.products = [{ id: 0, name: '' } as Product];
-      this.products = this.products.concat(r['value']);
-    });
+          isTranslated: true
+        } as QueryFilter
+      ]
+      this.productService.getAllFiltered(filter).subscribe(r => {
+        this.products = [];
+        this.products = this.products.concat(r['value']);
+      });
+    }
+    else {
+      this.itemForm.patchValue({
+        productId: null
+      });
+
+
+    }
+
   }
 
   async getPatients(name: string) {
@@ -518,7 +518,8 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
         insuranceName: !patient.insurance ? '' : patient.insurance.name,
         insuranceId: patient.insuranceId,
         insurancePlanId: patient.insurancePlanId,
-        insuranceCoverageAmount: 0
+        insuranceCoverageAmount: 0,
+        patientName: patient.name
       })
 
     }
@@ -696,28 +697,6 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
     });
 
-    this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
-
-      const { branchOfficeId, type } = this.itemForm.getRawValue();
-      if (branchOfficeId && branchOfficeId > 0) {
-        this.getProducts(val, type ? type : 'C');
-        this.getDoctors(val, branchOfficeId);
-      }
-    });
-
-    this.itemForm.get('type').valueChanges.subscribe(val => {
-      this.products = [];
-      const { branchOfficeId, medicalSpecialityId } = this.itemForm.getRawValue();
-      this.itemForm.patchValue({ productId: null, medicalSpecialityId: null, doctorId: null });
-
-
-      this.getProducts(medicalSpecialityId, val);
-
-
-
-
-    });
-
 
     this.itemForm.get('unitId').valueChanges.subscribe(val => {
 
@@ -820,7 +799,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
     this.itemForm.get('productId').valueChanges.subscribe(val => {
       if (val && val > 0) {
-        const product = this.products.find(x => x.id == val);
+        const product = this.product;
         this.inventories = [];
         this.productUnits = [];
         this.productPrices = [];
@@ -865,17 +844,6 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
         this.itemForm.patchValue({ insuranceCoverageAmount: 0 })
     });
 
-  }
-
-  setMedicalSpecialityChanges() {
-    this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
-
-      const { branchOfficeId, type } = this.itemForm.getRawValue();
-      if (branchOfficeId && branchOfficeId > 0) {
-        this.getProducts(val, type ? type : 'C');
-        this.getDoctors(val, branchOfficeId);
-      }
-    });
   }
 
   removeEntries() {
@@ -1192,6 +1160,26 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     this.clearBackupData();
     this.router.navigateByUrl('pages/invoice');
   }
+  async selectProduct(product: any) {
+    if (product) {
+      this.product = product;
+      this.itemForm.patchValue({
+        productId: this.product.id,
+        type: this.product.type
+      })
+      if (product.type == 'C')
+        this.getDoctors(product.medicalSpecialityId, this.getUser().branchOfficeId);
+    }
+    else {
+      this.product = null;
+      this.itemForm.patchValue({
+        productId: null,
+        type: null
+      });
+
+    }
+
+  }
 
   addEntry() {
     let entry = this.itemForm.getRawValue() as any;
@@ -1201,33 +1189,36 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     const patientCurrency = entry.patientId && entry.patientId > 0 ? this.patients.find(x => x.id == entry.patientId).currency : null;
     const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
       (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
-    entry.product = this.products.find(x => x.id == entry.productId);
+    entry.product = this.product;
     entry.amount = entry.productPrice * rate;
     entry.productId = parseInt(entry.productId.toString());
     entry.unitId = entry.product.isService || !entry.unitId ? null : parseInt(entry.unitId.toString());
     entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit : { id: 0, name: '' };
     entry.id = 0;
+    entry.insuranceApprovalCode = '';
+    entry.medicalSpecialityId = this.product.medicalSpecialityId;
     entry.appointmentId = null;
-    entry.noCoverage = true;
+    entry.noCoverage = this.product.type != 'C';
     entry.product.taxes = this.productTaxes;
     entry.taxesAmount = entry.product.taxes.length <= 0 ? 0 : entry.product.taxes.reduce(function (a, b) { return a + (b.tax.rate * (entry.beforeTaxesAmount - entry.discountAmount)) }, 0);
     entry.product.productUnits = this.productUnits;
     entry.discountAmount = entry.discountRate > 1 ? (entry.discountRate / 100 * entry.beforeTaxesAmount) : (entry.discountRate * entry.beforeTaxesAmount);
-    const currentIndex = this.entries.length;
+
     let index = this.entries.findIndex(x => x.productId == entry.productId && x.warehouseId == entry.warehouseId);
 
     if (index < 0) {
-      this.setDetailFormAmount(currentIndex, entry.quantity, true);
-      this.setDetailFormDiscount(currentIndex, entry.discountRate, true);
-      this.setDetailFormApprovalCode(currentIndex, entry.insuranceApprovalCode, true, false);
-      this.setDetailFormNoCoverage(currentIndex, entry.noCoverage, true);
       this.entries.push(entry);
     }
     else {
       this.entries.splice(index, 1);
       this.entries.push(entry);
     }
-
+    const currentIndex = this.entries.length;
+    this.setDetailFormAmount(currentIndex - 1, entry.quantity);
+    this.setDetailFormDiscount(currentIndex - 1, entry.discountRate);
+    this.setDetailFormApprovalCode(currentIndex - 1, entry.insuranceApprovalCode, true, true);
+    this.setDetailFormNoCoverage(currentIndex - 1, this.product.type != 'C', true);
+ 
     this.itemForm.patchValue({
       productId: null,
       quantity: 0,
@@ -1238,16 +1229,30 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       noTaxes: false,
       free: false,
       productCost: 0,
-      productPrice: 0
+      productPrice: 0,
+      doctorId: null
 
     });
+    this.doctors = [];
+    this.product = null;
+    this.productUnits = [];
     this.appointmentDetails = this.entries;
+    this.productSearch.filterString = '';
+    setTimeout(this.validateCheck, 200, currentIndex-1);
+
+  }
+
+  validateCheck(index) {
+    let validateCheck = document.getElementById(`noCoverage_${index}`);
+    if (validateCheck && validateCheck.checked)
+      validateCheck.checked = false;
   }
   deleteEntry(index: number) {
     const entry = this.entries[index];
     this.itemForm.removeControl(`unitQuantity_${index}`);
     this.itemForm.removeControl(`unitDiscountRate_${index}`);
     this.itemForm.removeControl(`insuranceApprovalCode_${index}`);
+    this.itemForm.removeControl(`noCoverage_${index}`);
     this.entries.splice(index, 1);
     this.appointmentDetails = this.entries;
   }
@@ -1283,7 +1288,17 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
             invoiceDetails ? r.data[0].invoiceDetails : [];
 
           this.item = r.data[0];
+          this.patient = this.item.patient ? this.item.patient : null;
+          if (this.patient)
+            this.patient.currency = this.patient.currency ? this.patient.currency : this.item.currency;
           this.itemForm.patchValue(this.item);
+          this.itemForm.patchValue({
+            nrc: this.item.nrc ? this.item.nrc : this.item.patient ? this.item.patient.cardId : '',
+            currencyName: this.item.currency ? this.item.currency.name : '',
+            patientName: this.item.patient.name,
+            insuranceName: this.item.insurance ? this.item.insurance.name : '',
+            insurancePlanName: this.item.insurancePlan ? this.item.insurancePlan.name : ''
+          })
           this.appointmentDetails = this.entries;
 
         }

@@ -61,6 +61,100 @@ export class PagesComponent {
       },
 
       {
+        title: this.lang.getValueByKey('billing_menu'),
+        icon: 'shopping-cart-outline',
+        hidden: !this.securityService.validateMenuChildren(menuChildren.billing),
+        children: [
+          {
+            title: this.lang.getValueByKey('quotes_menu'),
+            link: 'quotes',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Quotes)
+          },
+          {
+            title: this.lang.getValueByKey('invoices_menu'),
+            link: 'invoice',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Invoices)
+          },
+          {
+            title: this.lang.getValueByKey('customerPayment_menu'),
+            link: 'invoicepayment',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.CustomerPayments)
+          }
+        ],
+      },
+      {
+        title: this.lang.getValueByKey('reports_menu'),
+        icon: 'file-text-outline',
+        hidden: !this.securityService.validateMenuChildren(menuChildren.reports),
+        children: [
+          {
+            title: this.lang.getValueByKey('sales_menu'),
+            link: 'salesreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.SalesReport)
+          },
+          {
+            title: this.lang.getValueByKey('accountsReceivable_menu'),
+            link: 'accountreceivables',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.AccountsReceivable)
+          },
+          {
+            title: this.lang.getValueByKey('incomeReceipts_menu'),
+            link: 'receiptsreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.IncomeReceipts)
+          },
+          {
+            title: this.lang.getValueByKey('commissions_menu'),
+            link: 'comissionsreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Commisions)
+          },
+          {
+            title: this.lang.getValueByKey('inventory_menu'),
+            link: 'inventoryreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.Inventories)
+          },
+          {
+            title: this.lang.getValueByKey('productsMovements_menu'),
+            link: 'warehousemovements',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.ProductMovements)
+          },
+          {
+            title: this.lang.getValueByKey('debtsToPay_menu'),
+            link: 'expensesreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.DebstToPay)
+          },
+          {
+            title: this.lang.getValueByKey('pricesList_menu'),
+            link: 'pricelist',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.PriceList)
+          },
+          {
+            title: this.lang.getValueByKey('customersList_menu'),
+            link: 'customerlist',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.CustomersList)
+          },
+          {
+            title: this.lang.getValueByKey('accountState_menu'),
+            link: 'accountstate',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.AccountState)
+          },
+          {
+            title: this.lang.getValueByKey('resultState_menu'),
+            link: 'companystate',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.ResultState)
+          },
+          {
+            title: this.lang.getValueByKey('taxesReport_menu'),
+            link: 'taxesreport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
+          },
+          {
+            title: this.lang.getValueByKey('insuranceCoveragesReport_menu'),
+            link: 'insurancecoveragereport',
+            hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
+          }
+        ],
+      },
+      {
         title: this.lang.getValueByKey('administration_menu'),
         icon: 'archive-outline',
         children:[
@@ -166,28 +260,6 @@ export class PagesComponent {
             ],
           },
           {
-            title: this.lang.getValueByKey('billing_menu'),
-            icon: 'shopping-cart-outline',
-            hidden: !this.securityService.validateMenuChildren(menuChildren.billing),
-            children: [
-              {
-                title: this.lang.getValueByKey('quotes_menu'),
-                link: 'quotes',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.Quotes)
-              },
-              {
-                title: this.lang.getValueByKey('invoices_menu'),
-                link: 'invoice',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.Invoices)
-              },
-              {
-                title: this.lang.getValueByKey('customerPayment_menu'),
-                link: 'invoicepayment',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.CustomerPayments)
-              }
-            ],
-          },
-          {
             title: this.lang.getValueByKey('expenses_menu'),
             icon: 'shopping-bag-outline',
             hidden: !this.securityService.validateMenuChildren(menuChildren.expenses),
@@ -204,78 +276,7 @@ export class PagesComponent {
               }
             ],
           },
-          {
-            title: this.lang.getValueByKey('reports_menu'),
-            icon: 'file-text-outline',
-            hidden: !this.securityService.validateMenuChildren(menuChildren.reports),
-            children: [
-              {
-                title: this.lang.getValueByKey('sales_menu'),
-                link: 'salesreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.SalesReport)
-              },
-              {
-                title: this.lang.getValueByKey('accountsReceivable_menu'),
-                link: 'accountreceivables',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.AccountsReceivable)
-              },
-              {
-                title: this.lang.getValueByKey('incomeReceipts_menu'),
-                link: 'receiptsreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.IncomeReceipts)
-              },
-              {
-                title: this.lang.getValueByKey('commissions_menu'),
-                link: 'comissionsreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.Commisions)
-              },
-              {
-                title: this.lang.getValueByKey('inventory_menu'),
-                link: 'inventoryreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.Inventories)
-              },
-              {
-                title: this.lang.getValueByKey('productsMovements_menu'),
-                link: 'warehousemovements',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.ProductMovements)
-              },
-              {
-                title: this.lang.getValueByKey('debtsToPay_menu'),
-                link: 'expensesreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.DebstToPay)
-              },
-              {
-                title: this.lang.getValueByKey('pricesList_menu'),
-                link: 'pricelist',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.PriceList)
-              },
-              {
-                title: this.lang.getValueByKey('customersList_menu'),
-                link: 'customerlist',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.CustomersList)
-              },
-              {
-                title: this.lang.getValueByKey('accountState_menu'),
-                link: 'accountstate',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.AccountState)
-              },
-              {
-                title: this.lang.getValueByKey('resultState_menu'),
-                link: 'companystate',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.ResultState)
-              },
-              {
-                title: this.lang.getValueByKey('taxesReport_menu'),
-                link: 'taxesreport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
-              },
-              {
-                title: this.lang.getValueByKey('insuranceCoveragesReport_menu'),
-                link: 'insurancecoveragereport',
-                hidden: !this.securityService.isUserValidInMenu(AppSections.TaxesReport)
-              }
-            ],
-          },
+         
           {
             title: this.lang.getValueByKey('movements_menu'),
             icon: 'car-outline',
@@ -303,28 +304,29 @@ export class PagesComponent {
               }
             ],
           },
-        ]
-      },
-
-
-
-      {
-        title: this.lang.getValueByKey('auth_menu'),
-        icon: 'lock-outline',
-        hidden: !this.securityService.validateMenuChildren(menuChildren.auth),
-        children: [
           {
-            title: this.lang.getValueByKey('users_menu'),
-            link: 'user',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Users)
-          },
-          {
-            title: this.lang.getValueByKey('roles_menu'),
-            link: 'role',
-            hidden: !this.securityService.isUserValidInMenu(AppSections.Roles)
+            title: this.lang.getValueByKey('auth_menu'),
+            icon: 'lock-outline',
+            hidden: !this.securityService.validateMenuChildren(menuChildren.auth),
+            children: [
+              {
+                title: this.lang.getValueByKey('users_menu'),
+                link: 'user',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Users)
+              },
+              {
+                title: this.lang.getValueByKey('roles_menu'),
+                link: 'role',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Roles)
+              }
+            ],
           }
         ],
       },
+
+
+
+      
     ];
 
    }
