@@ -288,20 +288,19 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     });
   }
 
-  async getSellers(patientId: number) {
-    const patient = this.patients.find(x => x.id == patientId);
+  async getSellers() {
     this.itemForm.patchValue({
-      currencyId: patient.currencyId,
-      currencyName: patient.currency.name,
-      trnType: patient.trnType,
-      nrc: patient.cardId,
-      warehouseId: patient.warehouseId ? patient.warehouseId : this.warehouseId
+      currencyId: this.patient.currencyId,
+      currencyName: this.patient.currency.name,
+      trnType: this.patient.trnType,
+      nrc: this.patient.cardId,
+      warehouseId: this.patient.warehouseId ? this.patient.warehouseId : this.warehouseId
     })
     const filter = [{
       property: 'ZoneId',
-      value: patient.zoneId ? patient.zoneId.toString() : 0,
+      value: this.patient.zoneId ? this.patient.zoneId.toString() : 0,
       type: ObjectTypes.Number,
-      comparer: patient.zoneId ? null : ODataComparers.NotEqual,
+      comparer: this.patient.zoneId ? null : ODataComparers.NotEqual,
       isTranslated: false
     } as QueryFilter
     ]
@@ -489,6 +488,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       });
     }
     else {
+      this.patient = null;
       this.itemForm.patchValue({
         customerId: null,
         trnType: null,
@@ -1129,7 +1129,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     form.warehouseId = form.warehouseId == 0 ? null : form.warehouseId;
     form.invoiceDetails = this.entries;
     form.discountAmount = 0;
-    form.customerId = form.patientId;
+    form.customerId = this.patient.id;
     form.state = !form.state ? (form.inventoryModified ? BillingStates.Billed : BillingStates.Quoted) : form.state;
     const subscription = window.location.href.split('/').findIndex(x => x.toLowerCase() == 'add') >= 0 ? this.invoiceService.post(form, "", "") : this.invoiceService.put(form, "", "");
     subscription.subscribe(r => {
@@ -1187,7 +1187,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     if (!entry.productId || !entry.quantity || !entry.currencyId ||
       !entry.beforeTaxesAmount || entry.taxesAmount === undefined || !entry.totalAmount || !entry.type)
       return;
-    const patientCurrency = entry.patientId && entry.patientId > 0 ? this.patients.find(x => x.id == entry.patientId).currency : null;
+    const patientCurrency = this.patient.currency;
     const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
       (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
     entry.product = this.product;
@@ -1339,32 +1339,34 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
   }
   refreshAmounts(fromForm: boolean = false) {
-
-    let { productPrice, productCost, quantity, unitId, beforeTaxesAmount, totalAmount, taxesAmount, discountAmount, discountRate, patientId, productId, patientPaymentAmount, insuranceCoverageAmount } = this.itemForm.getRawValue() as any;
-    if (productId && productId > 0) {
-      const equivalence = unitId && unitId > 0 && this.productUnits ? this.productUnits.find(x => x.unitId == unitId).equivalence : 1;
-      const patientCurrency = patientId && patientId > 0 && this.patients.length > 0 ? this.patients.find(x => x.id == patientId).currency : null;
-      const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
-        (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
-      productPrice = productPrice * rate;
-      productCost = (fromForm ? productCost : this.currentProductCost.cost > 0 ? (this.currentProductCost.cost / equivalence) : productCost) * rate;
-      beforeTaxesAmount = quantity * productPrice;
-      discountAmount = beforeTaxesAmount * (discountRate > 1 ? discountRate / 100 : discountRate);
-      taxesAmount = (this.CalculateProductTax() * quantity) * rate;
-      taxesAmount = (taxesAmount - (discountRate > 1 ? taxesAmount * discountRate / 100 : taxesAmount * discountRate));
-      totalAmount = beforeTaxesAmount + taxesAmount - discountAmount;
-      patientPaymentAmount = totalAmount - insuranceCoverageAmount;
-      this.oldProductCost = productCost;
-      this.oldProductPrice = productPrice;
-      this.itemForm.patchValue({
-        productCost,
-        beforeTaxesAmount,
-        totalAmount,
-        taxesAmount,
-        discountAmount,
-        patientPaymentAmount
-      })
+    if (this.patient && this.patient.id) {
+      let { productPrice, productCost, quantity, unitId, beforeTaxesAmount, totalAmount, taxesAmount, discountAmount, discountRate, patientId, productId, patientPaymentAmount, insuranceCoverageAmount } = this.itemForm.getRawValue() as any;
+      if (productId && productId > 0) {
+        const equivalence = unitId && unitId > 0 && this.productUnits ? this.productUnits.find(x => x.unitId == unitId).equivalence : 1;
+        const patientCurrency = this.patient.currency;
+        const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
+          (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
+        productPrice = productPrice * rate;
+        productCost = (fromForm ? productCost : this.currentProductCost.cost > 0 ? (this.currentProductCost.cost / equivalence) : productCost) * rate;
+        beforeTaxesAmount = quantity * productPrice;
+        discountAmount = beforeTaxesAmount * (discountRate > 1 ? discountRate / 100 : discountRate);
+        taxesAmount = (this.CalculateProductTax() * quantity) * rate;
+        taxesAmount = (taxesAmount - (discountRate > 1 ? taxesAmount * discountRate / 100 : taxesAmount * discountRate));
+        totalAmount = beforeTaxesAmount + taxesAmount - discountAmount;
+        patientPaymentAmount = totalAmount - insuranceCoverageAmount;
+        this.oldProductCost = productCost;
+        this.oldProductPrice = productPrice;
+        this.itemForm.patchValue({
+          productCost,
+          beforeTaxesAmount,
+          totalAmount,
+          taxesAmount,
+          discountAmount,
+          patientPaymentAmount
+        })
+      }
     }
+ 
 
 
 

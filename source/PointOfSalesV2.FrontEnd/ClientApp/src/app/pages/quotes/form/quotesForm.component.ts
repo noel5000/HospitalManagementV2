@@ -43,10 +43,11 @@ declare const $: any;
   styleUrls: ["../quotesStyles.component.scss"]
 })
 export class QuotesFormComponent extends BaseComponent implements OnInit {
-
-  @ViewChild('productSearch',{static:false})
+  @ViewChild('productSearch', { static: false })
   private productSearch: AutoCompleteComponent;
-  branchOfficeId: number = 0;
+  hospitalId: number = 0;
+  patient: any = null;
+  product: any = null;
   warehouseId: number = 0;
   currentDate: string = '';
   productQuantity: number = 0;
@@ -54,8 +55,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
   _route: ActivatedRoute;
   localCurrency: Currency = null;
   products: Product[] = [];//
-  customers: Customer[] = [];
-  patient: any = null;
+  patients: Customer[] = [];
   trnControls: TRNControl[] = [];
   sellers: Seller[] = [];
   productPrices: any[] = [];
@@ -63,21 +63,47 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
   productUnits: any[] = [];//
   productTaxes: any[] = [];//
   inventories = [];
-  isEditing: boolean = false;
   entries: any[] = [];
   defaultTaxAmountValidator: FormControl = new FormControl(0, [Validators.required, Validators.min(0.0001)]);
   defaultUnitValidator: FormControl = new FormControl(null, [Validators.required, Validators.min(1)]);
   currentProductCost: any = { cost: 0 };
   currentProductPrice: any = { sellingPrice: 0, costPrice: 0, equivalence: 0 };
   inventoryService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Inventory`);
+  creditNoteService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/CreditNote`);
   invoiceService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Invoice`);
   menuService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Menu`);
   currencyService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Currency`);
   productUnitService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/ProductUnit`);
   productTaxService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/ProductTax`);
+  medicalSpecialityService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
+  appointmentService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Appointment`);
+  userService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/User`);
+  insuranceService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/InsuranceServiceCoverage`);
+  appointments: any[] = [];
+  selectedAppointment: any = null;
   oldProductCost: number = 0;
   oldProductPrice: number = 0;
   selectedProductCurrency: Currency = null;
+  isEditing: boolean = false;
+  appointmentDetails: any[] = [];
+  types: any[] = [
+
+    {
+      id: 'L',
+      name: this.lang.getValueByKey('laboratory_lbl')
+    },
+    {
+      id: 'E',
+      name: this.lang.getValueByKey('especializedImages_lbl')
+    },
+    {
+      id: 'M',
+      name: this.lang.getValueByKey('medicine_lbl')
+    }
+  ];
+  medicalSpecialities: any[] = [];
+  doctors: any[] = [];
+  details: any[] = [];
 
   constructor(@Inject('BASE_URL') private baseUrl: string,
     private config: AppConfig,
@@ -89,7 +115,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     private productService: ProductService,
     modalService: ModalService,
     private http: HttpClient,
-    private customerService: CustomerService,
+    private patientService: CustomerService,
     private trnControlService: TRNControlService,
     private sellerService: SellerService,
     private warehouseService: WarehouseService
@@ -109,37 +135,38 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     else
       this.validateFormData();
 
-    this.branchOfficeId = this.authModel.user.branchOfficeId;
+    this.hospitalId = this.authModel.user.branchOfficeId;
     this.warehouseId = this.authModel.user.warehouseId;
 
     this.itemForm = this.formBuilder.group({
       id: [0],
-      customerId: [null, [Validators.required, Validators.min(1)]],
-      trnType: [null, [Validators.required]],
-      nrc: [''],
+      patientId: [{ value: null, disabled: this.isEditing }, [Validators.required, Validators.min(1)]],
+      trnType: [{ value: null, disabled: this.isEditing }, [Validators.required]],
+      nrc: [null],
       productId: [null, [Validators.required, Validators.min(1)]],
       unitId: this.defaultUnitValidator,
-      branchOfficeId: [this.branchOfficeId],
-      warehouseId: [null],
-      patientName: [null],
-      sellerId: [null],
+      branchOfficeId: [this.hospitalId],
+      warehouseId: [{ value: null, disabled: this.isEditing }],
+      sellerId: [{ value: null, disabled: this.isEditing }],
       billingDate: [this.currentDate],
       inventoryModified: [false],
-      discountRate: [0, [Validators.min(0), Validators.max(100)]],
+      discountRate: [{ value: 0, disabled: this.isEditing }, [Validators.min(0), Validators.max(100)]],
       discountAmount: [0],
       currencyName: [''],
       cashRegisterId: [0],
       invoiceNumber: [''],
       documentNumber: [''],
       currencyId: [0],
+      patientName: [''],
       active: [true],
       exchangeRate: [0],
       sellerRate: [0],
       paidDate: [null],
       receivedAmount: [0],
+      appliedCreditNote: [''],
       cost: [0],
       Month: [0],
-      appliedCreditNoteAmount: [0],
+      appliedCreditNoteAmount: [{ value: 0, disabled: true }],
       trn: [null],
       trnControlId: [0],
       details: [null],
@@ -148,131 +175,88 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       productCost: [0],
       productPrice: [0],
       selectedPrice: [0],
-      insuranceName: [''],
-      insurancePlanName: [''],
       beforeTaxesAmount: [0],
       paidAmount: [0],
-      insuranceId: [null],
-      insurancePlanId: [null],
       returnedAmount: [0],
       owedAmount: [0],
       noTaxes: [false],
       taxesAmount: [0],
       totalAmount: [0],
-      free: [false]
+      free: [false],
+      medicalSpecialityId: [null],
+      type: [null],
+      appointmentId: [{ value: null, disabled: this.isEditing }],
+      insuranceCoverageAmount: [0],
+      insuranceName: [""],
+      insurancePlanName: [""],
+      patientPaymentAmount: [0],
+      insuranceId: [null],
+      insurancePlanId: [null],
+      doctorId: [null]
     });
   }
   ngOnInit(): void {
-
+    document.getElementById('basicInfoHeader').click();
     this.onChanges();
     this.verifyUser();
-
-    // this.getCustomers();
     this.getTrnControls();
     this.getWarehouses();
     this.getLocalCurrency();
+    this.getEspecialities();
   }
 
-  async getPatients(name: string) {
+  async getDoctors(specialityId: number, hospitalId: number) {
+    let filter: QueryFilter[] = [];
 
-    if (name) {
-      const filter = [
+    if (specialityId && specialityId > 0)
+      filter.push(
         {
-          property: "InsurancePlan",
-          value: "Id,Name",
-          type: ObjectTypes.ChildObject,
-          isTranslated: false
-        } as QueryFilter,
-        {
-          property: "Insurance",
-          value: "Id,Name",
-          type: ObjectTypes.ChildObject,
-          isTranslated: false
-        } as QueryFilter,
-        {
-          property: "Currency",
-          value: "Id,Name, IsLocalCurrency",
-          type: ObjectTypes.ChildObject,
+          property: "MedicalSpecialityId",
+          value: specialityId.toString(),
+          type: ObjectTypes.Number,
           isTranslated: false
         } as QueryFilter
-      ]
-      if (name)
-        filter.push({
-          property: "Name",
-          value: name.toString(),
-          type: ObjectTypes.String,
+      );
+
+    if (hospitalId && hospitalId > 0)
+      filter.push(
+        {
+          property: "BranchOfficeId",
+          value: hospitalId.toString(),
+          type: ObjectTypes.Number,
           isTranslated: false
-        } as QueryFilter);
+        } as QueryFilter
+      )
+    this.userService.getAllFiltered(filter).subscribe(r => {
 
-      this.customerService.getAllFiltered(filter).subscribe(r => {
-        this.customers = [];
-        this.customers = this.customers.concat(r["value"]);
-
-      });
-    }
-    else {
-      this.itemForm.patchValue({
-        customerId: null,
-        trnType: null,
-        currencyId: null,
-        trnControlId: null,
-        sellerId: null,
-        insuranceName: '',
-        insurancePlanName: '',
-        currencyName: '',
-        nrc: '',
-      });
-      this.refreshAmounts(false);
-    }
-
-
-
+      this.doctors = r['value'];
+      if (this.doctors.length == 1)
+        this.itemForm.patchValue({
+          doctorId: this.doctors[0].userId
+        });
+    })
+  }
+  async getEspecialities() {
+    this.medicalSpecialityService.getAll().subscribe(r => {
+      this.medicalSpecialities = [{ id: null, name: "" }];
+      this.medicalSpecialities = this.medicalSpecialities.concat(r);
+      if (r.length == 1)
+        this.itemForm.patchValue({ medicalSpecialityId: r[0].id });
+    });
   }
 
-  async selectPatient(patient: any) {
-    if (patient) {
-      this.patient = patient;
-      this.itemForm.patchValue({
-        customerId: patient.id,
-        nrc: patient.cardId,
-        patientName: patient.name,
-        trnType: patient.trnType,
-        currencyId: patient.currencyId,
-        trnControlId: patient.trnControlId,
-        insuranceId: patient.insuranceId,
-        insurancePlanId: patient.insurancePlanId,
-        insurancePlanName: !patient.insurancePlan ? '' : patient.insurancePlan.name,
-        insuranceName: !patient.insurance ? '' : patient.insurance.name
-      })
 
-    }
-    else {
-      this.patient = null;
-      this.itemForm.patchValue({
-        customerId: null,
-        insuranceId: null,
-        insurancePlanId: null,
-        trnType: null,
-        currencyName: '',
-        patientName: '',
-        currencyId: null,
-        trnControlId: null,
-        sellerId: null,
-        insuranceName: '',
-        insurancePlanName: '',
-        nrc: ''
-
-      });
-      this.refreshAmounts(false);
-    }
-
-
-  }
   setAdditionalBackupData() {
     for (let i = 0; i < this.entries.length; i++) {
       this.setDetailFormAmount(i, this.entries[i].quantity);
       this.setDetailFormDiscount(i, this.entries[i].discountRate);
+      this.setDetailFormNoCoverage(i, this.entries[i].noCoverage);
+      this.setDetailFormApprovalCode(i, this.entries[i].insuranceApprovalCode);
     }
+
+    const { appointmentId } = this.itemForm.getRawValue();
+    if (appointmentId)
+      this.selectAppointment(appointmentId);
   }
 
   async getTrnControls() {
@@ -304,20 +288,20 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     });
   }
 
-  async getSellers(customerId: number) {
-    const customer = this.customers.find(x => x.id == customerId);
+  async getSellers(patientId: number) {
+    const patient = this.patients.find(x => x.id == patientId);
     this.itemForm.patchValue({
-      currencyId: customer.currencyId,
-      currencyName: customer.currency.name,
-      trnType: customer.trnType,
-      nrc: customer.cardId ? customer.cardId : '',
-      warehouseId: customer.warehouseId ? customer.warehouseId : this.warehouseId
+      currencyId: patient.currencyId,
+      currencyName: patient.currency.name,
+      trnType: patient.trnType,
+      nrc: patient.cardId,
+      warehouseId: patient.warehouseId ? patient.warehouseId : this.warehouseId
     })
     const filter = [{
       property: 'ZoneId',
-      value: customer.zoneId ? customer.zoneId.toString() : 0,
+      value: patient.zoneId ? patient.zoneId.toString() : 0,
       type: ObjectTypes.Number,
-      comparer: customer.zoneId ? null : ODataComparers.NotEqual,
+      comparer: patient.zoneId ? null : ODataComparers.NotEqual,
       isTranslated: false
     } as QueryFilter
     ]
@@ -342,7 +326,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     } as QueryFilter
     ]
     this.productUnitService.getAllFiltered(filter).subscribe(r => {
-      this.productUnits = [{ id: 0, unitId: 0, unit: { id: 0, name: '' }, sellingPrice: 0, costPrice: 0, equivalence: 0 }];
+      this.productUnits = r['value'].lenght > 0 ? [{ id: 0, unitId: 0, unit: { id: 0, name: '' }, sellingPrice: 0, costPrice: 0, equivalence: 0 }] : [];
       this.productUnits = this.productUnits.concat(r['value']);
     });
   }
@@ -427,7 +411,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
 
   async GetProductCost(productId: number) {
-    const currentProduct = this.products.find(x => x.id == productId);
+    const currentProduct = this.product;
     this.currentProductCost.cost = currentProduct.cost;
     const { unitId, productPrice } = this.itemForm.getRawValue();
     this.currentProductPrice.sellingPrice = unitId && unitId > 0 && this.productUnits.length > 0 ? currentProduct.price / this.productUnits.find(x => x.unitId == unitId).equivalence : currentProduct.price;
@@ -467,18 +451,139 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
   }
 
-  async selectProduct(product: any) {
-    if (product) {
-      this.itemForm.patchValue({ productId: product.id })
+  async getPatients(name: string) {
+
+    if (name) {
+      const filter = [
+        {
+          property: "InsurancePlan",
+          value: "Id,Name",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter,
+        {
+          property: "Insurance",
+          value: "Id,Name",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter,
+        {
+          property: "Currency",
+          value: "Id,Name, IsLocalCurrency",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter
+      ]
+      if (name)
+        filter.push({
+          property: "Name",
+          value: name.toString(),
+          type: ObjectTypes.String,
+          isTranslated: false
+        } as QueryFilter);
+
+      this.patientService.getAllFiltered(filter).subscribe(r => {
+        this.patients = [];
+        this.patients = this.patients.concat(r["value"]);
+
+      });
+    }
+    else {
+      this.itemForm.patchValue({
+        customerId: null,
+        trnType: null,
+        currencyId: null,
+        trnControlId: null,
+        sellerId: null,
+        insuranceName: '',
+        insurancePlanName: '',
+        currencyName: '',
+        nrc: '',
+      });
+      this.refreshAmounts(false);
+    }
+
+
+
+  }
+
+  async selectPatient(patient: any) {
+    if (patient) {
+      this.itemForm.patchValue({
+        patientId: patient.id,
+        trnType: patient.trnType,
+        currencyId: patient.currencyId,
+        currencyName: patient.currency.name,
+        trnControlId: patient.trnControlId,
+        insurancePlanName: !patient.insurancePlan ? '' : patient.insurancePlan.name,
+        insuranceName: !patient.insurance ? '' : patient.insurance.name,
+        insuranceId: patient.insuranceId,
+        insurancePlanId: patient.insurancePlanId,
+        insuranceCoverageAmount: 0,
+        patientName: patient.name
+      })
 
     }
     else {
       this.itemForm.patchValue({
-        productId: null
-      });
+        customerId: null,
+        trnType: null,
+        currencyName: '',
+        currencyId: null,
+        trnControlId: null,
+        sellerId: null,
+        insuranceName: '',
+        insurancePlanName: '',
+        nrc: ''
 
+      });
+      this.refreshAmounts(false);
     }
 
+
+  }
+
+  async getCreditNote() {
+    const formVal = this.itemForm.getRawValue();
+    const filter = [
+      {
+        property: "Sequence",
+        value: formVal.appliedCreditNote,
+        type: ObjectTypes.String,
+        comparer: ODataComparers.equals,
+        isTranslated: false
+      } as QueryFilter,
+      {
+        property: "patientId",
+        value: formVal.patientId,
+        type: ObjectTypes.Number,
+        comparer: ODataComparers.equals,
+        isTranslated: false
+      } as QueryFilter,
+      {
+        property: "Applied",
+        value: "false",
+        type: ObjectTypes.Boolean,
+        comparer: ODataComparers.equals,
+        isTranslated: false
+      } as QueryFilter,
+
+      {
+        property: "CurrencyId",
+        value: formVal.currencyId,
+        type: ObjectTypes.Number,
+        comparer: ODataComparers.equals,
+        isTranslated: false
+      } as QueryFilter
+    ]
+    this.creditNoteService.getAllFiltered(filter).subscribe(r => {
+      const result = r['value'][0];
+      if (result)
+        this.itemForm.patchValue({
+          appliedCreditNoteAmount: result.amount
+        });
+
+    });
   }
 
   async getProductInventory(hospitalId: number, warehouseId: number = 0, productId: number = 0) {
@@ -545,6 +650,10 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
     })
   }
+  async getInventoryDescription(): Promise<string> {
+    let result = '';
+    return result;
+  }
 
 
   onChanges(): void {
@@ -554,6 +663,20 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       if (val) {
         this.refreshAmounts(true);
       }
+    });
+
+    this.itemForm.get('appliedCreditNote').valueChanges.subscribe(val => {
+      if (val) {
+        this.getCreditNote();
+      }
+      else
+        this.itemForm.patchValue({ appliedCreditNoteAmount: 0 });
+    });
+
+    this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
+
+      this.refreshAmounts(true);
+
     });
 
     this.itemForm.get('discountRate').valueChanges.subscribe(val => {
@@ -567,20 +690,79 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       //    }
     });
 
+    this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
+
+      const { medicalSpecialityId } = this.itemForm.getRawValue();
+      if (val && val > 0 && medicalSpecialityId && medicalSpecialityId > 0)
+        this.getDoctors(medicalSpecialityId, val);
+
+    });
+
+
     this.itemForm.get('unitId').valueChanges.subscribe(val => {
+
+
       if (val && val != "0") {
         this.refreshAmounts();
         const currentUnit = this.productUnits.find(x => x.unitId == val);
         const { productId, warehouseId, selectedPrice } = this.itemForm.getRawValue();
         this.updateSelectedPrice(selectedPrice);
+
+
       }
     });
 
+    this.itemForm.get('patientId').valueChanges.subscribe(val => {
+      //  this.resetForm(this.id>0?false:true);
+      this.appointments = [];
+      if (val && this.patients && this.patients.length > 0) {
+        this.getPatientAppointments();
+        const patient = this.patients.find(x => x.id == val);
+        if (patient) {
+          this.itemForm.patchValue({
+            trnControlId: patient.trnControlId,
+            insuranceId: patient.insuranceId,
+            insurancePlanId: patient.insurancePlanId,
+            insuranceName: patient.insurance ? patient.insurance.name : '',
+            insurancePlanName: patient.insurancePlan ? patient.insurancePlan.name : '',
+            currencyId: patient.currencyId,
+            currencyName: patient.currency ? patient.currency.name : '',
+            insuranceCoverageAmount: 0,
+            nrc: patient.cardId,
+            appointmentId: null
+          });
+          this.removeEntries();
 
+        }
+        const form = this.itemForm.getRawValue();
+        this.getInsuranceCoverage(form.productId, form.insuranceId, form.insurancePlanId);
+      }
+      else {
+        this.itemForm.patchValue({
+          insuranceId: null,
+          insurancePlanId: null,
+          insuranceName: '',
+          insurancePlanName: '',
+          currencyId: null,
+          currencyName: '',
+          insuranceCoverageAmount: 0
+        });
+      }
+    });
 
     this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
 
       this.refreshAmounts(true);
+
+    });
+
+    this.itemForm.get('appointmentId').valueChanges.subscribe(val => {
+
+      if (val && val > 0) {
+
+        this.selectAppointment(val);
+      }
+
 
     });
     this.itemForm.get('productCost').valueChanges.subscribe(val => {
@@ -618,17 +800,26 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
     this.itemForm.get('productId').valueChanges.subscribe(val => {
       if (val && val > 0) {
-        const form = this.itemForm.getRawValue();
+        const product = this.product;
         this.inventories = [];
         this.productUnits = [];
         this.productPrices = [];
         this.selectedProductCurrency = null;
-        this.itemForm.patchValue({ quantity: 0, productPrice: 0 });
+        this.itemForm.patchValue({
+          quantity: 0,
+          insuranceCoverageAmount: 0,
+          beforeTaxesAmount: product.price,
+          totalAmount: 0,
+          taxesAmount: 0,
+          productPrice: product.price,
+        })
         this.productQuantity = 0;
         this.showProductQuantity = false;
-        const product = this.products.find(x => x.id == val);
         this.selectedProductCurrency = product.currency;
         this.productPrices = [{ id: 1, price: product.price, currency: product.currency.code }, { id: 2, price: product.price2, currency: product.currency.code }, { id: 3, price: product.price3, currency: product.currency.code }].filter(x => x.price > 0);
+
+        const form = this.itemForm.getRawValue();
+        this.getInsuranceCoverage(val, form.insuranceId, form.insurancePlanId);
         this.itemForm.patchValue({ selectedPrice: this.productPrices[0].price });
         if (product.isService) {
           this.itemForm.removeControl('unitId');
@@ -638,26 +829,216 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
           this.itemForm.removeControl('unitId');
           this.itemForm.addControl('unitId', this.defaultUnitValidator)
           this.GetProductUnits(val);
+
           const user = this.getUser();
 
-          this.getProductInventory(user.branchOfficeId, form.warehouseId == null ? 0 : form.warehouseId, val);
+          this.getProductInventory(user.branchOfficeId, form.warehouseId == null ? 0 : form.warehouseId, val)
+
         }
         this.productTaxes = [];
         this.GetProductTaxes(val);
         this.itemForm.patchValue({ unitId: null });
 
         this.GetProductCost(val);
-
       }
-      else {
-        this.productUnits = [];
-        this.productPrices = [];
-        this.inventories = [];
-        this.oldProductCost = 0;
-        this.currentProductCost = 0;
-      }
-
+      else
+        this.itemForm.patchValue({ insuranceCoverageAmount: 0 })
     });
+
+  }
+
+  removeEntries() {
+    for (let i = 0; i < this.entries.length; i++) {
+
+      if (this.itemForm.contains(`unitQuantity_${i}`))
+        this.itemForm.removeControl(`unitQuantity_${i}`);
+
+      if (this.itemForm.contains(`insuranceApprovalCode_${i}`))
+        this.itemForm.removeControl(`insuranceApprovalCode_${i}`);
+
+      if (this.itemForm.contains(`noCoverage_${i}`))
+        this.itemForm.removeControl(`noCoverage_${i}`);
+
+
+    }
+
+    this.entries = [];
+  }
+
+  async getPatientAppointments() {
+    const { patientId } = this.itemForm.getRawValue();
+    if (patientId && patientId > 0) {
+      const filter = [
+        {
+          property: "PatientId",
+          value: patientId,
+          type: ObjectTypes.Number,
+          isTranslated: false,
+          comparer: ODataComparers.equals
+        } as QueryFilter,
+        {
+          property: "State",
+          value: "F,S",
+          type: ObjectTypes.String,
+          comparer: ODataComparers.in,
+          isTranslated: false
+        } as QueryFilter,
+      ]
+      this.appointmentService.getAllFiltered(filter).subscribe(r => {
+        this.appointments = [{ id: 0, dateFormatted: '' }]
+        r['value'].forEach(a => {
+          a['dateFormatted'] = new Date(a.date).toLocaleString();
+          this.appointments.push(a);
+        });
+
+
+      })
+    }
+  }
+
+  selectAppointment(id: number) {
+    const form = this.itemForm.getRawValue();
+    this.appointmentService.getById(id).subscribe(r => {
+      this.selectedAppointment = r.data[0];
+      this.itemForm.patchValue({ branchOfficeId: this.selectedAppointment.hospitalId });
+      if (!this.isEditing) {
+        let index = this.entries.findIndex(x => x.appointmentId && x.appointmentId > 0);
+        while (index >= 0) {
+          this.entries.splice(index, 1);
+          index = this.entries.findIndex(x => x.appointmentId && x.appointmentId > 0)
+        }
+        if (this.selectedAppointment.details && this.selectedAppointment.details.length > 0) {
+          this.selectedAppointment.details.forEach((d, i) => {
+            const detail = {
+              quantity: 1,
+              doctorId: d.doctorId,
+              productId: d.productId,
+              medicalSpecialityId: d.medicalSpecialityId,
+              branchOfficeId: this.selectedAppointment.hospitalId,
+              insuranceApprovalCode: '',
+              type: d.type,
+              insuranceCoverageAmount: d.insuranceCoverageAmount,
+              beforeTaxesAmount: d.beforeTaxesAmount,
+              taxesAmount: d.taxesAmount,
+              totalAmount: d.totalAmount,
+              discountAmount: 0,
+              creditNoteAmount: 0,
+              date: d.date,
+              invoiceId: this.id,
+              patientPaymentAmount: d.totalAmount - d.insuranceCoverageAmount,
+              returnAmount: 0,
+              noCoverage: false,
+              product: d.product,
+              doctor: d.doctor,
+              medicalSpeciality: d.medicalSpeciality,
+              currencyId: d.currencyId,
+              currency: d.currency,
+              cost: d.product ? d.product.cost : 0,
+              amount: d.beforeTaxesAmount,
+              free: false,
+              comments: '',
+              principalCurrencyAmount: d.totalAmount,
+              discountRate: 0,
+              warehouseId: form.warehouseId,
+              appointmentId: d.appointmentId,
+              unitId: null,
+              unit: null,
+              saveRegister: true
+            };
+            const index = this.entries.findIndex(x => x.productId == detail.productId
+              && x.doctorId == detail.doctorId && x.type == detail.type && x.medicalSpecialityId == detail.medicalSpecialityId);
+            if (!this.itemForm.contains(`insuranceApprovalCode_${i}`)) {
+              this.itemForm.addControl(`insuranceApprovalCode_${i}`, new FormControl({ value: detail.insuranceApprovalCode, disabled: (detail.noCoverage || this.isEditing) }, (detail.noCoverage ? [] : [Validators.required, Validators.minLength(1), Validators.maxLength(50)])))
+            }
+
+            if (!this.itemForm.contains(`unitQuantity_${i}`)) {
+              this.itemForm.addControl(`unitQuantity_${i}`, new FormControl({ value: detail.quantity, disabled: this.isEditing }, [Validators.required, Validators.min(0.0001)]))
+            }
+            if (!this.itemForm.contains(`noCoverage_${i}`)) {
+              this.itemForm.addControl(`noCoverage_${i}`, new FormControl({ value: detail.noCoverage, disabled: this.isEditing }, []))
+            }
+
+            if (index > -1)
+              this.entries[index] = detail;
+            else {
+              this.entries.push(detail);
+            }
+
+          });
+          this.appointmentDetails = this.entries;
+          this.refreshAmounts();
+        }
+      }
+
+
+    })
+  }
+
+  setCoverageValue(index: number) {
+    const name = `noCoverage_${index}`;
+    const codeName = `insuranceApprovalCode_${index}`;
+    const { insuranceId, insurancePlanId } = this.itemForm.getRawValue();
+    const val = this.itemForm.get(name).value;
+    const item = this.entries[index];
+    // if(this.itemForm.contains(codeName))
+    // this.itemForm.removeControl(codeName);
+
+    this.itemForm.setControl(codeName, new FormControl({ value: '', disabled: (val || this.isEditing) }, (val ? [] : [Validators.required, Validators.minLength(1), Validators.maxLength(50)])));
+    if (val)
+      this.entries[index].insuranceCoverageAmount = 0;
+    else
+      this.getInsuranceCoverageAmount(item.productId, index, insuranceId, insurancePlanId);
+
+    this.entries[index].patientPaymentAmount = this.entries[index].totalAmount - this.entries[index].insuranceCoverageAmount;
+
+
+
+  }
+
+  getInsuranceCoverage(productId: number, insuranceId: number = 0, insurancePlanId: number = 0) {
+    const form = this.itemForm.getRawValue();
+    if ((productId) && (form.insuranceId || form.insurancePlanId))
+      this.insuranceService.getByUrlParameters(["GetInsuranceCoverage", productId.toString(), insuranceId ? insuranceId.toString() : 'null', insurancePlanId ? insurancePlanId.toString() : 'null'])
+        .subscribe(r => {
+          try {
+            if (r.status >= 0) {
+              const coverage = r.data[0];
+              this.itemForm.patchValue({ insuranceCoverageAmount: coverage.coverageAmount });
+              this.refreshAmounts(false);
+            }
+            else
+              this.modalService.showError('error_msg');
+          }
+          catch (ex) {
+            console.log(ex);
+          }
+
+        });
+    else {
+      this.itemForm.patchValue({ insuranceCoverageAmount: 0 });
+      this.refreshAmounts(false);
+    }
+
+  }
+
+  getInsuranceCoverageAmount(productId: number, index: number, insuranceId: number = 0, insurancePlanId: number = 0) {
+
+    if ((productId) && (insuranceId || insurancePlanId))
+      this.insuranceService.getByUrlParameters(["GetInsuranceCoverage", productId.toString(), insuranceId ? insuranceId.toString() : 'null', insurancePlanId ? insurancePlanId.toString() : 'null'])
+        .subscribe(r => {
+          try {
+            if (r.status >= 0) {
+              const coverage = r.data[0];
+              this.entries[index].insuranceCoverageAmount = coverage.coverageAmount;
+              this.entries[index].patientPaymentAmount = this.entries[index].totalAmount - this.entries[index].insuranceCoverageAmount;
+            }
+            else
+              this.modalService.showError('error_msg');
+          }
+          catch (ex) {
+            console.log(ex);
+          }
+        });
 
   }
 
@@ -688,6 +1069,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       currencyName: '',
       currencyId: 0,
       exchangeRate: 0,
+      appliedCreditNote: '',
       sellerRate: 0,
       paidDate: null,
       receivedAmount: 0,
@@ -709,8 +1091,10 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       totalAmount: 0,
       free: false
     });
-    if (deleteEntries)
-      this.entries = [];
+    if (deleteEntries) {
+      this.removeEntries();
+      this.appointmentDetails = [];
+    }
   }
   get form() { return this.itemForm.controls; }
 
@@ -720,7 +1104,10 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     form.taxesAmount = this.getTotalAmount(this.entries, 'taxesAmount');
     form.discountAmount = this.getTotalAmount(this.entries, 'discountAmount')
     form.totalAmount = this.getTotalAmount(this.entries, 'totalAmount');
-    form.owedAmount = form.totalAmount - form.paidAmount;
+    form.patientPaymentAmount = this.getTotalAmount(this.entries, 'patientPaymentAmount');
+    form.insuranceCoverageAmount = this.getTotalAmount(this.entries, 'insuranceCoverageAmount');
+    form.owedAmount = form.totalAmount - form.paidAmount - form.appliedCreditNoteAmount;
+    form.owedAmount = form.owedAmount < 0 ? 0 : form.owedAmount;
     form.owedAmount = form.owedAmount < 0 ? 0 : form.owedAmount;
     form.returnedAmount = form.paidAmount - form.totalAmount;
     form.returnedAmount = form.returnedAmount > 0 ? form.returnedAmount : 0;
@@ -741,6 +1128,8 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     let form = this.itemForm.getRawValue() as any;
     form.warehouseId = form.warehouseId == 0 ? null : form.warehouseId;
     form.invoiceDetails = this.entries;
+    form.discountAmount = 0;
+    form.customerId = this.patient.id;
     form.state = !form.state ? (form.inventoryModified ? BillingStates.Billed : BillingStates.Quoted) : form.state;
     const subscription = window.location.href.split('/').findIndex(x => x.toLowerCase() == 'add') >= 0 ? this.invoiceService.post(form, "", "") : this.invoiceService.put(form, "", "");
     subscription.subscribe(r => {
@@ -759,10 +1148,12 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     for (let i = 0; i < this.entries.length; i++) {
       this.entries[i].quantity = form[`unitQuantity_${i}`];
       this.entries[i].quantity = !this.entries[i].quantity ? 0 : this.entries[i].quantity;
-      this.entries[i].discountRate = form[`unitDiscountRate_${i}`];
       this.entries[i].discountRate = !this.entries[i].discountRate ? 0 : this.entries[i].discountRate;
       this.entries[i].discountAmount = this.entries[i].discountRate / 100 * this.entries[i].beforeTaxesAmount;
       this.entries[i].discountAmount = !this.entries[i].discountAmount ? 0 : this.entries[i].discountAmount;
+      this.entries[i].insuranceApprovalCode = form[`insuranceApprovalCode_${i}`];
+      this.entries[i].noCoverage = this.entries[i].noCoverage ? this.entries[i].noCoverage : ((!form[`noCoverage_${i}`] || !form[`noCoverage_${i}`].value ? false : true));
+      this.entries[i].patientPaymentAmount = this.entries[i].totalAmount - (this.entries[i].insuranceCoverageAmount ? this.entries[i].insuranceCoverageAmount : 0);
     }
   }
 
@@ -770,35 +1161,61 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     this.clearBackupData();
     this.router.navigateByUrl('pages/quotes');
   }
+  async selectProduct(product: any) {
+    if (product) {
+      this.product = product;
+      this.itemForm.patchValue({
+        productId: this.product.id,
+        type: this.product.type
+      })
+      if (product.type == 'C')
+        this.getDoctors(product.medicalSpecialityId, this.getUser().branchOfficeId);
+    }
+    else {
+      this.product = null;
+      this.itemForm.patchValue({
+        productId: null,
+        type: null
+      });
+
+    }
+
+  }
 
   addEntry() {
     let entry = this.itemForm.getRawValue() as any;
-    if (this.itemForm.invalid)
+    if (!entry.productId || !entry.quantity || !entry.currencyId ||
+      !entry.beforeTaxesAmount || entry.taxesAmount === undefined || !entry.totalAmount || !entry.type)
       return;
-    const customerCurrency = this.patient ? this.patient.currency : null;
-    const rate = !customerCurrency ? 0 : customerCurrency.isLocalCurrency ? this.selectedProductCurrency.exchangeRate : (this.selectedProductCurrency.exchangeRate / customerCurrency.exchangeRate);
-    entry.product = this.products.find(x => x.id == entry.productId);
+    const patientCurrency = this.patient.currency;
+    const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
+      (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
+    entry.product = this.product;
     entry.amount = entry.productPrice * rate;
     entry.productId = parseInt(entry.productId.toString());
     entry.unitId = entry.product.isService || !entry.unitId ? null : parseInt(entry.unitId.toString());
     entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit : { id: 0, name: '' };
     entry.id = 0;
+    entry.insuranceApprovalCode = '';
+    entry.medicalSpecialityId = this.product.medicalSpecialityId;
+    entry.appointmentId = null;
+    entry.noCoverage = this.product.type != 'C';
     entry.product.taxes = this.productTaxes;
     entry.taxesAmount = entry.product.taxes.length <= 0 ? 0 : entry.product.taxes.reduce(function (a, b) { return a + (b.tax.rate * (entry.beforeTaxesAmount - entry.discountAmount)) }, 0);
     entry.product.productUnits = this.productUnits;
     entry.discountAmount = entry.discountRate > 1 ? (entry.discountRate / 100 * entry.beforeTaxesAmount) : (entry.discountRate * entry.beforeTaxesAmount);
-    const currentIndex = this.entries.length;
+
     let index = this.entries.findIndex(x => x.productId == entry.productId && x.warehouseId == entry.warehouseId);
 
     if (index < 0) {
-      this.setDetailFormAmount(currentIndex, entry.quantity, true);
-      this.setDetailFormDiscount(currentIndex, entry.discountRate, true);
       this.entries.push(entry);
     }
     else {
       this.entries.splice(index, 1);
       this.entries.push(entry);
     }
+    const currentIndex = this.entries.length;
+    this.setDetailFormAmount(currentIndex - 1, entry.quantity);
 
     this.itemForm.patchValue({
       productId: null,
@@ -810,15 +1227,31 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
       noTaxes: false,
       free: false,
       productCost: 0,
-      productPrice: 0
+      productPrice: 0,
+      doctorId: null
 
     });
-    this.productSearch.filterString='';
+    this.doctors = [];
+    this.product = null;
+    this.productUnits = [];
+    this.appointmentDetails = this.entries;
+    this.productSearch.filterString = '';
+
+  }
+
+  validateCheck(validation: any) {
+    let validateCheck = document.getElementById(`noCoverage_${validation.index}`);
+    if (validateCheck && validateCheck['checked'] && validation.data.type == 'C')
+      validateCheck['checked'] = false;
   }
   deleteEntry(index: number) {
+    const entry = this.entries[index];
     this.itemForm.removeControl(`unitQuantity_${index}`);
     this.itemForm.removeControl(`unitDiscountRate_${index}`);
+    this.itemForm.removeControl(`insuranceApprovalCode_${index}`);
+    this.itemForm.removeControl(`noCoverage_${index}`);
     this.entries.splice(index, 1);
+    this.appointmentDetails = this.entries;
   }
 
 
@@ -833,15 +1266,24 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
             if (this.itemForm.contains(`unitDiscountRate_${i}`))
               this.itemForm.removeControl(`unitDiscountRate_${i}`);
+
+            if (this.itemForm.contains(`noCoverage_${i}`))
+              this.itemForm.removeControl(`noCoverage_${i}`);
+
+            if (this.itemForm.contains(`insuranceApprovalCode_${i}`))
+              this.itemForm.removeControl(`insuranceApprovalCode_${i}`);
           }
           if (r.data[0] && r.data[0].invoiceDetails && r.data[0].invoiceDetails.length > 0) {
             for (let i = 0; i < r.data[0].invoiceDetails.length; i++) {
               this.setDetailFormAmount(i, r.data[0].invoiceDetails[i].quantity);
               this.setDetailFormDiscount(i, r.data[0].invoiceDetails[i].discountRate);
+              this.setDetailFormNoCoverage(i, r.data[0].invoiceDetails[i].noCoverage);
+              this.setDetailFormApprovalCode(i, r.data[0].invoiceDetails[i].insuranceApprovalCode);
             }
           }
           this.entries = r.data[0] && r.data[0].
             invoiceDetails ? r.data[0].invoiceDetails : [];
+
           this.item = r.data[0];
           this.patient = this.item.patient ? this.item.patient : null;
           if (this.patient)
@@ -854,7 +1296,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
             insuranceName: this.item.insurance ? this.item.insurance.name : '',
             insurancePlanName: this.item.insurancePlan ? this.item.insurancePlan.name : ''
           })
-
+          this.appointmentDetails = this.entries;
 
         }
         else
@@ -876,29 +1318,50 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     if (!this.itemForm.contains(`unitDiscountRate_${index}`))
       this.itemForm.addControl(`unitDiscountRate_${index}`, new FormControl({ value: discount, disabled: isNewEntry ? false : this.isEditing }, [Validators.max(100), Validators.min(0)]));
   }
+
+  setDetailFormNoCoverage(index: number, noCoverage: boolean = false) {
+    if (!this.itemForm.contains(`noCoverage_${index}`))
+      this.itemForm.addControl(`noCoverage_${index}`, new FormControl({ value: noCoverage }, []));
+  }
+
+  setDetailFormApprovalCode(index: number, code: string = '', isNewEntry: boolean = false, coverageNeeded: boolean = true) {
+    const noCoverage = this.itemForm.getRawValue()[`noCoverage_${index}`];
+    if (coverageNeeded) {
+      if (!this.itemForm.contains(`insuranceApprovalCode_${index}`))
+        this.itemForm.addControl(`insuranceApprovalCode_${index}`,
+          new FormControl({ value: !code ? '' : code, disabled: isNewEntry ? false : ((noCoverage && noCoverage.value) || this.isEditing) }, ((noCoverage && noCoverage.value)) ?
+            [] : [Validators.required, Validators.maxLength(50), Validators.minLength(1)]));
+    }
+
+  }
   refreshAmounts(fromForm: boolean = false) {
 
-    let { productPrice, productCost, quantity, unitId, beforeTaxesAmount, totalAmount, taxesAmount, discountAmount, discountRate } = this.itemForm.getRawValue() as any;
+    let { productPrice, productCost, quantity, unitId, beforeTaxesAmount, totalAmount, taxesAmount, discountAmount, discountRate, patientId, productId, patientPaymentAmount, insuranceCoverageAmount } = this.itemForm.getRawValue() as any;
+    if (productId && productId > 0 && this.patient && this.patient.id) {
+      const equivalence = unitId && unitId > 0 && this.productUnits ? this.productUnits.find(x => x.unitId == unitId).equivalence : 1;
+      const patientCurrency = this.patient.currency;
+      const rate = !patientCurrency ? 0 : patientCurrency.isLocalCurrency ? (this.selectedProductCurrency ? this.selectedProductCurrency.exchangeRate : 1) :
+        (this.selectedProductCurrency.exchangeRate / patientCurrency.exchangeRate);
+      productPrice = productPrice * rate;
+      productCost = (fromForm ? productCost : this.currentProductCost.cost > 0 ? (this.currentProductCost.cost / equivalence) : productCost) * rate;
+      beforeTaxesAmount = quantity * productPrice;
+      discountAmount = beforeTaxesAmount * (discountRate > 1 ? discountRate / 100 : discountRate);
+      taxesAmount = (this.CalculateProductTax() * quantity) * rate;
+      taxesAmount = (taxesAmount - (discountRate > 1 ? taxesAmount * discountRate / 100 : taxesAmount * discountRate));
+      totalAmount = beforeTaxesAmount + taxesAmount - discountAmount;
+      patientPaymentAmount = totalAmount - insuranceCoverageAmount;
+      this.oldProductCost = productCost;
+      this.oldProductPrice = productPrice;
+      this.itemForm.patchValue({
+        productCost,
+        beforeTaxesAmount,
+        totalAmount,
+        taxesAmount,
+        discountAmount,
+        patientPaymentAmount
+      })
+    }
 
-    const equivalence = unitId && unitId > 0 ? this.productUnits.find(x => x.unitId == unitId).equivalence : 1;
-    const customerCurrency = this.patient.currency;
-    const rate = !customerCurrency ? 0 : customerCurrency.isLocalCurrency ? this.selectedProductCurrency.exchangeRate : (this.selectedProductCurrency.exchangeRate / customerCurrency.exchangeRate);
-    productPrice = productPrice * rate;
-    productCost = (fromForm ? productCost : this.currentProductCost.cost > 0 ? (this.currentProductCost.cost / equivalence) : productCost) * rate;
-    beforeTaxesAmount = quantity * productPrice;
-    discountAmount = beforeTaxesAmount * (discountRate > 1 ? discountRate / 100 : discountRate);
-    taxesAmount = (this.CalculateProductTax() * quantity) * rate;
-    taxesAmount = (taxesAmount - (discountRate > 1 ? taxesAmount * discountRate / 100 : taxesAmount * discountRate));
-    totalAmount = beforeTaxesAmount + taxesAmount - discountAmount;
-    this.oldProductCost = productCost;
-    this.oldProductPrice = productPrice;
-    this.itemForm.patchValue({
-      productCost,
-      beforeTaxesAmount,
-      totalAmount,
-      taxesAmount,
-      discountAmount
-    })
 
 
 
