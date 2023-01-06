@@ -62,7 +62,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
     ) {
         super(route, langService, AppSections.ExpensesPayments,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -163,7 +163,7 @@ this.actions=[
         id:'print'
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -179,7 +179,7 @@ this.actions=[
     }
     print(e:any) {
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/ExpensePayment?id=${e.expenseId}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
        }
@@ -188,7 +188,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.ExpensePayments=r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -236,7 +236,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -266,7 +266,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -284,12 +284,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -312,7 +312,7 @@ else{
       if(r)
       this.delete(event.id);
   })
-   
+
     }
 
     delete(id: number) {

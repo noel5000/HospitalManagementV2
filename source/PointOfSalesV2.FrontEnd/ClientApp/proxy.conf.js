@@ -18,6 +18,8 @@ const PROXY_CONFIG = [
       "/api/user",
       "/api/warehouse",
       "/api/branchoffice",
+      "/views",
+      "/views/invoicePrint",
       "/invoiceprint",
     ],
     target: target,

@@ -31,11 +31,11 @@ declare const $: any;
 })
 export class patientCheckupEditFormComponent extends BaseComponent implements OnInit {
 
-  
-   
-   
 
-   
+
+
+
+
     editing:number=1;
     attachmentsService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/CheckupAttachment`);
     attachments:any[]=[];
@@ -156,7 +156,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             });
 
 
-        this.uploader=new FileUploader({ url:  `${this.config.config.endpointFilesUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
+        this.uploader=new FileUploader({ url:  `${this.baseUrl}Files/SaveCheckupFile/${this.id}`,authToken:`Bearer ${this.getUser().tokenKey}`, authTokenHeader:'Authorization', itemAlias: 'file', headers:[{name:'Access-Control-Allow-Origin',value:''}] });
     }
 
     addProduct(type:string){
@@ -211,7 +211,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
                             this.itemForm.patchValue({productId:newProduct.id});
                     break;
                 }
-               
+
             }
 
         }
@@ -248,7 +248,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
             productId:null,
             medicalSpecialityId:null,
             newProduct:''
-            
+
         });
        this.newProduct=false;
     }
@@ -304,7 +304,7 @@ this.attachmentsService.getAllFiltered([
          this.uploader
          this.modalService.showSuccess(this.lang.getValueByKey('ok_msg'));
          this.getAttachments(this.id);
-      
+
     };
     }
     async getMedicalSpecialities(){
@@ -315,7 +315,7 @@ this.attachmentsService.getAllFiltered([
     }
 
     setLink(attachment:any){
-        return `${this.config.config.endpointFilesUrl}Files/${attachment.fileAttachment.fileName}`
+        return `${this.baseUrl}Files/${attachment.fileAttachment.fileName}`
     }
 
     removeAttachment(id:number){
@@ -325,7 +325,7 @@ this.attachmentsService.getAllFiltered([
     }
 
     onChanges(){
-      
+
 
     }
     async labTestSelection(index:number){
@@ -378,7 +378,7 @@ this.attachmentsService.getAllFiltered([
     ]
         this.productService.getAllFiltered(filter).subscribe(r=>{
             switch(type){
-               
+
                 case 'M':
                     this.medicines=[{id:0, name:''} as Product];
                     this.medicines=this.products.concat( r['value']);
@@ -395,7 +395,7 @@ this.attachmentsService.getAllFiltered([
                     this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
                 break;
             }
-           
+
         });
     }
     async getAppointment(id:number){
@@ -438,7 +438,7 @@ this.attachmentsService.getAllFiltered([
             }
         })
     }
-  
+
 
     async getPatient(getData:number=0){
       this.patientService.getById(this.patientId).subscribe(r=>{
@@ -500,7 +500,7 @@ this.attachmentsService.getAllFiltered([
         this.itemForm.removeControl(`imageResult${index}`)
     }
 
-   
+
 
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
@@ -515,14 +515,14 @@ this.attachmentsService.getAllFiltered([
                 if(this.selectedLabTests && this.selectedLabTests.length>0){
                     for(let i=0; i<this.selectedLabTests .length;i++){
                         this.setLabResult(this.selectedLabTests[i].id,this.selectedLabTests[i].results);
-                      
+
                       }
                 }
 
                 if(this.selectedImages && this.selectedImages.length>0){
                     for(let i=0; i<this.selectedImages .length;i++){
                         this.setImageResult(this.selectedImages[i].id,this.selectedImages[i].results);
-                      
+
                       }
                 }
                 const {
@@ -615,7 +615,7 @@ console.log(ex);
          }
      });
            this.item.checkupPrescriptions=this.selectedLabTests.concat(this.selectedConsultations,this.selectedImages,this.selectedMedicines);
-          
+
            this.patient.alergies=formValue.alergies;
            this.patient.bloodTransfusions=formValue.bloodTransfusions;
            this.patient.familyIllnesses=formValue.familyIllnesses;
@@ -667,7 +667,7 @@ console.log(ex);
                         else
                         this.selectedImages.push(prescription);
                     }
-    
+
                 break;
                 case "L":
                     if(prescription.productId){
@@ -707,9 +707,9 @@ console.log(ex);
                 newProduct:''
             })
         }
-    
+
         }
-    
+
         findProduct(id:number,type:string):Product{
             let result= null;
             switch (type){
@@ -732,28 +732,28 @@ console.log(ex);
         const i = this.products.findIndex(x=>x.id==this.selectedLabTests[index].productId);
         if(i>=0){
             this.products[i].selected=false;
-           
+
         }
         const test= this.selectedLabTests[index];
         this.itemForm.removeControl(`labResult_${test.id}`);
         this.selectedLabTests.splice(index,1);
-    
+
         }
-    
+
         async  deleteSelectedConsultation(index:number){
             this.selectedConsultations.splice(index,1);
         }
-    
+
         async  deleteSelectedImage(index:number){
             const test= this.selectedImages[index];
             this.itemForm.removeControl(`imageResult_${test.id}`);
             this.selectedImages.splice(index,1);
         }
-    
+
         async  deleteSelectedMedicine(index:number){
             this.selectedMedicines.splice(index,1);
         }
-    
+
         cancel(){
             this.clearBackupData();
         this.router.navigateByUrl(`pages/patientcheckup/${this.patientId}/${this.appointmentId}`);
@@ -768,5 +768,5 @@ console.log(ex);
           }
 
 
- 
+
 }

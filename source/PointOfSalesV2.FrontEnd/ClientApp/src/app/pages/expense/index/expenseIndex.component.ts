@@ -66,7 +66,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     ) {
         super(route, langService, AppSections.Expenses,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -170,7 +170,7 @@ this.actions=[
         icon:'',
         id:'edit',
         visible:(item)=>{
-            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid 
+            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid
             && this.isUserValidOperation(Operations.UPDATE) ;
         }
     },
@@ -180,7 +180,7 @@ this.actions=[
         icon:'',
         id:'delete',
         visible:(item)=>{
-            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid 
+            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid
             && this.isUserValidOperation(Operations.DELETE) ;
         }
     },
@@ -191,7 +191,7 @@ this.actions=[
         id:'print'
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -214,7 +214,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.Expenses=r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -268,7 +268,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -298,7 +298,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -316,12 +316,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -329,7 +329,7 @@ else{
     print(e:any){
 
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
     }
@@ -352,7 +352,7 @@ else{
       if(r)
       this.delete(event.id);
   })
-   
+
     }
 
     delete(id: number) {

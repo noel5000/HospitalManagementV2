@@ -46,6 +46,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
   @ViewChild('productSearch', { static: false })
   private productSearch: AutoCompleteComponent;
   hospitalId: number = 0;
+  patient:any=null;
   product: any = null;
   warehouseId: number = 0;
   currentDate: string = '';
@@ -195,7 +196,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-
+    document.getElementById('basicInfoHeader').click();
     this.onChanges();
     this.verifyUser();
     this.getTrnControls();
@@ -249,8 +250,8 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     for (let i = 0; i < this.entries.length; i++) {
       this.setDetailFormAmount(i, this.entries[i].quantity);
       this.setDetailFormDiscount(i, this.entries[i].discountRate);
-      this.setDetailFormApprovalCode(i, this.entries[i].insuranceApprovalCode);
       this.setDetailFormNoCoverage(i, this.entries[i].noCoverage);
+      this.setDetailFormApprovalCode(i, this.entries[i].insuranceApprovalCode);
     }
 
     const { appointmentId } = this.itemForm.getRawValue();
@@ -1216,9 +1217,9 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     const currentIndex = this.entries.length;
     this.setDetailFormAmount(currentIndex - 1, entry.quantity);
     this.setDetailFormDiscount(currentIndex - 1, entry.discountRate);
+    this.setDetailFormNoCoverage(currentIndex - 1, this.product.type != 'C');
     this.setDetailFormApprovalCode(currentIndex - 1, entry.insuranceApprovalCode, true, true);
-    this.setDetailFormNoCoverage(currentIndex - 1, this.product.type != 'C', true);
- 
+
     this.itemForm.patchValue({
       productId: null,
       quantity: 0,
@@ -1238,14 +1239,14 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     this.productUnits = [];
     this.appointmentDetails = this.entries;
     this.productSearch.filterString = '';
-    setTimeout(this.validateCheck, 200, currentIndex-1);
+    setTimeout(this.validateCheck, 200, {index:(currentIndex-1),data:entry });
 
   }
 
-  validateCheck(index) {
-    let validateCheck = document.getElementById(`noCoverage_${index}`);
-    if (validateCheck && validateCheck.checked)
-      validateCheck.checked = false;
+  validateCheck(validation:any) {
+    let validateCheck = document.getElementById(`noCoverage_${validation.index}`);
+    if (validateCheck && validateCheck['checked'] && validation.data.type =='C')
+      validateCheck['checked'] = false;
   }
   deleteEntry(index: number) {
     const entry = this.entries[index];
@@ -1280,8 +1281,8 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
             for (let i = 0; i < r.data[0].invoiceDetails.length; i++) {
               this.setDetailFormAmount(i, r.data[0].invoiceDetails[i].quantity);
               this.setDetailFormDiscount(i, r.data[0].invoiceDetails[i].discountRate);
-              this.setDetailFormApprovalCode(i, r.data[0].invoiceDetails[i].insuranceApprovalCode);
               this.setDetailFormNoCoverage(i, r.data[0].invoiceDetails[i].noCoverage);
+              this.setDetailFormApprovalCode(i, r.data[0].invoiceDetails[i].insuranceApprovalCode);
             }
           }
           this.entries = r.data[0] && r.data[0].
@@ -1322,12 +1323,12 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       this.itemForm.addControl(`unitDiscountRate_${index}`, new FormControl({ value: discount, disabled: isNewEntry ? false : this.isEditing }, [Validators.max(100), Validators.min(0)]));
   }
 
-  setDetailFormNoCoverage(index: number, noCoverage: boolean = false, isNewEntry: boolean = false) {
+  setDetailFormNoCoverage(index: number, noCoverage: boolean = false) {
     if (!this.itemForm.contains(`noCoverage_${index}`))
       this.itemForm.addControl(`noCoverage_${index}`, new FormControl({ value: noCoverage }, []));
   }
 
-  setDetailFormApprovalCode(index: number, code: string, isNewEntry: boolean = false, coverageNeeded: boolean = true) {
+  setDetailFormApprovalCode(index: number, code: string='', isNewEntry: boolean = false, coverageNeeded: boolean = true) {
     const noCoverage = this.itemForm.getRawValue()[`noCoverage_${index}`];
     if (coverageNeeded) {
       if (!this.itemForm.contains(`insuranceApprovalCode_${index}`))

@@ -105,19 +105,19 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
                 const user = JSON.parse(localStorage.getItem("currentUser"));
 
                 if(selectedMedicines && selectedMedicines.length>0)
-                window.open(`${this.config.config.endpointFilesUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+                window.open(`${this.baseUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedLabTests && selectedLabTests.length>0)
-               window.open(`${this.config.config.endpointFilesUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedConsultations && selectedConsultations.length>0)
-               window.open(`${this.config.config.endpointFilesUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedImages && selectedImages.length>0)
-               window.open(`${this.config.config.endpointFilesUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
             }
         }

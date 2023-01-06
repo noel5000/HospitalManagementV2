@@ -48,6 +48,29 @@
     <ProjectReference Include="..\PointOfSalesV2.Repository\PointOfSalesV2.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Views\ExpensePayment.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Views\ExpensePrint.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Views\InvoiceLeadPrint.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Views\InvoicePayment.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Views\InvoicePrint.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
@@ -75,5 +98,33 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Views\AppointmentPrint.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Views\AppointmentPrint.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Views\CheckupConsultationsPrint.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Views\CheckupLabTestsPrint.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Views\CheckupMedicationsPrint.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Views\CheckupSpecializedImagesPrint.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Views\CheckupConsultationsPrint.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Views\CheckupLabTestsPrint.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Views\CheckupMedicationsPrint.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Views\CheckupSpecializedImagesPrint.cshtml" />
+  </ItemGroup>
 
 </Project>

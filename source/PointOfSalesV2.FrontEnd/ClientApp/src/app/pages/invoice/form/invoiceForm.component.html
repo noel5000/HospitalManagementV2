@@ -1,11 +1,11 @@
 
-  
+
         <form [formGroup]="itemForm" (ngSubmit)="save()">
-                  
+
             <div class="row">
               <nb-accordion style="width: 100%;" class="my-2">
                 <nb-accordion-item>
-                  <nb-accordion-item-header>{{'invoiceInfo_lbl' | translate}}</nb-accordion-item-header>
+                  <nb-accordion-item-header id="basicInfoHeader">{{'invoiceInfo_lbl' | translate}}</nb-accordion-item-header>
                   <nb-accordion-item-body>
                     <div class="form-row">
                       <div class="form-group col-md-6 col-xs-12" [hidden]="id && id>0">
@@ -131,7 +131,7 @@
                           <div>{{inventory.warehouse.name}}: {{inventory.quantity}} {{inventory.unit.name}}</div>
                         </div>
                       </div>
-                      <div class="form-group col-md-6 col-xs-12" [hidden]="!product || (product.type!='C' || !product.medicalSpecialityId)">
+                      <div class="form-group col-md-3 col-xs-12" [hidden]="!product || (product.type!='C' || !product.medicalSpecialityId)">
                         <label>{{'doctor_lbl' | translate}}</label>
                         <select class="form-control"
                                 formControlName="doctorId">
@@ -143,7 +143,7 @@
 
                       </div>
 
-                      <div class="form-group col-md-2 col-xs-4" [hidden]="(!productUnits || productUnits.lenght==0 || (product && product.isService))">
+                      <div class="form-group col-md-3 col-xs-4" [hidden]="(!productUnits || productUnits.lenght==0 || (product && product.isService))">
                         <label>{{'unit_lbl' | translate}}</label>
                         <select class="form-control"
                                 [ngClass]="{ 'is-invalid': form.unitId.errors }"
@@ -252,21 +252,22 @@
                             <td>{{entry.product.name}}</td>
                             <td>{{entry.unit?entry.unit.name:''}}</td>
                             <td ><input type="number"
-                                 [formControlName]="('unitQuantity_'+i)" 
-                                 required 
+                                 [formControlName]="('unitQuantity_'+i)"
+                                 required
                                  [disabled]="isEditing || entry.appointmentId"
                                  (change)="GetDetailProductTaxes(i)"
                                  class="form-control"
                                   min="1"
                                    [ngClass]="{ 'is-invalid':form[('unitQuantity_'+i)] && form[('unitQuantity_'+i)].errors }" />
                             </td>
-                            
+
                             <td>{{entry.totalAmount | currency:""}}</td>
                             <td>{{entry.insuranceCoverageAmount | currency:""}}</td>
                             <td>{{entry.patientPaymentAmount | currency:""}}</td>
                             <td><input type="text"
-                                [formControlName]="('insuranceApprovalCode_'+i)" 
-                                required 
+                              *ngIf="entry.type=='C'"
+                                [formControlName]="('insuranceApprovalCode_'+i)"
+                                required
                                 class="form-control"
                                   [ngClass]="{ 'is-invalid':form[('insuranceApprovalCode_'+i)] && form[('insuranceApprovalCode_'+i)].errors }" />
                         </td>

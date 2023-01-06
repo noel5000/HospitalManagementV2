@@ -29,7 +29,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
-    
+
     service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CustomerPayment`);
     pageNumber:number=1;
     pageSize:number=10;
@@ -63,7 +63,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     ) {
         super(route, langService, AppSections.CustomerPayments,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 
 {
@@ -176,7 +176,7 @@ this.actions=[
         id:'print'
     }
 ];
-       
+
     }
 
     getStatusDescription(state:string):string{
@@ -201,7 +201,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.InvoicePayments=r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -249,7 +249,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -279,7 +279,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -297,12 +297,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -312,7 +312,7 @@ else{
     }
     print(e:any) {
      const user = JSON.parse(localStorage.getItem("currentUser"));
-     this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
+     this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
@@ -328,7 +328,7 @@ else{
       if(r)
       this.delete(event.sequence);
   })
-   
+
     }
 
     delete(sequence: string) {

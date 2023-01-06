@@ -345,14 +345,14 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   }
   printAppointment(appointment: any) {
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/AppointmentPrint?id=${appointment.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/AppointmentPrint?id=${appointment.id}&language=${user.languageId}` }], {
       skipLocationChange: true,
     });
   }
 
   print(e: any) {
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/AppointmentPrint?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/AppointmentPrint?id=${e.id}&language=${user.languageId}` }], {
       skipLocationChange: true,
     });
   }

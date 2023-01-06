@@ -75,7 +75,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
     ) {
         super(route, langService, AppSections.Quotes,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
     visible:true,
@@ -88,7 +88,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
-  
+
 {
     visible:true,
     id:'invoiceNumber',
@@ -195,7 +195,7 @@ this.actions=[
            return  item.state == BillingStates.Quoted  && this.isUserValidOperation(Operations.DELETE)  ;
         }
     },
-    
+
     {
         title:scope.lang.getValueByKey('print_btn'),
         class:'btn btn-info m-1',
@@ -210,10 +210,10 @@ this.actions=[
         visible:(item)=>{
             return item.state == BillingStates.Quoted && this.isUserValidOperation(Operations.UPDATE) ;
          }
-        
+
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -240,11 +240,11 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.Invoices=r['value'];
-          
+
         },
             error => {
-               
-                
+
+
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
             }
         )
@@ -261,8 +261,8 @@ this.actions=[
           this.getPagedData(this.pageNumber);
         },
             error => {
-               
-                
+
+
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
             }
         )
@@ -328,7 +328,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -358,7 +358,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -376,12 +376,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -390,7 +390,7 @@ else{
         this.router.navigateByUrl(`pages/quotes/add`);
     }
 
-    
+
     edit(e:any) {
         this.router.navigateByUrl(`pages/quotes/edit/${e.id}`);
     }
@@ -398,7 +398,7 @@ else{
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
@@ -419,7 +419,7 @@ else{
         else
         this.modalService.showError('alreadyNull_msg');
 
-   
+
     }
 
     onBillConfirm(event:any): void {
@@ -438,7 +438,7 @@ else{
         else
         this.modalService.showError('alreadyNull_msg');
 
-   
+
     }
 
     delete(id: number) {

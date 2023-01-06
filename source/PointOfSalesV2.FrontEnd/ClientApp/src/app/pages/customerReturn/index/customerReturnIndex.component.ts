@@ -46,14 +46,14 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
             type: ObjectTypes.ChildObject,
             isTranslated:false
         },
-        
+
         {
             property: "Currency",
             value: "Name,Id,Code",
             type: ObjectTypes.ChildObject,
             isTranslated:false
         },
-        
+
         {
             property: "CreditNote",
             value: "Id,Sequence",
@@ -76,7 +76,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     ) {
         super(route, langService, AppSections.CustomersReturns,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -116,7 +116,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
       objectType:ObjectTypes.String,
       filterIsActive:true
     },
-    
+
     {
         visible:true,
         id:'date',
@@ -151,7 +151,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
-  
+
   {
     visible:true,
     id:'totalAmount',
@@ -178,9 +178,9 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
       },
         ];
 this.actions=[
- 
-    
-    
+
+
+
     {
         title:scope.lang.getValueByKey('print_btn'),
         class:'btn btn-info m-1',
@@ -188,7 +188,7 @@ this.actions=[
         id:'print',
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -206,7 +206,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.returns=r['value'];
-          
+
         },
             error => {  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
             }
@@ -241,14 +241,14 @@ else{
                 type: ObjectTypes.ChildObject,
                 isTranslated:false
             },
-            
+
             {
                 property: "Currency",
                 value: "Name,Id,Code",
                 type: ObjectTypes.ChildObject,
                 isTranslated:false
             },
-            
+
             {
                 property: "CreditNote",
                 value: "Id,Sequence",
@@ -267,7 +267,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -297,7 +297,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -315,16 +315,16 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
+                scope.getData();
 
     }
 
-    
+
 
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${this.config.config.endpointFilesUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
@@ -335,5 +335,5 @@ else{
     source:any={};
 
 
-  
+
 }
