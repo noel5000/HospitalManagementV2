@@ -51,7 +51,6 @@ import { TaxReportModule } from './taxesReport/taxesReport.module';
 import { ComissionsReportModule } from './comissionsReport/comissionsReport.module';
 import { quotesModule } from './quotes/quote.module';
 import { CustomerReturnModule } from './customerReturn/customerReturn.module';
-import { httpInterceptorProviders } from '../@core/services/baseService';
 import { InsuranceModule } from './insurance/insurance.module';
 import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.module';
 import { appointmentsModule } from './appointment/appointment.module';

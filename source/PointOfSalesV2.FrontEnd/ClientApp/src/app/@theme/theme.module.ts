@@ -47,7 +47,6 @@ import { NgbPaginationModule, NgbDropdownModule, NgbModalModule } from '@ng-boot
 import { NgbdModalConfirmAutofocus } from './components/modal/modal.component';
 import { AutoCompleteComponent } from './components/auto-complete/auto-complete.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -85,7 +84,7 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES,TranslateModule,NgbPaginationModule, NgbDropdownModule, NgbModalModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, ...NB_MODULES,TranslateModule,NgbPaginationModule, NgbDropdownModule, NgbModalModule, FormsModule],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES,NgbdSortableHeader],
   providers: [LanguageService]
