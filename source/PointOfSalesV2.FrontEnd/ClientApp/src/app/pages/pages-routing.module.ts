@@ -80,6 +80,10 @@ import { patientCheckupFormComponent } from './patientCheckup/form/patientChecku
 import { patientCheckupEditFormComponent } from './patientCheckup/edit/patientCheckupEditForm.component';
 import { insuranceCoveragesReportComponent } from './insuranceCoveragesReport/index/insuranceCoveragesReport.component';
 import { LogoutIndexComponent } from './logout/index/logoutIndex.component';
+import { MedicalTestIndexComponent } from './medicalTest/index/medicalTestIndex.component';
+import { MedicalTestFormComponent } from './medicalTest/form/medicalTestForm.component';
+import { MedicineIndexComponent } from './medicine/index/medicineIndex.component';
+import { MedicineFormComponent } from './medicine/form/medicineForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -249,6 +253,34 @@ const routes: Routes = [{
     {
       path: 'product/edit/:id',
       component: ProductFormComponent
+    },
+
+
+    {
+      path: 'medicine',
+      component: MedicineIndexComponent
+    },
+    {
+      path: 'medicine/add',
+      component: MedicineFormComponent
+    },
+    {
+      path: 'medicine/edit/:id',
+      component: MedicineFormComponent
+    },
+
+
+    {
+      path: 'medical-test',
+      component: MedicalTestIndexComponent
+    },
+    {
+      path: 'medical-test/add',
+      component: MedicalTestFormComponent
+    },
+    {
+      path: 'medical-test/edit/:id',
+      component: MedicalTestFormComponent
     },
 
 

@@ -212,7 +212,18 @@ export class PagesComponent {
                 title: this.lang.getValueByKey('consultation_menu'),
                 link: 'product',
                 hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
-              },  {
+              },  
+              {
+                title: this.lang.getValueByKey('medicine_lbl'),
+                link: 'medicine',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
+              },  
+              {
+                title: this.lang.getValueByKey('medicalTests_menu'),
+                link: 'medical-test',
+                hidden: !this.securityService.isUserValidInMenu(AppSections.Products)
+              },  
+              {
                 title: this.lang.getValueByKey('insuranceCoverage_menu'),
                 link: 'insuranceCoverage',
                 hidden: !this.securityService.isUserValidInMenu(AppSections.Insurance)
@@ -323,10 +334,6 @@ export class PagesComponent {
           }
         ],
       },
-
-
-
-      
     ];
 
    }

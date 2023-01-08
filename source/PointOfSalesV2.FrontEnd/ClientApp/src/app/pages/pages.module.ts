@@ -59,6 +59,8 @@ import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.m
 import { PatientCheckupModule } from './patientCheckup/patientCheckup.module';
 import { insuranceCoveragesReportModule } from './insuranceCoveragesReport/insuranceCoveragesReport.module';
 import { LogoutModule } from './logout/logout.module';
+import { MedicineModule } from './medicine/medicine.module';
+import { MedicalTestModule } from './medicalTest/medicalTest.module';
 
 @NgModule({
   imports: [
@@ -103,6 +105,8 @@ import { LogoutModule } from './logout/logout.module';
     DebtsToPayReportModule,
     AccountStateModule,
     CompanyStateModule,
+    MedicineModule,
+    MedicalTestModule,
     TaxReportModule,
     CustomerReturnModule,
     ComissionsReportModule,

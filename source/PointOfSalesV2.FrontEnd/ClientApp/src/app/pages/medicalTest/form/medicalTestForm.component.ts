@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -20,24 +18,27 @@ import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { UnitService } from '../../../@core/services/UnitService';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { TaxService } from '../../../@core/services/TaxService';
-import { endpointUrl } from '../../../@core/common/constants';
 import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
 @Component({
-    selector: "product-form",
-    templateUrl: "./productForm.component.html",
-    styleUrls: ["../productStyles.component.scss"]
+    selector: "medical-test-form",
+    templateUrl: "./medicalTestForm.component.html",
+    styleUrls: ["../medicalTest.component.scss"]
 })
-export class ProductFormComponent extends BaseComponent implements OnInit {
+export class MedicalTestFormComponent extends BaseComponent implements OnInit {
 
     isServiceFlag:boolean=false;
     isCompositeFlag:boolean=false;
     types:any[]=[
         {
-            id:'C',
-            name:this.lang.getValueByKey('medicalConsultation_lbl')
+            id:'L',
+            name:this.lang.getValueByKey('laboratory_lbl')
+        },
+        {
+            id:'E',
+            name:this.lang.getValueByKey('especializedImages_lbl')
         }
     ];
     _route:ActivatedRoute;
@@ -87,7 +88,7 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
 code:[''],
 currencyId:[0,[ Validators.required,Validators.min(1)]],
 cost:[0],
-price:[0,[ Validators.required,Validators.min(0.0001)]],
+price:[0],
 price2:[0],
 price3:[0],
 sellerRate:[0],
@@ -103,11 +104,11 @@ baseUnitId:[null],
 medicalSpecialityId:[null],
 quantity:[0],
 taxId:0,
-type:['C']
+type:['L']
         });
     }
     ngOnInit(): void {
-     const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
+     const urlId= parseInt( this._route.snapshot.paramMap.get('id')!);
      if(!isNaN(urlId)){
         this.id=urlId;
         this.getItem(urlId);
@@ -159,7 +160,7 @@ type:['C']
         
         this.service.getAll().subscribe(r=>{
             this.otherProducts=r;
-            const urlId= parseInt( this._route.snapshot.paramMap.get('id'));
+            const urlId= parseInt( this._route.snapshot.paramMap.get('id')!);
      if(!isNaN(urlId)){
         const index = this.otherProducts.findIndex(x=>x.id==urlId);
         if(index>=0)
@@ -344,7 +345,7 @@ async getSuppliers(){
                if(r.status>=0){
                 this.modalService.showSuccess(this.lang.getValueByKey('success_msg'));
                 this.clearBackupData();
-                this.router.navigateByUrl('pages/product');
+                this.router.navigateByUrl('pages/medical-test');
                }
                else
                this.modalService.showError(r.message);
@@ -359,7 +360,7 @@ setProductChildren(){
 }
     cancel(){
         this.clearBackupData();
-    this.router.navigateByUrl('pages/product');
+    this.router.navigateByUrl('pages/medical-test');
     }
 
     saveUnit(){
@@ -434,7 +435,7 @@ setProductChildren(){
             baseProductUnitId:parseInt(this.form.baseUnitId.value)
         };
         
-        if(currentBaseProduct.quantity<=0|| currentBaseProduct.baseProductId<=0 || (!currentBaseProduct.baseProduct.isService && currentBaseProduct.baseProductUnitId<=0))
+        if(currentBaseProduct.quantity<=0|| currentBaseProduct.baseProductId<=0 || (!currentBaseProduct.baseProduct!.isService && currentBaseProduct.baseProductUnitId<=0))
         return;
 
       

@@ -14,11 +14,11 @@ import { Product } from '../../../@core/data/product';
 
 declare const $: any;
 @Component({
-    selector: "product-list",
-    templateUrl: "./productIndex.component.html",
-    styleUrls: ["../productStyles.component.scss"]
+    selector: "medical-test-list",
+    templateUrl: "./medicalTestIndex.component.html",
+    styleUrls: ["../medicalTest.component.scss"]
 })
-export class ProductIndexComponent extends BaseComponent implements OnInit {
+export class MedicalTestIndexComponent extends BaseComponent implements OnInit {
     ngOnInit(): void {
         this.verifyUser();
         this.getPagedData(1);
@@ -162,8 +162,8 @@ this.actions=[
 
     getData() {
         if (this.filters.findIndex(x=>x.property.toLowerCase()=='type')<0)
-        this.filters.push({property:'Type', value:'C', comparer:ODataComparers.in, type: ObjectTypes.String  } as QueryFilter)
-        
+        this.filters.push({property:'Type', value:'L,E', comparer:ODataComparers.in, type: ObjectTypes.String  } as QueryFilter)
+
         this.service.getFiltered(this.pageNumber, this.pageSize, this.filters, this.orderBy, this.orderDirection).subscribe(r => {
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
@@ -247,10 +247,10 @@ else{
     }
 
     addNew() {
-        this.router.navigateByUrl(`pages/product/add`);
+        this.router.navigateByUrl(`pages/medical-test/add`);
     }
     edit(e:Product) {
-        this.router.navigateByUrl(`pages/product/edit/${e.id}`);
+        this.router.navigateByUrl(`pages/medical-test/edit/${e.id}`);
     }
     source:any={};
     onDeleteConfirm(event:Product): void {
