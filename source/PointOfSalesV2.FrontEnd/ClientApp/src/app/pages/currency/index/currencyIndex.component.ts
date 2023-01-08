@@ -166,8 +166,8 @@ else{
 }
     getPagedData(page:number) {
         this.pageNumber = page?page:1;
-        this.orderBy=this.tableConfig.find(x=>x.toSort).id;
-        this.orderDirection=this.tableConfig.find(x=>x.toSort).sorting;
+        this.orderBy=this.tableConfig.find(x=>x.toSort)!.id;
+        this.orderDirection=this.tableConfig.find(x=>x.toSort)!.sorting;
         this.getData();
     }
 

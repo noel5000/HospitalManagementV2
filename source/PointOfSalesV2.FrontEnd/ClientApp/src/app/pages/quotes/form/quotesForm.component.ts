@@ -509,6 +509,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
   async selectPatient(patient: any) {
     if (patient) {
+      this.patient=patient;
       this.itemForm.patchValue({
         patientId: patient.id,
         trnType: patient.trnType,
@@ -525,6 +526,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
 
     }
     else {
+      this.patient=null;
       this.itemForm.patchValue({
         customerId: null,
         trnType: null,
@@ -534,7 +536,8 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
         sellerId: null,
         insuranceName: '',
         insurancePlanName: '',
-        nrc: ''
+        nrc: '',
+        patientName:null
 
       });
       this.refreshAmounts(false);
@@ -738,6 +741,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
         this.getInsuranceCoverage(form.productId, form.insuranceId, form.insurancePlanId);
       }
       else {
+        this.patient=null;
         this.itemForm.patchValue({
           insuranceId: null,
           insurancePlanId: null,

@@ -117,7 +117,7 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
  {
     visible:true,
     id:'insuranceId',
-    fieldToShow:'insurance.name',
+    isSortable:false, fieldToShow:'insurance.name',
     type:'text',
     objectTypeToShow:ObjectTypes.String,
     isTranslated:false,
@@ -130,7 +130,7 @@ export class CustomerIndexComponent extends BaseComponent implements OnInit {
  {
     visible:true,
     id:'insurancePlanId',
-    fieldToShow:'insurancePlan.name',
+    isSortable:false, fieldToShow:'insurancePlan.name',
     type:'text',
     objectTypeToShow:ObjectTypes.String,
     isTranslated:false,

@@ -90,7 +90,7 @@ export class WarehouseIndexComponent extends BaseComponent implements OnInit {
   {
     visible:true,
     id:'branchOfficeId',
-    fieldToShow:'branchOffice.name',
+    isSortable:false, fieldToShow:'branchOffice.name',
     type:'text',
     isTranslated:true,
     objectTypeToShow:ObjectTypes.String,

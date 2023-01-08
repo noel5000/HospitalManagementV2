@@ -106,7 +106,7 @@ export class PriceListIndexComponent extends BaseComponent implements OnInit {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
         objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),

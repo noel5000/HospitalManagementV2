@@ -114,7 +114,7 @@ export class SellerIndexComponent extends BaseComponent implements OnInit {
                         visible:true,
                         id:'zoneId',
                         type:'text',
-                        fieldToShow:'zone.name',
+                        isSortable:false, fieldToShow:'zone.name',
                         isTranslated:true,
                         objectTypeToShow:ObjectTypes.String,
                         name:this.lang.getValueByKey('zone_lbl'),

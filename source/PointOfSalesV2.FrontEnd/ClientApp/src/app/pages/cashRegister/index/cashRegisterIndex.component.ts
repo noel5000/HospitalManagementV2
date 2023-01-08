@@ -90,7 +90,7 @@ export class CashRegisterIndexComponent extends BaseComponent implements OnInit 
   {
     visible:true,
     id:'branchOfficeId',
-    fieldToShow:'branchOffice.name',
+    isSortable:false, fieldToShow:'branchOffice.name',
     objectTypeToShow:ObjectTypes.String,
     type:'text',
     isTranslated:true,

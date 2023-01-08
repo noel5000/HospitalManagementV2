@@ -104,12 +104,12 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
     visible:true,
     id:'branchOfficeId',
     type:'text',
-    fieldToShow:'branchOffice.name',
+    isSortable:false, fieldToShow:'branchOffice.name',
     objectTypeToShow:ObjectTypes.String,
     isTranslated:true,
     name:this.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
-    toSort:true,
+    toSort:false,
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
@@ -117,12 +117,12 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
       visible:true,
       id:'patientId',
       type:'text',
-      fieldToShow:'patient.name',
+      isSortable:false, fieldToShow:'patient.name',
       isTranslated:false,
       objectTypeToShow:ObjectTypes.String,
       name:this.lang.getValueByKey('patient_lbl'),
       sorting:'desc',
-      toSort:true,
+      toSort:false,
       objectType:ObjectTypes.String,
       filterIsActive:true
     },
@@ -141,12 +141,12 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
         objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
-        toSort:true,
+        toSort:false,
         objectType:ObjectTypes.String,
         filterIsActive:true
       },
@@ -172,7 +172,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
       objectType:ObjectTypes.String,
       filterIsActive:true,
       customText:(item)=>{
-          return this.lang.getValueByKey(`billingState${item.state}_lbl`);;
+          return this.lang.getValueByKey(`billingState${item.state}_lbl`);
       }
     },
         ];
@@ -343,6 +343,8 @@ else{
            toSort:true,
            visible:temp.visible,
             id:temp.id,
+            isSortable:e.isSortable,
+            customText:e.customText,
   type:temp.type,
   isTranslated:temp.isTranslated,
   name:temp.name,

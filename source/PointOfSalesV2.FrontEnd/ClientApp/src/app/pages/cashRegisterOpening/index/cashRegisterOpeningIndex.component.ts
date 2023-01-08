@@ -84,7 +84,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     visible:true,
     id:'userId',
     type:'text',
-    fieldToShow:'user.userName',
+    isSortable:false, fieldToShow:'user.userName',
     objectTypeToShow:ObjectTypes.String,
     isTranslated:false,
     name:this.lang.getValueByKey('user_lbl'),
@@ -96,7 +96,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
   {
     visible:true,
     id:'branchOfficeId',
-    fieldToShow:'branchOffice.name',
+    isSortable:false, fieldToShow:'branchOffice.name',
     objectTypeToShow:ObjectTypes.String,
     type:'text',
     isTranslated:true,
@@ -109,7 +109,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
   {
     visible:true,
     id:'cashRegisterId',
-    fieldToShow:'cashRegister.name',
+    isSortable:false, fieldToShow:'cashRegister.name',
     objectTypeToShow:ObjectTypes.String,
     type:'text',
     isTranslated:true,

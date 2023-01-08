@@ -53,7 +53,7 @@
   <label>{{'patient_lbl' | translate}}</label>
   <input type="text"
          class="busqueda-cliente form-control"
-         placeholder="Buscar"
+         placeholder="..."
          aria-label="Number"
          matInput
          formControlName="customerSearch"
@@ -141,7 +141,7 @@
             <p>{{'selectedDate_lbl' | translate}}: </p>
            </div>
            <div class="col-6">
-            <h6>{{getSelectedDateFormatted()}}</h6>
+            <h6>{{getSelectedDateFormatted() | date:"dd-MM-yyyy"}}</h6>
           </div>
          </div>
 

@@ -91,7 +91,7 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
 {
     visible:true,
     id:'insuranceId',
-    fieldToShow:'insurance.name',
+    isSortable:false, fieldToShow:'insurance.name',
     objectTypeToShow:ObjectTypes.String,
     type:'text',
     isTranslated:false,
@@ -104,7 +104,7 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
  {
     visible:true,
     id:'insurancePlanId',
-    fieldToShow:'insurancePlan.name',
+    isSortable:false, fieldToShow:'insurancePlan.name',
     type:'text',
     isTranslated:false,
     name:scope.lang.getValueByKey('insurancePlan_lbl'),
@@ -116,7 +116,7 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
  {
     visible:true,
     id:'productId',
-    fieldToShow:'product.name',
+    isSortable:false, fieldToShow:'product.name',
     type:'text',
     isTranslated:true,
     name:scope.lang.getValueByKey('consultation_lbl'),
@@ -128,7 +128,7 @@ export class insuranceCoverageIndexComponent extends BaseComponent implements On
  {
     visible:true,
     id:'currencyId',
-    fieldToShow:'currency.name',
+    isSortable:false, fieldToShow:'currency.name',
     type:'text',
     isTranslated:true,
     name:scope.lang.getValueByKey('currency_lbl'),
