@@ -29,8 +29,14 @@ declare const $: any;
   styleUrls: ["../patientCheckupStyles.component.scss"]
 })
 export class patientCheckupFormComponent extends BaseComponent implements OnInit {
-  @ViewChild('productSearch', { static: false })
-  private productSearch: AutoCompleteComponent;
+  @ViewChild('medicalSpecialitySearch', { static: false })
+  private medicalSpecialitySearch: AutoCompleteComponent;
+
+  @ViewChild('medicineSearch', { static: false })
+  private medicineSearch: AutoCompleteComponent;
+
+  @ViewChild('especializedImageSearch', { static: false })
+  private especializedImageSearch: AutoCompleteComponent;
   _route: ActivatedRoute;
   appointmentId: number = 0;
   patientId: number = 0;
@@ -54,6 +60,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
   ];
   products: Product[] = [];
+  labTests: Product[] = [];
   specilizedimages: Product[] = [];
   medicines: Product[] = [];
 
@@ -176,14 +183,14 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
         let index = -1;
         switch (prescriptionType) {
           case 'L':
-            index = this.products.findIndex(x => x.name.toLocaleLowerCase().trim() == newProduct.name.toLowerCase().trim());
+            index = this.labTests.findIndex(x => x.name.toLocaleLowerCase().trim() == newProduct.name.toLowerCase().trim());
             if (index < 0) {
-              this.products.push(newProduct);
+              this.labTests.push(newProduct);
             }
             else
               newProduct.id = this.products[index].id
 
-            index = this.products.findIndex(x => x.name.toLocaleLowerCase().trim() == newProduct.name.toLowerCase().trim());
+            index = this.labTests.findIndex(x => x.name.toLocaleLowerCase().trim() == newProduct.name.toLowerCase().trim());
             this.labTestSelection(index);
             this.itemForm.patchValue({ productId: newProduct.id });
 
@@ -253,6 +260,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     this.medicines = [];
     this.specilizedimages = [];
     this.products = [];
+    this.labTests = [];
     this.medicalSpecialities = [];
     const urlId = parseInt(this._route.snapshot.paramMap.get('id'));
     this.patientId = parseInt(this._route.snapshot.paramMap.get('patientid'));
@@ -342,8 +350,8 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
   }
   async labTestSelection(index: number) {
-    this.products[index].selected = !this.products[index].selected;
-    const labTest = this.products[index];
+    this.labTests[index].selected = !this.labTests[index].selected;
+    const labTest = this.labTests[index];
     const selectedIndex = this.selectedLabTests.findIndex(x => x.productId == labTest.id);
     if (labTest.selected) {
       const { medicalSpecialityId, quantity, additionalData, whenToTake, emptyStomach } = this.itemForm.getRawValue();
@@ -398,9 +406,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
           this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
           break;
         case 'L':
-          this.products = [{ id: 0, name: '' } as Product];
-          this.products = this.products.concat(r['value']);
-          this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+          this.labTests = [{ id: 0, name: '' } as Product];
+          this.labTests = this.products.concat(r['value']);
+          this.labTests.sort((a, b) => (a.name > b.name) ? 1 : -1);
           break;
         case 'E':
           this.specilizedimages = [{ id: 0, name: '' } as Product];
@@ -547,6 +555,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
               this.selectedImages[index] = prescription
             else
               this.selectedImages.push(prescription);
+            this.especializedImageSearch.filterString = '';
           }
 
           break;
@@ -566,6 +575,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
               this.selectedMedicines[index] = prescription
             else
               this.selectedMedicines.push(prescription);
+            this.medicineSearch.filterString = '';
           }
           break;
         case "C":
@@ -575,11 +585,11 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
               this.selectedConsultations[index] = prescription
             else
               this.selectedConsultations.push(prescription);
+            this.medicalSpecialitySearch.filterString = '';
           }
           break;
       }
       this.selectedProduct = null;
-      this.productSearch.filterString = '';
       this.itemForm.patchValue({
         productId: null,
         quantity: 1,
