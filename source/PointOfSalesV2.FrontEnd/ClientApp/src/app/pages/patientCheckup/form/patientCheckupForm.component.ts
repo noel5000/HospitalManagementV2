@@ -37,6 +37,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
   @ViewChild('especializedImageSearch', { static: false })
   private especializedImageSearch: AutoCompleteComponent;
+
   _route: ActivatedRoute;
   appointmentId: number = 0;
   patientId: number = 0;
@@ -63,14 +64,12 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
   labTests: Product[] = [];
   specilizedimages: Product[] = [];
   medicines: Product[] = [];
-
-
-
   service: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/PatientCheckUp`);
   appointmentService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/Appointment`);
   medicalSpecialityService: BaseService<any, number> = new BaseService<any, number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
   zones: Zone[] = [];
   newProduct: boolean = false;
+
   constructor(@Inject('BASE_URL') private baseUrl: string,
     private config: AppConfig,
     private formBuilder: FormBuilder,
@@ -242,11 +241,13 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
     this.newProduct = false;
     this.itemForm.patchValue({ newProduct: '' });
-    this.products.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    this.labTests.sort((a, b) => (a.name > b.name) ? 1 : -1);
     this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
     this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
     this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
   }
+
+
   cancelNewProduct() {
     this.itemForm.patchValue({
       productId: null,
@@ -274,9 +275,8 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
 
     if (this.appointmentId && this.appointmentId > 0)
       this.getAppointment(this.appointmentId);
-    else {
-      this.getPatient(1);
-    }
+    else
+      this.getPatient(this.patientId);
 
     this.verifyUser();
     this.getMedicalSpecialities();
@@ -443,7 +443,16 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
           doctorName: this.appointment.doctorName,
           patientName: this.appointment.patientName,
           currencyId: this.appointment.currencyId,
-
+          plan: this.item.plan,
+          medicalBackground: this.item.medicalBackground,
+          consultationReason: this.item.consultationReason,
+          physicalExamHeadNeck: this.item.physicalExamHeadNeck,
+          physicalExam: this.item.physicalExam,
+          physicalExamChest: this.item.physicalExamChest,
+          physicalExamHeart: this.item.physicalExamHeart,
+          physicalExamLungs: this.item.physicalExamLungs,
+          physicalExamStomach: this.item.physicalExamStomach,
+          physicalExamExtremities: this.item.physicalExamExtremities,
         })
       }
 
@@ -535,7 +544,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     var quantityByWhenToTake = whenToTake ? whenToTake.toString().split('-').filter(x => x == '1') : [];
     let prescription = {
       productId,
-      medicalSpecialityId: type == 'C' ? this.selectedProduct.medicalSpecialityId:null,
+      medicalSpecialityId: type == 'C' ? this.selectedProduct.medicalSpecialityId : null,
       quantity,
       additionalData,
       whenToTake,
@@ -607,7 +616,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     let result = null;
     switch (type) {
       case 'L':
-        result = this.products.find(x => x.id == id);
+        result = this.labTests.find(x => x.id == id);
         break;
       case 'M':
         result = this.medicines.find(x => x.id == id);
@@ -622,9 +631,9 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     return result;
   }
   async deleteSelectedLabTests(index: number) {
-    const i = this.products.findIndex(x => x.id == this.selectedLabTests[index].productId);
+    const i = this.labTests.findIndex(x => x.id == this.selectedLabTests[index].productId);
     if (i >= 0) {
-      this.products[i].selected = false;
+      this.labTests[i].selected = false;
     }
     this.selectedLabTests.splice(index, 1);
 
