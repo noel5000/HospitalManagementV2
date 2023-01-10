@@ -22,7 +22,7 @@ This project is intended to be hosted in IIS . So go to IIS manager, create endp
 
 # First time configuration
 When you get the app working, the first thing to do is set the Configurations tab options, mostly in this order:
-- Branch Office: Physical localities of the business. If no branch office exist, just create at least one
+- (Hospitals) Branch Office: Physical localities of the business. If no branch office exist, just create at least one
 - Warehouses: Where physical products are stored. We need to create two, Main warehouse, and the returns (deffectives) one [with "DEF" code]
 - Currencies: At least one is need (main currency)
 - Suppliers
