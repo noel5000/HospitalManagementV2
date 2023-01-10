@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit , Inject } from '@angular/core';
+import { Component, OnInit , Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,6 +26,7 @@ import { Product } from '../../../@core/data/product';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { ProductService } from '../../../@core/services/ProductService';
 import { AppConfig } from '../../../@core/services/app.config';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
 
 
 declare const $: any;
@@ -36,9 +37,13 @@ declare const $: any;
 })
 export class InventoryEntryFormComponent extends BaseComponent implements OnInit {
 
+  @ViewChild('productSearch', { static: false })
+  private productSearch: AutoCompleteComponent;
+
     branchOffices:BranchOffice[];
     warehouses:Warehouse[]=[];
-    _route:ActivatedRoute;
+  _route: ActivatedRoute;
+  selectedProduct: any = null;
     products:Product[]=[];//
     suppliers:Supplier[]=[];//
     productUnits:any[]=[];//
@@ -86,7 +91,13 @@ noTaxes:[false],
 taxAmount:[0,[ Validators.required,Validators.min(0.0001)]],
 totalAmount:[0,[ Validators.required,Validators.min(0.0001)]],
         });
-    }
+  }
+
+  selectProduct(product: any) {
+    this.selectedProduct = product;
+    this.itemForm.patchValue({ productId: product ? product.id : null });
+    this.products = [];
+  }
     ngOnInit(): void {
    
      this.onChanges();
@@ -96,7 +107,46 @@ totalAmount:[0,[ Validators.required,Validators.min(0.0001)]],
         this.getBranchOffices();
         this.validateFormData();
        
+  }
+
+  async getProductsByName(name: string) {
+    if (name) {
+      const filter = [
+        {
+          property: "Currency",
+          value: "Id,Name,Code,ExchangeRate",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter,
+        {
+          property: "IsService",
+          value: 'false',
+          type: ObjectTypes.Boolean,
+          isTranslated: false,
+          comparer: ODataComparers.equals
+        } as QueryFilter,
+        {
+          property: "Name",
+          value: name,
+          type: ObjectTypes.String,
+          isTranslated: true
+        } as QueryFilter
+      ]
+      this.productService.getAllFiltered(filter).subscribe(r => {
+        this.products = [];
+        this.products = this.products.concat(r['value']);
+      });
     }
+    else {
+      this.itemForm.patchValue({
+        productId: null
+      });
+
+
+    }
+
+  }
+
     async pepe(id:number){
         const filter = [{
             property: 'ProductId',
@@ -310,14 +360,13 @@ async getSuppliers(){
        let entry = this.itemForm.getRawValue() as any;
         if(this.itemForm.invalid)
         return;
-      entry.product= this.products.find(x=>x.id==entry.productId);
+      entry.product = this.selectedProduct;
       entry.currencyId=entry.product?parseInt(entry.product.currencyId.toString()):null;
       entry.branchOfficeId=parseInt(entry.branchOfficeId.toString());
       entry.warehouseId=parseInt(entry.warehouseId.toString());
       entry.supplierId=parseInt(entry.supplierId.toString());
       entry.productId=parseInt(entry.productId.toString());
       entry.unitId=parseInt(entry.unitId.toString());
-      entry.product=this.products.find(x=>x.id==entry.productId);
       entry.warehouse=this.warehouses.find(x=>x.id==entry.warehouseId);
       entry.unit=this.productUnits.find(x=>x.unitId==entry.unitId).unit;
       
@@ -329,7 +378,8 @@ async getSuppliers(){
             this.entries.splice(index,1);
             this.entries.push(entry);
         }
-      
+      this.selectedProduct = null;
+      this.productSearch.filterString = '';
     }
     deleteEntry(index:number){
       

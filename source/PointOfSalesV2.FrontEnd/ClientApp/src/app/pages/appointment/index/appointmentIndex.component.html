@@ -5,7 +5,7 @@
 
     </div>
     <br>
-    <form [formGroup]="itemForm" (ngSubmit)="save()">
+    <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
    <div class="row" *ngIf="visible">
     <div class="form-group col-md-6 col-xs-12">
       <label>{{'hospital_lbl' | translate}}</label>

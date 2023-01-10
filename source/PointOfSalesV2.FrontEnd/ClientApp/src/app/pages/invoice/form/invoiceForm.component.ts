@@ -509,6 +509,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
   async selectPatient(patient: any) {
     if (patient) {
+      this.patient = patient;
       this.itemForm.patchValue({
         patientId: patient.id,
         trnType: patient.trnType,
@@ -525,6 +526,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
     }
     else {
+      this.patient = null;
       this.itemForm.patchValue({
         customerId: null,
         trnType: null,
@@ -878,7 +880,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
         } as QueryFilter,
         {
           property: "State",
-          value: "F,S",
+          value: "F,S,E",
           type: ObjectTypes.String,
           comparer: ODataComparers.in,
           isTranslated: false
@@ -1194,7 +1196,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     entry.amount = entry.productPrice * rate;
     entry.productId = parseInt(entry.productId.toString());
     entry.unitId = entry.product.isService || !entry.unitId ? null : parseInt(entry.unitId.toString());
-    entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit : { id: 0, name: '' };
+    entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit :null;
     entry.id = 0;
     entry.insuranceApprovalCode = '';
     entry.medicalSpecialityId = this.product.medicalSpecialityId;

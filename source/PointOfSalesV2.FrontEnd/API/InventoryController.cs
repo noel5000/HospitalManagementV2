@@ -41,7 +41,7 @@ namespace PointOfSalesV2.FrontEnd.Controllers
         {
             try
             {
-                var result=this.inventoryRepository.GetCompanyInventory(branchOfficeId,warehouseId,productId);
+                var result= await this.inventoryRepository.GetCompanyInventory(branchOfficeId,warehouseId,productId);
                 
 
                     return Ok(new { id = 0, status = 0, message = "ok_msg", data = result });
