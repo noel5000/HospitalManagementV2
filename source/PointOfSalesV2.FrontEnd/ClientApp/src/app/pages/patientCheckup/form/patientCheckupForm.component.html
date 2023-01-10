@@ -1,7 +1,7 @@
 <div class="card m-3">
     <h5 class="card-header">{{'patientCheckups_menu' | translate}}</h5>
     <div class="card-body">
-        <form [formGroup]="itemForm" (ngSubmit)="save()">
+        <form [formGroup]="itemForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'doctor_lbl' | translate}}</label>
@@ -18,9 +18,6 @@
                         <div *ngIf="form.patientName.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-
-               
-
            </div>
            <div class="row">
             <nb-accordion style="width: 100%;" class="my-2">
@@ -234,40 +231,18 @@
                  <nb-accordion-item-body>
                 
             <div class="row">
-                <div class="col-md-4 col-xs-12 row" *ngIf="!newProduct">
+                <div class="col-md-4 col-xs-12 row">
                     <div class="form-group col-10" >
                         <label>{{'medication_lbl' | translate}}</label>
-                        <select class="form-control"
-                        [ngClass]="{ 'is-invalid': form.productId.errors }"
-                        formControlName="productId"
-                        >
-                        <option *ngFor="let medicine of medicines"
-                         [value]="medicine.id"
-                         >{{medicine.name}}</option>
-                        </select>
+                        <custom-auto-complete [items]="products"
+                                              [externalSearch]="true"
+                                              [propertyToShow]="'name'"
+                                              (onSelectedItem)="selectProduct($event)"
+                                              (onFilter)="getProductsByNameAndType($event,'M')"
+                                              #medicineSearch></custom-auto-complete>
                         <div *ngIf="form.productId.errors" class="invalid-feedback">
                             <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
                         </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('M')">+</i>
-                    </div>
-                </div>
-
-                    
-
-                <div class="col-md-4 col-xs-12 row" *ngIf="newProduct">
-                    <div class="form-group col-10" >
-                        <label >{{'medication_lbl' | translate}}</label>
-                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
-                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
-                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
-                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('M')">{{'add_btn' | translate}}</i>
-                        <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
                     </div>
                 </div>
                
@@ -343,42 +318,18 @@
             <div class="row">
                   
 
-                <div class="form-group col-md-4 col-xs-12 row" *ngIf="!newProduct">
+                <div class="form-group col-md-6 col-xs-12 row">
                    <div class="form-group col-10">
                     <label>{{'medicalSpecialities_menu' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
-                    formControlName="medicalSpecialityId"
-                    >
-                    <option *ngFor="let medicalSpeciality of medicalSpecialities"
-                     [value]="medicalSpeciality.id"
-                     >{{medicalSpeciality.name}}</option>
-                    </select>
-                    <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
-                        <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
+                    <custom-auto-complete [items]="products"
+                                          [externalSearch]="true"
+                                          [propertyToShow]="'name'"
+                                          (onSelectedItem)="selectProduct($event)"
+                                          (onFilter)="getProductsByNameAndType($event,'C')"
+                                          #medicalSpecialitySearch></custom-auto-complete>
+                    
                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('C')">+</i>
-                    </div>
-                </div>
-              
-
-                <div class="col-md-4 col-xs-12 row" *ngIf="newProduct">
-                    <div class="form-group col-10" >
-                        <label>{{'medicalSpecialities_menu' | translate}}</label>
-                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
-                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
-                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
-                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('C')">{{'add_btn' | translate}}</i>
-                        <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
-                    </div>
-                </div>
-               
+                </div>             
               
             
                   <div class="form-group col-md-6 col-xs-12">
@@ -416,9 +367,9 @@
                     <nb-accordion-item-body>
                      <div>
                         <div class="col-md-12 col-xs-12 row">
-                            <div class="form-group col-9" >
+                            <div class="form-group col-6" >
                                 <label >{{'laboratory_lbl' | translate}}</label>
-                                <input type="text" formControlName="newProduct" maxlength="100"  
+                                <input type="text" (keyup.enter)="saveNewProduct('L')" formControlName="newProduct" maxlength="100"  
                              class="form-control" />
                             </div>
                             <div class="col-3 my-2" >
@@ -436,7 +387,7 @@
                                     
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of products; let i=index">
+                                    <div class="col-md-3 col-xs-6"  *ngFor="let selectedLabTest of labTests; let i=index">
                                         <div *ngIf="selectedLabTest.id">
                                             <label for="vehicle1">{{selectedLabTest.name}}</label><br>
                                             <input type="checkbox"  [checked]="selectedLabTest.selected"  (click)="labTestSelection(i)">
@@ -476,42 +427,15 @@
                     <nb-accordion-item-body>
                      
             <div class="row">
-                <div class="col-md-4 col-xs-12 row" *ngIf="!newProduct">
+                <div class="col-md-6 col-xs-12 row">
                     <div class="form-group col-10" >
                         <label>{{'especializedImages_lbl' | translate}}</label>
-                        <select class="form-control"
-                        [ngClass]="{ 'is-invalid': form.productId.errors }"
-                        formControlName="productId"
-                        >
-                        <option *ngFor="let medicine of specilizedimages"
-                         [value]="medicine.id"
-                         >{{medicine.name}}</option>
-                        </select>
-                        <div *ngIf="form.productId.errors" class="invalid-feedback">
-                            <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
-                        </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-success btn-sm my-4 buttonCurson" (click)="addProduct('E')">+</i>
-                    </div>
-                </div>
-
-               
-             
-              
-
-                <div class="col-md-4 col-xs-12 row" *ngIf="newProduct">
-                    <div class="form-group col-10" >
-                        <label >{{'especializedImages_lbl' | translate}}</label>
-                        <input type="text" formControlName="newProduct" minlength="1" maxlength="100"  
-                     class="form-control" [ngClass]="{ 'is-invalid': form.newProduct && form.newProduct.errors }" />
-                    <div *ngIf="form.newProduct && form.newProduct.errors" class="invalid-feedback">
-                        <div *ngIf="form.newProduct && form.newProduct.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                    </div>
-                    <div class="col-2 my-2" style="margin-left:-5%;">
-                        <i class="btn btn-info btn-sm my-4 buttonCurson" (click)="saveNewProduct('E')">{{'add_btn' | translate}}</i>
-                        <i class="btn btn-danger btn-sm my-4 buttonCurson" (click)="cancelNewProduct()">{{'cancel_btn' | translate}}</i>
+                        <custom-auto-complete [items]="products"
+                                              [externalSearch]="true"
+                                              [propertyToShow]="'name'"
+                                              (onSelectedItem)="selectProduct($event)"
+                                              (onFilter)="getProductsByNameAndType($event,'E')"
+                                              #especializedImageSearch></custom-auto-complete>
                     </div>
                 </div>
                
@@ -550,15 +474,6 @@
                    </nb-accordion-item>
                </nb-accordion>
            </div>
-         
-       
-           
-       
-       
-
-       
-       
-
            <br>
             
             <div class="text-center">

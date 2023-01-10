@@ -11,12 +11,15 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
  
   <input type="text"[(ngModel)]="filterString"
    class="form-control2" placeholder="...."
+  (keyup.enter)="firstOrDefault()"
+  (keyup.arrowup)="changeSelected(-1)"
+  (keyup.arrowdown)="changeSelected(1)"
    [ngClass]="!selectedItem?'isInvalid':''"
     id="myInput"
     #textInputSearch
     >
- <ng-container *ngFor="let item of itemsToShow">
- <a  class="form-control2 selectOption"  (click)="selectItem(item)">{{showData(item)}}</a> <br>
+ <ng-container *ngFor="let item of itemsToShow; let i = index;">
+ <a  class="form-control2 selectOption" [ngClass]="i==selectedIndex?'selectedOption':''"  (click)="selectItem(item)">{{showData(item)}}</a> <br>
  </ng-container>
   
 
@@ -32,9 +35,9 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
   .selectOption{
     cursor: pointer;
   }
-  .selectOption:hover{
-    background-color: bisque;
-    text-decoration: none;
+  .selectedOption{
+    background-color: bisque !important;
+    text-decoration: none !important;
   }
   
   #myInput{
@@ -67,6 +70,15 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
   get items() {
     return this._items;
   }
+  changeSelected(increment: number) {
+    let newSelected = this.selectedIndex + increment;
+    if (newSelected < 0)
+      newSelected = this.itemsToShow.length - 1;
+    if (newSelected >= this.itemsToShow.length)
+      newSelected = 0;
+    this.selectedIndex = newSelected;
+  }
+  selectedIndex: number = 0;
   @Input() set items(data: any[]) {
     this._items = data;
     if (this.filterString)
@@ -74,6 +86,15 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
     this.changes.detectChanges();
   }
 
+  async firstOrDefault() {
+    let selected = this.itemsToShow.length >= 0 ? this.itemsToShow[this.selectedIndex] : null;
+    if (!selected) {
+      selected = new Object();
+      selected[this.propertyToShow] = this.filterString;
+      selected['id'] = Math.floor(Math.random() * -1000);
+    }
+    this.selectItem(selected);
+  }
 
   itemsToShow: any[] = [];
   @Input() urlSearch: boolean = false;
@@ -101,6 +122,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
         debounceTime(100),
         distinctUntilChanged(),
         tap((text) => {
+          if (text['key'] != 'ArrowUp' && text['key'] != 'ArrowDown')
           this.searchItem();
         })
       )
@@ -108,6 +130,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
   }
 
   toggleDrop() {
@@ -115,6 +138,11 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
   }
 
   searchItem() {
+    if (!this.filterString || this.filterString.length < 2)
+      this.selectedItem = null;
+    if (this.selectedItem)
+      return;
+
     if (!this.propertyToShow) {
       alert('"propertyToShow" input needs an initial value');
       return;
@@ -159,19 +187,21 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
   selectItem(item: any) {
     if (!this.propertyToShow) {
       alert('propertyToShow needs an initial value');
+      this.changes.detectChanges();
       this.selectedItem = null;
       return;
     }
     if (item && item[this.propertyToShow]) {
-      this.onSelectedItem.emit(item);
+
       this.selectedItem = item;
       this.itemsToShow = [];
       this.changes.detectChanges();
       this.filterString = item[this.propertyToShow].toString();
+      this.onSelectedItem.emit(item);
     }
     else
       this.selectedItem = null;
-
+    this.changes.detectChanges();
   }
 
 
