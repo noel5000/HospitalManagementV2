@@ -51,7 +51,9 @@ namespace PointOfSalesV2.Repository
         public async Task<Invoice> GetByInvoiceNumber(string invoiceNumber)
         {
             var invoice = await _Context.Invoices.Include(x => x.Appointment).Include(x => x.Insurance).Include(x => x.InsurancePlan)
-                .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
+                .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller)
+                .Include(x => x.InvoiceDetails).ThenInclude(d=>d.Product).ThenInclude(p=>p.Taxes).ThenInclude(t=>t.Tax)
+                .Include(x => x.TRNControl).Include(x => x.Appointment)
                 .Include(x => x.Patient).AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.InvoiceNumber.ToLower() == invoiceNumber.ToLower());
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             return invoice;
@@ -657,6 +659,7 @@ namespace PointOfSalesV2.Repository
                     dbEntity.DiscountRate = newDetails.Average(x => x.DiscountRate);
                     dbEntity.TaxesAmount = newDetails.Sum(x => x.TaxesAmount);
                     dbEntity.TotalAmount = newDetails.Sum(x => x.TotalAmount);
+                    dbEntity.PatientPaymentAmount = newDetails.Sum(x => x.PatientPaymentAmount);
                     dbEntity.InsuranceCoverageAmount = newDetails.Sum(x => x.InsuranceCoverageAmount);
                     dbEntity.OwedAmount = dbEntity.TotalAmount - entity.PaidAmount - dbEntity.InsuranceCoverageAmount;
                     dbEntity.InventoryModified = entity.InventoryModified;

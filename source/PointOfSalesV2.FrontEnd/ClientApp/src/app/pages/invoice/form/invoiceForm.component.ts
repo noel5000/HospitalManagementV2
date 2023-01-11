@@ -502,9 +502,6 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       });
       this.refreshAmounts(false);
     }
-
-
-
   }
 
   async selectPatient(patient: any) {
@@ -556,7 +553,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
         isTranslated: false
       } as QueryFilter,
       {
-        property: "patientId",
+        property: "CustomerId",
         value: formVal.patientId,
         type: ObjectTypes.Number,
         comparer: ODataComparers.equals,

@@ -125,7 +125,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
         debounceTime(100),
         distinctUntilChanged(),
         tap((text) => {
-          if (text['key'] != 'ArrowUp' && text['key'] != 'ArrowDown')
+          if (text['key'] != 'ArrowUp' && text['key'] != 'ArrowDown' && text['key'] != 'Enter')
           this.searchItem();
         })
       )

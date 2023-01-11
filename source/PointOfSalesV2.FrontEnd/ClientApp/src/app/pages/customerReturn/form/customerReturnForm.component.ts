@@ -232,8 +232,8 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
     updatedetailsValues(){
         const form = this.itemForm.getRawValue();
         for(let i=0;i<this.details.length;i++){
-            this.details[i].returnQuantity = form[`returnQuantity_${i}`].value;
-            this.details[i].discountAmount= this.details[i].discountRate/100*this.details[i].beforeTaxesAmount;
+          this.details[i]['returnQuantity'] = form[`returnQuantity_${i}`]? form[`returnQuantity_${i}`].value:0;
+          this.details[i]['discountAmount']= this.details[i].discountRate/100*this.details[i].beforeTaxesAmount;
         }
     }
 
