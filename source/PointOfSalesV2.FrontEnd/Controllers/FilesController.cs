@@ -7,22 +7,34 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PointOfSalesV2.Api.Controllers
+namespace PointOfSalesV2.FrontEnd.Controllers
 {
     public class FilesController : Controller
     {
         IWebHostEnvironment hostingEnvironment;
+        IOptions<AppSettings> _options;
+        IDataRepositoryFactory dataRepository;
+        IBase<FileAttachment> filesRepo;
+        protected readonly IBase<ExceptionLog> exceptionsRepo;
+        IBase<CheckupAttachment> checkupAttachmentRepo;
 
-        public FilesController(IWebHostEnvironment appEnviroment)
+        public FilesController(IWebHostEnvironment appEnviroment, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory)
         {
             this.hostingEnvironment = appEnviroment;
+            this._options = appSettings;
+            this.dataRepository = repositoryFactory;
+            this.filesRepo = repositoryFactory.GetDataRepositories<FileAttachment>();
+            this.checkupAttachmentRepo = repositoryFactory.GetDataRepositories<CheckupAttachment>();
+            this.exceptionsRepo = repositoryFactory.GetDataRepositories<ExceptionLog>();
         }
-        [HttpPost]
-        public IActionResult Post(IFormFile files)
+
+        [HttpPost("Files/SaveCheckupFile/{id:long}")]
+        public async Task<IActionResult> SaveCheckupFile(IFormFile files, long id)
         {
-            List<string> result = new List<string>();
+            List<Result<CheckupAttachment>> result = new List<Result<CheckupAttachment>>();
             try
             {
+                var fileRepo = dataRepository.GetDataRepositories<FileAttachment>();
                 var files2 = Request.Form.Files;
                 long size = files2.Sum(f => f.Length);
                 // full path to file in temp location
@@ -32,15 +44,33 @@ namespace PointOfSalesV2.Api.Controllers
                 {
                     if (formFile.Length > 0)
                     {
-                        string finalFilePath = Path.Combine(filePath, $"{DateTime.Now.Ticks}-{formFile.FileName}");
+                        string name = $"{DateTime.Now.Ticks}-{formFile.FileName}";
+                        string finalFilePath = Path.Combine(filePath, name);
                         using (var stream = new FileStream(finalFilePath, FileMode.Create))
                         {
                             formFile.CopyTo(stream);
+                            var savedResult = await filesRepo.AddAsync(new FileAttachment()
+                            {
+                                Active = true,
+                                FilePath = finalFilePath,
+                                FileName = name
+                            });
 
-                            result.Add($"/{finalFilePath.Split('\\').Last()}");
+                            if (savedResult.Status >= 0)
+                            {
+                                var checkupAttcahmentResult = await checkupAttachmentRepo.AddAsync(new CheckupAttachment()
+                                {
+                                    Active = true,
+                                    FileAttachementId = savedResult.Id,
+                                    PatientChekupId = id,
+
+                                });
+                                result.Add(checkupAttcahmentResult);
+                            }
+
 
                         }
-                       
+
                     }
                 }
 
@@ -52,10 +82,20 @@ namespace PointOfSalesV2.Api.Controllers
             }
             catch (Exception ex)
             {
+                await this.exceptionsRepo.AddAsync(new ExceptionLog()
+                {
+                    Code = ex.HResult.ToString(),
+                    Active = true,
+                    Message = ex.Message.Length > 500 ? ex.Message.Substring(0, 499) : ex.Message,
+                    Section = (int)Enums.AppSections.PatientCheckup,
+                    SectionName = Enums.AppSections.PatientCheckup.ToString()
+                });
                 return Ok(new { status = -1, files = new List<string>(), message = ex.Message });
             }
 
 
         }
+
+
     }
 }

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,6 +28,7 @@ import { ProductService } from '../../../@core/services/ProductService';
 import { Item } from '../../../@core/data/itemModel';
 import { SchoolService } from '../../../@core/services/SchoolService';
 import { School } from '../../../@core/data/school';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -44,7 +45,7 @@ export class InvoicePrintComponent extends BaseComponent implements OnInit {
     Id:number=0;
     sequence:string='';
     _route:ActivatedRoute;
-    invoicesService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Invoice`);
+    invoicesService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Invoice`);
     weeksOfMonth:Item[]=[
         {
             id:null,
@@ -99,7 +100,8 @@ export class InvoicePrintComponent extends BaseComponent implements OnInit {
         },
     ];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

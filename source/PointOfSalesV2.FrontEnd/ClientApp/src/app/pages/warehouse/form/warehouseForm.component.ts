@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Warehouse } from '../../../@core/data/Warehouse';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -12,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,9 +26,10 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: WarehouseService,

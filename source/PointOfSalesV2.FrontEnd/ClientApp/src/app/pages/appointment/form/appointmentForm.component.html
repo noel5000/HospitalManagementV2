@@ -1,6 +1,6 @@
 
   
-        <form [formGroup]="itemForm" (ngSubmit)="save()">
+        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
                <fieldset>
                 <div class="form-group col-md-12 col-xs-12">
@@ -25,20 +25,94 @@
                         <div *ngIf="form.hospitalId.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-                <div class="form-group col-md-12 col-xs-12">
-                    <label>{{'patient_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.patientId.errors }"
-                    formControlName="patientId"
-                    >
-                    <option *ngFor="let customer of customers"
-                     [value]="customer.id"
-                     >{{customer.name}}</option>
-                    </select>
-                    <div *ngIf="form.patientId.errors" class="invalid-feedback">
-                        <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
+               
+               </fieldset>
+                
+               <fieldset >
+                 <div>
+                   <div class="form-group col-md-12 col-xs-12">
+                     <label>{{'appointmentType_lbl' | translate}}</label>
+                     <select class="form-control"
+                             [ngClass]="{ 'is-invalid': form.type.errors }"
+                             formControlName="type"
+                             required>
+                       <option *ngFor="let type of types"
+                               [value]="type.id">
+                         {{type.name}}
+                       </option>
+                     </select>
+                     <div *ngIf="form.type.errors" class="invalid-feedback">
+                       <div *ngIf="form.type.errors.required">{{'required_lbl' | translate}}</div>
+                     </div>
+                   </div>
+                   <div class="form-group col-md-12 col-xs-12">
+                     <label>{{'medicalSpecialities_menu' | translate}}</label>
+                     <select class="form-control"
+                             [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
+                             formControlName="medicalSpecialityId">
+                       <option *ngFor="let medicalSpeciality of medicalSpecialities"
+                               [value]="medicalSpeciality.id">
+                         {{medicalSpeciality.name}}
+                       </option>
+                     </select>
+                     <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
+                       <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
+                     </div>
+                   </div>
+
+                   <div class="form-group col-md-12 col-xs-12" *ngIf="formValues.type && formValues.type=='C'">
+                     <label>{{'doctor_lbl' | translate}}</label>
+                     <select class="form-control"
+                             [ngClass]="{ 'is-invalid': form.doctorId.errors }"
+                             formControlName="doctorId"
+                             required>
+                       <option *ngFor="let doctor of doctors"
+                               [value]="doctor.userId">
+                         {{doctor.name}}
+                       </option>
+                     </select>
+                     <div *ngIf="form.doctorId.errors" class="invalid-feedback">
+                       <div *ngIf="form.doctorId.errors.required">{{'required_lbl' | translate}}</div>
+                     </div>
+                   </div>
+
+                   <div class="form-group col-md-12 col-xs-12">
+                     <label>{{'consultation_lbl' | translate}}</label>
+                     <select class="form-control"
+                             [ngClass]="{ 'is-invalid': form.productId.errors }"
+                             formControlName="productId">
+                       <option *ngFor="let product of products"
+                               [value]="product.id">
+                         {{product.name}}
+                       </option>
+                     </select>
+                     <div *ngIf="form.productId.errors" class="invalid-feedback">
+                       <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
+                     </div>
+                   </div>
+                 </div>
+               
+               </fieldset>
+               <fieldset>
+                 <div class="form-group col-md-12 col-xs-12">
+                   <label>{{'patient_lbl' | translate}}</label>
+                   <input type="text"
+                          class="busqueda-cliente form-control"
+                          placeholder="..."
+                          aria-label="Number"
+                          matInput
+                          formControlName="customerSearch"
+                          [matAutocomplete]="auto">
+                   <mat-autocomplete #auto="matAutocomplete">
+                     <mat-option *ngFor="let customer of customers" style="background-color:white;" (click)="selectPatient(customer)" [value]="customer.name">
+                       {{customer.name + ' - '+customer.code}}
+                     </mat-option>
+                   </mat-autocomplete>
+
+                   <div *ngIf="form.patientId.errors" class="invalid-feedback">
+                     <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>
+                   </div>
+                 </div>
                 <div class="form-group col-md-12 col-xs-12">
                     <label>{{'insurance_lbl' | translate}}</label>
                     <input type="text" formControlName="insuranceName" class="form-control" disabled>
@@ -47,70 +121,6 @@
                 <div class="form-group col-md-12 col-xs-12">
                     <label>{{'insurancePlan_lbl' | translate}}</label>
                     <input type="text" formControlName="insurancePlanName" class="form-control" disabled>
-                </div>
-               </fieldset>
-                
-               <fieldset>
-                <div class="form-group col-md-12 col-xs-12">
-                    <label>{{'appointmentType_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.type.errors }"
-                    formControlName="type"
-                    required
-                    >
-                    <option *ngFor="let type of types"
-                     [value]="type.id"
-                     >{{type.name}}</option>
-                    </select>
-                    <div *ngIf="form.type.errors" class="invalid-feedback">
-                        <div *ngIf="form.type.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-                <div class="form-group col-md-12 col-xs-12">
-                    <label>{{'medicalSpeciality_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.medicalSpecialityId.errors }"
-                    formControlName="medicalSpecialityId"
-                    
-                    >
-                    <option *ngFor="let medicalSpeciality of medicalSpecialities"
-                     [value]="medicalSpeciality.id"
-                     >{{medicalSpeciality.name}}</option>
-                    </select>
-                    <div *ngIf="form.medicalSpecialityId.errors" class="invalid-feedback">
-                        <div *ngIf="form.medicalSpecialityId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-            
-                <div class="form-group col-md-12 col-xs-12" *ngIf="formValues.type && formValues.type=='C'">
-                    <label>{{'doctor_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.doctorId.errors }"
-                    formControlName="doctorId"
-                    required
-                    >
-                    <option *ngFor="let doctor of doctors"
-                     [value]="doctor.userId"
-                     >{{doctor.name}}</option>
-                    </select>
-                    <div *ngIf="form.doctorId.errors" class="invalid-feedback">
-                        <div *ngIf="form.doctorId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div> 
-              
-                <div class="form-group col-md-12 col-xs-12">
-                    <label>{{'consultation_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.productId.errors }"
-                    formControlName="productId"
-                    >
-                    <option *ngFor="let product of products"
-                     [value]="product.id"
-                     >{{product.name}}</option>
-                    </select>
-                    <div *ngIf="form.productId.errors" class="invalid-feedback">
-                        <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
                 </div>
                </fieldset>
                <fieldset>
@@ -166,7 +176,7 @@
                     <thead>
                       <tr>
                         <th>{{'doctor_lbl' | translate}}</th>
-                        <th>{{'medicalSpeciality_lbl' | translate}}</th>
+                        <th>{{'medicalSpecialities_menu' | translate}}</th>
                         <th>{{'consultation_lbl' | translate}}</th>
                         <th>{{'beforeTaxesAmount_lbl' | translate}}</th>
                         <th>{{'taxAmount_lbl' | translate}}</th>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -21,6 +21,7 @@ import { Currency } from '../../../@core/data/currencyModel';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { Supplier } from '../../../@core/data/Supplier';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -39,14 +40,15 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Expense`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Expense`);
     expenses:any[]=[];
     branchOffices:BranchOffice[]=[];
     suppliers:Supplier[]=[];
     currencies:Currency[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         private formBuilder: FormBuilder,
         langService: LanguageService,

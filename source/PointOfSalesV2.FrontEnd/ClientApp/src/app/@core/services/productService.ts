@@ -1,8 +1,9 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Product, UnitProductEquivalence } from '../data/product';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -10,9 +11,11 @@ import { Product, UnitProductEquivalence } from '../data/product';
 
 export class ProductService extends BaseService<Product, number>{
     constructor(
+      private config: AppConfig,
+      @Inject('BASE_URL') private baseUrl2: string,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.products}`);
+      super(http, `${baseUrl2}api/${endpointControllers.products}`);
     }
 
     ConvertFromProductPrincipalUnit(quantity:number, unitId:number,units:UnitProductEquivalence[]):number{

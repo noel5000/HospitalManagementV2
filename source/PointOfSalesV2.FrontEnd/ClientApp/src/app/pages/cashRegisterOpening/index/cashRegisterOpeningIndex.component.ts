@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -12,6 +12,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -55,9 +56,9 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     orderDirection: string = 'desc';
     CashRegisterOpenings:CashRegisterOpening[]=[];
 
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string, private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,
@@ -83,37 +84,40 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     visible:true,
     id:'userId',
     type:'text',
-    fieldToShow:'user.userName',
+    isSortable:false, fieldToShow:'user.userName',
+    objectTypeToShow:ObjectTypes.String,
     isTranslated:false,
     name:this.lang.getValueByKey('user_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
     id:'branchOfficeId',
-    fieldToShow:'branchOffice.name',
+    isSortable:false, fieldToShow:'branchOffice.name',
+    objectTypeToShow:ObjectTypes.String,
     type:'text',
-    isTranslated:false,
+    isTranslated:true,
     name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
     id:'cashRegisterId',
-    fieldToShow:'cashRegister.name',
+    isSortable:false, fieldToShow:'cashRegister.name',
+    objectTypeToShow:ObjectTypes.String,
     type:'text',
-    isTranslated:false,
+    isTranslated:true,
     name:scope.lang.getValueByKey('cashRegister_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -124,7 +128,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Date,
-    filterIsActive:false
+    filterIsActive:true
   },
   
   {
@@ -136,7 +140,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Date,
-    filterIsActive:false
+    filterIsActive:true
   },
   
   {
@@ -148,7 +152,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Date,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -159,7 +163,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -170,13 +174,13 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
     {
         title:scope.lang.getValueByKey('edit_btn'),
-        class:'btn btn-primary',
+        class:'btn btn-primary mx-1 my-1',
         icon:'',
         id:'edit',
         visible:(item)=>{
@@ -186,7 +190,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('closeCashRegister_btn'),
-        class:'btn btn-warning',
+        class:'btn btn-warning mx-1 my-1',
         icon:'',
         id:'closeRegister',
         visible:(item)=>{
@@ -195,7 +199,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:(item)=>{
@@ -237,9 +241,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

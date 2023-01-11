@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -15,6 +15,7 @@ import { endpointUrl } from '../../../@core/common/constants';
 import { BranchOffice } from '../../../@core/data/branchOffice';
 import { Warehouse } from '../../../@core/data/Warehouse';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -32,15 +33,17 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
         this.getData();
     }
     modalRef:NgbModalRef=null;
-  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}WarehouseMovement`);
+  service: BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/WarehouseMovement`);
     movements:any[]=[];
     branchOffices:BranchOffice[]=[];
     warehouses:Warehouse[]=[];
-    products:Product[]=[];
+  products: Product[] = [];
+  selectedProduct: Product = null;
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         route: Router,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         langService: LanguageService,
         private modals:NgbModal,
@@ -56,7 +59,43 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
        warehouseId:[0],
        productId:[0]
         });
+  }
+
+  selectProduct(product: any) {
+    this.selectedProduct = product;
+    this.itemForm.patchValue({
+      productId: product ? product.id : 0
+    });
+    this.products = [];
+  }
+  async getProductsByName(name: string) {
+    if (name) {
+      const filter = [
+        {
+          property: "Name",
+          value: name,
+          type: ObjectTypes.String,
+          isTranslated: true
+        } as QueryFilter,
+        {
+          property: "IsService",
+          value: "false",
+          type: ObjectTypes.Boolean,
+          isTranslated: false
+        } as QueryFilter
+      ];
+      this.productsService.getAllFiltered(filter).subscribe(r => {
+        this.products = [];
+        this.products = this.products.concat(r['value']);
+      });
     }
+    else {
+      this.itemForm.patchValue({
+        productId: 0
+      });
+    }
+
+  }
 
  
 onChanges(){

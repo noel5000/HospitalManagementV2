@@ -1,20 +1,23 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Expense } from '../data/expenseModel';
 import { BaseResultModel } from '../data/baseResultModel';
 import { Observable } from 'rxjs';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
 })
 
 export class ExpenseService extends BaseService<Expense, number>{
-    constructor(
+  constructor(
+    @Inject('BASE_URL') private baseUrl2: string,
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.expenses}`);
+    super(http, `${baseUrl2}api/${endpointControllers.expenses}`);
     }
 
 

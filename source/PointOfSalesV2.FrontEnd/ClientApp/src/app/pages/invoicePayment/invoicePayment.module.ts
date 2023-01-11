@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { LanguageService } from './../../@core/services/translateService';
 import { SecurityService } from './../../@core/services/securityService';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,6 +31,10 @@ const routes: Routes = [
 
     {
         path: "add",
+        component: InvoicePaymentFormComponent
+    },
+    {
+        path: "add/:id/:patientid",
         component: InvoicePaymentFormComponent
     },
     {

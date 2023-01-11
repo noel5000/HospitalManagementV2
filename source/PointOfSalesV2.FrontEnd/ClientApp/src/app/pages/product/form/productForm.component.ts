@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ProductService } from '../../../@core/services/ProductService';
@@ -21,6 +21,7 @@ import { UnitService } from '../../../@core/services/UnitService';
 import { SupplierService } from '../../../@core/services/supplierService';
 import { TaxService } from '../../../@core/services/TaxService';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,42 +38,31 @@ export class ProductFormComponent extends BaseComponent implements OnInit {
         {
             id:'C',
             name:this.lang.getValueByKey('medicalConsultation_lbl')
-        },
-        {
-            id:'L',
-            name:this.lang.getValueByKey('laboratory_lbl')
-        },
-        {
-            id:'E',
-            name:this.lang.getValueByKey('especializedImages_lbl')
-        },
-        {
-            id:'M',
-            name:this.lang.getValueByKey('medicine_lbl')
         }
     ];
     _route:ActivatedRoute;
-    currencies:Currency[]=[];//
-    units:Unit[]=[];//
-    productUnits:any[]=[];//
+    currencies:Currency[]=[];
+    units:Unit[]=[];
+    productUnits:any[]=[];
     otherProducts:Product[]=[];
-    suppliers:Supplier[]=[];//
-    productSupplierCosts:any[]=[];//
-    baseProducts:any[]=[];//
-    baseProductUnits:any[]=[];//
-    taxes:Tax[]=[];//
+    suppliers:Supplier[]=[];
+    productSupplierCosts:any[]=[];
+    baseProducts:any[]=[];
+    baseProductUnits:any[]=[];
+    taxes:Tax[]=[];
     medicalSpecialities:any[]=[];
-    productTaxes:any[]=[];//
+    productTaxes:any[]=[];
     selectedBaseProduct:number=0;
-    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}MedicalSpeciality`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}ProductCost`);
-    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CompositeProduct`);
-    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}ProductTax`);
+    medicalSpecialityService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/MedicalSpeciality`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductCost`);
+    baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CompositeProduct`);
+    productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductTax`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

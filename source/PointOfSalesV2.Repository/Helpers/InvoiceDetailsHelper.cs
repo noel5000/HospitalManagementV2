@@ -1,15 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 
 namespace PointOfSalesV2.Repository.Helpers
 {
     public class InvoiceDetailsHelper
     {
-        public static void AddDetails(Invoice Invoice, BranchOffice branchOffice, IDataRepositoryFactory dataRepositoryFactory, bool updateTaxes = true)
+        public static async Task AddDetails(Invoice Invoice, BranchOffice branchOffice, IDataRepositoryFactory dataRepositoryFactory, bool updateTaxes = true)
         {
 
             var invoiceDetailRepo = dataRepositoryFactory.GetDataRepositories<InvoiceDetail>();
@@ -57,17 +52,17 @@ namespace PointOfSalesV2.Repository.Helpers
                 });
                 InventoryHelper.InventoryToUpdate = null;
                 if (updateTaxes)
-                    UpdateInvoiceTaxes(Invoice, dataRepositoryFactory);
+                   UpdateInvoiceTaxes(Invoice, dataRepositoryFactory).Wait();
             }
            
 
         }
 
-        public static Result<Invoice> UpdateDetails(Invoice invoice, BranchOffice branchOffice, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<Result<Invoice>> UpdateDetails(Invoice invoice, BranchOffice branchOffice, IDataRepositoryFactory dataRepositoryFactory)
         {
             var detailsRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceDetailRepository>();
             var productUnitsRepo = dataRepositoryFactory.GetCustomDataRepositories<IUnitProductEquivalenceRepository>();
-            var oldDetails = detailsRepo.GetByInvoiceId(invoice.Id).ToList();
+            var oldDetails =detailsRepo.GetByInvoiceId(invoice.Id).Result.ToList();
             var newDetails = invoice.InvoiceDetails.Where(x => x.Id == 0).ToList();
             var modifiedDetails = new List<InvoiceDetail>();
             var untouchedDetails = new List<InvoiceDetail>();
@@ -110,10 +105,10 @@ namespace PointOfSalesV2.Repository.Helpers
 
             Invoice newinvoice = new Invoice(invoice);
             newinvoice.InvoiceDetails = newDetails;
-            AddDetails(newinvoice, branchOffice, dataRepositoryFactory, false);
+            AddDetails(newinvoice, branchOffice, dataRepositoryFactory, false).Wait();
 
             var detailUpdate = new Result<InvoiceDetail>(-1, -1);
-            modifiedDetails.ForEach(d =>
+            modifiedDetails.ForEach( d =>
             {
                 if (!d.Product.IsService)
                 {
@@ -121,13 +116,13 @@ namespace PointOfSalesV2.Repository.Helpers
                     decimal currentQuantity = (decimal)ProductsHelper.ConvertToProductPrincipalUnit(
            d.Quantity,
            d.UnitId.Value,
-           d.Product.ProductUnits == null || d.Product.ProductUnits.Count() == 0 ? productUnitsRepo.GetProductUnits(d.ProductId).ToList() : d.Product.ProductUnits.ToList()
+           d.Product.ProductUnits == null || d.Product.ProductUnits.Count() == 0 ? ( productUnitsRepo.GetProductUnits(d.ProductId)).Result.ToList() : d.Product.ProductUnits.ToList()
            ).Data.FirstOrDefault();
 
                     decimal oldQuantity = (decimal)ProductsHelper.ConvertToProductPrincipalUnit(
             oldDetail.Quantity,
             oldDetail.UnitId.Value,
-           oldDetail.Product.ProductUnits == null || oldDetail.Product.ProductUnits.Count() == 0 ? productUnitsRepo.GetProductUnits(oldDetail.ProductId).ToList() : oldDetail.Product.ProductUnits.ToList()
+           oldDetail.Product.ProductUnits == null || oldDetail.Product.ProductUnits.Count() == 0 ?( productUnitsRepo.GetProductUnits(oldDetail.ProductId)).Result.ToList() : oldDetail.Product.ProductUnits.ToList()
             ).Data.FirstOrDefault();
                     decimal difference = currentQuantity - oldQuantity;
                     if (difference > 0)
@@ -184,17 +179,17 @@ namespace PointOfSalesV2.Repository.Helpers
                     throw new Exception(detailUpdate.Message ?? "error_msg");
             });
 
-            UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { invoice });
         }
 
-        public static void UpdateInvoiceTaxes(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task UpdateInvoiceTaxes(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
         {
             var invoiceTaxRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceTaxRepository>();
             var productTaxRepository = dataRepositoryFactory.GetCustomDataRepositories<IProductTaxRepository>();
             var leadDetailsRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceDetailRepository>();
             var productsRepo = dataRepositoryFactory.GetDataRepositories<Product>();
-            var invoiceTaxes = invoiceTaxRepo.GetInvoiceTaxes(invoice.InvoiceNumber).Where(x=>x.Active==true).ToList();
+            var invoiceTaxes = (await invoiceTaxRepo.GetInvoiceTaxes(invoice.InvoiceNumber)).Where(x=>x.Active==true).ToList();
             if (invoiceTaxes != null && invoiceTaxes.Count > 0)
             {
                 foreach (var tax in invoiceTaxes)
@@ -214,7 +209,7 @@ namespace PointOfSalesV2.Repository.Helpers
                 x.InvoiceId = invoice.Id;
                 x.Product = x.Product == null ? productsRepo.Get(x => x.Include(y => y.Taxes).ThenInclude(y => y.Tax), y => y.Active == true && y.Id == x.ProductId) : x.Product;
                 var productTaxes = x.Product?.Taxes != null && x.Product?.Taxes.Count() > 0 ? x.Product.Taxes :
-                productTaxRepository.GetProductTaxes(x.ProductId);
+                productTaxRepository.GetProductTaxes(x.ProductId).Result;
                 foreach (var impuesto in productTaxes)
                 {
                     if (amountPerTax.Any(i => i.Key == impuesto.TaxId))
@@ -248,10 +243,10 @@ namespace PointOfSalesV2.Repository.Helpers
             }
         }
 
-        public static Result<Invoice> UpdateQuoteDetails(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task< Result<Invoice>> UpdateQuoteDetails(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
         {
             var detailsRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceDetailRepository>();
-            var oldDetails = detailsRepo.GetByInvoiceId(invoice.Id).ToList();
+            var oldDetails = ( await detailsRepo.GetByInvoiceId(invoice.Id)).ToList();
             var newDetails = invoice.InvoiceDetails.Where(x => x.Id == 0).ToList();
             var modifiedDetails = invoice.InvoiceDetails.Except(newDetails).ToList().Except(oldDetails).ToList();
             var untouchedDetails = invoice.InvoiceDetails.Intersect(oldDetails).ToList();
@@ -271,7 +266,7 @@ namespace PointOfSalesV2.Repository.Helpers
             //INSERTAR DETALLES NUEVOS
             Invoice newinvoice = new Invoice(invoice);
             newinvoice.InvoiceDetails = newDetails;
-            AddQuoteDetails(newinvoice, dataRepositoryFactory);
+           AddQuoteDetails(newinvoice, dataRepositoryFactory).Wait();
 
 
             modifiedDetails.ForEach(d =>
@@ -282,11 +277,11 @@ namespace PointOfSalesV2.Repository.Helpers
 
             });
 
-            UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { invoice });
         }
 
-        public static void AddQuoteDetails(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task AddQuoteDetails(Invoice invoice, IDataRepositoryFactory dataRepositoryFactory)
         {
             var detailsRepo = dataRepositoryFactory.GetDataRepositories<InvoiceDetail>();
 
@@ -302,7 +297,7 @@ namespace PointOfSalesV2.Repository.Helpers
 
             });
 
-            UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
         }
 
 

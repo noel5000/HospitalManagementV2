@@ -2,7 +2,7 @@ import { AppSections, Operations } from './enums';
 import { Router } from '@angular/router';
 import { AuthModel } from '../data/authModel';
 import { LanguageService } from './../services/translateService';
-import { OnInit } from '@angular/core';
+import { OnInit , Inject } from '@angular/core';
 import { User } from '../data/users';
 import { FormGroup } from '@angular/forms';
 import { ModalService } from '../services/modal.service';
@@ -26,7 +26,8 @@ export class BaseComponent  {
     dataToBackup="";
     getLanguageValue(value){
         return this.lang.getValueByKey(value);
-    }
+  }
+
 
     backupData(){
         let scope=this;
@@ -49,7 +50,21 @@ export class BaseComponent  {
         },90000);
         else
         this.clearBackupData();
-    }
+  }
+   dynamicSort(property) {
+  var sortOrder = 1;
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+  }
+  return function (a, b) {
+    /* next line works with strings and numbers, 
+     * and you may want to customize it to your needs
+     */
+    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+    return result * sortOrder;
+  }
+}
 
     verifyUser(){
         this.authModel = JSON.parse(localStorage.getItem('currentUser'));
@@ -61,7 +76,7 @@ export class BaseComponent  {
 
     }
     validateFormData(){
-    const stringForm=   localStorage.getItem(`${this.getUser().userId} - ${this.section.toString()}`);
+        const stringForm= this.getUser().userId?  localStorage.getItem(`${this.getUser().userId} - ${this.section.toString()}`):null;
     if(stringForm && JSON.parse(stringForm)!=null){
         const savedForm = JSON.parse(stringForm);
       var result =       this.modalService.confirmationModal({
@@ -81,6 +96,7 @@ export class BaseComponent  {
             this.setAdditionalBackupData();
             this.itemForm.patchValue(savedForm.form);
             this.onChanges();
+            if(this.getUser() && this.getUser().userId)
             localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
          
             }
@@ -101,6 +117,7 @@ export class BaseComponent  {
 
      }
     clearBackupData(){
+        if(this.getUser() && this.getUser().userId)
         localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
     }
 

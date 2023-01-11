@@ -1,5 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -80,6 +80,10 @@ import { patientCheckupFormComponent } from './patientCheckup/form/patientChecku
 import { patientCheckupEditFormComponent } from './patientCheckup/edit/patientCheckupEditForm.component';
 import { insuranceCoveragesReportComponent } from './insuranceCoveragesReport/index/insuranceCoveragesReport.component';
 import { LogoutIndexComponent } from './logout/index/logoutIndex.component';
+import { MedicalTestIndexComponent } from './medicalTest/index/medicalTestIndex.component';
+import { MedicalTestFormComponent } from './medicalTest/form/medicalTestForm.component';
+import { MedicineIndexComponent } from './medicine/index/medicineIndex.component';
+import { MedicineFormComponent } from './medicine/form/medicineForm.component';
 
 const routes: Routes = [{
   path: '',
@@ -253,6 +257,34 @@ const routes: Routes = [{
 
 
     {
+      path: 'medicine',
+      component: MedicineIndexComponent
+    },
+    {
+      path: 'medicine/add',
+      component: MedicineFormComponent
+    },
+    {
+      path: 'medicine/edit/:id',
+      component: MedicineFormComponent
+    },
+
+
+    {
+      path: 'medical-test',
+      component: MedicalTestIndexComponent
+    },
+    {
+      path: 'medical-test/add',
+      component: MedicalTestFormComponent
+    },
+    {
+      path: 'medical-test/edit/:id',
+      component: MedicalTestFormComponent
+    },
+
+
+    {
       path: 'seller',
       component: SellerIndexComponent
     },
@@ -399,14 +431,15 @@ const routes: Routes = [{
       path: 'invoicepayment',
      component: InvoicePaymentIndexComponent
     },
-   {
-     path: 'invoicepayment/edit/:id',
-     component: InvoicePaymentFormComponent
-   },
+  
    {
      path: 'invoicepayment/add',
      component: InvoicePaymentFormComponent
    },
+   {
+    path: 'invoicepayment/add/:invoiceId',
+    component: InvoicePaymentFormComponent
+  },
    {
      path: 'invoicepayment/print/:sequence',
      component: InvoicePaymentPrintComponent

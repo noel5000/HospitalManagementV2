@@ -1,12 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using static PointOfSalesV2.Common.Enums;
+﻿
 
 namespace PointOfSalesV2.Repository
 {
@@ -18,16 +10,16 @@ namespace PointOfSalesV2.Repository
             this._context = context;
         }
 
-        public List<object> GetFinancialState(DateTime? startDate, DateTime? endDate)
+        public async Task<List<object>> GetFinancialState(DateTime? startDate, DateTime? endDate)
         {
             throw new NotImplementedException();
         }
 
-        public List<TaxesReport> GetTaxesReport(DateTime? startDate, DateTime? endDate)
+        public async Task<List<TaxesReport>> GetTaxesReport(DateTime? startDate, DateTime? endDate)
         {
 
             List<TaxesReport> result = new List<TaxesReport>();
-            List<InvoiceTax> taxes = _context.Invoices.AsNoTracking().Include(x => x.Taxes)
+            List<InvoiceTax> taxes = await _context.Invoices.AsNoTracking().Include(x => x.Taxes)
                 .ThenInclude(x => x.Tax)
                 .Include(x => x.Taxes).ThenInclude(t => t.Currency)
                 .Where(x => x.Active == true && 
@@ -49,7 +41,7 @@ namespace PointOfSalesV2.Repository
                 Tax=r.Tax,
                 TaxId=r.TaxId,
                 TRN=r.TRN
-                }).Where(t=>t.Active==true)).ToList();
+                }).Where(t=>t.Active==true)).ToListAsync();
             taxes.AddRange(
                 _context.Expenses.AsNoTracking()
                 .Include(x => x.Taxes).ThenInclude(t => t.Tax)

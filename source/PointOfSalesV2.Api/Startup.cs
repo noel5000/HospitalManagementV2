@@ -1,7 +1,7 @@
 
 using System;
 using System.Linq;
-using Microsoft.AspNet.OData.Extensions;
+using Microsoft.OData.Edm;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +24,7 @@ using PointOfSalesV2.Entities;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.OData;
 
 namespace PointOfSalesV2.Api
 {
@@ -39,13 +40,20 @@ namespace PointOfSalesV2.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+            services.AddRouting();
+            services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
             services.AddControllers(mvcOptions =>
             {
                 mvcOptions.EnableEndpointRouting = false;
             });
             services.AddControllersWithViews();
-            services.AddOData();
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", OdataHelper.GetEdmModel()).Expand().Select().Filter().Count().SetMaxTop(null).OrderBy());
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata/exporttoexcel", OdataHelper.GetEdmModel()).Expand().Select().Filter().Count().SetMaxTop(null).OrderBy());
             services.AddMemoryCache();
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             var connections = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
@@ -93,7 +101,6 @@ namespace PointOfSalesV2.Api
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<IWarehouseTransferRepository, WarehouseTransferRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
-            services.AddScoped<ISchoolRepository, SchoolRepository>();
             services.AddScoped<IInsuranceRepository, InsuranceRepository>();
             services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -118,12 +125,7 @@ namespace PointOfSalesV2.Api
                  ClockSkew = TimeSpan.Zero
              });
 
-            services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+           
             services.AddMvc(a => { });
 
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -142,16 +144,17 @@ namespace PointOfSalesV2.Api
                 app.UseDeveloperExceptionPage();
 
             }
-            //app.UseRouting();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "api/{controller}/{action=Index}/{id?}");
-            //});
+            
+            app.UseRouting();
+            app.UseCors("AllowAllOrigins");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
 
             app.UseMvcWithDefaultRoute();
-            app.UseCors("AllowAllOrigins");
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -159,10 +162,7 @@ namespace PointOfSalesV2.Api
 
             app.UseMvc(routerBuilder =>
             {
-                routerBuilder.EnableDependencyInjection();
-                routerBuilder.Expand().Select().Filter().Count().MaxTop(null).OrderBy();
-                routerBuilder.MapODataServiceRoute("odata", "odata", OdataHelper.GetEdmModel(app));
-                routerBuilder.MapODataServiceRoute("odata/exporttoexcel", "odata/exporttoexcel", OdataHelper.GetEdmModel(app));
+              
 
             });
 

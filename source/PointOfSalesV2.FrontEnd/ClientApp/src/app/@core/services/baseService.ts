@@ -11,597 +11,682 @@ import { QueryFilter, ObjectTypes } from '../common/enums';
 
 
 export interface IService<TEntity, TKey> {
-    baseUrl: string;
-    get();
-    getAll(): Observable<TEntity[]>;
-    getById(id: TKey): Observable<BaseResultModel<TEntity>>;
-    post(entity: TEntity): Observable<BaseResultModel<TEntity>>;
-    patch(entity: TEntity, id: TKey): Observable<BaseResultModel<TEntity>>;
-    put(entity: TEntity): Observable<BaseResultModel<TEntity>>;
-    putList(entity: TEntity[]): Observable<BaseResultModel<TEntity>>;
-    delete(id: TKey): Observable<BaseResultModel<TEntity>>;
+  baseUrl: string;
+  get();
+  getAll(): Observable<TEntity[]>;
+  getById(id: TKey): Observable<BaseResultModel<TEntity>>;
+  post(entity: TEntity): Observable<BaseResultModel<TEntity>>;
+  patch(entity: TEntity, id: TKey): Observable<BaseResultModel<TEntity>>;
+  put(entity: TEntity): Observable<BaseResultModel<TEntity>>;
+  putList(entity: TEntity[]): Observable<BaseResultModel<TEntity>>;
+  delete(id: TKey): Observable<BaseResultModel<TEntity>>;
 }
 
 @Injectable({
-    providedIn: "root"
+  providedIn: "root"
 })
 export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
-    public get baseUrl(): string {
-        return this._baseUrl;
-    }
-    public set baseUrl(value: string) {
-        this._baseUrl = value;
-    }
-    _headers: HttpHeaders;
-    httpOptions = {};
+  public get baseUrl(): string {
+    return this._baseUrl;
+  }
+  public set baseUrl(value: string) {
+    this._baseUrl = value;
+  }
+  _headers: HttpHeaders;
+  httpOptions = {};
+  public get headers() {
+    return this._headers;
+  }
 
-    tempHttpOptions = {};
+  tempHttpOptions = {};
 
-    constructor(protected _httpClient: HttpClient,
-        private _baseUrl: string) {
-        this.setHttpOptions();
-        this._httpClient.request.bind(x=>{
+  constructor(protected _httpClient: HttpClient,
+    private _baseUrl: string) {
+    this.setHttpOptions();
+    this._httpClient.request.bind(x => {
 
-        });
-    }
+    });
+  }
 
-    setHttpOptions(responseType:string="") {
-        const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
-        this.tempHttpOptions = {
-            headers: this._headers,
-            params: null,
-            responseType:responseType?responseType:'application/json'
-        };
-
-
-
-
-        this._headers = new HttpHeaders({
-            "Content-Type": responseType?responseType:"application/json",
-            "UserId": currentUser ? currentUser.user.userId : '',
-            "LanguageId": currentUser ? currentUser.languageId : 'en',
-            "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
-        });
-        this.httpOptions = {
-            headers: this._headers,
-            params: null
-        };
-    }
+  setHttpOptions(responseType: string = "") {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    this.tempHttpOptions = {
+      headers: this._headers,
+      params: null,
+      responseType: responseType ? responseType : 'application/json'
+    };
 
 
 
 
-    get(languageId: string = ""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-        let promise =  this._httpClient.get<any>(
-            this.baseUrl,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
-
-    getGeneral(languageId: string = ""): Observable<any> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-        let data =this._httpClient.get<any>(
-            this.baseUrl,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return data;
-    }
-
-    getAll(languageId: string = ""): Observable<TEntity[]> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-        let data = this._httpClient.get<TEntity[]>(
-            this.baseUrl,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return data;
-    }
-
-    getPaged(
-        page: number,
-        max: number,
-        languageId: string = ""
-    ): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-        let data = this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${page}/${max}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return data;
-    }
-
-    getFiltered(
-        page: number,
-        max: number,
-        filters: QueryFilter[] = [],
-        orderBy: string = '',
-        direction: string = 'desc',
-        languageId: string = ""
-    ): Observable<any> {
-
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-        let data = this._httpClient.get<any>(
-            `${this.baseUrl.replace('/api/','/odata/')}?${this.getODataQuery(filters, page, max, orderBy, direction)}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return data;
-    }
-
-    downLoadFile(data: any, type: string, fileName:string='Report', fileExt:string='xls') {
-        let blob = new Blob([data], { type: type});
-        let url = window.URL.createObjectURL(blob);
-        var anchor = document.createElement("a");
-anchor.download = `${fileName}.${fileExt}`;
-anchor.href = url;
-anchor.click();
-
-    }
-
-    getAllFiltered(
-        filters: QueryFilter[] = [],
-        languageId: string = ""
-    ): Observable<any> {
-
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-        let data = this._httpClient.get<any>(
-            `${this.baseUrl.replace('/api/','/odata/')}?${this.getODataQueryAll(filters)}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return data;
-    }
-
-    getAllFilteredToExport(
-        filters: QueryFilter[] = [],
-        languageId: string = ""
-    ): Observable<Blob> {
-
-        const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
-        let data=this._httpClient.post(`${this.baseUrl}/exporttoexcel`,
-        {filters}
-        ,{responseType:'blob',
-        headers:new HttpHeaders({
-            "UserId": currentUser ? currentUser.user.userId : '',
-            "LanguageId": currentUser ? currentUser.languageId : 'en',
-            "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
-        })});
-        return data;
-
-    }
-
-    exportToExcel(
-        data:any={},
-        url:string="",
-        languageId: string = "",
-    ): Observable<Blob> {
-
-        const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    this._headers = new HttpHeaders({
+      "Content-Type": responseType ? responseType : "application/json",
+      "UserId": currentUser ? currentUser.user.userId : '',
+      "LanguageId": currentUser ? currentUser.languageId : 'en',
+      "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
+    });
+    this.httpOptions = {
+      headers: this._headers,
+      params: null
+    };
+  }
 
 
-        let promise=this._httpClient.post(`${this.baseUrl}${url?'/'+url:''}`,
-        data
-        ,{responseType:'blob',
-        headers:new HttpHeaders({
-            "UserId": currentUser ? currentUser.user.userId : '',
-            "LanguageId": currentUser ? currentUser.languageId : 'en',
-            "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
-        })});
 
-        return promise;
-    }
 
-    getODataQuery(filters: QueryFilter[], page: number, max: number, orderBy: string, direction: string): string {
-        let result = '';
-        const expandFilters = filters.filter(x=>x.type== ObjectTypes.ChildObject);
-        if(expandFilters && expandFilters.length>0){
-            let expandResult='$expand=';
-            for(let i=0;i<expandFilters.length;i++){
-                expandResult+=`${expandFilters[i].property}${expandFilters[i].value?`($select=${expandFilters[i].value})`:''}${i==expandFilters.length-1?'&':','}`;
-            }
-          result+=expandResult;
-        }
-        let query = '$filter=';
-        filters.forEach(f => {
-            let comparer= f.comparer?f.comparer.toString():'eq';
-            if(comparer=="in"){
-                let  values = f.value.split(',');
-                values = !values?[]:values;
-                values.forEach(val=>{
-                    switch (f.type) {
+  get(languageId: string = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
 
-                        case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
-                            ;
-                            break;
-                        case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
-                            break;
-                        case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
-                            break;
-                        case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
-                            break;
-                    }
-                });
-                if (query.endsWith(" or '")|| query.endsWith(" or ")) {
-                    query = query.substring(0, query.length - 4);
-                }
-            }
-            else{
-                switch (f.type) {
+    this.setLanguageInHeaders(languageId);
+    let promise = this._httpClient.get<any>(
+      this.baseUrl,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
 
-                    case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
-                        ;
-                        break;
-                    case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
-                        break;
-                    case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
-                        break;
-                    case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
-                        break;
-                }
-            }
+  getGeneral(languageId: string = ""): Observable<any> {
+    this.setHttpOptions();
 
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.get<any>(
+      this.baseUrl,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return data;
+  }
+
+  getAll(languageId: string = ""): Observable<TEntity[]> {
+    this.setHttpOptions();
+
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.get<TEntity[]>(
+      this.baseUrl,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return data;
+  }
+
+  getPaged(
+    page: number,
+    max: number,
+    languageId: string = ""
+  ): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.get<BaseResultModel<TEntity>>(
+      `${this.baseUrl}/${page}/${max}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return data;
+  }
+
+  getFiltered(
+    page: number,
+    max: number,
+    filters: QueryFilter[] = [],
+    orderBy: string = '',
+    direction: string = 'desc',
+    languageId: string = ""
+  ): Observable<any> {
+
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.get<any>(
+      `${this.baseUrl.replace('/api/', '/odata/')}?${this.getODataQuery(filters, page, max, orderBy, direction)}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return data;
+  }
+
+  downLoadFile(data: any, type: string, fileName: string = 'Report', fileExt: string = 'xls') {
+    let blob = new Blob([data], { type: type });
+    let url = window.URL.createObjectURL(blob);
+    var anchor = document.createElement("a");
+    anchor.download = `${fileName}.${fileExt}`;
+    anchor.href = url;
+    anchor.click();
+
+  }
+
+  getAllFiltered(
+    filters: QueryFilter[] = [],
+    languageId: string = ""
+  ): Observable<any> {
+
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.get<any>(
+      `${this.baseUrl.replace('/api/', '/odata/')}?${this.getODataQueryAll(filters)}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return data;
+  }
+
+  getAllFilteredToExport(
+    filters: QueryFilter[] = [],
+    languageId: string = ""
+  ): Observable<Blob> {
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    const url = `${this.baseUrl.replace('/api/', '/odata/')}/exporttoexcel?${this.getODataQueryAll(filters)}`
+    let data = this._httpClient.post(url,
+      {}
+      , {
+        responseType: 'blob',
+        headers: new HttpHeaders({
+          "UserId": currentUser ? currentUser.user.userId : '',
+          "LanguageId": currentUser ? currentUser.languageId : 'en',
+          "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
         })
-        result = query.length > 8 ? `${result}${query}` : result;
-        if (result.endsWith(" and '")|| result.endsWith(" and ")) {
-            result = result.substring(0, result.length - 5);
-        }
+      });
+    return data;
 
-        if (result.endsWith("&")) {
-            result = result.substring(0, result.length - 1);
-        }
-        const skipVal=((page-1) * max)<0?0:(page-1) * max;
-        result = `${result}${result.length > 8 ? '&' : ''}$skip=${skipVal}&$count=true&$top=${max}&$orderby=${orderBy} ${direction}`;
+  }
 
-        return result;
-    }
+  exportToExcel(
+    data: any = {},
+    url: string = "",
+    languageId: string = "",
+  ): Observable<Blob> {
 
-    groupBy(list, keyGetter) {
-        const map = new Map();
-        list.forEach((item) => {
-             const key = keyGetter(item);
-             const collection = map.get(key);
-             if (!collection) {
-                 map.set(key, [item]);
-             } else {
-                 collection.push(item);
-             }
-        });
-        return map;
-    }
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
 
-    getODataQueryAll(filters: QueryFilter[]): string {
-        let result = '';
 
-        const expandFilters = filters.filter(x=>x.type== ObjectTypes.ChildObject);
-        if(expandFilters && expandFilters.length>0){
-            let expandResult='$expand=';
-            for(let i=0;i<expandFilters.length;i++){
-                expandResult+=`${expandFilters[i].property}${expandFilters[i].value?`($select=${expandFilters[i].value})`:''}${i==expandFilters.length-1?'&':','}`;
-            }
-          result+=expandResult;
-        }
-        let query = '$filter=';
-        filters.forEach(f => {
-            let comparer= f.comparer?f.comparer.toString():'eq';
-            if(comparer=="in"){
-                let  values = f.value.split(',');
-                values = !values?[]:values;
-                values.forEach(val=>{
-                    switch (f.type) {
-
-                        case ObjectTypes.String:
-                            query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${val}')) or `:
-                            `${query}(contains(toLower(TranslationData), '${val}')) or `
-                            ;
-                            break;
-                        case ObjectTypes.Number:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
-                            break;
-                        case ObjectTypes.Date:
-                            query = `${query}(${f.property} ${comparer} '${val}') or `;
-                            break;
-                        case ObjectTypes.Boolean:
-                            query = `${query}(${f.property} ${comparer} ${val}) or `;
-                            break;
-                    }
-                });
-                if (query.endsWith(" or '")|| query.endsWith(" or ")) {
-                    query = query.substring(0, query.length - 4);
-                }
-            }
-            else{
-                switch (f.type) {
-
-                    case ObjectTypes.String:
-                        query =!f.isTranslated? `${query}(contains(toLower(${f.property}), '${f.value}')) and `:
-                        `${query}(contains(toLower(TranslationData), '${f.value}')) and `
-                        ;
-                        break;
-                    case ObjectTypes.Number:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
-                        break;
-                    case ObjectTypes.Date:
-                        query = `${query}(${f.property} ${comparer} '${f.value}') and `;
-                        break;
-                    case ObjectTypes.Boolean:
-                        query = `${query}(${f.property} ${comparer} ${f.value}) and `;
-                        break;
-                }
-            }
-
+    let promise = this._httpClient.post(`${this.baseUrl}/${url ? url : ''}`,
+      data
+      , {
+        responseType: 'blob',
+        headers: new HttpHeaders({
+          "UserId": currentUser ? currentUser.user.userId : '',
+          "LanguageId": currentUser ? currentUser.languageId : 'en',
+          "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
         })
-        result = query.length > 8 ? `${result}${query}` : result;
-        if (result.endsWith(" and '")|| result.endsWith(" and ")) {
-            result = result.substring(0, result.length - 5);
+      });
+
+    return promise;
+  }
+
+  getODataQuery(filters: QueryFilter[], page: number, max: number, orderBy: string, direction: string): string {
+    let result = '';
+    const expandFilters = filters.filter(x => x.type == ObjectTypes.ChildObject);
+    if (expandFilters && expandFilters.length > 0) {
+      let expandResult = '$expand=';
+      for (let i = 0; i < expandFilters.length; i++) {
+        expandResult += `${expandFilters[i].property}${expandFilters[i].value ? `($select=${expandFilters[i].value})` : ''}${i == expandFilters.length - 1 ? '&' : ','}`;
+      }
+      result += expandResult;
+    }
+    let query = '$filter=';
+    const filterData = filters.filter(x => x.type != ObjectTypes.ChildObject);
+    filterData.forEach(f => {
+      let comparer = f.comparer ? f.comparer.toString() : 'eq';
+      const propertyDef = f.property.indexOf('.') >= 0 ? f.property.replace('.', '/') : f.property;
+      let propertyDefArr = propertyDef.split('/');
+      let newSearch = propertyDefArr;
+      if (f.isTranslated && newSearch.length > 1)
+        newSearch[newSearch.length - 1] = 'TranslationData';
+      if (comparer == "in") {
+        let inQuery = '(';
+        let values = f.value.split(',');
+        values = !values ? [] : values;
+        values.forEach(val => {
+
+          switch (f.type) {
+
+            case ObjectTypes.String:
+              switch (comparer) {
+                case 'eq':
+                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+                case 'ne':
+                  inQuery = !f.isTranslated ? `${inQuery}(not contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+                default:
+                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+
+              }
+
+              break;
+            case ObjectTypes.Number:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} ${val}) or `;
+              break;
+            case ObjectTypes.Date:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} '${val}') or `;
+              break;
+            case ObjectTypes.Boolean:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} ${val}) or `;
+              break;
+          }
+        });
+        if (inQuery.endsWith(" or '") || inQuery.endsWith(" or ")) {
+          inQuery = inQuery.substring(0, inQuery.length - 4);
         }
+        query += `${inQuery}) and `
+      }
+      else {
+        switch (f.type) {
 
-        if (result.endsWith("&")) {
-            result = result.substring(0, result.length - 1);
+          case ObjectTypes.String:
+            switch (comparer) {
+              case 'eq':
+                query = !f.isTranslated ? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and ` :
+                  `${query}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${f.value}')) and `;
+                break;
+              case 'ne':
+                query = !f.isTranslated ? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and ` :
+                  `${query}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${f.value}')) and `;
+                break;
+              default:
+                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                break;
+
+            }
+            break;
+          case ObjectTypes.Number:
+            query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+            break;
+          case ObjectTypes.Date:
+            query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
+            break;
+          case ObjectTypes.Boolean:
+            query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+            break;
         }
+      }
 
-        result = `${result}`;
-
-        return result;
+    })
+    result = query.length > 8 ? `${result}${query}` : result;
+    if (result.endsWith(" and '") || result.endsWith(" and ")) {
+      result = result.substring(0, result.length - 5);
     }
 
-    getById(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-
-
-        let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            this.baseUrl + "/" + id,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-
-        return promise;
+    if (result.endsWith("&")) {
+      result = result.substring(0, result.length - 1);
     }
-    public setLanguageInHeaders(languageId: string) {
-        if (languageId) {
-            let tempHeader = this._headers;
-            let headers = languageId
-                ? tempHeader.set("LanguageId", languageId)
-                : tempHeader;
+    const skipVal = ((page - 1) * max) < 0 ? 0 : (page - 1) * max;
+    result = `${result}${result.length > 8 ? '&' : ''}$skip=${skipVal}&$count=true&$top=${max}&$orderby=${orderBy} ${direction}`;
 
-            this.tempHttpOptions['headers'] = headers;
-            this.tempHttpOptions['params'] = this.httpOptions['params'];
+    return result;
+  }
+
+  groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+      const key = keyGetter(item);
+      const collection = map.get(key);
+      if (!collection) {
+        map.set(key, [item]);
+      } else {
+        collection.push(item);
+      }
+    });
+    return map;
+  }
+
+  getODataQueryAll(filters: QueryFilter[]): string {
+    let result = '';
+
+    const expandFilters = filters.filter(x => x.type == ObjectTypes.ChildObject);
+    if (expandFilters && expandFilters.length > 0) {
+      let expandResult = '$expand=';
+      for (let i = 0; i < expandFilters.length; i++) {
+        expandResult += `${expandFilters[i].property}${expandFilters[i].value ? `($select=${expandFilters[i].value})` : ''}${i == expandFilters.length - 1 ? '&' : ','}`;
+      }
+      result += expandResult;
+    }
+    let query = '$filter=';
+    const filterData = filters.filter(x => x.type != ObjectTypes.ChildObject);
+    filterData.forEach(f => {
+      let comparer = f.comparer ? f.comparer.toString() : 'eq';
+      const propertyDef = f.property.indexOf('.') >= 0 ? f.property.replace('.', '/') : f.property;
+      let propertyDefArr = propertyDef.split('/');
+      let newSearch = propertyDefArr;
+      if (f.isTranslated && newSearch.length > 1)
+        newSearch[newSearch.length - 1] = 'TranslationData';
+      if (comparer == "in") {
+        let inQuery = '(';
+        let values = f.value.split(',');
+        values = !values ? [] : values;
+        values.forEach(val => {
+
+          switch (f.type) {
+
+            case ObjectTypes.String:
+              switch (comparer) {
+                case 'eq':
+                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+                case 'ne':
+                  inQuery = !f.isTranslated ? `${inQuery}(not contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+                default:
+                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
+                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
+                  break;
+
+              }
+
+              break;
+            case ObjectTypes.Number:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} ${val}) or `;
+              break;
+            case ObjectTypes.Date:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} '${val}') or `;
+              break;
+            case ObjectTypes.Boolean:
+              inQuery = `${inQuery}(${propertyDef} ${comparer} ${val}) or `;
+              break;
+          }
+        });
+        if (inQuery.endsWith(" or '") || inQuery.endsWith(" or ")) {
+          inQuery = inQuery.substring(0, inQuery.length - 4);
         }
+        query += `${inQuery}) and `
+      }
+      else {
+        switch (f.type) {
+
+          case ObjectTypes.String:
+            switch (comparer) {
+              case 'eq':
+                query = !f.isTranslated ? `${query}(contains(toLower(${propertyDef}), '${f.value}')) and ` :
+                  `${query}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${f.value}')) and `;
+                break;
+              case 'ne':
+                query = !f.isTranslated ? `${query}(not contains(toLower(${propertyDef}), '${f.value}')) and ` :
+                  `${query}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${f.value}')) and `;
+                break;
+              default:
+                query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+                break;
+
+            }
+
+            break;
+          case ObjectTypes.Number:
+            query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+            break;
+          case ObjectTypes.Date:
+            query = `${query}(${propertyDef} ${comparer} '${f.value}') and `;
+            break;
+          case ObjectTypes.Boolean:
+            query = `${query}(${propertyDef} ${comparer} ${f.value}) and `;
+            break;
+        }
+      }
+
+    })
+    result = query.length > 8 ? `${result}${query}` : result;
+    if (result.endsWith(" and '") || result.endsWith(" and ")) {
+      result = result.substring(0, result.length - 5);
     }
 
-    post(entity: TEntity, languageId: string = "", optionalUrl=""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-
-
-        let promise=this._httpClient.post<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
-              entity,
-              !languageId ? this.httpOptions : this.tempHttpOptions
-          );
-
-        return promise;
-    }
-    postList(entity: TEntity[], languageId: string = "", optionalUrl:string=''): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-
-
-
-
-        let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
-            entity,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-
-        return promise;
-    }
-    putList(entity: TEntity[], languageId: string = "", optionalUrl:string=""): Observable<BaseResultModel<TEntity>> {
-
-
-        let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
-            entity,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-
-        return promise;
-    }
-    patch(
-        entity: TEntity,
-        id: TKey,
-        languageId: string = ""
-    ): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-
-        this.setLanguageInHeaders(languageId);
-        let data=this._httpClient.patch<BaseResultModel<TEntity>>(this.baseUrl + "/" + id, entity);
-        return data;
+    if (result.endsWith("&")) {
+      result = result.substring(0, result.length - 1);
     }
 
-    put(entity: TEntity, languageId: string = "",optionalUrl:string=""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
+    result = `${result}`;
+
+    return result;
+  }
+
+  getById(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+
+    this.setLanguageInHeaders(languageId);
 
 
-        entity=this.SetTranslationData(entity);
+    let promise = this._httpClient.get<BaseResultModel<TEntity>>(
+      this.baseUrl + "/" + id,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
 
-        let promise=this._httpClient.put<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}`:  this.baseUrl,
-            entity,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
+    return promise;
+  }
+  public setLanguageInHeaders(languageId: string) {
+    if (languageId) {
+      let tempHeader = this._headers;
+      let headers = languageId
+        ? tempHeader.set("LanguageId", languageId)
+        : tempHeader;
 
-        return promise;
+      this.tempHttpOptions['headers'] = headers;
+      this.tempHttpOptions['params'] = this.httpOptions['params'];
     }
+  }
 
-    delete(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-
-
-        let promise=this._httpClient.delete<BaseResultModel<TEntity>>(
-            this.baseUrl + "/" + id,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
-
-    deleteGeneric(id: string, languageId: string = "", optionalUrl:string=""): Observable<BaseResultModel<TEntity>> {
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
-        return this._httpClient.delete<BaseResultModel<TEntity>>(
-            optionalUrl?`${this.baseUrl}/${optionalUrl}/${id}`:  `${this.baseUrl}/${id}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-    }
-
-    getByUrlParameters(
-        params: string[],
-        languageId: string = ""
-    ): Observable<BaseResultModel<TEntity>> {
-        let urlParams = params.join("/");
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
+  post(entity: TEntity, languageId: string = "", optionalUrl = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
 
 
-        let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${urlParams}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
+    let promise = this._httpClient.post<BaseResultModel<TEntity>>(
+      optionalUrl ? `${this.baseUrl}/${optionalUrl}` : this.baseUrl,
+      entity,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
 
-    SetTranslationData(data:TEntity):TEntity{
-        if(data['translationData'])
-        data['translationData']=null;
-        return data;
-    }
-
-    getSingleByUrlParameters(
-        params: string[],
-        languageId: string = ""
-    ): Observable<BaseResultModel<TEntity>> {
-        let urlParams = params.join("/");
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
+    return promise;
+  }
+  postList(entity: TEntity[], languageId: string = "", optionalUrl: string = ''): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
 
 
-        let promise=this._httpClient.get<BaseResultModel<TEntity>>(
-            `${this.baseUrl}/${urlParams}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
 
-    getGenericByUrlParameters(
-        params: string[],
-        languageId: string = ""
-    ): Observable<any> {
-        let urlParams = params.join("/");
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
 
-        let promise=this._httpClient.get<any>(
-            `${this.baseUrl}/${urlParams}`,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
+    let promise = this._httpClient.put<BaseResultModel<TEntity>>(
+      optionalUrl ? `${this.baseUrl}/${optionalUrl}` : this.baseUrl,
+      entity,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
 
-    patchGenericByUrlParameters(
-        params: string[],
-        languageId: string = "",
-        data:any=null
-    ): Observable<any> {
-        let urlParams = params.join("/");
-        this.setHttpOptions();
-        this.setLanguageInHeaders(languageId);
+    return promise;
+  }
+  putList(entity: TEntity[], languageId: string = "", optionalUrl: string = ""): Observable<BaseResultModel<TEntity>> {
 
-        let promise=this._httpClient.patch<any>(
-            `${this.baseUrl}/${urlParams}`,
-            data,
-            !languageId ? this.httpOptions : this.tempHttpOptions
-        );
-        return promise;
-    }
+
+    let promise = this._httpClient.put<BaseResultModel<TEntity>>(
+      optionalUrl ? `${this.baseUrl}/${optionalUrl}` : this.baseUrl,
+      entity,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+
+    return promise;
+  }
+  patch(
+    entity: TEntity,
+    id: TKey,
+    languageId: string = ""
+  ): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+
+    this.setLanguageInHeaders(languageId);
+    let data = this._httpClient.patch<BaseResultModel<TEntity>>(this.baseUrl + "/" + id, entity);
+    return data;
+  }
+
+  put(entity: TEntity, languageId: string = "", optionalUrl: string = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+
+    entity = this.SetTranslationData(entity);
+
+    let promise = this._httpClient.put<BaseResultModel<TEntity>>(
+      optionalUrl ? `${this.baseUrl}/${optionalUrl}` : this.baseUrl,
+      entity,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+
+    return promise;
+  }
+
+  delete(id: TKey, languageId: string = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+
+    let promise = this._httpClient.delete<BaseResultModel<TEntity>>(
+      this.baseUrl + "/" + id,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
+
+  deleteGeneric(id: string, languageId: string = "", optionalUrl: string = ""): Observable<BaseResultModel<TEntity>> {
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+    return this._httpClient.delete<BaseResultModel<TEntity>>(
+      optionalUrl ? `${this.baseUrl}/${optionalUrl}/${id}` : `${this.baseUrl}/${id}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+  }
+
+  getByUrlParameters(
+    params: string[],
+    languageId: string = ""
+  ): Observable<BaseResultModel<TEntity>> {
+    let urlParams = params.join("/");
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+
+    let promise = this._httpClient.get<BaseResultModel<TEntity>>(
+      `${this.baseUrl}/${urlParams}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
+
+  SetTranslationData(data: TEntity): TEntity {
+    if (data['translationData'])
+      data['translationData'] = null;
+    return data;
+  }
+
+  getSingleByUrlParameters(
+    params: string[],
+    languageId: string = ""
+  ): Observable<BaseResultModel<TEntity>> {
+    let urlParams = params.join("/");
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+
+    let promise = this._httpClient.get<BaseResultModel<TEntity>>(
+      `${this.baseUrl}/${urlParams}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
+
+  getGenericByUrlParameters(
+    params: string[],
+    languageId: string = ""
+  ): Observable<any> {
+    let urlParams = params.join("/");
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+    let promise = this._httpClient.get<any>(
+      `${this.baseUrl}/${urlParams}`,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
+
+  patchGenericByUrlParameters(
+    params: string[],
+    languageId: string = "",
+    data: any = null
+  ): Observable<any> {
+    let urlParams = params.join("/");
+    this.setHttpOptions();
+    this.setLanguageInHeaders(languageId);
+
+    let promise = this._httpClient.patch<any>(
+      `${this.baseUrl}/${urlParams}`,
+      data,
+      !languageId ? this.httpOptions : this.tempHttpOptions
+    );
+    return promise;
+  }
+
+  showSpinner() {
+    let spinnerObj = document.getElementById("nb-global-spinner");
+    spinnerObj.style.display = "block";
+  }
+
+  hideSpinner() {
+    let spinnerObj = document.getElementById("nb-global-spinner");
+    spinnerObj.style.display = "none";
+  }
 }
 @Injectable()
 export class NoopInterceptor implements HttpInterceptor {
 
-    constructor(
-        private route: Router
-        ){
+  constructor(
+    private route: Router
+  ) {
 
-    }
+  }
   intercept(req: HttpRequest<any>, next: HttpHandler):
     Observable<HttpEvent<any>> {
-        const started = Date.now();
-        let ok: string;
-      this.showSpinner();
+    const started = Date.now();
+    let ok: string;
+    this.showSpinner();
     return next.handle(req).pipe(
-        tap(
-          // Succeeds when there is a response; ignore other events
-          event =>{
-              if(event.type>0)
-              this.hideSpinner();
-              ok = event instanceof HttpResponse ? 'succeeded' : '';
-            },
-          // Operation failed; error is an HttpErrorResponse
-          error => {
-              ok = 'failed';
-              if(error.status && error.status==403){
-                this.logout();
-              }
-              this.hideSpinner();
-            }
-        ),
-        // Log when response observable either completes or errors
-        finalize(() => {
-          const elapsed = Date.now() - started;
-          const msg = `${req.method} "${req.urlWithParams}"
+      tap(
+        // Succeeds when there is a response; ignore other events
+        event => {
+          ok = event instanceof HttpResponse ? 'succeeded' : '';
+        },
+        // Operation failed; error is an HttpErrorResponse
+        error => {
+          ok = 'failed';
+          if (error.status && error.status == 403) {
+            this.logout();
+          }
+
+        }
+      ),
+      // Log when response observable either completes or errors
+      finalize(() => {
+        this.hideSpinner();
+        const elapsed = Date.now() - started;
+        const msg = `${req.method} "${req.urlWithParams}"
              ${ok} in ${elapsed} ms.`;
-          console.log(msg);
-        })
-      );;
+        console.log(msg);
+      })
+    );;
   }
 
-  showSpinner(){
+  showSpinner() {
     let spinnerObj = document.getElementById("nb-global-spinner");
-    spinnerObj.style.display="block";
- }
+    spinnerObj.style.display = "block";
+  }
 
- hideSpinner(){
-     let spinnerObj = document.getElementById("nb-global-spinner");
-     spinnerObj.style.display="none";
+  hideSpinner() {
+    let spinnerObj = document.getElementById("nb-global-spinner");
+    spinnerObj.style.display = "none";
   }
 
   logout() {
     var auth = JSON.parse(localStorage.getItem(`currentUser`)) as AuthModel;
-    if(auth){
+    if (auth) {
       localStorage.setItem(`language-${auth.languageId}`, null);
     }
     localStorage.removeItem('currentUser');
+    this.hideSpinner();
     this.route.navigateByUrl('auth/login');
   }
 }

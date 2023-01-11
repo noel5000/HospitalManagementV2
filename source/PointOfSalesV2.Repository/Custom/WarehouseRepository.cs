@@ -1,7 +1,4 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace PointOfSalesV2.Repository
 {
@@ -11,7 +8,7 @@ namespace PointOfSalesV2.Repository
         {
         }
 
-        public IEnumerable<Inventory> GetProductInventory(long productId)
+        public async Task<IEnumerable<Inventory>> GetProductInventory(long productId)
         {
             throw new NotImplementedException();
         }

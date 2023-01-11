@@ -35,16 +35,16 @@ namespace PointOfSalesV2.Api.Controllers
 
 
         }
-        public IActionResult Index()
+       public async Task<IActionResult> Index()
         {
             return View();
         }
-        public ActionResult InvoicePrint(long id, string language = "es")
+        public async Task<ActionResult> InvoicePrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Invoice>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Patient).Include(i => i.Seller)
+            var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Patient).Include(i=>i.Insurance).Include(i=>i.InsurancePlan).Include(i => i.Seller)
             .Include(i => i.Currency).Include(i => i.InvoiceDetails).ThenInclude(d => d.Product).Include(i=>i.InvoiceDetails).ThenInclude(x=>x.Unit), y => y.Active == true && y.Id == id)?? new Invoice();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
@@ -54,16 +54,15 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult AppointmentPrint(long id, string language = "es")
+        public async Task<ActionResult> AppointmentPrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var appointmentRepo = dataRepository.GetDataRepositories<Appointment>();
-            var appointment = appointmentRepo.Get(x => 
+            var appointment = await appointmentRepo.GetAsync(x => 
             x.Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Hospital)
            .Include(t=>t.Currency)
            .Include(t=>t.Details).ThenInclude(d=>d.Doctor)
-           .Include(t => t.Details).ThenInclude(d => d.Doctor)
            .Include(t => t.Details).ThenInclude(d => d.Product)
            .Include(t => t.Details).ThenInclude(d => d.MedicalSpeciality)
             , y => y.Active == true && y.Id == id)??new Appointment();
@@ -75,14 +74,14 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult CheckupMedicationsPrint(long id, string language = "es")
+        public async Task<ActionResult> CheckupMedicationsPrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
-            var checkup = checkupRepo.Get(x => x.Include(t=>t.Doctor).ThenInclude(t=>t.MedicalSpeciality)
+            var checkup = await checkupRepo.GetAsync(x => x.Include(t=>t.Doctor).ThenInclude(t=>t.MedicalSpeciality)
             .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t=>t.Patient).Include(t=>t.Insurance).Include(t=>t.Insurance).Include(t=>t.Appointment).ThenInclude(x=>x.Hospital)
+            .Include(t=>t.Patient).Include(t=>t.Insurance).Include(t=>t.InsurancePlan).Include(t=>t.Appointment).ThenInclude(x=>x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -109,14 +108,14 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult CheckupSpecializedImagesPrint(long id, string language = "es")
+        public async Task<ActionResult> CheckupSpecializedImagesPrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
-            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            var checkup =  await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -143,14 +142,14 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult CheckupConsultationsPrint(long id, string language = "es")
+        public async Task<ActionResult> CheckupConsultationsPrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
-            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            var checkup = await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -177,14 +176,14 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult CheckupLabTestsPrint(long id, string language = "es")
+        public async Task<ActionResult> CheckupLabTestsPrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var checkupRepo = dataRepository.GetDataRepositories<PatientCheckup>();
-            var checkup = checkupRepo.Get(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
+            var checkup =await checkupRepo.GetAsync(x => x.Include(t => t.Doctor).ThenInclude(t => t.MedicalSpeciality)
              .Include(t => t.Doctor).ThenInclude(t => t.BranchOffice)
-            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.Insurance).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
+            .Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Appointment).ThenInclude(x => x.Hospital)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.MedicalSpeciality)
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id)?? new PatientCheckup();
@@ -211,12 +210,12 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult ExpensePrint(long id, string language = "es")
+        public async Task<ActionResult> ExpensePrint(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id)?? new Expense();
+            var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id)?? new Expense();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Expense = invoice;
@@ -224,12 +223,12 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult InvoicePayment(string sequence, string language = "es")
+        public async Task<ActionResult> InvoicePayment(string sequence, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var paymentsRepo = dataRepository.GetDataRepositories<CustomerPayment>();
-            var payments = paymentsRepo.GetAll(x => x.Include(p => p.Customer).Include(p => p.Currency).Include(p => p.Seller).Include(p => p.Invoice), y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State == (char)BillingStates.Paid).Data.ToList();
+            var payments = (await paymentsRepo.GetAllAsync(x => x.Include(p => p.Customer).Include(p => p.Currency).Include(p => p.Seller).Include(p => p.Invoice), y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State == (char)BillingStates.Paid)).Data.ToList();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Payments = payments;
@@ -237,12 +236,12 @@ namespace PointOfSalesV2.Api.Controllers
             return View();
         }
 
-        public ActionResult ExpensePayment(long id, string language = "es")
+        public async Task<ActionResult> ExpensePayment(long id, string language = "es")
         {
             this.httpContextAccessor.HttpContext.Request.Headers.Add("languageid", language);
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
-            var invoice = invoiceRepo.Get(x => x.Include(i => i.Supplier).Include(i => i.Currency)
+            var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Supplier).Include(i => i.Currency)
             .Include(i => i.Payments), y => y.Active == true && y.Id == id);
             invoice.Payments = invoice.Payments.Where(y => y.Active == true).ToList();
             var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();

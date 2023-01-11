@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { CustomerFormComponent } from './form/CustomerForm.component';
 import { LanguageService } from './../../@core/services/translateService';
 import { SecurityService } from './../../@core/services/securityService';

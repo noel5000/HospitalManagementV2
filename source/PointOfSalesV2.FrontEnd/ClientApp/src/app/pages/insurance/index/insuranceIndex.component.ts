@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -29,7 +30,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
     pageSize:number=10;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Insurance`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Insurance`);
     maxCount:number=0;
   filters: QueryFilter[] = [
       
@@ -39,7 +40,8 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
     insurances:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         private  http: HttpClient,
         langService: LanguageService,
@@ -98,7 +100,7 @@ export class InsuranceIndexComponent extends BaseComponent implements OnInit {
 this.actions=[
     {
         title:scope.lang.getValueByKey('edit_btn'),
-        class:'btn btn-primary',
+        class:'btn btn-primary mx-1 my-1',
         icon:'',
         id:'edit',
         visible:()=>{
@@ -107,7 +109,7 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:()=>{
@@ -146,9 +148,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

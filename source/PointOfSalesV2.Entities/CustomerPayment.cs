@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
+﻿
 
 namespace PointOfSalesV2.Entities
 {
@@ -64,6 +57,13 @@ namespace PointOfSalesV2.Entities
         [NotMapped]
         [IgnoreDataMember]
         public override string TranslationData { get; set; }
+
+        [NotMapped]
+        public  decimal? InsuranceCoverageAmount { get 
+            {
+                return this.Invoice?.InsuranceCoverageAmount;    
+            }
+        }
         public long InvoiceCurrencyId { get; set; }
 
         public long PaymentTypeId { get; set; }

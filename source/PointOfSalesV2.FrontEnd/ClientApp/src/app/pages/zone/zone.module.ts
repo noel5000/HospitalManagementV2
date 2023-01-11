@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { ZoneIndexComponent } from './index/zoneIndex.component';
 import { ZoneFormComponent } from './form/zoneForm.component';
 import { LanguageService } from '../../@core/services/translateService';

@@ -1,0 +1,135 @@
+<div class="card m-3">
+    <h5 class="card-header">{{'medicalTests_menu' | translate}}</h5>
+    <div class="card-body">
+        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+            <div class="form-row">
+               
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'name_lbl' | translate}}</label>
+                    <input type="text" formControlName="name" maxlength="50" minlength="3" class="form-control" required [ngClass]="{ 'is-invalid': form.name.errors }" />
+                    <div *ngIf="form.name.errors" class="invalid-feedback">
+                        <div *ngIf="form.name.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'description_lbl' | translate}}</label>
+                    <input type="text" formControlName="description" maxlength="200" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.description.errors }" />
+                    <div *ngIf="form.description.errors" class="invalid-feedback">
+                        <div *ngIf="form.description.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'code_lbl' | translate}}</label>
+                    <input type="text" formControlName="code" maxlength="50"  class="form-control" [ngClass]="{ 'is-invalid': form.code.errors }" />
+                    <div *ngIf="form.code.errors" class="invalid-feedback">
+                        <div *ngIf="form.description.code.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'currency_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.currencyId.errors }"
+                    formControlName="currencyId"
+                    required
+                    >
+                    <option *ngFor="let currency of currencies"
+                     [value]="currency.id"
+                     >{{currency.name}}</option>
+                    </select>
+                    <div *ngIf="form.currencyId.errors" class="invalid-feedback">
+                        <div *ngIf="form.currencyId.errors.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'type_lbl' | translate}}</label>
+                    <select class="form-control"
+                    [ngClass]="{ 'is-invalid': form.type.errors }"
+                    formControlName="type"
+                    required
+                    >
+                    <option *ngFor="let type of types"
+                     [value]="type.id"
+                     >{{type.name}}</option>
+                    </select>
+                   
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'cost_lbl' | translate}}</label>
+                    <input type="number" formControlName="cost" min="1" required class="form-control" [ngClass]="{ 'is-invalid': form.cost.errors }" />
+                    <div *ngIf="form.cost.errors" class="invalid-feedback">
+                        <div *ngIf="form.cost.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'price_lbl' | translate}}</label>
+                    <input type="number" formControlName="price" min="1" required class="form-control" [ngClass]="{ 'is-invalid': form.price.errors }" />
+                    <div *ngIf="form.price.errors" class="invalid-feedback">
+                        <div *ngIf="form.price.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'price_lbl' | translate}}</label>
+                    <input type="number" formControlName="price2"class="form-control" [ngClass]="{ 'is-invalid': form.price2.errors }" />
+                    <div *ngIf="form.price2.errors" class="invalid-feedback">
+                        <div *ngIf="form.price2.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6 col-xs-12">
+                    <label>{{'Price3_lbl' | translate}}</label>
+                    <input type="number" formControlName="price3" class="form-control" [ngClass]="{ 'is-invalid': form.price3.errors }" />
+                    <div *ngIf="form.price3.errors" class="invalid-feedback">
+                        <div *ngIf="form.price3.required">{{'required_lbl' | translate}}</div>
+                    </div>
+                </div>
+
+               
+               
+            </div>
+
+            <div class="scrollTableMobile" >
+                <h5 class="row mx-2">{{'taxes_menu' | translate}}</h5>
+                <div class="row">
+                    <div class="form-group col-md-3 col-xs-12">
+                        <label>{{'tax_lbl' | translate}}</label>
+                        <select class="form-control"
+                        [ngClass]="{ 'is-invalid': form.taxId.errors }"
+                        formControlName="taxId"
+                        >
+                        <option *ngFor="let tax of taxes"
+                         [value]="tax.id"
+                         >{{tax.name}}</option>
+                        </select>
+                        <div *ngIf="form.taxId.errors" class="invalid-feedback">
+                            <div *ngIf="form.taxId.errors.required">{{'required_lbl' | translate}}</div>
+                        </div>
+                    </div>  
+                  
+
+                      <div class="col-md-3 col-xs-12">
+                          <i class="btn btn-primary mr-1  my-4" (click)="saveTax()">{{'add_btn' | translate}}</i>
+                      </div>
+                </div>
+                <table class="table" *ngIf="productTaxes.length>0">
+                    <thead>
+                        <tr>
+                            <th>{{'tax_lbl' | translate}}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let productTax of productTaxes; let i=index">
+                            <td>{{productTax.tax.name}}</td>
+                            <td><i class="btn btn-danger" (click)="deleteTax(i)">{{'delete_btn' | translate}}</i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center">
+                <button *ngIf="this.permits.add || this.permits.update" class="btn btn-primary mr-1">{{'save_btn' | translate}}</button>
+                <button class="btn btn-secondary" type="reset" (click)="cancel()">{{'cancel_btn' | translate}}</button>
+            </div>
+        </form>
+    </div>
+</div>

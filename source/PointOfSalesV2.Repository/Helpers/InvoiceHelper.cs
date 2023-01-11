@@ -1,7 +1,4 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace PointOfSalesV2.Repository.Helpers
 {
@@ -52,10 +49,10 @@ namespace PointOfSalesV2.Repository.Helpers
 
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { invoice }); ;
         }
-        public static CustomerPayment ApplyInvoicePayment(CustomerPayment pago, ICustomerPaymentRepository paymentRepository)
+        public static async Task<CustomerPayment> ApplyInvoicePayment(CustomerPayment pago, ICustomerPaymentRepository paymentRepository)
         {
             
-            return paymentRepository.ApplyInvoicePayment(pago);
+            return await paymentRepository.ApplyInvoicePayment(pago);
         }
     }
 }

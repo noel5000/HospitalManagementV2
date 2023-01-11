@@ -14,7 +14,7 @@
 
   <nb-card-body>
 <div id="filter" class="dontPrint" >
-  <form [formGroup]="itemForm" (ngSubmit)="getData()">
+  <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()"  (ngSubmit)="getData()">
 <div class="form-row">
   <div class="form-group col-md-6 col-xs-12">
     <label>{{'branchOffice_lbl' | translate}}</label>
@@ -28,17 +28,16 @@
     </select>
 </div>
 
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'customer_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="customerId"
-  
-  >
-  <option *ngFor="let customer of customers"
-   [value]="customer.id"
-   >{{customer.name}}</option>
-  </select>
-</div>
+  <div class="form-group col-md-6 col-xs-12">
+    <label>{{'customer_lbl' | translate}}</label>
+    <custom-auto-complete [items]="customers"
+                          [externalSearch]="true"
+                          [propertyToShow]="'name'"
+                          (onSelectedItem)="selectPatient($event)"
+                          (onFilter)="getPatientsByName($event)"
+                          #patientSearch></custom-auto-complete>
+   
+  </div>
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'currency_lbl' | translate}}</label>

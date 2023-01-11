@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { BaseService } from './baseService';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService, TranslateLoader } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { AuthModel } from './../data/authModel';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AppConfig } from './app.config';
 
 
 
@@ -15,8 +16,9 @@ import { Observable } from 'rxjs';
     providedIn: "root"
 })
 export class LanguageService extends BaseService<any, string> {
-    constructor(public http: HttpClient, private translate: TranslateService, private route: Router) {
-        super(http, `${endpointUrl}${endpointControllers.languages}`);
+  constructor(
+    @Inject('BASE_URL') private baseUrl2: string, public http: HttpClient, private config: AppConfig, private translate: TranslateService, private route: Router) {
+    super(http, `${baseUrl2}api/${endpointControllers.languages}`);
 
 
 
@@ -86,7 +88,7 @@ export class LanguageService extends BaseService<any, string> {
     //     }
 
     generateJson() {
-        return this.http.get(`${endpointUrl}${endpointControllers.languages}/GenerateJsonFile`);
+        return this.http.get(`${this.baseUrl}api/${endpointControllers.languages}/GenerateJsonFile`);
     }
 
 

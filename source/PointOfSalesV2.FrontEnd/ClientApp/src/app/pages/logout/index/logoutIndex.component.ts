@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -31,10 +32,11 @@ export class LogoutIndexComponent  implements OnInit {
          this.modalService.showError(r.message);
      })
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Logout`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Logout`);
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         langService: LanguageService,
         private modals:NgbModal,
        private router: Router,

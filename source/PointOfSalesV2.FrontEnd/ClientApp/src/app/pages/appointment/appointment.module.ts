@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { LanguageService } from './../../@core/services/translateService';
 import { SecurityService } from './../../@core/services/securityService';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { appointmentIndexComponent } from './index/appointmentIndex.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
-import { MatMenuModule, MatButtonModule, MatButtonToggleModule, MatInputModule } from '@angular/material';
+import { MatMenuModule, MatButtonModule, MatButtonToggleModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { WarehouseService } from '../../@core/services/WarehouseService';
 import { appointmentFormComponent } from './form/appointmentForm.component';
 import { SchoolService } from '../../@core/services/SchoolService';
@@ -57,7 +57,8 @@ const routes: Routes = [
         ModalService,
         SchoolService
     ],
-    imports: [
+  imports: [
+    MatAutocompleteModule ,
         NbCardModule,
         MatMenuModule,
         MatButtonModule,

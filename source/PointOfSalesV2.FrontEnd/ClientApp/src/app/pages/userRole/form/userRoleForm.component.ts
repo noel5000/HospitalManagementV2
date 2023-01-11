@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from '../../../@core/common/constants';
 import { Role, UserRole } from '../../../@core/data/roleModel';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -31,13 +32,14 @@ export class UserRoleFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     userRoles:any[]=[];
     roles:any[]=[];
-    userRoleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}userRole`);
-    userService:BaseService<any,string>= new BaseService<any,string>(this.http,`${endpointUrl}user`);
-    roleService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}role`);
+    userRoleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/userRole`);
+    userService:BaseService<any,string>= new BaseService<any,string>(this.http,`${this.baseUrl}api/user`);
+    roleService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/role`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+         private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

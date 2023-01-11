@@ -1,17 +1,20 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Supplier } from '../data/Supplier';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
 })
 
 export class SupplierService extends BaseService<Supplier, number>{
-    constructor(
+  constructor(
+    @Inject('BASE_URL') private baseUrl2: string,
+        private config: AppConfig,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.suppliers}`);
+    super(http, `${baseUrl2}api/${endpointControllers.suppliers}`);
     }
 }

@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { SellerService } from '../../../@core/services/SellerService';
@@ -12,6 +12,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { Seller } from '../../../@core/data/seller';
 import { ZoneService } from '../../../@core/services/zoneService';
 import { Zone } from '../../../@core/data/zoneModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -24,7 +25,8 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
  
     _route:ActivatedRoute;
     zones:Zone[]=[];
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
@@ -43,7 +45,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
             cardId: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(20)]],
             address: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(200)]],
             code: [''],
-            zoneId: [0,[ Validators.required]],
+            zoneId: [null,[ Validators.required, Validators.min(1)]],
             comissionRate: [0],
             comissionByProduct: [false],
             fixedComission: [false],

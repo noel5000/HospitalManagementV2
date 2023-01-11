@@ -67,6 +67,10 @@
           "configurations": {
             "production": {
               "browserTarget": "PointOfSalesV2.FrontEnd:build:production"
+            },
+            "development": {
+              "browserTarget": "PointOfSalesV2.FrontEnd:build:development",
+              "proxyConfig": "proxy.conf.js"
             }
           }
         },

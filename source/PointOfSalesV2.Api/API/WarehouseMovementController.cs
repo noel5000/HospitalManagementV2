@@ -1,20 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities;
-using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.EntityFrameworkCore;
+﻿
 using PointOfSalesV2.Api.Models;
-using PointOfSalesV2.Common;
-using Microsoft.AspNetCore.Cors;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -30,11 +15,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetProductMovements/{branchOfficeId:long}/{warehouseId:long}/{productId:long}/{reference}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.PRODUCTMOVEMENTS)]
-        public IActionResult GetProductMovements(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference = "")
+       public async Task<IActionResult> GetProductMovements(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference = "")
         {
             try
             {
-                var data = _baseRepo.GetAll<WarehouseMovement>(x =>
+                var data = (await _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -44,7 +29,7 @@ namespace PointOfSalesV2.Api.Controllers
                   && (warehouseId > 0 ? y.WarehouseId == warehouseId : y.WarehouseId > 0)
                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0)
                   && (!string.IsNullOrEmpty(reference) && reference != "*" ? y.Reference.ToLower() == reference : y.Reference != "")
-                && y.Active == true).OrderBy(x=>x.CreatedDate).Select(x => new WarehouseMovementModel()
+                && y.Active == true)).OrderBy(x=>x.CreatedDate).Select(x => new WarehouseMovementModel()
                 {
                     BranchOffice = new BaseModel() { Id = x.BranchOffice.Id, Name = x.BranchOffice.Name },
                     Warehouse = new BaseModel() { Id = x.Warehouse.Id, Name = x.Warehouse.Name },
@@ -67,7 +52,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -75,11 +60,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel/{branchOfficeId:long}/{warehouseId:long}/{productId:long}/{reference}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.PRODUCTMOVEMENTS)]
-        public IActionResult ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference="")
+       public async Task<IActionResult> ExportToExcel(long branchOfficeId = 0, long warehouseId = 0, long productId = 0, string reference="")
         {
             try
             {
-                var data = _baseRepo.GetAll<WarehouseMovement>(x =>
+                var data = (await _baseRepo.GetAllAsync<WarehouseMovement>(x =>
                 x.Include(t => t.Unit)
                 .Include(t => t.Warehouse)
                 .Include(t => t.BranchOffice)
@@ -89,7 +74,7 @@ namespace PointOfSalesV2.Api.Controllers
                   && (warehouseId > 0 ? y.WarehouseId == warehouseId : y.WarehouseId > 0)
                   && (productId > 0 ? y.ProductId == productId : y.ProductId > 0)
                   && (!string.IsNullOrEmpty(reference) && reference!="*" ? y.Reference.ToLower() == reference : y.Reference != "")
-                && y.Active == true).OrderBy(x => x.CreatedDate);
+                && y.Active == true)).OrderBy(x => x.CreatedDate);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "ES";
@@ -110,7 +95,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

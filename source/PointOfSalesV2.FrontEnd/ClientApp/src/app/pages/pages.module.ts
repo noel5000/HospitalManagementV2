@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { NbMenuModule } from '@nebular/theme';
 
 import { ThemeModule } from '../@theme/theme.module';
@@ -38,7 +38,7 @@ import { InventoryReportModule } from './inventoryReport/inventoryReport.module'
 import { WarehouseMovementReportModule } from './warehouseMovementReport/warehouseMovementReport.module';
 import{MatMenuModule} from '@angular/material/menu'
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material';
+import { MatAutocompleteModule, MatButtonToggleModule, MatInputModule } from '@angular/material';
 import { InvoiceModule } from './invoice/invoice.module';
 import { InvoicePaymentModule } from './invoicePayment/invoicePayment.module';
 import { AccountsReceivableModule } from './accountsReceivablesReport/accountsReceivable.module';
@@ -51,7 +51,6 @@ import { TaxReportModule } from './taxesReport/taxesReport.module';
 import { ComissionsReportModule } from './comissionsReport/comissionsReport.module';
 import { quotesModule } from './quotes/quote.module';
 import { CustomerReturnModule } from './customerReturn/customerReturn.module';
-import { httpInterceptorProviders } from '../@core/services/baseService';
 import { InsuranceModule } from './insurance/insurance.module';
 import { medicalSpecialityModule } from './medicalSpeciality/medicalSpeciality.module';
 import { appointmentsModule } from './appointment/appointment.module';
@@ -59,10 +58,12 @@ import { insuranceCoverageModule } from './insuranceCoverage/insuranceCoverage.m
 import { PatientCheckupModule } from './patientCheckup/patientCheckup.module';
 import { insuranceCoveragesReportModule } from './insuranceCoveragesReport/insuranceCoveragesReport.module';
 import { LogoutModule } from './logout/logout.module';
+import { MedicineModule } from './medicine/medicine.module';
+import { MedicalTestModule } from './medicalTest/medicalTest.module';
 
 @NgModule({
   imports: [
-
+    MatAutocompleteModule,
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,
@@ -103,6 +104,8 @@ import { LogoutModule } from './logout/logout.module';
     DebtsToPayReportModule,
     AccountStateModule,
     CompanyStateModule,
+    MedicineModule,
+    MedicalTestModule,
     TaxReportModule,
     CustomerReturnModule,
     ComissionsReportModule,
@@ -121,7 +124,9 @@ import { LogoutModule } from './logout/logout.module';
     SecurityService,
   ],
   entryComponents:[NgbdModalConfirmAutofocus],
-  exports:[MatMenuModule,
+  exports: [MatMenuModule,
+    MatAutocompleteModule,
+    MatInputModule,
     MatButtonModule,
     MatButtonToggleModule,],
 })

@@ -1,19 +1,14 @@
-﻿using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace PointOfSalesV2.Repository.Helpers
 {
    public class ExpensesHelper
     {
       
-        public static void UpdateExpenseTaxes(Expense expense, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task UpdateExpenseTaxes(Expense expense, IDataRepositoryFactory dataRepositoryFactory)
         {
             var expensesTaxRepo = dataRepositoryFactory.GetCustomDataRepositories<IExpenseTaxRepository>();
             expense.Taxes = expense.Taxes == null ? new List<ExpenseTax>() : expense.Taxes;
-            var expenseTaxes = expensesTaxRepo.GetExpenseTaxes(expense.ExpenseReference).ToList();
+            var expenseTaxes =( await expensesTaxRepo.GetExpenseTaxes(expense.ExpenseReference)).ToList();
             if (expenseTaxes != null && expenseTaxes.Count > 0)
             {
                 foreach (ExpenseTax tax in expenseTaxes)
@@ -43,10 +38,10 @@ namespace PointOfSalesV2.Repository.Helpers
             }
         }
 
-        public static Result<ExpensesPayment> ApplyExpensePayment(ExpensesPayment payment, IDataRepositoryFactory dataRepositoryFactory)
+        public static async Task<Result<ExpensesPayment>> ApplyExpensePayment(ExpensesPayment payment, IDataRepositoryFactory dataRepositoryFactory)
         {
             var paymentRepo=dataRepositoryFactory.GetDataRepositories<ExpensesPayment>();
-            return paymentRepo.Add(payment);
+            return await paymentRepo.AddAsync(payment);
         }
 
     }

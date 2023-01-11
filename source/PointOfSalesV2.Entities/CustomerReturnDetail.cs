@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.Serialization;
+
 
 namespace PointOfSalesV2.Entities
 {
@@ -31,6 +24,8 @@ namespace PointOfSalesV2.Entities
         public decimal BeforeTaxesAmount { get; set; }
         [Export(Order = 5)]
         public decimal TotalAmount { get; set; }
+
+
         public long CustomerId { get; set; }
 
         [Export(Order = 6)]

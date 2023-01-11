@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { SupplierService } from '../../../@core/services/supplierService';
 import { TaxService } from '../../../@core/services/TaxService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { Role } from '../../../@core/data/roleModel';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -37,14 +38,15 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
     roleSectionOperations:any[]=[];
     sections:any[]=[];
     sectionOperations:any[]=[];
-    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Role`);
-    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}SectionOperation`);
-    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Section`);
-    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}RoleSectionOperation`);
+    roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Role`);
+    sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/SectionOperation`);
+    sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Section`);
+    roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/RoleSectionOperation`);
     
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

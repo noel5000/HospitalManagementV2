@@ -1,9 +1,10 @@
 import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable , Inject } from '@angular/core';
 import { Warehouse } from '../data/warehouse';
 import { CashRegister } from '../data/cashRegister';
+import { AppConfig } from './app.config';
 
 @Injectable({
     providedIn: "root"
@@ -11,8 +12,10 @@ import { CashRegister } from '../data/cashRegister';
 
 export class CashRegisterService extends BaseService<CashRegister, number>{
     constructor(
+      private config: AppConfig,
+      @Inject('BASE_URL') private baseUrl2: string,
         http: HttpClient
     ) {
-        super(http, `${endpointUrl}${endpointControllers.cashRegister}`);
+      super(http, `${baseUrl2}api/${endpointControllers.cashRegister}`);
     }
 }

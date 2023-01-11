@@ -1,13 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities;
+﻿
 using PointOfSalesV2.Repository.Helpers.BillServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 
 namespace PointOfSalesV2.Repository.Helpers
 {

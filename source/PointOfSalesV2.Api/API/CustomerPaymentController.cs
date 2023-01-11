@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using PointOfSalesV2.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OData.Edm;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -28,18 +13,18 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("PayInvoices")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public IActionResult PayInvoices([FromBody]InvoicesPaymentModel model) 
+       public async Task<IActionResult> PayInvoices([FromBody]InvoicesPaymentModel model) 
         {
             try
             {
                 var repo = _repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>();
-                var result = repo.PayInvoices(model);
+                var result = await repo.PayInvoices(model);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -48,52 +33,54 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetForPrint/{sequence}")]
         [ActionAuthorize(Operations.READ)]
         [EnableCors("AllowAllOrigins")]
-        public virtual Task<IActionResult> GetForPrint(string sequence)
+        public virtual async Task<IActionResult> GetForPrint(string sequence)
         {
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    string t_sequence = (string)arg;
-                    var payments = _baseRepo.GetAll<CustomerPayment>(x => x.Include(t=>t.Customer)
-                    .Include(t=>t.Currency)
-                    ,y=>y.Active==true && y.Sequence.ToLower()==t_sequence).ToList();
+            try
+            {
+                
+                var payments = await _baseRepo.GetAllAsync<CustomerPayment>(x => x.Include(t => t.Customer)
+                .Include(t => t.Currency)
+                , y => y.Active == true && y.Sequence.ToLower() == sequence);
 
-                   
-                    return Ok(new { status = 0, id=0, data = new object[] { new 
+
+                return Ok(new
+                {
+                    status = 0,
+                    id = 0,
+                    data = new object[] { new
                     {
                     payments.FirstOrDefault().Customer,
                     payments.FirstOrDefault().Currency,
                     payments.FirstOrDefault().Date,
                     PaidInvoices=payments
-                    } } });
-                }
+                    } }
+                });
+            }
 
-                catch (Exception ex)
-                {
-                    SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
-            }, sequence);
-
-            return t_result;
+            
 
         }
 
         [HttpDelete("ReversePayment/{sequence}/{userId}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public virtual IActionResult ReversePayment(string sequence,string userId)
+        public virtual async Task<IActionResult> ReversePayment(string sequence,string userId)
         {
             try
             {
-                var result =this._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().ReversePayment(sequence, userId);
+                var result = await this._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().ReversePayment(sequence, userId);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }
@@ -104,7 +91,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpGet("GetReceipts/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{paymentTypeId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.RECEIPTSREPORT)]
         [EnableCors("AllowAllOrigins")]
-        public virtual Task<IActionResult> GetReceipts(long branchOfficeId = 0, long customerId = 0, long currencyId = 0,long paymentTypeId=0, string startDate = "0", string endDate = "0")
+        public virtual async Task<IActionResult> GetReceipts(long branchOfficeId = 0, long customerId = 0, long currencyId = 0,long paymentTypeId=0, string startDate = "0", string endDate = "0")
         {
             DateTime? start = new DateTime();
             if (startDate != "0")
@@ -116,31 +103,18 @@ namespace PointOfSalesV2.Api.Controllers
                 end = Convert.ToDateTime(endDate);
             else
                 end = null;
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
-                {
-                    
-                    var t_inputs = arg as Tuple<long, long, long,long, DateTime?, DateTime?>;
-                    var invoices = base._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().IncomesReport(
-                        t_inputs.Item3,
-                        t_inputs.Item1,
-                        t_inputs.Item2,
-                        t_inputs.Item4,
-                        t_inputs.Item5,
-                        t_inputs.Item6
+            try
+            {
 
-                        );
-                    return Ok(new { status = 0, id = 0, data = invoices });
-                }
-                catch (Exception ex)
-                {
-                    SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
-
-            }, new Tuple<long, long, long,long, DateTime?, DateTime?>(customerId, currencyId, branchOfficeId,paymentTypeId, start, end));
-
-            return t_result;
+             
+                var invoices = await base._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().IncomesReport(branchOfficeId,customerId,currencyId,paymentTypeId,start,end   );
+                return Ok(new { status = 0, id = 0, data = invoices });
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }
@@ -148,7 +122,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportReceipts/{branchOfficeId:long}/{customerId:long}/{currencyId:long}/{paymentTypeId:long}/{startDate}/{endDate}")]
         [ActionAuthorize(Operations.RECEIPTSREPORT)]
         [EnableCors("AllowAllOrigins")]
-        public virtual Task<IActionResult> ExportReceipts(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, long paymentTypeId = 0, string startDate = "0", string endDate = "0")
+        public virtual async Task<IActionResult> ExportReceipts(long branchOfficeId = 0, long customerId = 0, long currencyId = 0, long paymentTypeId = 0, string startDate = "0", string endDate = "0")
         {
             DateTime? start = new DateTime();
             if (startDate != "0")
@@ -160,45 +134,32 @@ namespace PointOfSalesV2.Api.Controllers
                 end = Convert.ToDateTime(endDate);
             else
                 end = null;
-            var t_result = Task.Factory.StartNew<IActionResult>((arg) => {
-                try
+            try
+            {
+
+              
+                var invoices = await base._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().IncomesReport(branchOfficeId,customerId,currencyId,paymentTypeId,start,end);
+                string requestLanguage = "EN";
+                var languageIdHeader = this.Request.Headers["languageid"];
+                requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
+                var excelData = ExportUtility.GetExcelData<CustomerPayment>(invoices, requestLanguage, this.languageKeys.ToList());
+                var excelStream = ExcelImport.CreateXlsStream(
+                    excelData.Item1,
+                   excelData.Item2
+                   );
+                if (invoices != null && excelStream != null && excelStream.Length > 0)
                 {
 
-                    var t_inputs = arg as Tuple<long, long, long, long, DateTime?, DateTime?>;
-                    var invoices = base._repositoryFactory.GetCustomDataRepositories<ICustomerPaymentRepository>().IncomesReport(
-                        t_inputs.Item3,
-                        t_inputs.Item1,
-                        t_inputs.Item2,
-                        t_inputs.Item4,
-                        t_inputs.Item5,
-                        t_inputs.Item6
-
-                        );
-                    string requestLanguage = "EN";
-                    var languageIdHeader = this.Request.Headers["languageid"];
-                    requestLanguage = languageIdHeader.FirstOrDefault() ?? "es";
-                    var excelData = ExportUtility.GetExcelData<CustomerPayment>(invoices, requestLanguage, this.languageKeys.ToList());
-                    var excelStream = ExcelImport.CreateXlsStream(
-                        excelData.Item1,
-                       excelData.Item2
-                       );
-                    if (invoices != null && excelStream != null && excelStream.Length > 0)
-                    {
-
-                        return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
-                    }
-                    return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
-
+                    return File(excelStream.ToArray(), "application/octet-stream", $"{new Product().GetType().Name}-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}.xls");
                 }
-                catch (Exception ex)
-                {
-                    SaveException(ex);
-                    return Ok(new { status = -1, message = ex.Message });
-                }
+                return BadRequest(new { status = -1, message = "documentDoesntExist_msg" });
 
-            }, new Tuple<long, long, long, long, DateTime?, DateTime?>(customerId, currencyId, branchOfficeId, paymentTypeId, start, end));
-
-            return t_result;
+            }
+            catch (Exception ex)
+            {
+                await SaveException(ex);
+                return Ok(new { status = -1, message = ex.Message });
+            }
 
 
         }

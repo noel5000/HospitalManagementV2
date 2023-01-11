@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -33,13 +20,14 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public virtual IActionResult Get()
+        public virtual async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
+                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.UserId.ToString()!=new Guid().ToString()));
                 return Ok(data);
             }
 
@@ -53,11 +41,11 @@ namespace PointOfSalesV2.Api.Controllers
         //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READ)]
-        public virtual IActionResult Get(string id)
+        public virtual async Task<IActionResult> GetById(string id)
         {
             try
             {
-                var data = _baseRepo.Get(new Guid(id));
+                var data = await _baseRepo.GetAsync(new Guid(id));
                 return Ok(data);
             }
 
@@ -67,25 +55,7 @@ namespace PointOfSalesV2.Api.Controllers
             }
         }
 
-        [HttpGet("{number:int}/{size:int}")]
-        // [EnableQuery]
-        [EnableCors("AllowAllOrigins")]
-        [ActionAuthorize(Operations.READALL)]
-        public virtual IActionResult Get(int number, int size)
-        {
-            try
-            {
-                var data = _baseRepo.GetPaged(number, size);
-                data.Status = 0;
-                data.Message = "ok_msg";
-                return Ok(data);
-            }
-
-            catch (Exception ex)
-            {
-                return Ok(new { status = -1, message = ex.Message });
-            }
-        }
+        
 
 
 
@@ -95,7 +65,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public virtual IActionResult Post([FromBody] User model)
+        public virtual async Task<IActionResult> Post([FromBody] User model)
         {
             try
             {
@@ -105,7 +75,7 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as User;
                 }
-                var result = _baseRepo.Add(model);
+                var result = await _baseRepo.AddAsync(model);
 
                 return Ok(result);
             }
@@ -120,11 +90,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public virtual IActionResult Put([FromBody] User model)
+        public virtual async Task<IActionResult> Put([FromBody] User model)
         {
             try
             {
-                var result = _baseRepo.Update(model);
+                var result = await _baseRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
@@ -138,15 +108,15 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("{id}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public virtual IActionResult Delete(string id)
+        public virtual async Task<IActionResult> Delete(string id)
         {
             try
             {
-                var model = _baseRepo.Get(new Guid(id)).Data.FirstOrDefault() as ICommonData;
+                var model = (await _baseRepo.GetAsync(new Guid(id))).Data.FirstOrDefault() as ICommonData;
                 if (model != null)
                 {
                     model.Active = false;
-                    var result = _baseRepo.Update(model as User);
+                    var result = await _baseRepo.UpdateAsync(model as User);
                     return Ok(result);
                 }
                 else

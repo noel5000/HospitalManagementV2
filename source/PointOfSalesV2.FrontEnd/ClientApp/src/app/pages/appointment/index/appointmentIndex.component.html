@@ -5,7 +5,7 @@
 
     </div>
     <br>
-    <form [formGroup]="itemForm" (ngSubmit)="save()">
+    <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
    <div class="row" *ngIf="visible">
     <div class="form-group col-md-6 col-xs-12">
       <label>{{'hospital_lbl' | translate}}</label>
@@ -51,13 +51,18 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'patient_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="patientId"
-  >
-  <option *ngFor="let patient of patients"
-   [value]="patient.id"
-   >{{patient.name}}</option>
-  </select>
+  <input type="text"
+         class="busqueda-cliente form-control"
+         placeholder="..."
+         aria-label="Number"
+         matInput
+         formControlName="customerSearch"
+         [matAutocomplete]="auto">
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let customer of patients" style="background-color:white;" (click)="selectPatient(customer)" [value]="customer.name">
+      {{customer.name + ' - '+customer.code}}
+    </mat-option>
+  </mat-autocomplete>
 </div>
 
    </div>
@@ -136,7 +141,7 @@
             <p>{{'selectedDate_lbl' | translate}}: </p>
            </div>
            <div class="col-6">
-            <h6>{{getSelectedDateFormatted()}}</h6>
+            <h6>{{getSelectedDateFormatted() | date:"dd-MM-yyyy"}}</h6>
           </div>
          </div>
 
@@ -149,7 +154,7 @@
         <thead>
           <tr>
             <th>{{'doctor_lbl' | translate}}</th>
-            <th>{{'medicalSpeciality_lbl' | translate}}</th>
+            <th>{{'medicalSpecialities_menu' | translate}}</th>
             <th>{{'consultation_lbl' | translate}}</th>
             <th>{{'patient_lbl' | translate}}</th>
             <th>{{'insurance_lbl' | translate}}</th>

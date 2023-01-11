@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -73,9 +74,10 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
     orderBy: string = 'Id';
     orderDirection: string = 'desc';
     WarehouseTransfers:any[]=[];
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}WarehouseTransfer`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/WarehouseTransfer`);
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         private  http: HttpClient,
         langService: LanguageService,
@@ -87,7 +89,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
        
         this.tableConfig=[
             {
-                visible:false,
+                visible:true,
                 id:'id',
                 type:'number',
                 isTranslated:false,
@@ -95,7 +97,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
                 sorting:'desc',
                 toSort:true,
                 objectType:ObjectTypes.Number,
-                filterIsActive:false
+                filterIsActive:true
               },
 {
   visible:true,
@@ -112,61 +114,66 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
     visible:true,
     id:'originBranchOfficeId',
     type:'text',
-    fieldToShow:'originBranchOffice.name',
-    isTranslated:false,
+    isSortable:false, fieldToShow:'originBranchOffice.name',
+    isTranslated:true,
+    objectTypeToShow:ObjectTypes.String,
     name:this.lang.getValueByKey('originBranchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'originId',
       type:'text',
-      fieldToShow:'origin.name',
-      isTranslated:false,
+      isSortable:false, fieldToShow:'origin.name',
+      isTranslated:true,
+      objectTypeToShow:ObjectTypes.String,
       name:this.lang.getValueByKey('originWarehouse_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
         id:'destinyBranchOfficeId',
         type:'text',
-        fieldToShow:'destinyBranchOffice.name',
-        isTranslated:false,
+        isSortable:false, fieldToShow:'destinyBranchOffice.name',
+        objectTypeToShow:ObjectTypes.String,
+        isTranslated:true,
         name:this.lang.getValueByKey('destinyBranchOffice_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
           visible:true,
           id:'destinyId',
           type:'text',
-          fieldToShow:'destiny.name',
-          isTranslated:false,
+          isSortable:false, fieldToShow:'destiny.name',
+          objectTypeToShow:ObjectTypes.String,
+          isTranslated:true,
           name:this.lang.getValueByKey('destinyWarehouse_lbl'),
           sorting:'desc',
           toSort:true,
           objectType:ObjectTypes.String,
-          filterIsActive:false
+          filterIsActive:true
         },
 {
     visible:true,
     id:'productId',
     type:'text',
-    fieldToShow:'product.name',
-    isTranslated:false,
+    isSortable:false, fieldToShow:'product.name',
+    isTranslated:true,
+    objectTypeToShow:ObjectTypes.String,
     name:this.lang.getValueByKey('product_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
     {
         visible:true,
@@ -177,19 +184,20 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'unitId',
         type:'text',
-        fieldToShow:'unit.name',
-        isTranslated:false,
+        isSortable:false, fieldToShow:'unit.name',
+        objectTypeToShow:ObjectTypes.String,
+        isTranslated:true,
         name:this.lang.getValueByKey('unit_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
     {
         visible:true,
@@ -200,7 +208,7 @@ export class WarehouseTransferIndexComponent extends BaseComponent implements On
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
         ];
 this.actions=[
@@ -242,9 +250,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);

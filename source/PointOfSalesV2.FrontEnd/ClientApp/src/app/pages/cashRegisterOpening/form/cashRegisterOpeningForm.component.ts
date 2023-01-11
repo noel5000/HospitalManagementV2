@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import { CashRegisterService } from '../../../@core/services/CashRegisterService
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { CashRegisterOpening, OpeningType } from '../../../@core/data/cashRegisterOpening';
 import { UserService } from '../../../@core/services/UserService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 
@@ -36,9 +37,9 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
     user:User;
     currentCurrency:Currency=null;
     isClosing:boolean =false;
-    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening`);
-    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${endpointUrl}CashRegisterOpening/CloseCashRegister`);
-    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${endpointUrl}CashRegisterOpeningDetail`);
+    service:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening`);
+    closureService:BaseService<CashRegisterOpening,number>=new BaseService<CashRegisterOpening,number>(this.http, `${this.baseUrl}api/CashRegisterOpening/CloseCashRegister`);
+    detailsService:BaseService<any,number>=new BaseService<any,number>(this.http, `${this.baseUrl}api/CashRegisterOpeningDetail`);
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
     users:User[]=[];
@@ -112,10 +113,11 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
         }
     ];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,
+        private config: AppConfig,
         private  http: HttpClient,
         langService: LanguageService,
         private currencyService:CurrencyService,

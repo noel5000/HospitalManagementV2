@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CashRegister } from '../../../@core/data/CashRegister';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -24,7 +24,7 @@ export class CashRegisterFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     branchOffices:BranchOffice[]=[];
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
         route: Router,

@@ -1,5 +1,5 @@
 import { ExtraOptions, RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
-import { NgModule, InjectionToken } from '@angular/core';
+import { NgModule, InjectionToken , Inject } from '@angular/core';
 import {
   NbAuthComponent,
   NbLoginComponent,

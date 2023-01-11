@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -12,6 +12,7 @@ import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,7 +26,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}Invoice`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Invoice`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -63,7 +64,8 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     Invoices:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         private http: HttpClient,
         langService: LanguageService,
@@ -72,7 +74,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     ) {
         super(route, langService, AppSections.Invoices,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
     visible:true,
@@ -85,7 +87,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
-  
+
 {
     visible:true,
     id:'documentNumber',
@@ -101,25 +103,27 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     visible:true,
     id:'branchOfficeId',
     type:'text',
-    fieldToShow:'branchOffice.name',
-    isTranslated:false,
+    isSortable:false, fieldToShow:'branchOffice.name',
+    objectTypeToShow:ObjectTypes.String,
+    isTranslated:true,
     name:this.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'customerId',
       type:'text',
-      fieldToShow:'patient.name',
+      isSortable:false, fieldToShow:'patient.name',
       isTranslated:false,
+      objectTypeToShow:ObjectTypes.String,
       name:this.lang.getValueByKey('patient_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
@@ -130,19 +134,20 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -153,7 +158,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -164,7 +169,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -175,7 +180,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
@@ -191,7 +196,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
           return this.lang.getValueByKey(`billingState${item.state}_lbl`);
       }
     }
-  
+
         ];
 this.actions=[
     {
@@ -222,7 +227,7 @@ this.actions=[
            return item.state == BillingStates.Billed && this.isUserValidOperation(Operations.DELETE) ;
         }
     },
-    
+
     {
         title:scope.lang.getValueByKey('print_btn'),
         class:'btn btn-info m-1',
@@ -230,7 +235,7 @@ this.actions=[
         id:'print',
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -258,11 +263,11 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.Invoices=r['value'];
-          
+
         },
             error => {
-               
-                
+
+
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
             }
         )
@@ -270,9 +275,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -306,7 +311,7 @@ else{
                 property: "Currency",
                 value: "Name,Id,Code",
                 type: ObjectTypes.ChildObject,
-                isTranslated:false
+                isTranslated:true
             }
         ];
 
@@ -320,7 +325,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -335,6 +340,8 @@ else{
            toSort:true,
            visible:temp.visible,
             id:temp.id,
+            isSortable:e.isSortable,
+            customText:e.customText,
   type:temp.type,
   isTranslated:temp.isTranslated,
   name:temp.name,
@@ -350,7 +357,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -368,12 +375,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -382,7 +389,7 @@ else{
         this.router.navigateByUrl(`pages/invoice/add`);
     }
 
-    
+
     edit(e:any) {
         this.router.navigateByUrl(`pages/invoice/edit/${e.id}`);
     }
@@ -390,12 +397,12 @@ else{
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/invoicePrint?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
     payInvoice(e:any) {
-        this.router.navigateByUrl(`pages/payments/addPayment/0/${e.id}`);
+        this.router.navigateByUrl(`pages/invoicepayment/add/${e.id}`);
     }
     source:any={};
     onDeleteConfirm(event:any): void {
@@ -414,7 +421,7 @@ else{
         else
         this.modalService.showError('alreadyNull_msg');
 
-   
+
     }
 
     delete(id: number) {

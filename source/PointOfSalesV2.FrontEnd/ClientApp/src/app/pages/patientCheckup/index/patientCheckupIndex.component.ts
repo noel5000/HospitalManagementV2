@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -13,6 +13,7 @@ import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
+import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
@@ -26,7 +27,7 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     }
     _route:ActivatedRoute;
     modalRef:NgbModalRef=null;
-    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}PatientCheckUp`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/PatientCheckUp`);
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
     pageNumber:number=1;
@@ -49,8 +50,9 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
     patientCheckups:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         route: Router,
+        private config: AppConfig,
         langService: LanguageService,
         private modals:NgbModal,
         router: ActivatedRoute,
@@ -103,19 +105,19 @@ export class patientCheckupIndexComponent extends BaseComponent implements OnIni
                 const user = JSON.parse(localStorage.getItem("currentUser"));
 
                 if(selectedMedicines && selectedMedicines.length>0)
-                window.open(`${endpointViewsUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+                window.open(`${this.baseUrl}views/CheckupMedicationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedLabTests && selectedLabTests.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupLabTestsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedConsultations && selectedConsultations.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupConsultationsPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
 
                if(selectedImages && selectedImages.length>0)
-               window.open(`${endpointViewsUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
+               window.open(`${this.baseUrl}views/CheckupSpecializedImagesPrint?id=${checkup.id}&language=${user.languageId}`, "_blank");
 
             }
         }

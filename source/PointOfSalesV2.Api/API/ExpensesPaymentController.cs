@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Models;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities;
-using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -32,13 +16,14 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _repo.GetAll<ExpensesPayment>(x => x
+                var data = await _repo.GetAllAsync<ExpensesPayment>(x => x
                 .Include(x => x.Supplier)
                 .Include(x => x.Currency)
                 .Include(x => x.ExpenseCurrency)
@@ -50,26 +35,25 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
 
         [HttpGet("{id:long}")]
-        //[EnableQuery]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.READ)]
-        public override IActionResult Get(long id)
+        public override async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = _repo.Get(id);
+                var data = await _repo.GetAsync(id);
                 return Ok(data);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -77,7 +61,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] ExpensesPayment model)
+        public override async Task<IActionResult> Post([FromBody] ExpensesPayment model)
         {
             try
             {
@@ -87,14 +71,14 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as ExpensesPayment;
                 }
-                var result = _repo.Add(model);
+                var result = await _repo.AddAsync(model);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -103,20 +87,20 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AddPayments")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public IActionResult AddPayments([FromBody] ExpensesPaymentModel model)
+       public async Task<IActionResult> AddPayments([FromBody] ExpensesPaymentModel model)
         {
             try
             {
                 if (model.Expenses == null || model.Expenses.Count == 0)
                     throw new Exception("error_msg");
-                var result = _repo.AddPayment(model.Payment, model.Expenses);
+                var result = await _repo.AddPayment(model.Payment, model.Expenses);
 
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -125,17 +109,17 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public override IActionResult Put([FromBody] ExpensesPayment model)
+        public override async Task<IActionResult> Put([FromBody] ExpensesPayment model)
         {
             try
             {
-                var result = _repo.Update(model);
+                var result = await _repo.UpdateAsync(model);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -144,18 +128,18 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("{id:long}")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.DELETE)]
-        public override IActionResult Delete(long id)
+        public override async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var result = _repo.Remove(id);
+                var result = await _repo.RemoveAsync(id);
                 return Ok(result);
 
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
 
             }

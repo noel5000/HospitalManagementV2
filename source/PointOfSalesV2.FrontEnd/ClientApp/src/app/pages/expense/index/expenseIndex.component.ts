@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -11,6 +11,7 @@ import { NgbdModalConfirmAutofocus } from '../../../@theme/components/modal/moda
 import { ModalService } from '../../../@core/services/modal.service';
 import { Expense } from '../../../@core/data/expenseModel';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -55,7 +56,8 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     Expenses:Expense[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private service: ExpenseService,
@@ -64,7 +66,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     ) {
         super(route, langService, AppSections.Expenses,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -80,26 +82,28 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
 {
     visible:true,
     id:'branchOfficeId',
+    isSortable:false, fieldToShow:'branchOffice.name',
+    objectTypeToShow:ObjectTypes.String,
     type:'text',
-    fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
       visible:true,
       id:'supplierId',
       type:'text',
-      fieldToShow:'supplier.name',
+      isSortable:false, fieldToShow:'supplier.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('supplier_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
     {
         visible:true,
@@ -110,19 +114,20 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -133,7 +138,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -144,7 +149,7 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -155,38 +160,38 @@ export class ExpenseIndexComponent extends BaseComponent implements OnInit {
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
     {
         title:scope.lang.getValueByKey('edit_btn'),
-        class:'btn btn-primary',
+        class:'btn btn-primary mx-1 my-1',
         icon:'',
         id:'edit',
         visible:(item)=>{
-            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid 
+            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid
             && this.isUserValidOperation(Operations.UPDATE) ;
         }
     },
     {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:(item)=>{
-            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid 
+            return item.state != BillingStates.Nulled && item.state != BillingStates.Paid && item.state != BillingStates.FullPaid
             && this.isUserValidOperation(Operations.DELETE) ;
         }
     },
     {
         title:scope.lang.getValueByKey('print_btn'),
-        class:'btn btn-success',
+        class:'btn btn-success mx-1 my-1',
         icon:'',
         id:'print'
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -209,7 +214,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.Expenses=r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -219,9 +224,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -263,7 +268,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -293,7 +298,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -311,12 +316,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -324,7 +329,7 @@ else{
     print(e:any){
 
         const user = JSON.parse(localStorage.getItem("currentUser"));
-        this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
+        this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/expensePrint?id=${e.id}&language=${user.languageId}` }], {
             skipLocationChange: true,
         });
     }
@@ -347,7 +352,7 @@ else{
       if(r)
       this.delete(event.id);
   })
-   
+
     }
 
     delete(id: number) {

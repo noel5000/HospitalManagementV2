@@ -1,19 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿
+
 using PointOfSalesV2.Api.Models;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -30,13 +17,14 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<SupplierReturn>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<SupplierReturn>(x => x.Include(t => t.Currency)
                 .Include(t => t.BranchOffice)
                 .Include(t => t.Warehouse)
                 .Include(t => t.Product)
@@ -56,11 +44,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("AddEntries")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public IActionResult AddEntries([FromBody]SupplierReturnModel model)
+       public async Task<IActionResult> AddEntries([FromBody]SupplierReturnModel model)
         {
             try
             {
-                var result = repo.AddInventoryList(model.Entries, model.Reference, model.Details);
+                var result = await repo.AddInventoryList(model.Entries, model.Reference, model.Details);
                 return Ok(result);
             }
 
@@ -74,11 +62,11 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpDelete("DeleteEntries/{sequence}")]
         [ActionAuthorize(Operations.DELETE)]
         [EnableCors("AllowAllOrigins")]
-        public IActionResult DeleteEntries(string sequence)
+       public async Task<IActionResult> DeleteEntries(string sequence)
         {
             try
             {
-                var result = repo.RemoveEntries(sequence);
+                var result = await repo.RemoveEntries(sequence);
                 return Ok(result);
             }
 

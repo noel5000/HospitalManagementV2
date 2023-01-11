@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -12,6 +12,7 @@ import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../../@core/data/users';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -25,7 +26,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         this.verifyUser();
         this.getPagedData(1);
     }
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}customerReturn`);
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/customerReturn`);
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
@@ -45,14 +46,14 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
             type: ObjectTypes.ChildObject,
             isTranslated:false
         },
-        
+
         {
             property: "Currency",
             value: "Name,Id,Code",
             type: ObjectTypes.ChildObject,
             isTranslated:false
         },
-        
+
         {
             property: "CreditNote",
             value: "Id,Sequence",
@@ -65,7 +66,8 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     returns:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         private http: HttpClient,
         langService: LanguageService,
@@ -74,7 +76,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     ) {
         super(route, langService, AppSections.CustomersReturns,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -90,29 +92,31 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
 {
     visible:true,
     id:'branchOfficeId',
+    isSortable:false, fieldToShow:'branchOffice.name',
+    objectTypeToShow:ObjectTypes.String,
     type:'text',
-    fieldToShow:'branchOffice.name',
-    isTranslated:false,
-    name:this.lang.getValueByKey('branchOffice_lbl'),
+    isTranslated:true,
+    name:scope.lang.getValueByKey('branchOffice_lbl'),
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.String,
-    filterIsActive:false
+    filterIsActive:true
   },
 
   {
       visible:true,
       id:'customerId',
       type:'text',
-      fieldToShow:'customer.name',
+      isSortable:false, fieldToShow:'customer.name',
+      objectTypeToShow:ObjectTypes.String,
       isTranslated:false,
       name:this.lang.getValueByKey('customer_lbl'),
       sorting:'desc',
       toSort:true,
       objectType:ObjectTypes.String,
-      filterIsActive:false
+      filterIsActive:true
     },
-    
+
     {
         visible:true,
         id:'date',
@@ -122,7 +126,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
 {
     visible:true,
@@ -147,7 +151,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     objectType:ObjectTypes.String,
     filterIsActive:true
   },
-  
+
   {
     visible:true,
     id:'totalAmount',
@@ -157,25 +161,26 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
       {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
+        objectTypeToShow:ObjectTypes.String,
         isTranslated:false,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
         ];
 this.actions=[
- 
-    
-    
+
+
+
     {
         title:scope.lang.getValueByKey('print_btn'),
         class:'btn btn-info m-1',
@@ -183,7 +188,7 @@ this.actions=[
         id:'print',
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -201,7 +206,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.returns=r['value'];
-          
+
         },
             error => {  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
             }
@@ -210,9 +215,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -236,14 +241,14 @@ else{
                 type: ObjectTypes.ChildObject,
                 isTranslated:false
             },
-            
+
             {
                 property: "Currency",
                 value: "Name,Id,Code",
                 type: ObjectTypes.ChildObject,
                 isTranslated:false
             },
-            
+
             {
                 property: "CreditNote",
                 value: "Id,Sequence",
@@ -262,7 +267,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -292,7 +297,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -310,16 +315,16 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
+                scope.getData();
 
     }
 
-    
+
 
   print(e: any) {
       const server = window.location.hostname
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
+    this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/CustomerReturn?id=${e.id}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
@@ -330,5 +335,5 @@ else{
     source:any={};
 
 
-  
+
 }

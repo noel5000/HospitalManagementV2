@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -24,28 +8,37 @@ namespace PointOfSalesV2.Api.Controllers
     public class ProductController : BaseController<Product>
     {
         readonly IProductRepository _customRepo;
-        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.Products)
+        public ProductController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache
+            , repositoryFactory.GetCustomDataRepositories<IProductRepository>(), AppSections.Products)
         {
             _customRepo = repositoryFactory.GetCustomDataRepositories<IProductRepository>();
         }
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<Product>(x => x.Include(t => t.Currency).Include(x=>x.MedicalSpeciality)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.AsNoTracking()
+                .Include(t => t.Currency)
+                .Include(x => x.MedicalSpeciality)
+                .Include(x => x.Currency)
+                .Include(x => x.BaseCompositeProducts).ThenInclude(b => b.BaseProduct)
+                .Include(x => x.ProductUnits).ThenInclude(u=>u.Unit)
+                .Include(x => x.SuppliersCosts).ThenInclude(s=>s.Supplier)
+                .Include(x => x.Taxes).ThenInclude(s => s.Tax)
                  , y => y.Active == true);
                 return Ok(data);
-               
+
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -54,7 +47,7 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.ADD)]
-        public override IActionResult Post([FromBody] Product model)
+        public override async Task<IActionResult> Post([FromBody] Product model)
         {
             try
             {
@@ -64,14 +57,14 @@ namespace PointOfSalesV2.Api.Controllers
                     activeEntity.Active = true;
                     model = activeEntity as Product;
                 }
-                var result = _customRepo.Add(model);
+                var result = await _customRepo.AddAsync(model);
                 result.Data = null;
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -80,17 +73,17 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPut]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.UPDATE)]
-        public override IActionResult Put([FromBody] Product model)
+        public override async Task<IActionResult> Put([FromBody] Product model)
         {
             try
             {
-                var result = _customRepo.Update(model);
+                var result = await _customRepo.UpdateAsync(model);
                 return Ok(result);
             }
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
 
@@ -99,11 +92,19 @@ namespace PointOfSalesV2.Api.Controllers
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<Product>(x => x.Include(t => t.Currency)
+                var data = await _baseRepo.GetAllAsync<Product>(x => x.AsNoTracking()
+                .Include(t => t.Currency)
+                .Include(x => x.MedicalSpeciality)
+                .Include(x => x.Currency)
+                .Include(x => x.BaseCompositeProducts).ThenInclude(b => b.BaseProduct)
+                .Include(x => x.ProductUnits).ThenInclude(u => u.Unit)
+                .Include(x => x.SuppliersCosts).ThenInclude(s => s.Supplier)
+                .Include(x => x.Taxes).ThenInclude(s => s.Tax)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
@@ -125,7 +126,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+                await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

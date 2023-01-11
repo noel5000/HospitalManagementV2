@@ -4,131 +4,128 @@
       <div class="col-md-6">{{'incomeReceipts_menu' | translate}}</div>
       <div class="col-md-3">
         <button type="button" class="btn btn-primary" (click)="print()">{{'print_btn' | translate}}</button>
+      </div>
+      <div class="col-md-3">
+        <button type="button" class="btn btn-success" (click)="exportToCSV()">{{'export_btn' | translate}}</button>
+      </div>
     </div>
-    <div class="col-md-3">
-      <button type="button" class="btn btn-success" (click)="exportToCSV()">{{'export_btn' | translate}}</button>
-  </div>
-    </div>
-   
+
   </nb-card-header>
 
   <nb-card-body>
-<div id="filter" class="dontPrint" >
-  <form [formGroup]="itemForm" (ngSubmit)="getData()">
-<div class="form-row">
-  <div class="form-group col-md-6 col-xs-12">
-    <label>{{'branchOffice_lbl' | translate}}</label>
-    <select class="form-control"
-    formControlName="branchOfficeId"
-    
-    >
-    <option *ngFor="let branchoffice of branchOffices"
-     [value]="branchoffice.id"
-     >{{branchoffice.name}}</option>
-    </select>
-</div>
+    <div id="filter" class="dontPrint">
+      <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="getData()">
+        <div class="form-row">
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'branchOffice_lbl' | translate}}</label>
+            <select class="form-control"
+                    formControlName="branchOfficeId">
+              <option *ngFor="let branchoffice of branchOffices"
+                      [value]="branchoffice.id">
+                {{branchoffice.name}}
+              </option>
+            </select>
+          </div>
 
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'customer_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="customerId"
-  
-  >
-  <option *ngFor="let customer of customers"
-   [value]="customer.id"
-   >{{customer.name}}</option>
-  </select>
-</div>
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'customer_lbl' | translate}}</label>
+            <custom-auto-complete [items]="customers"
+                                  [externalSearch]="true"
+                                  [propertyToShow]="'name'"
+                                  (onSelectedItem)="selectPatient($event)"
+                                  (onFilter)="getPatientsByName($event)">
+            </custom-auto-complete>
+          </div>
 
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'currency_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="currencyId"
-  
-  >
-  <option *ngFor="let currency of currencies"
-   [value]="currency.id"
-   >{{currency.name}}</option>
-  </select>
-</div>
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'currency_lbl' | translate}}</label>
+            <select class="form-control"
+                    formControlName="currencyId">
+              <option *ngFor="let currency of currencies"
+                      [value]="currency.id">
+                {{currency.name}}
+              </option>
+            </select>
+          </div>
 
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'paymentType_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="paymentTypeId"
-  
-  >
-  <option *ngFor="let paymentType of paymentTypes"
-   [value]="paymentType.id"
-   >{{paymentType.name}}</option>
-  </select>
-</div>
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'paymentType_lbl' | translate}}</label>
+            <select class="form-control"
+                    formControlName="paymentTypeId">
+              <option *ngFor="let paymentType of paymentTypes"
+                      [value]="paymentType.id">
+                {{paymentType.name}}
+              </option>
+            </select>
+          </div>
 
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'startDate_lbl' | translate}}</label>
-  <input type="date" formControlName="startDate" class="form-control" />
-</div>
-<div class="form-group col-md-6 col-xs-12">
-  <label>{{'endDate_lbl' | translate}}</label>
-  <input type="date" formControlName="endDate" class="form-control" />
-</div>
-</div>
-  </form>
-</div>
-<div id="body">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>{{'patient_lbl' | translate}}</th>
-        <th>{{'invoiceNumber_lbl' | translate}}</th>
-        <th>{{'currency_lbl' | translate}}</th>
-        <th>{{'totalAmount_lbl' | translate}}</th>
-        <th>{{'insuranceCoverageAmount_lbl' | translate}}</th>
-        <th>{{'patientPaymentAmount_lbl' | translate}}</th>  
-        <th>{{'paidAmount_lbl' | translate}}</th>
-        <th>{{'owedAmount_lbl' | translate}}</th>
-        <th>{{'date_lbl' | translate}}</th>
-        <th>{{'sequence_lbl' | translate}}</th>
-        <th>{{'daysAmount_lbl' | translate}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor=" let invoice of invoices">
-        <td>{{invoice.customer.nameAndCode}}</td>
-        <td>{{invoice.invoiceNumber}}</td>
-        <td>{{invoice.currency.code}}</td>
-        <td>{{invoice.totalAmount | currency:"" }}</td>
-        <td>{{(invoice.invoice?invoice.invoice.insuranceCoverageAmount:0) | currency:"" }}</td>
-        <td>{{(!invoice.invoice?0:invoice.invoice.patientPaymentAmount) | currency:"" }}</td>
-        <td>{{invoice.paidAmount | currency:"" }}</td>
-        <td>{{invoice.outstandingAmount | currency:"" }}</td>
-        <td>{{invoice.date | date:"shortDate"}}</td>
-        <td>{{invoice.sequence }}</td>
-        <td>{{invoice.daysCount}}</td>
-     
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'startDate_lbl' | translate}}</label>
+            <input type="date" formControlName="startDate" class="form-control" />
+          </div>
+          <div class="form-group col-md-6 col-xs-12">
+            <label>{{'endDate_lbl' | translate}}</label>
+            <input type="date" formControlName="endDate" class="form-control" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{'patient_lbl' | translate}}</th>
+            <th>{{'invoiceNumber_lbl' | translate}}</th>
+            <th>{{'currency_lbl' | translate}}</th>
+            <th>{{'totalAmount_lbl' | translate}}</th>
+            <th>{{'insuranceCoverageAmount_lbl' | translate}}</th>
+            <th>{{'patientPaymentAmount_lbl' | translate}}</th>
+            <th>{{'paidAmount_lbl' | translate}}</th>
+            <th>{{'owedAmount_lbl' | translate}}</th>
+            <th>{{'date_lbl' | translate}}</th>
+            <th>{{'sequence_lbl' | translate}}</th>
+            <th>{{'daysAmount_lbl' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor=" let invoice of invoices">
+            <td>{{invoice.customer.nameAndCode}}</td>
+            <td>{{invoice.invoiceNumber}}</td>
+            <td>{{invoice.currency.code}}</td>
+            <td>{{invoice.totalAmount | currency:"" }}</td>
+            <td>{{(invoice.invoice?invoice.invoice.insuranceCoverageAmount:0) | currency:"" }}</td>
+            <td>{{(!invoice.invoice?0:invoice.invoice.patientPaymentAmount) | currency:"" }}</td>
+            <td>{{invoice.paidAmount | currency:"" }}</td>
+            <td>{{invoice.outstandingAmount | currency:"" }}</td>
+            <td>{{invoice.date | date:"shortDate"}}</td>
+            <td>{{invoice.sequence }}</td>
+            <td>{{invoice.daysCount}}</td>
 
-      </tr>
-    </tbody>
+
+          </tr>
+        </tbody>
       </table>
       <hr>
       <table *ngIf="invoices && invoices.length>0" class="table table-bordered text-center">
         <thead>
-          <tr >
-            <th >{{'totalBilled_lbl' | translate}}</th>
-            <th >{{'totalPaid_lbl' | translate}}</th>
-            <th >{{'totalOwed_lbl' | translate}}</th>
+          <tr>
+            <th>{{'totalBilled_lbl' | translate}}</th>
+            <th>{{'totalInsuranceCoverage_lbl' | translate}}</th>
+            <th>{{'totalPaid_lbl' | translate}}</th>
+            <th>{{'totalOwed_lbl' | translate}}</th>
           </tr>
         </thead>
         <tbody>
-          <tr >
-            <td >{{getTotalAmount(invoices,'totalAmount') | currency:""}}</td>
-            <td >{{getTotalAmount(invoices,'paidAmount') | currency:""}}</td>
-            <td >{{getTotalAmount(invoices,'outstandingAmount') | currency:""}}</td>
+          <tr>
+            <td>{{getTotalAmount(invoices,'totalAmount') | currency:""}}</td>
+            <td>{{getTotalAmount(invoices,'insuranceCoverageAmount') | currency:""}}</td>
+            <td>{{getTotalAmount(invoices,'paidAmount') | currency:""}}</td>
+            <td>{{getTotalAmount(invoices,'outstandingAmount') | currency:""}}</td>
           </tr>
         </tbody>
       </table>
 
-</div>
+    </div>
   </nb-card-body>
 </nb-card>
 

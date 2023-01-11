@@ -145,7 +145,7 @@
             <div class="row noImprimir">
                 <div class="col-md-6 col-xs-12 col-sm-12">
                     <button id="printButton" class="btn btn-default col-md-2">
-                        <i class="fa fa-print"></i> @languageKeys.FirstOrDefault(x => x.Key == "print_btn").Value
+                        <i class="fa fa-print"></i> @languageKeys.FirstOrDefault(x => x.Key.ToLower() == "print_btn").Value
                     </button>
                 </div>
 
@@ -162,18 +162,25 @@
 
                             <div id="invoiceContainer">
                                 <div class="divBody">
-                                    <table class="">
+                                     <table class="">
                                         <thead>
-                                            <tr><th class="titulo">Compania</th></tr>
-                                            <tr><th class="titulo">Dominicana. SRL</th></tr>
+                                            <tr><th class="titulo">@(invoiceLead.BranchOffice?.Name.ToUpper())</th></tr>
                                         </thead>
                                     </table>
                                     <table>
                                         <thead>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "address_lbl").Value : Calle # Esq.  No. #</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "phone_lbl").Value : 809-555-5555</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "nrc_lbl").Value : 000000000</th></tr>
-                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key == "email_lbl").Value : email@gmail.com</th></tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value : </th>
+                                            <td>@invoiceLead.BranchOffice?.Address</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value : </th>
+                                             <td>@invoiceLead.BranchOffice?.PhoneNumber</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "nrc_lbl").Value : </th>
+                                             <td>@invoiceLead.BranchOffice?.NRC</td>    
+                                            </tr>
+                                            <tr><th class="infoCompania">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "email_lbl").Value : </th>
+                                             <td>@invoiceLead.BranchOffice?.Email</td>    
+                                            </tr>
                                         </thead>
                                     </table>
                                     <br />
@@ -183,20 +190,39 @@
                                                 <th></th>
                                                 @*<th> <img src="~/Content/images/logo.jpg" alt="header" width="230" height="60" /></th>*@
                                                 <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "date_lbl").Value :</th>
-                                                <th class="text-left">@invoiceLead.Date.ToString("dd-MM-yyyy")</th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "date_lbl").Value :</th>
+                                                <td class="text-left">@(invoiceLead.BillingDate.HasValue?invoiceLead.BillingDate.Value.ToString("dd-MM-yyyy"):invoiceLead.CreatedDate.ToString("dd-MM-yyyy"))</td>
                                             </tr>
 
                                             <tr>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "customer_lbl").Value : @invoiceLead.Customer.NameAndCode.ToString()</th>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "customer_lbl").Value :</th>
+                                                <td>@invoiceLead.Customer.NameAndCode.ToString()</td>
                                                 <th class=" "></th>
-                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "school_lbl").Value : @invoiceLead.School.NameAndCode.ToString()</th>
-                                                <th class=" "></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "sequence_lbl").Value :</th>
-                                                <th class="text-left">@invoiceLead.DocumentNumber.ToUpper()</th>
+                                                <th class="text-left">@(string.IsNullOrEmpty(invoiceLead.InvoiceNumber)? languageKeys.FirstOrDefault(x => x.Key.ToLower() == "documentnumber_lbl").Value : languageKeys.FirstOrDefault(x => x.Key.ToLower() == "invoicenumber_lbl").Value) :</th>
+                                                <td class="text-left">@(string.IsNullOrEmpty(invoiceLead.InvoiceNumber)?invoiceLead.DocumentNumber.ToUpper():invoiceLead.InvoiceNumber.ToUpper())</td>
                                             </tr>
-                                           
-                                          
+                                            <tr>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key == "trn_lbl").Value :</th>
+                                                 <td>@invoiceLead.TRN</td>
+                                                <th class=" "></th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "closuredate_lbl").Value :</th>
+                                                <td class="text-left">@(invoiceLead.BillingDate.HasValue?invoiceLead.BillingDate.Value.AddDays(invoiceLead.Customer.InvoiceDueDays).ToString("dd-MM-yyyy"): invoiceLead.CreatedDate.AddDays(invoiceLead.Customer.InvoiceDueDays).ToString("dd-MM-yyyy"))</td>
+                                            </tr>
+                                            <tr>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "address_lbl").Value :</th>
+                                                <td>@invoiceLead.Customer.Address</td>
+                                                <th class=" "></th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "seller_lbl").Value :</th>
+                                                <td class="text-left">@invoiceLead.Seller?.Name</td>
+                                            </tr>
+                                            <tr>
+                                                <th>@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "phone_lbl").Value :</th>
+                                                <td>@invoiceLead.Customer.PhoneNumber</td>
+                                                <th></th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "trn_lbl").Value :</th>
+                                                <td class=" text-left">@invoiceLead.TRN</td>
+                                            </tr>
+
                                             <tr>
                                                 <th style="color:white !important; visibility:hidden;">sssss</th>
                                             </tr>
@@ -208,26 +234,26 @@
                                         <thead class="table-bordered tabl">
                                             <tr>
 
-                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "product_lbl").Value</th>
-                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "quantity_lbl").Value</th>
-                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "unit_lbl").Value </th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "beforeTaxAmount_lbl").Value </th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "taxAmount_lbl").Value </th>
-                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key == "totalAmount_lbl").Value </th>
+                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "product_lbl").Value</th>
+                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "quantity_lbl").Value</th>
+                                                <th class="text-left" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "unit_lbl").Value </th>
+                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "beforetaxamount_lbl").Value </th>
+                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "taxamount_lbl").Value </th>
+                                                <th class="text-center" style="border: 1px solid black;">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "totalamount_lbl").Value </th>
                                             </tr>
                                         </thead>
                                         <tbody class="filas">
                                             @for (int i = 0; i < invoiceLead.LeadDetails.Count; i++)
                                             {
-                                            <tr>
+                                                <tr>
 
-                                                <td class="text-left">@invoiceLead.LeadDetails[i].Product.Name</td>
-                                                <td class="text-center"> @invoiceLead.LeadDetails[i].Quantity</td>
-                                                <td class="text-left">@invoiceLead.LeadDetails[i].Unit?.Name</td>
-                                                <td class="text-center"> @invoiceLead.LeadDetails[i].BeforeTaxesAmount</td>
-                                                <td class="text-center"> @invoiceLead.LeadDetails[i].TaxesAmount</td>
-                                                <td class="text-center"> @invoiceLead.LeadDetails[i].TotalAmount</td>
-                                            </tr>
+                                                    <td class="text-left">@invoiceLead.LeadDetails[i].Product.Name</td>
+                                                    <td class="text-center"> @invoiceLead.LeadDetails[i].Quantity</td>
+                                                    <td class="text-left">@invoiceLead.LeadDetails[i].Unit?.Name</td>
+                                                    <td class="text-center"> @invoiceLead.LeadDetails[i].BeforeTaxesAmount</td>
+                                                    <td class="text-center"> @invoiceLead.LeadDetails[i].TaxesAmount</td>
+                                                    <td class="text-center"> @invoiceLead.LeadDetails[i].TotalAmount</td>
+                                                </tr>
                                             }
 
 
@@ -245,14 +271,14 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "beforeTaxAmount_lbl").Value :</th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "beforetaxamount_lbl").Value :</th>
                                                 <th class="text-right" style="border-top: 1px solid black !important; border-bottom: 2px double black">  @($"{invoiceLead.Currency.Code} ${ invoiceLead.BeforeTaxesAmount}")</th>
                                             </tr>
                                             <tr>
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "taxAmount_lbl").Value :</th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "taxamount_lbl").Value :</th>
                                                 <th class="text-right" style=" border-bottom:2px double black"> @($"{invoiceLead.Currency.Code} ${ invoiceLead.TaxesAmount}")</th>
                                             </tr>
 
@@ -260,7 +286,7 @@
                                                 <th></th>
                                                 <th></th>
                                                 <th></th>
-                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "totalAmount_lbl").Value  :</th>
+                                                <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "totalamount_lbl").Value  :</th>
                                                 <th class="text-right" style=" border-bottom: 2px double black">  @($"{invoiceLead.Currency.Code} ${ invoiceLead.TotalAmount}")</th>
                                             </tr>
                                             @if (invoiceLead.PaidAmount > 0)
@@ -269,7 +295,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
-                                                    <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key == "paidAmount_lbl").Value :</th>
+                                                    <th class="text-left">@languageKeys.FirstOrDefault(x => x.Key.ToLower() == "paidamount_lbl").Value :</th>
                                                     <th class="text-right" style=" border-bottom:2px double black"> @($"{invoiceLead.Currency.Code} ${ invoiceLead.PaidAmount}")</th>
                                                 </tr>
                                             }
@@ -285,11 +311,11 @@
 
                                             <tr>
 
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; ">&nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key == "billedBy_lbl").Value.ToUpper() &nbsp &nbsp </th>
+                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; ">&nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key.ToLower() == "billedby_lbl").Value.ToUpper() &nbsp &nbsp </th>
                                                 <th style=" border:none; width:220px;"></th>
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp   @languageKeys.FirstOrDefault(x => x.Key == "deliverdBy_lbl").Value.ToUpper()  &nbsp &nbsp  </th>
+                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp   @languageKeys.FirstOrDefault(x => x.Key.ToLower() == "deliverdby_lbl").Value.ToUpper()  &nbsp &nbsp  </th>
                                                 <th style=" border:none; width:220px;"></th>
-                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key == "receivedBy_lbl").Value.ToUpper() &nbsp &nbsp </th>
+                                                <th class="text-center" style="border-top: 1px solid black !important;font-size:10px !important; "> &nbsp &nbsp  @languageKeys.FirstOrDefault(x => x.Key.ToLower() == "receivedby_lbl").Value.ToUpper() &nbsp &nbsp </th>
 
                                             </tr>
                                         </tfoot>

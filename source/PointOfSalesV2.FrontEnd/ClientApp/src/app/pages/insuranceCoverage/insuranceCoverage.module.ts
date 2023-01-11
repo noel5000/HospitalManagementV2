@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { insuranceCoverageIndexComponent } from './index/insuranceCoverageIndex.component';
 import { insuranceCoverageFormComponent } from './form/insuranceCoverageForm.component';
 import { LanguageService } from './../../@core/services/translateService';

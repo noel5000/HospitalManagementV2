@@ -1,0 +1,56 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "c5adcf95-0b25-48cb-970e-5d969cd24c63": {
+      "ProjectGuid": "c5adcf95-0b25-48cb-970e-5d969cd24c63",
+      "DisplayName": "PointOfSalesV2.FrontEnd",
+      "ColorIndex": 0
+    },
+    "e11bb432-d256-4d20-8855-71ecdb3843ff": {
+      "ProjectGuid": "e11bb432-d256-4d20-8855-71ecdb3843ff",
+      "DisplayName": "PointOfSalesV2.Api",
+      "ColorIndex": 1
+    },
+    "ec586cb4-8df6-4bac-9566-4769294772b3": {
+      "ProjectGuid": "ec586cb4-8df6-4bac-9566-4769294772b3",
+      "DisplayName": "PointOfSalesV2.Repository",
+      "ColorIndex": 2
+    },
+    "df432089-5f62-44d5-9180-e12fcb7c48de": {
+      "ProjectGuid": "df432089-5f62-44d5-9180-e12fcb7c48de",
+      "DisplayName": "PointOfSalesV2.Common",
+      "ColorIndex": 3
+    },
+    "2f4343e2-1fa5-4656-81cb-18f27a3c8177": {
+      "ProjectGuid": "2f4343e2-1fa5-4656-81cb-18f27a3c8177",
+      "DisplayName": "PointOfSalesV2.Test",
+      "ColorIndex": 4
+    },
+    "0f376c6b-091f-42c9-9514-fb625f0994e9": {
+      "ProjectGuid": "0f376c6b-091f-42c9-9514-fb625f0994e9",
+      "DisplayName": "PointOfSalesV2.EntityFramework",
+      "ColorIndex": 5
+    },
+    "74c4f42c-daed-4b0e-9c59-62eae9eb630d": {
+      "ProjectGuid": "74c4f42c-daed-4b0e-9c59-62eae9eb630d",
+      "DisplayName": "PointOfSalesV2.Entities",
+      "ColorIndex": 6
+    },
+    "fd8e1476-5627-441a-8308-422c0d237907": {
+      "ProjectGuid": "fd8e1476-5627-441a-8308-422c0d237907",
+      "DisplayName": "PointOfSalesV2.Console",
+      "ColorIndex": 7
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "ab433bb3-1ac1-40d6-8e42-9977e8796405": {
+      "ProjectGuid": "ab433bb3-1ac1-40d6-8e42-9977e8796405",
+      "DisplayName": "PointOfSalesV2.Repository.Tests",
+      "ColorIndex": 8
+    }
+  },
+  "NextColorIndex": 9
+}

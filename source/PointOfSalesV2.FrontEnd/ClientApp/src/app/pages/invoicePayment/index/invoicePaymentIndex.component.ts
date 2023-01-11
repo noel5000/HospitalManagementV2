@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
 import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
@@ -11,6 +11,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
 import { endpointUrl, endpointViewsUrl } from '../../../@core/common/constants';
 import { HttpClient } from '@angular/common/http';
+import { AppConfig } from '../../../@core/services/app.config';
 
 
 declare const $: any;
@@ -28,8 +29,8 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     modalRef:NgbModalRef=null;
     tableConfig:IPaginationModel[]=[]
     actions:IActionButtonModel[]=[];
-    
-    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${endpointUrl}CustomerPayment`);
+
+    service:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CustomerPayment`);
     pageNumber:number=1;
     pageSize:number=10;
     maxCount:number=0;
@@ -52,7 +53,8 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     InvoicePayments:any[]=[];
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,
@@ -61,31 +63,22 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     ) {
         super(route, langService, AppSections.CustomerPayments,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
+
 {
-  visible:false,
-  id:'id',
-  type:'number',
-  isTranslated:false,
-  name:scope.lang.getValueByKey('id_lbl'),
-  sorting:'desc',
-  toSort:true,
-  objectType:ObjectTypes.Number,
-  filterIsActive:true
-},
-  {
-      visible:true,
-      id:'customerId',
-      type:'text',
-      fieldToShow:'customer.name',
-      isTranslated:false,
-      name:this.lang.getValueByKey('customer_lbl'),
-      sorting:'desc',
-      toSort:true,
-      objectType:ObjectTypes.String,
-      filterIsActive:false
-    },
+    visible:true,
+    id:'customerId',
+    type:'text',
+    isSortable:false, fieldToShow:'customer.name',
+    isTranslated:false,
+    objectTypeToShow:ObjectTypes.String,
+    name:this.lang.getValueByKey('patient_lbl'),
+    sorting:'desc',
+    toSort:true,
+    objectType:ObjectTypes.String,
+    filterIsActive:true
+  },
     {
         visible:true,
         id:'sequence',
@@ -117,19 +110,20 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
       {
         visible:true,
         id:'currencyId',
         type:'text',
-        fieldToShow:'currency.code',
+        isSortable:false, fieldToShow:'currency.code',
         isTranslated:false,
+        objectTypeToShow:ObjectTypes.String,
         name:this.lang.getValueByKey('currency_lbl'),
         sorting:'desc',
         toSort:true,
         objectType:ObjectTypes.String,
-        filterIsActive:false
+        filterIsActive:true
       },
   {
     visible:true,
@@ -140,7 +134,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -151,7 +145,7 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
   {
     visible:true,
@@ -162,13 +156,13 @@ export class InvoicePaymentIndexComponent extends BaseComponent implements OnIni
     sorting:'desc',
     toSort:true,
     objectType:ObjectTypes.Number,
-    filterIsActive:false
+    filterIsActive:true
   },
         ];
 this.actions=[
        {
         title:scope.lang.getValueByKey('delete_btn'),
-        class:'btn btn-danger',
+        class:'btn btn-danger mx-1 my-1',
         icon:'',
         id:'delete',
         visible:(item)=>{
@@ -177,12 +171,12 @@ this.actions=[
     },
     {
         title:scope.lang.getValueByKey('print_btn'),
-        class:'btn btn-success',
+        class:'btn btn-success mx-1 my-1',
         icon:'',
         id:'print'
     }
 ];
-       
+
     }
 
     getStatusDescription(state:string):string{
@@ -207,7 +201,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.InvoicePayments=r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -217,9 +211,9 @@ this.actions=[
 addFilter(e){
 const config = e.config as IPaginationModel;
 if(e.value)
-this.filterData(e.value,config.id,config.objectType,config.isTranslated);
+this.filterData(e.value,config.fieldToShow?config.fieldToShow: config.id,config.objectTypeToShow?config.objectTypeToShow: config.objectType,config.isTranslated);
 else{
-  const index=  this.filters.findIndex(x=>x.property==config.id);
+   const index=  this.filters.findIndex(x=>x.property==(config.fieldToShow?config.fieldToShow:config.id));
   if(index>-1){
       this.filters.splice(index,1);
     this.getPagedData(1);
@@ -255,7 +249,7 @@ else{
             this.filters.push(expandFilter);
         }
     });
-        
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -285,7 +279,7 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
@@ -303,12 +297,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -318,7 +312,7 @@ else{
     }
     print(e:any) {
      const user = JSON.parse(localStorage.getItem("currentUser"));
-     this.router.navigate(['/externalRedirect', { externalUrl: `${endpointViewsUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
+     this.router.navigate(['/externalRedirect', { externalUrl: `${this.baseUrl}views/InvoicePayment?sequence=${e.sequence}&language=${user.languageId}` }], {
         skipLocationChange: true,
     });
     }
@@ -334,7 +328,7 @@ else{
       if(r)
       this.delete(event.sequence);
   })
-   
+
     }
 
     delete(sequence: string) {

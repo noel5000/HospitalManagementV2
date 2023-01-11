@@ -1,5 +1,5 @@
 import { IModalConfig } from '../data/interfaces/iModalConfig';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter , Inject } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbdModalConfirmAutofocus, NgbdModalAlertAutofocus } from '../../@theme/components/modal/modal.component';
 import { LanguageService } from './translateService';

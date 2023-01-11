@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,6 +25,9 @@ import { Warehouse } from '../../../@core/data/Warehouse';
 import { Product } from '../../../@core/data/product';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { ProductService } from '../../../@core/services/ProductService';
+import { AppConfig } from '../../../@core/services/app.config';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+
 
 
 declare const $: any;
@@ -35,25 +38,30 @@ declare const $: any;
 })
 export class WarehouseTransferFormComponent extends BaseComponent implements OnInit {
 
+  @ViewChild('productSearch', { static: false })
+  private productSearch: AutoCompleteComponent;
+
     originBranchOffices:BranchOffice[];
     destinyBranchOffices:BranchOffice[];
     originWarehouses:Warehouse[]=[];
     destinyWarehouses:Warehouse[]=[];
     _route:ActivatedRoute;
-    products:Product[]=[];//
+  products: Product[] = [];//
+  product: Product = null;
     productUnits:any[]=[];//
     entries:any[]=[];
     originInventory:any={id:0,currentUnitEquivalence:0};
     destinyInventory:any={id:0,currentUnitEquivalence:0};
-    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}WarehouseTransfer`);
-    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}ProductUnit`);
-    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${endpointUrl}Inventory`);
+    warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/WarehouseTransfer`);
+    productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
+    inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Inventory`);
   
 
 
-    constructor(
+    constructor(@Inject('BASE_URL') private baseUrl: string,
         private formBuilder: FormBuilder,
         router: ActivatedRoute,
+        private config: AppConfig,
         route: Router,
         langService: LanguageService,
         private modals:NgbModal,
@@ -84,11 +92,27 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
    
      this.onChanges();
         this.verifyUser();
-        this.getProducts();
         this.getBranchOffices();
         this.validateFormData();
        
+  }
+  async selectProduct(product: any) {
+    if (product) {
+      this.product = product;
+      this.itemForm.patchValue({
+        productId: this.product.id
+      })
+      
     }
+    else {
+      this.product = null;
+      this.itemForm.patchValue({
+        productId: null
+      });
+
+    }
+
+  }
 
     async GetProductUnits(id:number){
         const filter = [{
@@ -163,25 +187,44 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
         });
     }
 
-    async getProducts(){
-        const filter = [{
-            property: 'IsService',
-            value: 'false',
-            type: ObjectTypes.Boolean,
-            isTranslated:false
+ 
+
+  async getProducts(name: string) {
+    if (name) {
+      const filter = [
+        {
+          property: "Currency",
+          value: "Id,Name,Code,ExchangeRate",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
         } as QueryFilter,
         {
-            property: "Currency",
-            value: "Id,Name,Code,ExchangeRate",
-            type: ObjectTypes.ChildObject,
-            isTranslated: false
+          property: 'IsService',
+          value: 'false',
+          type: ObjectTypes.Boolean,
+          isTranslated: false
+        } as QueryFilter,
+        {
+          property: "Name",
+          value: name.toString(),
+          type: ObjectTypes.String,
+          isTranslated: true
         } as QueryFilter
-    ]
-        this.productService.getAllFiltered(filter).subscribe(r=>{
-            this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
-        });
+      ]
+      this.productService.getAllFiltered(filter).subscribe(r => {
+        this.products = [];
+        this.products = this.products.concat(r['value']);
+      });
     }
+    else {
+      this.itemForm.patchValue({
+        productId: null
+      });
+
+
+    }
+
+  }
 
 async getBranchOffices(){
     this.branchOfficeService.getAll().subscribe(r=>{
@@ -319,7 +362,11 @@ async getBranchOffices(){
         else {
             this.entries.splice(index,1);
             this.entries.push(entry);
-        }
+      }
+
+      this.product = null;
+      this.productUnits = [];
+      this.productSearch.filterString = '';
       
     }
     deleteEntry(index:number){

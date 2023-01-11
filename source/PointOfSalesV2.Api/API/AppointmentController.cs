@@ -1,19 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Entities;
-using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using Microsoft.EntityFrameworkCore;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -28,13 +13,14 @@ namespace PointOfSalesV2.Api.Controllers
             this.appointmentRepository = this._repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>();
         }
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<Appointment>(x => x.AsNoTracking()
+                var data = await _baseRepo.GetAllAsync<Appointment>(x => x.AsNoTracking()
                 .Include(x => x.Hospital)
                 .Include(x => x.Patient)
                 .Include(x => x.Insurance)
@@ -49,7 +35,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,7 +53,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+              await  SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -85,7 +71,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

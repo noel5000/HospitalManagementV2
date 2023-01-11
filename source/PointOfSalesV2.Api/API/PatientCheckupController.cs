@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -34,14 +18,21 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<PatientCheckup>(x =>x.AsNoTracking().Include(t=>t.Insurance)
-                .Include(t=>t.InsurancePlan).Include(t=>t.Appointment).Include(t=>t.Doctor).Include(t=>t.Patient)
+                var data = await  _baseRepo.GetAllAsync<PatientCheckup>(x =>x.AsNoTracking()
+                .Include(t=>t.Insurance)
+                .Include(t=>t.InsurancePlan)
+                .Include(t=>t.Appointment)
+                .Include(t=>t.Doctor)
+                .Include(t=>t.Patient)
+                .Include(t=>t.CheckupPrescriptions).ThenInclude(p=>p.Product)
+                .Include(t => t.Attachments)
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -49,7 +40,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -67,21 +58,28 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
 
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<PatientCheckup>(x => x.AsNoTracking().Include(t => t.Insurance)
-               .Include(t => t.InsurancePlan).Include(t => t.Appointment).Include(t => t.Doctor).Include(t => t.Patient)
-                , y => y.Active == true);
+                var data = await _baseRepo.GetAllAsync<PatientCheckup>(x => x.AsNoTracking()
+               .Include(t => t.Insurance)
+               .Include(t => t.InsurancePlan)
+               .Include(t => t.Appointment)
+               .Include(t => t.Doctor)
+               .Include(t => t.Patient)
+               .Include(t => t.CheckupPrescriptions).ThenInclude(p => p.Product)
+               .Include(t => t.Attachments)
+                 , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
                 requestLanguage = languageIdHeader.FirstOrDefault() ?? "ES";
@@ -102,7 +100,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

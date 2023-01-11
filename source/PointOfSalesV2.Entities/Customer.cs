@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace PointOfSalesV2.Entities
 {
@@ -34,6 +28,31 @@ namespace PointOfSalesV2.Entities
         [MaxLength(200)]
         [Export(Order = 5)]
         public string Address { get; set; }
+
+        [MaxLength(1000)]
+        [Export(Order = 5)]
+        public string Medications { get; set; }
+
+        [MaxLength(1000)]
+        [Export(Order = 5)]
+        public string Alergies { get; set; }
+
+        [MaxLength(1000)]
+        [Export(Order = 5)]
+        public string Surgeries { get; set; }
+
+        [MaxLength(1000)]
+        [Export(Order = 5)]
+        public string FamilyIllnesses { get; set; }
+
+        [MaxLength(1000)]
+        [Export(Order = 5)]
+        public string BloodTransfusions { get; set; }
+
+        public decimal Weight { get; set; }
+        public decimal Size { get; set; }
+
+        public decimal SC { get; set; }
         [MaxLength(50)]
         [Export(Order = 1)]
         public string Code { get; set; }

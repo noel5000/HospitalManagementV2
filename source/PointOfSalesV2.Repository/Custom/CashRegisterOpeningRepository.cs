@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PointOfSalesV2.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static PointOfSalesV2.Common.Enums;
+﻿
 
 namespace PointOfSalesV2.Repository
 {
@@ -16,11 +10,11 @@ namespace PointOfSalesV2.Repository
 
        
 
-        public override Result<CashRegisterOpening> Add(CashRegisterOpening entity)
+        public override async Task<Result<CashRegisterOpening>> AddAsync(CashRegisterOpening entity)
         {
             Result<CashRegisterOpening> result = new Result<CashRegisterOpening>(-1,-1,"");
            
-                using (var trans = _Context.Database.BeginTransaction()) 
+                using (var trans =await _Context.Database.BeginTransactionAsync()) 
                 {
 
                 try
@@ -31,7 +25,7 @@ namespace PointOfSalesV2.Repository
                     entity.State = (char)CashRegisterOpeningStates.Open;
                     entity.Currency = null;
                     entity.BranchOffice = null;
-                    var user = entity.User ?? _Context.Users.Find(entity.UserId);
+                    var user = entity.User ?? await _Context.Users.FindAsync(entity.UserId);
                     _Context.Entry<User>(user).State = EntityState.Detached;
                     entity.User = null;
                     entity.TotalOpeningAmount = entity.Details.Sum(x => x.TotalAmount);
@@ -45,20 +39,20 @@ namespace PointOfSalesV2.Repository
                     entity.ClosureDate = null;
                     entity.TotalPaymentsAmount = 0;
                     _Context.CashRegisterOpenings.Add(entity);
-                    _Context.SaveChanges();
+                   await _Context.SaveChangesAsync();
                     details.ForEach(d => {
                         d.Id = 0;
                         d.IsClosing = false;
                         d.CashRegisterOpeningId = entity.Id;
                     });
                     _Context.CashRegisterOpeningDetails.AddRange(details);
-                    _Context.SaveChanges();
-                    trans.Commit();
+                   await _Context.SaveChangesAsync();
+                   await trans.CommitAsync();
                     result = new Result<CashRegisterOpening>(entity.Id, 0, "ok_msg", new List<CashRegisterOpening>() { entity });
                 }
                 catch (Exception ex) 
                 {
-                    trans.Rollback();
+                await    trans.RollbackAsync();
                     result = new Result<CashRegisterOpening>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
                 }
@@ -66,25 +60,25 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public Result<CashRegisterOpening> Closure(CashRegisterOpening entity)
+        public async Task<Result<CashRegisterOpening>> Closure(CashRegisterOpening entity)
         {
             Result<CashRegisterOpening> result = new Result<CashRegisterOpening>(-1, -1, "");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
 
                 try
                 {
-                    var isClosed = _Context.CashRegisterOpenings.Any(x => x.Id == entity.Id && x.State == (char)CashRegisterOpeningStates.Close);
+                    var isClosed = await _Context.CashRegisterOpenings.AnyAsync(x => x.Id == entity.Id && x.State == (char)CashRegisterOpeningStates.Close);
                     if (isClosed) {
-                        trans.Rollback();
+                       await trans.RollbackAsync();
                         return new Result<CashRegisterOpening>(-1, -1, "areadyClosed_error");
                     }
                     entity.State = (char)CashRegisterOpeningStates.Close;
                     entity.Currency = null;
                     entity.ClosureDate = DateTime.Now;
                     entity.BranchOffice = null;
-                    var user = entity.User ?? _Context.Users.Find(entity.UserId);
+                    var user = entity.User ?? await _Context.Users.FindAsync(entity.UserId);
                     _Context.Entry<User>(user).State = EntityState.Detached;
                     entity.User = null;
                     entity.TotalOpeningAmount = entity.Details.Where(x=>x.IsClosing==false).Sum(x => x.TotalAmount);
@@ -92,7 +86,7 @@ namespace PointOfSalesV2.Repository
                     entity.TotalClosureAmount = entity.Details.Where(x => x.IsClosing == true).Sum(x => x.TotalAmount);
                     if (entity.TotalClosureAmount <= 0)
                     {
-                        trans.Rollback();
+                       await trans.RollbackAsync();
                         return new Result<CashRegisterOpening>(-1, -1, "CantCloseWithZero_error");
                     }
                     entity.OpeningClosureDifference = entity.TotalClosureAmount - entity.TotalOpeningAmount;
@@ -100,20 +94,20 @@ namespace PointOfSalesV2.Repository
                     entity.Details = null;
                     entity.CashRegister = null;
                     _Context.CashRegisterOpenings.Update(entity);
-                    _Context.SaveChanges();
+                  await  _Context.SaveChangesAsync();
                     details.ForEach(d => {
                         d.Id = 0;
                         d.IsClosing = true;
                         d.CashRegisterOpeningId = entity.Id;
                     });
                     _Context.CashRegisterOpeningDetails.AddRange(details);
-                    _Context.SaveChanges();
-                    trans.Commit();
+                   await _Context.SaveChangesAsync();
+                   await trans.CommitAsync();
                     result = new Result<CashRegisterOpening>(entity.Id, 0, "ok_msg", new List<CashRegisterOpening>() { entity });
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                   await trans.RollbackAsync();
                     result = new Result<CashRegisterOpening>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }
@@ -121,19 +115,19 @@ namespace PointOfSalesV2.Repository
             return result;
         }
 
-        public override Result<CashRegisterOpening> Update(CashRegisterOpening entity, bool fromDb = true)
+        public override async Task<Result<CashRegisterOpening>> UpdateAsync(CashRegisterOpening entity, bool fromDb = true)
         {
             Result<CashRegisterOpening> result = new Result<CashRegisterOpening>(-1, -1, "");
 
-            using (var trans = _Context.Database.BeginTransaction())
+            using (var trans = await _Context.Database.BeginTransactionAsync())
             {
 
                 try
                 {
-                    var isClosed = _Context.CashRegisterOpenings.Any(x => x.Id == entity.Id && x.State == (char)CashRegisterOpeningStates.Close);
+                    var isClosed = await _Context.CashRegisterOpenings.AnyAsync(x => x.Id == entity.Id && x.State == (char)CashRegisterOpeningStates.Close);
                     if (isClosed)
                     {
-                        trans.Rollback();
+                       await trans.RollbackAsync();
                         return new Result<CashRegisterOpening>(-1, -1, "areadyClosed_error");
                     }
                     entity.Details = entity.Details?.Where(x => x.IsClosing == false);
@@ -153,9 +147,9 @@ namespace PointOfSalesV2.Repository
                     entity.CashRegister = null;
                     entity.ClosureDate = null;
                     _Context.CashRegisterOpenings.Update(entity);
-                    _Context.SaveChanges();
+                  await  _Context.SaveChangesAsync();
 
-                    var oldDetails = _Context.CashRegisterOpeningDetails.AsNoTracking().Where(x => x.CashRegisterOpeningId == entity.Id).ToList();
+                    var oldDetails = await _Context.CashRegisterOpeningDetails.AsNoTracking().Where(x => x.CashRegisterOpeningId == entity.Id).ToListAsync();
                     oldDetails.ForEach(d => {
                         if (!details.Any(x => x.Id == d.Id)) 
                         {
@@ -175,13 +169,13 @@ namespace PointOfSalesV2.Repository
                         _Context.SaveChanges();
                     });
                   
-                    _Context.SaveChanges();
-                    trans.Commit();
+                 await   _Context.SaveChangesAsync();
+                   await trans.CommitAsync();
                     result = new Result<CashRegisterOpening>(entity.Id, 0, "ok_msg", new List<CashRegisterOpening>() { entity });
                 }
                 catch (Exception ex)
                 {
-                    trans.Rollback();
+                   await trans.RollbackAsync();
                     result = new Result<CashRegisterOpening>(-1, -1, "error_msg", null, new Exception(ex.Message));
                 }
             }

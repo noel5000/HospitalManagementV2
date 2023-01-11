@@ -1,20 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using PointOfSalesV2.Api.Security;
-using PointOfSalesV2.Common;
-using PointOfSalesV2.Entities; using Microsoft.Extensions.Caching.Memory;
-using PointOfSalesV2.Entities.Model;
-using PointOfSalesV2.Repository;
-using static PointOfSalesV2.Common.Enums;
-using Microsoft.AspNetCore.Cors;
+﻿
 
 namespace PointOfSalesV2.Api.Controllers
 {
@@ -31,14 +15,18 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpGet]
         [ActionAuthorize(Operations.READALL)]
-        [EnableQuery()]
+        [EnableQuery]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [EnableCors("AllowAllOrigins")]
-        public override IActionResult Get()
+        public override async Task<IActionResult> Get()
         {
             try
             {
-                var data = _baseRepo.GetAll<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance)
+                var data = await _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x => x.AsNoTracking()
+                .Include(t => t.Insurance)
                 .Include(t=>t.Product)
+                .Include(t=>t.Currency)
+                .Include(t=>t.InsurancePlan)
                  , y => y.Active == true);
                 return Ok(data);
                
@@ -46,7 +34,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -70,7 +58,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }
@@ -82,12 +70,17 @@ namespace PointOfSalesV2.Api.Controllers
 
         [HttpPost("ExportToExcel")]
         [EnableCors("AllowAllOrigins")]
+        [Microsoft.AspNetCore.OData.Routing.Attributes.ODataAttributeRouting]
         [ActionAuthorize(Operations.EXPORT)]
-        public override IActionResult ExportToExcel()
+        public override async Task<IActionResult> ExportToExcel()
         {
             try
             {
-                var data = _baseRepo.GetAll<InsuranceServiceCoverage>(x => x.Include(t => t.Insurance).Include(t=>t.Product)
+                var data = await _baseRepo.GetAllAsync<InsuranceServiceCoverage>(x =>x.AsNoTracking()
+                .Include(t => t.Insurance)
+                .Include(t => t.Product)
+                .Include(t => t.Currency)
+                .Include(t => t.InsurancePlan)
                  , y => y.Active == true);
                 string requestLanguage = "EN";
                 var languageIdHeader = this.Request.Headers["languageid"];
@@ -109,7 +102,7 @@ namespace PointOfSalesV2.Api.Controllers
 
             catch (Exception ex)
             {
-                SaveException(ex);
+               await SaveException(ex);
                 return Ok(new { status = -1, message = ex.Message });
             }
         }

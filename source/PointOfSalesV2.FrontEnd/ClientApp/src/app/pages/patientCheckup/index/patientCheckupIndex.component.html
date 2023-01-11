@@ -60,16 +60,26 @@
       disabled class="form-control" />
 
   </div>
+  <div class="form-group col-md-12 col-xs-12">
+    <label>{{'medicalspeciality_lbl' | translate}}</label>
+    <input type="text" [value]="checkup.doctor.medicalSpeciality?checkup.doctor.medicalSpeciality.name:''"
+    disabled class="form-control" />
+
+</div>
     <div class="form-group col-md-12 col-xs-12">
         <label>{{'doctor_lbl' | translate}}</label>
         <input type="text" [value]="checkup.doctor.fullName"
         disabled class="form-control" />
 
     </div>
+    <div class="form-group col-md-12 col-xs-12">
+      <label>{{'symptoms_lbl' | translate}}</label>
+      <textarea disabled class="form-control" [value]="checkup.symptoms" ></textarea>
+  </div>
 
     <div class="form-group col-md-12 col-xs-12">
-        <label>{{'Padecimiento Actual' | translate}}</label>
-        <textarea disabled class="form-control" [value]="checkup.symptoms" ></textarea>
+        <label>{{'consultationReason_lbl' | translate}}</label>
+        <textarea disabled class="form-control" [value]="checkup.consultationReason" ></textarea>
     </div>
 
     <div class="form-group col-md-12 col-xs-12">
@@ -77,40 +87,10 @@
         <textarea disabled class="form-control" [value]="checkup.diagnoses"></textarea>
     </div>
 
-    <div class="form-group col-md-12 col-xs-12" *ngIf="checkup.exploracionFisica">
-      <label>{{'Exploracion Fisica' | translate}}</label>
-      <textarea disabled class="form-control" [value]="checkup.exploracionFisica"></textarea>
+    <div class="form-group col-md-12 col-xs-12">
+      <label>{{'plan_lbl' | translate}}</label>
+      <textarea disabled class="form-control" [value]="checkup.plan"></textarea>
   </div>
-
-  <div class="form-group col-md-12 col-xs-12" *ngIf="checkup.peso">
-    <label>{{'Peso' | translate}}</label>
-    <textarea disabled class="form-control" [value]="checkup.peso"></textarea>
-</div>
-
-<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.talla">
-  <label>{{'Talla' | translate}}</label>
-  <textarea disabled class="form-control" [value]="checkup.talla"></textarea>
-</div>
-
-<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.temperatura">
-  <label>{{'Temperatura' | translate}}</label>
-  <textarea disabled class="form-control" [value]="checkup.temperatura"></textarea>
-</div>
-
-<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.fc">
-  <label>{{'FC' | translate}}</label>
-  <textarea disabled class="form-control" [value]="checkup.fc"></textarea>
-</div>
-
-<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.fr">
-  <label>{{'FR' | translate}}</label>
-  <textarea disabled class="form-control" [value]="checkup.fr"></textarea>
-</div>
-
-<div class="form-group col-md-12 col-xs-12" *ngIf="checkup.sat">
-  <label>{{'Sat' | translate}}</label>
-  <textarea disabled class="form-control" [value]="checkup.sat"></textarea>
-</div>
 
 </div>
 <div class="text-center my-1">

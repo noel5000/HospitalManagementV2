@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule , Inject } from '@angular/core';
 import { BranchOfficeIndexComponent } from './index/branchOfficeIndex.component';
 import { BranchOfficeFormComponent } from './form/branchOfficeForm.component';
 import { LanguageService } from './../../@core/services/translateService';
