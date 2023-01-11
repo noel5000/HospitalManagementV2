@@ -239,7 +239,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
   async getEspecialities() {
     this.medicalSpecialityService.getAll().subscribe(r => {
       this.medicalSpecialities = [{ id: null, name: "" }];
-      this.medicalSpecialities = this.medicalSpecialities.concat(r);
+      this.medicalSpecialities = this.medicalSpecialities.concat(r.sort(this.dynamicSort('name')));
       if (r.length == 1)
         this.itemForm.patchValue({ medicalSpecialityId: r[0].id });
     });
@@ -263,7 +263,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
     this.trnControlService.getAll().subscribe(r => {
       this.trnControls = [{ id: 0, name: '' } as TRNControl];
-      this.trnControls = this.trnControls.concat(r);
+      this.trnControls = this.trnControls.concat(r.sort(this.dynamicSort('name')));
     });
   }
 
@@ -306,7 +306,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
     ]
     this.sellerService.getAllFiltered(filter).subscribe(r => {
       this.sellers = [{ id: 0, name: '' } as Seller];
-      this.sellers = this.sellers.concat(r['value']);
+      this.sellers = this.sellers.concat(r['value'].sort(this.dynamicSort('name')));
     });
   }
 
@@ -437,7 +437,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
       ]
       this.productService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -483,7 +483,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
 
       this.patientService.getAllFiltered(filter).subscribe(r => {
         this.patients = [];
-        this.patients = this.patients.concat(r["value"]);
+        this.patients = this.patients.concat(r["value"].sort(this.dynamicSort('name')));
 
       });
     }
@@ -1365,7 +1365,7 @@ export class InvoiceFormComponent extends BaseComponent implements OnInit {
         })
       }
     }
- 
+
 
 
 

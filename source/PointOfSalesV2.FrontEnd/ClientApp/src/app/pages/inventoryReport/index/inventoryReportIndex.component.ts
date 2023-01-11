@@ -146,14 +146,14 @@ export class InventoryReportIndexComponent extends BaseComponent implements OnIn
     } as QueryFilter
     this.warehouseServie.getAllFiltered([filter]).subscribe(r => {
       this.warehouses = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as Warehouse];
-      this.warehouses = this.warehouses.concat(r['value']);
+      this.warehouses = this.warehouses.concat(r['value'].sort(this.dynamicSort('name')));
     })
   }
 
   getBranchOffices() {
     this.branchOfficeService.getAll().subscribe(r => {
       this.branchOffices = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as BranchOffice];
-      this.branchOffices = this.branchOffices.concat(r);
+      this.branchOffices = this.branchOffices.concat(r.sort(this.dynamicSort('name')));
     })
   }
 

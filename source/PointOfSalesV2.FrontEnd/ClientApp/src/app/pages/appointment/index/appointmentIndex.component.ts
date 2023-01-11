@@ -136,8 +136,8 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   }
   async getHospitals() {
     this.hospitalService.getAll().subscribe(r => {
-
-      this.hospitals = r;
+      this.hospitals=[]
+      this.hospitals =this.hospitals.concat( r.sort(this.dynamicSort('name')));
       if (this.hospitals.length == 1)
         this.itemForm.patchValue({
           branchOfficeId: this.hospitals[0].id
@@ -228,7 +228,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     this.medicalSpecialitiesService.getAll().subscribe(r => {
 
       this.medicalSpecialities = [{ id: 0, name: '' }];
-      this.medicalSpecialities = this.medicalSpecialities.concat(r);
+      this.medicalSpecialities = this.medicalSpecialities.concat(r.sort(this.dynamicSort('name')));
       if (this.medicalSpecialities.length == 1)
         this.itemForm.patchValue({
           medicalSpecialityId: this.medicalSpecialities[0].id

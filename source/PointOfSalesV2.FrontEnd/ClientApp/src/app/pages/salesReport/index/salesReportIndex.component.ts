@@ -70,17 +70,17 @@ export class SalesReportIndexComponent extends BaseComponent implements OnInit {
         });
     }
 
- 
+
 onChanges(){
     this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
             this.getData();
     });
     this.itemForm.get('customerId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
 
     this.itemForm.get('currencyId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
 
     this.itemForm.get('startDate').valueChanges.subscribe(val => {
@@ -102,7 +102,7 @@ onChanges(){
         )
     }
 
-   
+
   selectPatient(customer: any) {
     this.selectedCustomer = customer;
     this.itemForm.patchValue({
@@ -129,7 +129,7 @@ onChanges(){
       ]
       this.customersService.getAllFiltered(filter).subscribe(r => {
         this.customers = [];
-        this.customers = this.customers.concat(r['value']);
+        this.customers = this.customers.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -141,31 +141,31 @@ onChanges(){
     }
 
   }
-       
+
     getCurrencies(){
         this.currencyService.getAll().subscribe(r=>{
             this.currencies=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Currency];
-            this.currencies=this.currencies.concat(r);
+            this.currencies=this.currencies.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
 
-  
+
 
     getBranchOffices(){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.branchOffices=[{id:0,name:this.lang.getValueByKey('all_lbl')} as BranchOffice];
-            this.branchOffices=this.branchOffices.concat(r);
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
-    
+
     getDataToExport() {
         const filter = this.itemForm.getRawValue();
         this.service.exportToExcel(filter,`ExportSales/${filter.branchOfficeId}/${filter.customerId}/${filter.currencyId}/${filter.startDate? filter.startDate.toString():'0'}/${filter.endDate?filter.endDate.toString():'0'}`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('sales_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -180,7 +180,7 @@ onChanges(){
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

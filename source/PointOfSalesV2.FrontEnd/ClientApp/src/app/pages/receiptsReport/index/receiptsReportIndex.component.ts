@@ -98,7 +98,7 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
       ]
       this.customersService.getAllFiltered(filter).subscribe(r => {
         this.customers = [];
-        this.customers = this.customers.concat(r['value']);
+        this.customers = this.customers.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -146,21 +146,21 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
   getCustomers() {
     this.customersService.getAll().subscribe(r => {
       this.customers = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as Customer];
-      this.customers = this.customers.concat(r);
+      this.customers = this.customers.concat(r.sort(this.dynamicSort('name')));
     })
   }
 
   getCurrencies() {
     this.currencyService.getAll().subscribe(r => {
       this.currencies = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as Currency];
-      this.currencies = this.currencies.concat(r);
+      this.currencies = this.currencies.concat(r.sort(this.dynamicSort('name')));
     })
   }
 
   getpaymentTypes() {
     this.paymentTypeService.getAll().subscribe(r => {
       this.paymentTypes = [{ id: 0, name: this.lang.getValueByKey('all_lbl') }];
-      this.paymentTypes = this.paymentTypes.concat(r);
+      this.paymentTypes = this.paymentTypes.concat(r.sort(this.dynamicSort('name')));
     })
   }
 
@@ -169,7 +169,7 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
   getBranchOffices() {
     this.branchOfficeService.getAll().subscribe(r => {
       this.branchOffices = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as BranchOffice];
-      this.branchOffices = this.branchOffices.concat(r);
+      this.branchOffices = this.branchOffices.concat(r.sort(this.dynamicSort('name')));
     })
   }
 

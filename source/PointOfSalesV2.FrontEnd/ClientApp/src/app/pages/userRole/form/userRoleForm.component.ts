@@ -35,7 +35,7 @@ export class UserRoleFormComponent extends BaseComponent implements OnInit {
     userRoleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/userRole`);
     userService:BaseService<any,string>= new BaseService<any,string>(this.http,`${this.baseUrl}api/user`);
     roleService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/role`);
-    
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -48,7 +48,7 @@ export class UserRoleFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.UserRoles,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -66,13 +66,13 @@ export class UserRoleFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getAllRoles();
-       
+
     }
 async getAllRoles(){
-    this.roleService.getAll().subscribe(r=>{this.roles=r});
+    this.roleService.getAll().subscribe(r=>{this.roles=r.sort(this.dynamicSort('name'))});
 }
 
 async getuserRoles(id:string){
@@ -90,7 +90,7 @@ async getuserRoles(id:string){
                 type: ObjectTypes.ChildObject,
                 isTranslated: false
             } as QueryFilter,
-           
+
         ]
     ).subscribe(r=>{
         this.userRoles=r['value'];
@@ -118,7 +118,7 @@ async getuserRoles(id:string){
             return;
         }
        const formValue = this.itemForm.value as UserRole;
-      
+
            if(!this.item)
            this.item = new UserRole();
            this.item=  this.updateModel<UserRole>(formValue,this.item);
@@ -134,7 +134,7 @@ async getuserRoles(id:string){
                this.modalService.showError(r.message);
            })
            }
-           
+
     }
 
     cancel(){
@@ -148,5 +148,5 @@ async getuserRoles(id:string){
         });
     }
 
-  
+
 }

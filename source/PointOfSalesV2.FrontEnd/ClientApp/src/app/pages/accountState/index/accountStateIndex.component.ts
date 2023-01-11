@@ -83,7 +83,7 @@ export class AccountStateIndexComponent extends BaseComponent implements OnInit 
       ]
       this.customersService.getAllFiltered(filter).subscribe(r => {
         this.customers = [];
-        this.customers = this.customers.concat(r['value']);
+        this.customers = this.customers.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {

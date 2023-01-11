@@ -284,7 +284,7 @@ grandPatientPaymentAmount:  [0],
         } as QueryFilter)
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:0, name:''} as Product];
-            this.products=this.products.concat( r['value']);
+            this.products=this.products.concat( r['value'].sort(this.dynamicSort('name')));
         });
     }
 
@@ -322,7 +322,7 @@ grandPatientPaymentAmount:  [0],
     async getEspecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=[{id:null, name:""}];
-            this.medicalSpecialities=this.medicalSpecialities.concat(r);
+            this.medicalSpecialities=this.medicalSpecialities.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1)
             this.itemForm.patchValue({medicalSpecialityId:r[0].id});
         });
@@ -331,7 +331,7 @@ grandPatientPaymentAmount:  [0],
     async getHospitals(){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.hospitals=[{id:null, name:""} as BranchOffice];
-            this.hospitals=this.hospitals.concat(r);
+            this.hospitals=this.hospitals.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1)
             this.itemForm.patchValue({hospitalId:r[0].id});
         });
@@ -369,7 +369,7 @@ grandPatientPaymentAmount:  [0],
 
             this.customerService.getAllFiltered(filter).subscribe(r=>{
                 this.customers=[];
-                this.customers=this.customers.concat(r["value"]);
+                this.customers=this.customers.concat(r["value"].sort(this.dynamicSort('name')));
 
             });
 

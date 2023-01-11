@@ -69,16 +69,16 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
         });
     }
 
- 
+
 onChanges(){
     this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
             this.getData();
     });
     this.itemForm.get('supplierId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
     this.itemForm.get('currencyId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
     this.itemForm.get('startDate').valueChanges.subscribe(val => {
         this.getData();
@@ -107,33 +107,33 @@ onChanges(){
     getSuppliers(){
         this.suppliersService.getAll().subscribe(r=>{
             this.suppliers=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Supplier];
-            this.suppliers=this.suppliers.concat(r);
+            this.suppliers=this.suppliers.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
     getCurrencies(){
         this.currenciesService.getAll().subscribe(r=>{
             this.currencies=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Currency];
-            this.currencies=this.currencies.concat(r);
+            this.currencies=this.currencies.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
-  
+
 
     getBranchOffices(){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.branchOffices=[{id:0,name:this.lang.getValueByKey('all_lbl')} as BranchOffice];
-            this.branchOffices=this.branchOffices.concat(r);
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
-    
+
     getDataToExport() {
         const filter = this.itemForm.getRawValue();
         this.service.exportToExcel(filter,`GetOwedExpensesReport/${filter.branchOfficeId}/${filter.supplierId}/${filter.currencyId}/${filter.startDate? filter.startDate.toString():'0'}/${filter.endDate?filter.endDate.toString():'0'}`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('debtsToPay_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -148,7 +148,7 @@ onChanges(){
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

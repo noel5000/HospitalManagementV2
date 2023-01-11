@@ -111,7 +111,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
         if(r.status>=0){
             this.item=r.data[0];
             const dateObj = this.item.birthDate?new Date(this.item.birthDate):new Date();
-            const dateObjString= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
+            const dateObjString= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}`
             this.itemForm.patchValue({
                 id:this.item.id,
                 name: this.item.name,
@@ -141,12 +141,12 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
     })
     }
     getTrnControls(){
-        this.trnService.getAll().subscribe(r=>{this.trnControls=r});
+        this.trnService.getAll().subscribe(r=>{this.trnControls=r.sort(this.dynamicSort('name'))});
     }
 
     getCurrencies(){
         this.currencyService.getAll().subscribe(r=>{
-            this.currencies=r;
+            this.currencies=r.sort(this.dynamicSort('name'));
             if(this.currencies.length==1)
             this.itemForm.patchValue({currencyId:this.currencies[0].id});
         });
@@ -174,7 +174,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
 
             this.insuranceService.getAll().subscribe(r=>{
                 this.insurances = [{name:'', id:null}]
-               this.insurances=this.insurances.concat(r);
+               this.insurances=this.insurances.concat(r.sort(this.dynamicSort('name')));
 
             },error=>{
 

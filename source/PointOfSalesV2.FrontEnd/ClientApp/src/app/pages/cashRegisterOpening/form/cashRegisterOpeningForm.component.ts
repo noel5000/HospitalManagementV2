@@ -127,7 +127,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
         private branchOfficeService: BranchOfficeService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.CashRegisterOpenings,modalService);
             this._route=router;
             this.dataToBackup="details,cashRegisters,branchOffices,users";
@@ -161,7 +161,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
           if(!isNaN(val.branchOfficeId)){
             const id=parseInt(val.branchOfficeId);
             if(id>0 &&(!this.user || this.user.branchOfficeId!=id)){
-                
+
       this.getCashRegisters(id);
       this.getUsers(id);
             }
@@ -177,7 +177,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
             const currency =(!this.currentCurrency || this.currentCurrency.id!=id) && this.currencies.length>0?
              this.currencies.find(x=>x.id==id):this.currentCurrency;
             this.currentCurrency=currency;
-          
+
         }
         else
         this.currentCurrency=null;
@@ -194,7 +194,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
             this.getDetails(this.item.id);
             this.currentCurrency= this.currencies.length>0? this.currencies.find(x=>x.id==this.item.currencyId):this.currentCurrency;
         }
-        
+
         this.validateFormData();
     })
     }
@@ -208,9 +208,9 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
                 isTranslated: false
             } as QueryFilter
         ]).subscribe(r=>{
-          
+
                 this.details=r['value'];
-               
+
                 const cashIndex = this.details.findIndex(x=>x.type=='cash' && x.isClosing==false);
                 if(cashIndex>=0){
                     const savedOpenings=JSON.parse(this.details[cashIndex].details);
@@ -221,7 +221,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
                         this.openingAmounts[index].quantity=e.quantity;
                     });
                 }
-            
+
         })
         }
     setBranchOffice(branchOffice: BranchOffice){
@@ -229,12 +229,12 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
     }
     async getBranchOffices (){
         this.branchOfficeService.getAll().subscribe(r=>{
-            this.branchOffices=r;
+            this.branchOffices=r.sort(this.dynamicSort('name'));
         })
     }
     async getCurrencies (){
         this,this.currencyService.getAll().subscribe(r=>{
-            this.currencies=r;
+            this.currencies=r.sort(this.dynamicSort('name'));
             const currencyId = this.itemForm.value.currencyId;
             if(currencyId && !isNaN(currencyId)){
                 this.currentCurrency=this.currencies.find(x=>x.id==currencyId);
@@ -286,7 +286,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
                     details:JSON.stringify({amount:formValue.amount}),
                     totalAmount:formValue.amount
                 } as OpeningType;
-             
+
             break;
             case 'cash':
                 const cashEntries = this.openingAmounts.filter(x=>x.quantity>0);
@@ -323,7 +323,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
             return;
         }
        const formValue = this.itemForm.value as CashRegisterOpening;
-      
+
            if(!this.item)
            this.item = new CashRegisterOpening();
 

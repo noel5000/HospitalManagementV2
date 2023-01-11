@@ -37,7 +37,7 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
         private branchOfficeService: BranchOfficeService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Warehouses,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -80,7 +80,7 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
     }
     async getBranchOffices (){
         this.branchOfficeService.getAll().subscribe(r=>{
-            this.branchOffices=r;
+            this.branchOffices=r.sort(this.dynamicSort('name'));
             if(this.branchOffices.length==1)
             this.itemForm.patchValue({branchOfficeId:this.branchOffices[0].id});
         })
@@ -91,7 +91,7 @@ export class WarehouseFormComponent extends BaseComponent implements OnInit {
             return;
         }
        const formValue = this.itemForm.value as Warehouse;
-      
+
            if(!this.item)
            this.item = new Warehouse();
 

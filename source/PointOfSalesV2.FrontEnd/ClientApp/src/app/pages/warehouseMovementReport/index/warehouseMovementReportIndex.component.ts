@@ -86,7 +86,7 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
       ];
       this.productsService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -97,12 +97,12 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
 
   }
 
- 
+
 onChanges(){
     this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
-                   
+
         if(val && val>0){
-            
+
             this.getWarehouses(val);this.getData();
             this.getData();
         }
@@ -111,26 +111,26 @@ onChanges(){
                 this.itemForm.patchValue({warehouseId:0});
                  this.warehouses=[{id:0, name:this.lang.getValueByKey('all_lbl')} as Warehouse]
             }
-    
+
     });
     this.itemForm.get('warehouseId').valueChanges.subscribe(val => {
-                   
+
         this.getData();
-    
+
     });
     this.itemForm.get('productId').valueChanges.subscribe(val => {
-                   
+
         this.getData();
-    
+
     });
 }
     getData() {
         const filter = this.itemForm.getRawValue();
         this.service.getGenericByUrlParameters(['GetProductMovements',filter.branchOfficeId.toString(),filter.warehouseId.toString(),filter.productId.toString(),'*']).subscribe(r => {
 
-           
+
             this.movements=r['data'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -141,7 +141,7 @@ onChanges(){
     getProducts(){
         this.productsService.getAll().subscribe(r=>{
             this.products=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Product];
-            this.products=this.products.concat(r);
+            this.products=this.products.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
@@ -154,24 +154,24 @@ onChanges(){
         } as QueryFilter
         this.warehouseServie.getAllFiltered([filter]).subscribe(r=>{
             this.warehouses=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Warehouse];
-            this.warehouses=this.warehouses.concat(r['value']);
+            this.warehouses=this.warehouses.concat(r['value'].sort(this.dynamicSort('name')));
         })
     }
 
     getBranchOffices(){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.branchOffices=[{id:0,name:this.lang.getValueByKey('all_lbl')} as BranchOffice];
-            this.branchOffices=this.branchOffices.concat(r);
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
-    
+
     getDataToExport() {
         const filter = this.itemForm.getRawValue();
         this.service.exportToExcel(filter,`ExportToExcel/${filter.branchOfficeId}/${filter.branchOfficeId}/${filter.productId}/*`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('productsMovements_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -186,7 +186,7 @@ onChanges(){
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

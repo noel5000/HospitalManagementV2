@@ -295,7 +295,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
   async getHospitals() {
     this.branchOfficeService.getAll().subscribe(r => {
       this.hospitals = [{ id: null, name: "" } as BranchOffice];
-      this.hospitals = this.hospitals.concat(r);
+      this.hospitals = this.hospitals.concat(r.sort(this.dynamicSort('name')));
       if (r.length == 1)
         this.itemForm.patchValue({ hospitalId: r[0].id });
     });
@@ -334,7 +334,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
 
       this.customerService.getAllFiltered(filter).subscribe(r => {
         this.customers = [];
-        this.customers = this.customers.concat(r["value"]);
+        this.customers = this.customers.concat(r["value"].sort(this.dynamicSort('name')));
 
       });
     }

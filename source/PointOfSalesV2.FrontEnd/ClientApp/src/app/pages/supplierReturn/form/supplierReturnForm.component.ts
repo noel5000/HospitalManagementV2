@@ -156,7 +156,7 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
       ]
       this.productService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -202,7 +202,7 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
     ]
     this.warehouseService.getAllFiltered(filter).subscribe(r => {
       this.warehouses = [{ id: 0, name: '' } as Warehouse];
-      this.warehouses = this.warehouses.concat(r['value']);
+      this.warehouses = this.warehouses.concat(r['value'].sort(this.dynamicSort('name')));
     });
   }
 
@@ -222,17 +222,17 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
     ]
     this.productService.getAllFiltered(filter).subscribe(r => {
       this.products = [{ id: 0, name: '' } as Product];
-      this.products = this.products.concat(r['value']);
+      this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
     });
   }
 
   async getBranchOffices() {
-    this.branchOfficeService.getAll().subscribe(r => { this.branchOffices = r });
+    this.branchOfficeService.getAll().subscribe(r => { this.branchOffices = r.sort(this.dynamicSort('name')) });
   }
 
 
   async getSuppliers() {
-    this.supplierService.getAll().subscribe(r => { this.suppliers = r });
+    this.supplierService.getAll().subscribe(r => { this.suppliers = r.sort(this.dynamicSort('name')) });
   }
 
   onChanges(): void {
@@ -424,7 +424,7 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
       noTaxes: false,
       isDefective: false,
       taxAmount: 0,
-      totalAmount: 0      
+      totalAmount: 0
     })
   }
   deleteEntry(index: number) {

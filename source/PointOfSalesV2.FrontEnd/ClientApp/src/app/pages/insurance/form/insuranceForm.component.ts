@@ -28,7 +28,7 @@ declare const $: any;
 })
 export class InsuranceFormComponent extends BaseComponent implements OnInit {
 
-   
+
     insurancePlans:any[]=[];
     _route:ActivatedRoute;
     currencies:Currency[]=[];
@@ -48,7 +48,7 @@ export class InsuranceFormComponent extends BaseComponent implements OnInit {
         private currencyService:CurrencyService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Insurance,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -74,7 +74,7 @@ export class InsuranceFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
     }
 
@@ -137,9 +137,9 @@ onDeletePlanConfirm(event:number): void {
          if(r)
          this.deletePlan(event);
      })
-      
+
        }
-   
+
        deletePlan(id: number) {
            this.insurancePlanService.delete(id).subscribe(r => {
                if (r.status >= 0) {
@@ -165,7 +165,7 @@ getPlans(){
             } as QueryFilter
         ]).subscribe(r=>{
             this.insurancePlans = r['value'];
-            
+
         },error=>{
 
         })
@@ -174,20 +174,20 @@ getPlans(){
 
     getCurrencies(){
         this.currencyService.getAll().subscribe(r=>{
-            this.currencies=r;
+            this.currencies=r.sort(this.dynamicSort('name'));
             if(this.currencies.length==1)
             this.itemForm.patchValue({currencyId:this.currencies[0].id});
         });
     }
 
-   
+
     get form() { return this.itemForm.controls; }
     save(){
         if (this.itemForm.invalid) {
             return;
         }
        const formValue = this.itemForm.value as any;
-      
+
            if(!this.item)
            this.item = {};
            this.item=  this.updateModel<any>(formValue,this.item);

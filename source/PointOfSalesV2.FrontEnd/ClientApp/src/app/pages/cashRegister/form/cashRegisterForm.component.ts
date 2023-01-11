@@ -34,7 +34,7 @@ export class CashRegisterFormComponent extends BaseComponent implements OnInit {
         private branchOfficeService: BranchOfficeService,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.CashRegisters,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -76,7 +76,8 @@ export class CashRegisterFormComponent extends BaseComponent implements OnInit {
     }
     async getBranchOffices (){
         this.branchOfficeService.getAll().subscribe(r=>{
-            this.branchOffices=r;
+          this.branchOffices=[];
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
     get form() { return this.itemForm.controls; }
@@ -85,7 +86,7 @@ export class CashRegisterFormComponent extends BaseComponent implements OnInit {
             return;
         }
        const formValue = this.itemForm.value as CashRegister;
-      
+
            if(!this.item)
            this.item = new CashRegister();
 

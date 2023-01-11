@@ -42,7 +42,7 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
     sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/SectionOperation`);
     sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Section`);
     roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/RoleSectionOperation`);
-    
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -55,7 +55,7 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.Roles,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -77,10 +77,10 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
      this.onChanges();
         this.verifyUser();
         this.getAllSections();
-       
+
     }
 async getAllSections(){
-    this.sectionService.getAll().subscribe(r=>{this.sections=r});
+    this.sectionService.getAll().subscribe(r=>{this.sections=r.sort(this.dynamicSort('name'))});
 }
 
 async getRoleSectionOperations(id:number){
@@ -145,13 +145,13 @@ async getSectionOperations(id:number){
             });
             this.getRoleSectionOperations(this.item.id);
         }
-        
+
         this.validateFormData();
     })
     }
     onChanges(): void {
         this.itemForm.valueChanges.subscribe(val => {
-         
+
           if(!isNaN(val.sectionId)){
              let section =parseInt(val.sectionId);
               if(section>0)
@@ -165,7 +165,7 @@ async getSectionOperations(id:number){
             return;
         }
        const formValue = this.itemForm.value as Role;
-      
+
            if(!this.item)
            this.item = new Role();
            this.item=  this.updateModel<Role>(formValue,this.item);

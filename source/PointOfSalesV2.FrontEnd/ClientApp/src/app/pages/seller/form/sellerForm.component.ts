@@ -22,7 +22,7 @@ declare const $: any;
     styleUrls: ["../sellerStyles.component.scss"]
 })
 export class SellerFormComponent extends BaseComponent implements OnInit {
- 
+
     _route:ActivatedRoute;
     zones:Zone[]=[];
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -36,7 +36,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Sellers,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
@@ -60,7 +60,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getZones();
     }
@@ -88,7 +88,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
     }
 
     async getZones(){
-        this.zoneService.getAll().subscribe(r=>{this.zones=r})
+        this.zoneService.getAll().subscribe(r=>{this.zones=r.sort(this.dynamicSort('name'))})
     }
     get form() { return this.itemForm.controls; }
     save(){
@@ -96,7 +96,7 @@ export class SellerFormComponent extends BaseComponent implements OnInit {
             return;
         }
        const formValue = this.itemForm.value as Seller;
-      
+
            if(!this.item)
            this.item = new Seller();
            this.item=  this.updateModel<Seller>(formValue,this.item);

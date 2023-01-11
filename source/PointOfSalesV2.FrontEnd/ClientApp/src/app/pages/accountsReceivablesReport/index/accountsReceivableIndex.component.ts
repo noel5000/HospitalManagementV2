@@ -132,7 +132,7 @@ export class AccountsReceivableIndexComponent extends BaseComponent implements O
   getBranchOffices() {
     this.branchOfficeService.getAll().subscribe(r => {
       this.branchOffices = [{ id: 0, name: this.lang.getValueByKey('all_lbl') } as BranchOffice];
-      this.branchOffices = this.branchOffices.concat(r);
+      this.branchOffices = this.branchOffices.concat(r.sort(this.dynamicSort('name')));
     })
   }
 

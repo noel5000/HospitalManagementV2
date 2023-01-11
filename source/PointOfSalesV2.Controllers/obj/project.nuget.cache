@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Rj8vh9mmN9TBRhHdv9irrbfNzNS0J07QgDDV0nSzr6GeqNZ3CNG/G5/3F29m4Wcxy/714e3aok0C/hhOU8e0PA==",
+  "dgSpecHash": "4khfvYOjrqjQyG0UhWfeiNK8hybUxoGcMh/Dp9SOFglJTd2zoM41TAKgX5xArrNYoEAj/+joNhrkqp9VkXHbPQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\NOEL\\Documents\\GitHub\\HospitalManagementV2\\source\\PointOfSalesV2.Controllers\\PointOfSalesV2.Controllers.csproj",
   "expectedPackageFiles": [
@@ -159,7 +159,7 @@
     "C:\\Users\\NOEL\\.nuget\\packages\\system.composition.typedparts\\1.0.31\\system.composition.typedparts.1.0.31.nupkg.sha512",
     "C:\\Users\\NOEL\\.nuget\\packages\\system.configuration.configurationmanager\\4.7.0\\system.configuration.configurationmanager.4.7.0.nupkg.sha512",
     "C:\\Users\\NOEL\\.nuget\\packages\\system.console\\4.3.0\\system.console.4.3.0.nupkg.sha512",
-    "C:\\Users\\NOEL\\.nuget\\packages\\system.data.sqlclient\\4.8.3\\system.data.sqlclient.4.8.3.nupkg.sha512",
+    "C:\\Users\\NOEL\\.nuget\\packages\\system.data.sqlclient\\4.8.5\\system.data.sqlclient.4.8.5.nupkg.sha512",
     "C:\\Users\\NOEL\\.nuget\\packages\\system.diagnostics.debug\\4.3.0\\system.diagnostics.debug.4.3.0.nupkg.sha512",
     "C:\\Users\\NOEL\\.nuget\\packages\\system.diagnostics.diagnosticsource\\6.0.0\\system.diagnostics.diagnosticsource.6.0.0.nupkg.sha512",
     "C:\\Users\\NOEL\\.nuget\\packages\\system.diagnostics.tools\\4.3.0\\system.diagnostics.tools.4.3.0.nupkg.sha512",

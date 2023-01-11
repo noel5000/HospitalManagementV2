@@ -42,7 +42,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
             id:'U',
             name:this.lang.getValueByKey('user_lbl'),
         },
-        
+
         {
             id:'D',
             name:this.lang.getValueByKey('doctor_lbl'),
@@ -59,7 +59,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
         {
             name:this.lang.getValueByKey('female_lbl'),
              id:'F'
-        }    
+        }
     ]
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -110,7 +110,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getSpecialities();
         this.getBranchOffices();
@@ -118,11 +118,11 @@ export class UserFormComponent extends BaseComponent implements OnInit {
     }
     onChanges(): void {
         this.itemForm.valueChanges.subscribe(val => {
-         
+
           if(!isNaN(val.branchOfficeId)){
               const id=parseInt(val.branchOfficeId);
               if(id>0){
-                  
+
         this.getCashRegisters(id);
         this.getBranchOfficeWarehouses(id);
               }
@@ -142,7 +142,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
           this.itemForm.removeControl('password');
           this.itemForm.addControl('password', new FormControl(''));
             const dateObj = this.item.birthDay?new Date(this.item.birthDay):new Date();
-            const birthDay= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
+            const birthDay= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}`
             this.itemForm.patchValue(this.item);
             this.itemForm.patchValue({birthDay})
 
@@ -159,18 +159,18 @@ export class UserFormComponent extends BaseComponent implements OnInit {
                 type: ObjectTypes.Number,
                 isTranslated:false
             } as QueryFilter ,
-            
+
            ]
        ).subscribe(x=>{
         this.warehouses= [{ name:'', id:null} as Warehouse];
-        this.warehouses= this.warehouses.concat((x['value'] as Warehouse[]).filter(x=>x.code!='DEF'));
-        
+        this.warehouses= this.warehouses.concat((x['value'].sort(this.dynamicSort('name')) as Warehouse[]).filter(x=>x.code!='DEF'));
+
         })
     }
     async getBranchOffices (){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.branchOffices= [{id:null, name:''} as BranchOffice];
-            this.branchOffices=this.branchOffices.concat(r);
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
     async getCashRegisters (branchId:number){
@@ -185,20 +185,20 @@ export class UserFormComponent extends BaseComponent implements OnInit {
             ]
         ).subscribe(r=>{
             this.cashRegisters=[{id:null, name:''}];
-           this.cashRegisters = this.cashRegisters.concat(r['value']);
+           this.cashRegisters = this.cashRegisters.concat(r['value'].sort(this.dynamicSort('name')));
         })
     }
 
     async getLanguages (){
         this.languagesService.getAll().subscribe(r=>{
             this.languages=[{id:null, name:''}];
-            this.languages=this.languages.concat(r);
+            this.languages=this.languages.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
     async getSpecialities (){
         this.medicalSpecService.getAll().subscribe(r=>{
-            this.medicalSpecialities=r;
+            this.medicalSpecialities=r.sort(this.dynamicSort('name'));
         })
     }
     get form() { return this.itemForm.controls; }
@@ -207,7 +207,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
             return;
         }
        const formValue = this.itemForm.value as User;
-      
+
            if(!this.item)
            this.item = new User();
 

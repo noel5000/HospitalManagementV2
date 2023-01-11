@@ -37,14 +37,14 @@ declare const $: any;
 export class ExpensePaymentFormComponent extends BaseComponent implements OnInit {
 
     canPay:boolean=false;
-    paymentTypes:any[]=[]; 
+    paymentTypes:any[]=[];
     expenses:Expense[]=[];
     _route:ActivatedRoute;
     currencies:Currency[]=[];
     paymentWithReference:boolean=false;
     suppliers:Supplier[]=[];
     paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/paymentType`);
-    
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -61,7 +61,7 @@ export class ExpensePaymentFormComponent extends BaseComponent implements OnInit
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.ExpensesPayments,modalService);
             this._route=router;
             this.dataToBackup="expenses";
@@ -80,7 +80,7 @@ paidAmount:[0]
 });
     }
     ngOnInit(): void {
-     
+
      this.onChanges();
         this.verifyUser();
         this.getCurrencies();
@@ -111,10 +111,10 @@ paidAmount:[0]
         });
     }
 
-   
+
     async getCurrencies(){
         this.currencyService.getAll().subscribe(r=>{
-            this.currencies=r;
+            this.currencies=r.sort(this.dynamicSort('name'));
             if(this.currencies.length==1)
             this.itemForm.patchValue({currencyId:this.currencies[0].id});
         });
@@ -123,15 +123,15 @@ paidAmount:[0]
 
 
 async getPaymentTypes(){
-    this.paymentTypeService.getAll().subscribe(r=>{this.paymentTypes=r});
+    this.paymentTypeService.getAll().subscribe(r=>{this.paymentTypes=r.sort(this.dynamicSort('name'))});
 }
 
 async getSuppliers(){
-    this.supplierService.getAll().subscribe(r=>{this.suppliers=r});
+    this.supplierService.getAll().subscribe(r=>{this.suppliers=r.sort(this.dynamicSort('name'))});
 }
     onChanges(): void {
-           
-       
+
+
 
          this.itemForm.get('paymentTypeId').valueChanges.subscribe(val => {
             this.itemForm.removeControl('reference');
@@ -181,8 +181,8 @@ async getSuppliers(){
             return;
         }
        const formValue = this.itemForm.getRawValue();
-      
-     
+
+
           const toPost ={
               payment:formValue,
               expenses:this.expenses.filter(x=>x.currentPaidAmount>0)
@@ -215,11 +215,11 @@ async getSuppliers(){
                 let toUpdate ={};
                 toUpdate[`selectedExpense-${id}`]=false;
                 this.itemForm.patchValue(toUpdate);
-            }            
-          
+            }
+
         }
         this.refreshTotalAmount(index,checked);
-      
+
     }
 
     refreshTotalAmount(index:number,hasValue:boolean){
@@ -230,6 +230,6 @@ async getSuppliers(){
             paidAmount:paidSumm,
             positiveBalance:givenAmount-paidSumm
         });
-     
+
     }
 }

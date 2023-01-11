@@ -55,7 +55,7 @@ export class WarehouseTransferFormComponent extends BaseComponent implements OnI
     warehouseTransferService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/WarehouseTransfer`);
     productUnitService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/ProductUnit`);
     inventoryService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Inventory`);
-  
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -71,7 +71,7 @@ export class WarehouseTransferFormComponent extends BaseComponent implements OnI
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.InventoryIncomes,modalService);
             this.dataToBackup="entries,productUnits,originBranchOffice,destinyBranchOffice,originWarehouses,destinyWarehouses,originInventory,destinyInventory";
             this._route=router;
@@ -89,12 +89,12 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
         });
     }
     ngOnInit(): void {
-   
+
      this.onChanges();
         this.verifyUser();
         this.getBranchOffices();
         this.validateFormData();
-       
+
   }
   async selectProduct(product: any) {
     if (product) {
@@ -102,7 +102,7 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
       this.itemForm.patchValue({
         productId: this.product.id
       })
-      
+
     }
     else {
       this.product = null;
@@ -134,7 +134,7 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
         });
     }
 
-   
+
 
     async getWarehouses(id:number,destiny:boolean=false){
         const filter = [{
@@ -147,13 +147,13 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
         this.warehouseService.getAllFiltered(filter).subscribe(r=>{
             if(destiny || !this.itemForm.getRawValue().destinyBranchOfficeId){
                 this.destinyWarehouses=[{id:0, name:''} as Warehouse];
-                this.destinyWarehouses= this.destinyWarehouses.concat(r['value']);
+                this.destinyWarehouses= this.destinyWarehouses.concat(r['value'].sort(this.dynamicSort('name')));
             }
             if(!destiny){
                 this.originWarehouses=[{id:0, name:''} as Warehouse];
-                this.originWarehouses= this.originWarehouses.concat(r['value']);
+                this.originWarehouses= this.originWarehouses.concat(r['value'].sort(this.dynamicSort('name')));
             }
-           
+
         });
     }
 
@@ -172,7 +172,7 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
         } as QueryFilter
     ];
         this.inventoryService.getAllFiltered(filter).subscribe(r=>{
-            
+
                 this.originInventory= r['value'][0]?r['value'][0]:{id:0,currentUnitEquivalence:0};
                 if(this.originInventory.id>0){
                     const {unitId} = this.itemForm.getRawValue();
@@ -181,13 +181,13 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
                     else
                     this.originInventory.currentUnitEquivalence=0;
                 }
-               
-            
-           
+
+
+
         });
     }
 
- 
+
 
   async getProducts(name: string) {
     if (name) {
@@ -213,7 +213,7 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
       ]
       this.productService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -229,15 +229,15 @@ quantity:[0,[ Validators.required,Validators.min(0.0001)]],
 async getBranchOffices(){
     this.branchOfficeService.getAll().subscribe(r=>{
         this.originBranchOffices=[{id:0, name:''} as BranchOffice];
-        this,this.destinyBranchOffices=[{id:0, name:''} as BranchOffice];
-        this.originBranchOffices= this.originBranchOffices.concat(r);
-        this.destinyBranchOffices = this.destinyBranchOffices.concat(r);
+        this.destinyBranchOffices=[{id:0, name:''} as BranchOffice];
+        this.originBranchOffices= this.originBranchOffices.concat(r.sort(this.dynamicSort('name')));
+        this.destinyBranchOffices = this.destinyBranchOffices.concat(r.sort(this.dynamicSort('name')));
     });
 }
 
 
 
-  
+
     onChanges(): void {
         this.itemForm.get('originBranchOfficeId').valueChanges.subscribe(val => {
          if(val && val>0){
@@ -273,7 +273,7 @@ async getBranchOffices(){
                 if((originId && parseInt(originId)==parseInt(val))){
                this.itemForm.patchValue({destinyId:null});
                 }
-                
+
 
             }
            });
@@ -286,7 +286,7 @@ async getBranchOffices(){
              else
              this.originInventory.currentUnitEquivalence=0;
         });
-         
+
         this.itemForm.get('productId').valueChanges.subscribe(val => {
             if(val && val>0){
                 const product= this.products.find(x=>x.id==val);
@@ -301,7 +301,7 @@ async getBranchOffices(){
             else
             this.itemForm.patchValue({unitId:null});
         });
-      
+
       }
 
       verifyQuantities():boolean{
@@ -311,7 +311,7 @@ async getBranchOffices(){
           this.itemForm.patchValue({quantity:0});
           return result;
       }
-    
+
     get form() { return this.itemForm.controls; }
 
     save(){
@@ -323,7 +323,7 @@ async getBranchOffices(){
                details:form.details,
                entries:this.entries
            }
-          
+
             const subscription =this.warehouseTransferService.post(ToSave,"","AddEntries");
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -356,7 +356,7 @@ async getBranchOffices(){
       entry.origin= this.originWarehouses.find(x=>x.id==entry.originId);
       entry.destiny= this.destinyWarehouses.find(x=>x.id==entry.destinyId);
         let index = this.entries.findIndex(x=>x.productId==entry.productId && x.oringinId==entry.oringinId && x.destinyId ==entry.destinyId);
-        
+
         if(index<0)
         this.entries.push(entry);
         else {
@@ -367,10 +367,10 @@ async getBranchOffices(){
       this.product = null;
       this.productUnits = [];
       this.productSearch.filterString = '';
-      
+
     }
     deleteEntry(index:number){
-      
+
         this.entries.splice(index,1);
     }
 }

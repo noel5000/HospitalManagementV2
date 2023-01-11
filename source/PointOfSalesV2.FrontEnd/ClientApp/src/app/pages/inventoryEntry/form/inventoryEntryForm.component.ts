@@ -134,7 +134,7 @@ export class InventoryEntryFormComponent extends BaseComponent implements OnInit
       ]
       this.productService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {
@@ -243,13 +243,13 @@ export class InventoryEntryFormComponent extends BaseComponent implements OnInit
     ]
     this.productService.getAllFiltered(filter).subscribe(r => {
       this.products = [{ id: 0, name: '' } as Product];
-      this.products = this.products.concat(r['value']);
+      this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
     });
   }
 
   async getBranchOffices() {
     this.branchOfficeService.getAll().subscribe(r => {
-      this.branchOffices = r;
+      this.branchOffices = r.sort(this.dynamicSort('name'));
       if (this.branchOffices.length == 1)
         this.itemForm.patchValue({ branchOfficeId: this.branchOffices[0].id });
     });
@@ -257,7 +257,7 @@ export class InventoryEntryFormComponent extends BaseComponent implements OnInit
 
 
   async getSuppliers() {
-    this.supplierService.getAll().subscribe(r => { this.suppliers = r });
+    this.supplierService.getAll().subscribe(r => { this.suppliers = r.sort(this.dynamicSort('name')) });
   }
 
   onChanges(): void {

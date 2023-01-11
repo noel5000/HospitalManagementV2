@@ -107,9 +107,9 @@ export class ComissionsReportIndexComponent extends BaseComponent implements OnI
     }
 
   }
- 
+
 onChanges(){
-    
+
     this.itemForm.get('startDate').valueChanges.subscribe(val => {
         this.getData();
     });
@@ -141,9 +141,9 @@ async  getData() {
     }
 
     async   getSellers() {
-       
+
         this.sellerService.getAll().subscribe(r => {
-            this.sellers=r;
+            this.sellers=r.sort(this.dynamicSort('name'));
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -152,9 +152,9 @@ async  getData() {
     }
 
     async getCurrencies() {
-       
+
         this.currencyService.getAll().subscribe(r => {
-            this.currencies=r;
+            this.currencies=r.sort(this.dynamicSort('name'));
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -166,7 +166,7 @@ async  getData() {
         this.service.exportToExcel(filter,`ExportComissionsReport`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('commissions_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -181,7 +181,7 @@ async  getData() {
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

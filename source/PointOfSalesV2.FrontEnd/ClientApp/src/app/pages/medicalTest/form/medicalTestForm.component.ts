@@ -59,7 +59,7 @@ export class MedicalTestFormComponent extends BaseComponent implements OnInit {
     productSupCostService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductCost`);
     baseProductsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/CompositeProduct`);
     productTaxService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/ProductTax`);
-    
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -77,7 +77,7 @@ export class MedicalTestFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.Products,modalService);
             this._route=router;
             this.dataToBackup="productUnits,productSupplierCosts,productTaxes,baseProducts,selectedBaseProduct";
@@ -124,7 +124,7 @@ type:['L']
         this.getUnits();
         this.getEspecialities();
         this.getAllProducts();
-       
+
     }
 
     async getProductBases(){
@@ -157,23 +157,23 @@ type:['L']
     }
 
     async getAllProducts(){
-        
+
         this.service.getAll().subscribe(r=>{
-            this.otherProducts=r;
+            this.otherProducts=r.sort(this.dynamicSort('name'));
             const urlId= parseInt( this._route.snapshot.paramMap.get('id')!);
      if(!isNaN(urlId)){
         const index = this.otherProducts.findIndex(x=>x.id==urlId);
         if(index>=0)
         this.otherProducts.splice(index,1);
      }
-            
+
         });
     }
 
     async getEspecialities(){
         this.medicalSpecialityService.getAll().subscribe(r=>{
             this.medicalSpecialities=[{id:null, name:""}];
-            this.medicalSpecialities=this.medicalSpecialities.concat(r);
+            this.medicalSpecialities=this.medicalSpecialities.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1)
             this.itemForm.patchValue({medicalSpecialityId:r[0].id});
         });
@@ -212,7 +212,7 @@ type:['L']
     ]
         this.productTaxService.getAllFiltered(filter).subscribe(r=>{
             this.productTaxes=r['value'];
-        
+
         });
     }
 
@@ -256,24 +256,24 @@ type:['L']
     }
 
    async getTaxes(){
-       this.taxesService.getAll().subscribe(r=>{this.taxes=r});
+       this.taxesService.getAll().subscribe(r=>{this.taxes=r.sort(this.dynamicSort('name'))});
    }
 
-   
+
    async getCurrencies(){
     this.currencyService.getAll().subscribe(r=>{
-        this.currencies=r;
+        this.currencies=r.sort(this.dynamicSort('name'));
         if(this.currencies.length==1)
         this.itemForm.patchValue({currencyId:this.currencies[0].id});
     });
 }
 
 async getUnits(){
-    this.unitService.getAll().subscribe(r=>{this.units=r});
+    this.unitService.getAll().subscribe(r=>{this.units=r.sort(this.dynamicSort('name'))});
 }
 
 async getSuppliers(){
-    this.supplierService.getAll().subscribe(r=>{this.suppliers=r});
+    this.supplierService.getAll().subscribe(r=>{this.suppliers=r.sort(this.dynamicSort('name'))});
 }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
@@ -308,10 +308,10 @@ async getSuppliers(){
             this.getProductSuppliersCosts();
             this.getProductTaxes();
             this.getProductUnits();
-           
-           
+
+
         }
-        
+
         this.validateFormData();
     })
     }
@@ -332,14 +332,14 @@ async getSuppliers(){
             return;
         }
        const formValue = this.itemForm.value as Product;
-      
+
            if(!this.item)
            this.item = new Product();
            this.item=  this.updateModel<Product>(formValue,this.item);
            this.item.medicalSpecialityId=isNaN(this.item.medicalSpecialityId)?null:this.item.medicalSpecialityId;
            this.item.currencyId=parseInt(this.item.currencyId.toString());
            this.setProductChildren();
-          
+
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -356,7 +356,7 @@ setProductChildren(){
     this.item.productUnits=(this.productUnits);
     this.item.suppliersCosts=(this.productSupplierCosts);
     this.item.baseCompositeProducts=(this.baseProducts);
-  
+
 }
     cancel(){
         this.clearBackupData();
@@ -382,9 +382,9 @@ setProductChildren(){
         if(currentUnit.isPrimary && this.productUnits.findIndex(x=>x.isPrimary==true)>=0){
             const isPrimaryIndex=this.productUnits.findIndex(x=>x.isPrimary==true);
             this.productUnits[isPrimaryIndex].isPrimary=false;
-        }   
+        }
         let index = this.productUnits.findIndex(x=>x.unitId==currentUnit.unitId);
-        
+
         if(index<0)
         this.productUnits.push(currentUnit);
         else {
@@ -408,9 +408,9 @@ setProductChildren(){
         if(currentCost.cost<=0|| currentCost.supplierId<=0)
         return;
 
-      
+
         let index = this.productSupplierCosts.findIndex(x=>x.supplierId==currentCost.supplierId);
-        
+
         if(index<0)
         this.productSupplierCosts.push(currentCost);
         else {
@@ -434,13 +434,13 @@ setProductChildren(){
             unitProductEquivalence:this.baseProductUnits.find(x=>x.id==this.form.baseUnitId.value),
             baseProductUnitId:parseInt(this.form.baseUnitId.value)
         };
-        
+
         if(currentBaseProduct.quantity<=0|| currentBaseProduct.baseProductId<=0 || (!currentBaseProduct.baseProduct!.isService && currentBaseProduct.baseProductUnitId<=0))
         return;
 
-      
+
         let index = this.baseProducts.findIndex(x=>x.baseProductId==currentBaseProduct.baseProductId);
-        
+
         if(index<0)
         this.baseProducts.push(currentBaseProduct);
         else {
@@ -452,7 +452,7 @@ setProductChildren(){
             baseProductId:0,
             baseUnitId:null,
             quantity:0,
-            
+
         })
     }
     deleteBaseProduct(index:number){
@@ -469,9 +469,9 @@ setProductChildren(){
         if(currentTax.taxId<=0)
         return;
 
-      
+
         let index = this.productTaxes.findIndex(x=>x.taxId==currentTax.taxId);
-        
+
         if(index<0)
         this.productTaxes.push(currentTax);
         else {

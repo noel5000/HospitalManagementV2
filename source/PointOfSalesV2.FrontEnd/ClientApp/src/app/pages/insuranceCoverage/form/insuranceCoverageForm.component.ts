@@ -44,7 +44,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         private modals:NgbModal,
        modalService:ModalService
         ){
-           
+
             super(route, langService, AppSections.Users,modalService);
             this._route=router;
             this.section=AppSections.Users;
@@ -56,7 +56,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             coverageAmount:[0,[Validators.required,Validators.min(1)]],
             currencyId:[0,[Validators.required,Validators.min(1)]],
             productId:[0,[Validators.required,Validators.min(1)]],
-            
+
         });
     }
     ngOnInit(): void {
@@ -67,7 +67,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
      }
      else
      this.validateFormData();
-     
+
         this.verifyUser();
         this.getInsurances();
         this.getCurrencies();
@@ -123,10 +123,10 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
                 value: "true",
                 type: ObjectTypes.Boolean,
                 comparer:ODataComparers.equals,
-                isTranslated:false 
+                isTranslated:false
             }as QueryFilter,
-          
-        ]; 
+
+        ];
 
         this.productService.getAllFiltered(filter).subscribe(r=>{
             this.products=[{id:null,name:""}];
@@ -140,15 +140,15 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         })
     }
 
-    
+
     async getInsurances(){
-        
+
         this.insuranceService.getAll().subscribe(r=>{
             this.insurances=[{id:null,name:""}];
-            this.insurances=this.insurances.concat(r);
+            this.insurances=this.insurances.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1&& (!this.item || !this.item.insuranceId))
             this.itemForm.patchValue({insuranceId:r[0].id});
-           
+
             else
             this.itemForm.patchValue({
                 insuranceId: this.item?this.item.insuranceId:null
@@ -156,17 +156,17 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
         })
     }
     async getCurrencies(){
-        
+
         this.currencyService.getAll().subscribe(r=>{
             this.currencies=[{id:null,name:""}];
-            this.currencies=this.currencies.concat(r);
+            this.currencies=this.currencies.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1 && (!this.item || !this.item.currencyId))
             this.itemForm.patchValue({currencyId:r[0].id});
             else
             this.itemForm.patchValue({
                currencyId: this.item?this.item.currencyId:null
             })
-            
+
         })
     }
     async getInsurancePlans(id:number){
@@ -176,14 +176,14 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
                 value: id.toString(),
                 type: ObjectTypes.Number,
                 comparer:ODataComparers.equals,
-                isTranslated:false 
+                isTranslated:false
             }as QueryFilter,
-          
-        ]; 
+
+        ];
 
         this.insurancePlanService.getAllFiltered(filter).subscribe(r=>{
             this.insurancePlans=[{id:null,name:""}];
-            this.insurancePlans=this.insurancePlans.concat(r["value"]);
+            this.insurancePlans=this.insurancePlans.concat(r["value"].sort(this.dynamicSort('name')));
             if(r["value"].length==1&& (!this.item || !this.item.insurancePlanId))
             this.itemForm.patchValue({insurancePlanId:r["value"][0].id});
 
@@ -219,7 +219,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
             return;
         }
       this.item = this.itemForm.value ;
-      
+
            if(!this.item)
            this.item = {active:true};
 

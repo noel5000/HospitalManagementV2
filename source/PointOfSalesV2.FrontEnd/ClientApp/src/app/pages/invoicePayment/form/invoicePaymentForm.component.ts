@@ -155,7 +155,7 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
 
       this.customerService.getAllFiltered(filter).subscribe(r => {
         this.customers = [];
-        this.customers = this.customers.concat(r["value"]);
+        this.customers = this.customers.concat(r["value"].sort(this.dynamicSort('name')));
 
       });
     }
@@ -191,13 +191,13 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
           this.invoices = r.data;
         }
       });
-    }    
+    }
   }
 
 
   async getCurrencies() {
     this.currencyService.getAll().subscribe(r => {
-      this.currencies = r;
+      this.currencies = r.sort(this.dynamicSort('name'));
       if (this.currencies.length == 1)
         this.itemForm.patchValue({ currencyId: this.currencies[0].id });
     });
@@ -222,7 +222,7 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
 
   async getBranchOffices() {
     this.brancOfficeService.getAll().subscribe(r => {
-      this.branchOffices = r;
+      this.branchOffices = r.sort(this.dynamicSort('name'));
       if (this.branchOffices.length == 1)
         this.itemForm.patchValue({ branchOfficeId: this.branchOffices[0].id });
     });
@@ -231,7 +231,7 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
 
 
   async getPaymentTypes() {
-    this.paymentTypeService.getAll().subscribe(r => { this.paymentTypes = r });
+    this.paymentTypeService.getAll().subscribe(r => { this.paymentTypes = r.sort(this.dynamicSort('name')) });
   }
 
 
@@ -270,12 +270,12 @@ export class InvoicePaymentFormComponent extends BaseComponent implements OnInit
         this.getinvoices();
     });
     this.itemForm.get('givenAmount').valueChanges.subscribe(val => {
-      this.canPay = val && val > 0;      
+      this.canPay = val && val > 0;
         const paidAmount = this.itemForm.get('paidAmount') ? this.itemForm.get('paidAmount').value : 0;
         this.itemForm.patchValue({
           positiveBalance: paidAmount ? val - paidAmount : val
         })
-      
+
     });
 
   }

@@ -301,7 +301,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
       this.getAppointment(this.appointmentId);
     else
       this.getPatient(this.patientId);
-   
+
     this.getAttachments(this.id);
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
@@ -325,7 +325,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
   }
   async getMedicalSpecialities() {
     this.medicalSpecialityService.getAll().subscribe(r => {
-      this.medicalSpecialities = r;
+      this.medicalSpecialities = r.sort(this.dynamicSort('name'));
       this.medicalSpecialities.sort((a, b) => (a.name > b.name) ? 1 : -1)
     })
   }
@@ -399,17 +399,17 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
 
         case 'M':
           this.medicines = [{ id: 0, name: '' } as Product];
-          this.medicines = this.products.concat(r['value']);
+          this.medicines = this.products.concat(r['value'].sort(this.dynamicSort('name')));
           this.medicines.sort((a, b) => (a.name > b.name) ? 1 : -1);
           break;
         case 'L':
           this.labTests = [{ id: 0, name: '' } as Product];
-          this.labTests = this.products.concat(r['value']);
+          this.labTests = this.products.concat(r['value'].sort(this.dynamicSort('name')));
           this.labTests.sort((a, b) => (a.name > b.name) ? 1 : -1);
           break;
         case 'E':
           this.specilizedimages = [{ id: 0, name: '' } as Product];
-          this.specilizedimages = this.products.concat(r['value']);
+          this.specilizedimages = this.products.concat(r['value'].sort(this.dynamicSort('name')));
           this.specilizedimages.sort((a, b) => (a.name > b.name) ? 1 : -1);
           break;
       }
@@ -440,17 +440,8 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
           insurancePlanId: this.appointment.insurancePlanId,
           doctorName: this.appointment.doctorName,
           patientName: this.appointment.patientName,
-          currencyId: this.appointment.currencyId,
-          plan: this.item.plan,
-          medicalBackground: this.item.medicalBackground,
-          consultationReason: this.item.consultationReason,
-          physicalExamHeadNeck: this.item.physicalExamHeadNeck,
-          physicalExam: this.item.physicalExam,
-          physicalExamChest: this.item.physicalExamChest,
-          physicalExamHeart: this.item.physicalExamHeart,
-          physicalExamLungs: this.item.physicalExamLungs,
-          physicalExamStomach: this.item.physicalExamStomach,
-          physicalExamExtremities: this.item.physicalExamExtremities,
+          currencyId: this.appointment.currencyId
+
 
         })
       }
@@ -482,7 +473,7 @@ export class patientCheckupEditFormComponent extends BaseComponent implements On
       ]
       this.productService.getAllFiltered(filter).subscribe(r => {
         this.products = [];
-        this.products = this.products.concat(r['value']);
+        this.products = this.products.concat(r['value'].sort(this.dynamicSort('name')));
       });
     }
     else {

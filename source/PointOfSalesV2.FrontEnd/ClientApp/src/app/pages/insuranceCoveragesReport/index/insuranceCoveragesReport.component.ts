@@ -71,17 +71,17 @@ export class insuranceCoveragesReportComponent extends BaseComponent implements 
         });
     }
 
- 
+
 onChanges(){
     this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
             this.getData();
     });
     this.itemForm.get('insuranceId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
 
     this.itemForm.get('currencyId').valueChanges.subscribe(val => {
-        this.getData();    
+        this.getData();
     });
 
     this.itemForm.get('startDate').valueChanges.subscribe(val => {
@@ -103,41 +103,41 @@ onChanges(){
         )
     }
 
-   
+
 
     getInsurances(){
         this.insuranceService.getAll().subscribe(r=>{
             this.insurances=[{id:0,name:this.lang.getValueByKey('all_lbl')}];
-            this.insurances=this.insurances.concat(r);
-        })
-    } 
-
-
-       
-    getCurrencies(){
-        this.currencyService.getAll().subscribe(r=>{
-            this.currencies=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Currency];
-            this.currencies=this.currencies.concat(r);
+            this.insurances=this.insurances.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
 
-  
+
+    getCurrencies(){
+        this.currencyService.getAll().subscribe(r=>{
+            this.currencies=[{id:0,name:this.lang.getValueByKey('all_lbl')} as Currency];
+            this.currencies=this.currencies.concat(r.sort(this.dynamicSort('name')));
+        })
+    }
+
+
+
 
     getBranchOffices(){
         this.branchOfficeService.getAll().subscribe(r=>{
             this.branchOffices=[{id:0,name:this.lang.getValueByKey('all_lbl')} as BranchOffice];
-            this.branchOffices=this.branchOffices.concat(r);
+            this.branchOffices=this.branchOffices.concat(r.sort(this.dynamicSort('name')));
         })
     }
 
-    
+
     getDataToExport() {
         const filter = this.itemForm.getRawValue();
         this.service.exportToExcel(filter,`GetInsuranceCoveragesExport/${filter.branchOfficeId}/${filter.currencyId}/${filter.insuranceId}/${filter.insurancePlanId}/${filter.startDate? filter.startDate.toString():'0'}/${filter.endDate?filter.endDate.toString():'0'}`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('insuranceCoverages_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -152,7 +152,7 @@ onChanges(){
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

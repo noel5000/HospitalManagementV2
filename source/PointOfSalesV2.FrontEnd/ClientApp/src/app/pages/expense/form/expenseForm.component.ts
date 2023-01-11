@@ -37,7 +37,7 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
     isPaid:boolean=false;
     amountsNotEquals:boolean=false;
     branchOffices:BranchOffice[];
-    paymentTypes:any[]; 
+    paymentTypes:any[];
     _route:ActivatedRoute;
     currencies:Currency[]=[];//
     expenseTaxes:any[]=[];//
@@ -45,7 +45,7 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
     taxes:Tax[]=[];//
     expenseTaxService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/expenseTax`);
     paymentTypeService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/paymentType`);
-    
+
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -63,7 +63,7 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppSections.Expenses,modalService);
             this._route=router;
             this.dataToBackup="expenseTaxes";
@@ -101,7 +101,7 @@ returnedAmount:[0]
         this.getSuppliers();
         this.getBranchOffices();
         this.getPaymentTypes();
-       
+
     }
 
     async getExpenseTaxes(id:number){
@@ -124,16 +124,16 @@ returnedAmount:[0]
         });
     }
 
-   
 
-   async getTaxes(){ 
-       this.taxesService.getAll().subscribe(r=>{this.taxes=r});
+
+   async getTaxes(){
+       this.taxesService.getAll().subscribe(r=>{this.taxes=r.sort(this.dynamicSort('name'))});
    }
 
-   
+
    async getCurrencies(){
     this.currencyService.getAll().subscribe(r=>{
-        this.currencies=r;
+        this.currencies=r.sort(this.dynamicSort('name'));
         if(this.currencies.length==1)
         this.itemForm.patchValue({currencyId:this.currencies[0].id});
     });
@@ -141,32 +141,32 @@ returnedAmount:[0]
 
 async getBranchOffices(){
     this.branchOfficeService.getAll().subscribe(r=>{
-        this.branchOffices=r;
+        this.branchOffices=r.sort(this.dynamicSort('name'));
         if(this.branchOffices.length==1)
         this.itemForm.patchValue({branchOfficeId:this.branchOffices[0].id});
     });
 }
 
 async getPaymentTypes(){
-    this.paymentTypeService.getAll().subscribe(r=>{this.paymentTypes=r});
+    this.paymentTypeService.getAll().subscribe(r=>{this.paymentTypes=r.sort(this.dynamicSort('name'))});
 }
 
 async getSuppliers(){
-    this.supplierService.getAll().subscribe(r=>{this.suppliers=r});
+    this.supplierService.getAll().subscribe(r=>{this.suppliers=r.sort(this.dynamicSort('name'))});
 }
    async getItem(id:number){
     this.service.getById(id).subscribe(r=>{
         if(r.status>=0){
             this.item=r.data[0];
             const dateObj = this.item.date?new Date(this.item.date):new Date();
-            const date= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}` 
+            const date= `${dateObj.getFullYear()}-${(dateObj.getMonth()+1).toString().length<2?('0'+ (dateObj.getMonth()+1).toString()):(dateObj.getMonth()+1).toString()}-${(dateObj.getDate()).toString().length<2?('0'+ (dateObj.getDate()).toString()):(dateObj.getDate()).toString()}`
             this.itemForm.patchValue(this.item);
             this.itemForm.patchValue({date})
            this.getExpenseTaxes(this.item.id);
-           
-           
+
+
         }
-        
+
         this.validateFormData();
     })
     }
@@ -177,7 +177,7 @@ async getSuppliers(){
         this.itemForm.get('totalAmount').valueChanges.subscribe(val => {
             this.verifyTotalAmount();
            });
-           
+
         this.itemForm.get('givenAmount').valueChanges.subscribe(val => {
           let {totalAmount} = this.itemForm.value;
           totalAmount=!totalAmount?0:totalAmount;
@@ -205,7 +205,7 @@ async getSuppliers(){
             return;
         }
        const formValue = this.itemForm.value as Expense;
-      
+
            if(!this.item)
            this.item = new Expense();
            this.item=  this.updateModel<Expense>(formValue,this.item);
@@ -215,7 +215,7 @@ async getSuppliers(){
            this.item.paymentTypeId=this.item.paymentTypeId?parseInt(this.item.paymentTypeId.toString()):0;
            this.item.paymentTypeId=this.item.paymentTypeId<=0?null:this.item.paymentTypeId;
            this.item.taxes=this.expenseTaxes;
-          
+
             const subscription = this.id>0?this.service.put(this.item):this.service.post(this.item);
             subscription.subscribe(r=>{
                if(r.status>=0){
@@ -245,9 +245,9 @@ async getSuppliers(){
         if(currentTax.taxId<=0)
         return;
 
-      
+
         let index = this.expenseTaxes.findIndex(x=>x.taxId==currentTax.taxId);
-        
+
         if(index<0)
         this.expenseTaxes.push(currentTax);
         else {
@@ -255,7 +255,7 @@ async getSuppliers(){
             this.expenseTaxes.push(currentTax);
         }
         this.refreshTotalAmount();
-      
+
     }
     deleteTax(tax:any){
         const index = this.expenseTaxes.findIndex(x=>x.taxId==tax.taxId);
