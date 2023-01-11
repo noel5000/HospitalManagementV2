@@ -53,7 +53,7 @@ namespace PointOfSalesV2.Repository
             {
                 var dbEntity =await _Context.Users.FindAsync(entity.UserId);
                 _Context.Entry<User>(dbEntity).State = EntityState.Detached;
-                if (entity.Password != dbEntity.Password) 
+                if (!string.IsNullOrEmpty(entity.Password)) 
                 {
                     entity.Password = MD5.Encrypt(entity.Password, _appSettings.Value.TokenKey);
                 }

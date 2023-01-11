@@ -67,7 +67,6 @@ namespace PointOfSalesV2.Entities
 
         [DataType(DataType.Password)]
         [DataMember]
-        [Required]
         public string Password { get; set; }
 
         [MaxLength(150)]

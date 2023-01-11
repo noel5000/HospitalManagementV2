@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PointOfSalesV2.Entities;
-using PointOfSalesV2.Api.Controllers;
+using PointOfSalesV2.Controllers;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.Repository;
 using System.Data.SqlClient;

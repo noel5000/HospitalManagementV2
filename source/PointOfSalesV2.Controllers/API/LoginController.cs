@@ -1,6 +1,8 @@
 ﻿
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using PointOfSalesV2.Repository.Helpers;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -28,7 +30,7 @@ namespace PointOfSalesV2.Controllers
         }
 
         [HttpPost]
-        [EnableCors("AllowAllOrigins")]
+        [AllowAnonymous]
        public async Task<IActionResult> Post([FromBody] Login model)
         {
             try
@@ -37,34 +39,41 @@ namespace PointOfSalesV2.Controllers
                 User user = await userRepository.Login(model, _appSettings.Value.TokenKey);
                 if (user == null)
                     return Ok(new { status = -1, message = "Invalid credentials" });
-                var claims = new[]
-           {
-                        new Claim(JwtRegisteredClaimNames.UniqueName, user.Email),
-                        new Claim(JwtRegisteredClaimNames.Sid,  user.UserId.ToString()),
-                        //new Claim("miValor", "Lo que yo quiera"),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                    };
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.Value.TokenKey));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
+                var issuer = _appSettings.Value.Domain;
+                var audience = _appSettings.Value.Domain;
                 var expiration = DateTime.UtcNow.AddHours(_appSettings.Value.TokenTimeHours);
-
-                JwtSecurityToken token = new JwtSecurityToken(
-                     issuer: _appSettings.Value.Domain,
-                     audience: _appSettings.Value.Domain,
-                     claims: claims,
-                     expires: expiration,
-                     signingCredentials: creds
-                     );
-                string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-                user.TokenKey = tokenString;
-                _cache.Set<User>(tokenString, user, DateTimeOffset.Now.AddHours(_appSettings.Value.TokenTimeHours));
+                var key = Encoding.ASCII.GetBytes
+                (_appSettings.Value.TokenKey);
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                new Claim("Id", user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("Permissions",JsonConvert.SerializeObject(user.Permissions)),
+                new Claim(JwtRegisteredClaimNames.Jti,
+                user.UserId.ToString().ToString())
+             }),
+                    Expires = expiration,
+                    Issuer = issuer,
+                    Audience = audience,
+                    SigningCredentials = new SigningCredentials
+                    (new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha512Signature)
+                };
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                var jwtToken = tokenHandler.WriteToken(token);
+                var stringToken = tokenHandler.WriteToken(token);
+                user.TokenKey = stringToken;
+                _cache.Set<User>(stringToken, user, DateTimeOffset.Now.AddHours(_appSettings.Value.TokenTimeHours));
                 return Ok(new
                 {
                     message = "OK",
                     status = 1,
-                    token = tokenString,
+                    token = stringToken,
                     expiration = expiration,
                     user = user,
                     languageId=user.LanguageCode

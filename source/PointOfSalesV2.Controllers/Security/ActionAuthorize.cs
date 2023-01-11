@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static PointOfSalesV2.Common.Enums;
 using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
 
 namespace PointOfSalesV2.Controllers
 {
@@ -49,36 +50,48 @@ namespace PointOfSalesV2.Controllers
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            bool isInvalid = false;
-            var currentToken = _httpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
-            var currentPath = _httpContextAccessor.HttpContext.Request.Path.ToString().Split("/").ToList();
-            int index = currentPath.IndexOf("api") + 1;
-            index = index == 0 ? currentPath.IndexOf("odata") + 1 : index;
-            string currentController = currentPath[index];
-            if (string.IsNullOrEmpty(currentToken) || string.IsNullOrEmpty(currentController) || !currentToken.Contains("Bearer"))
-                isInvalid = true;
-
-            if (!isInvalid)
+            try
             {
-                string token = currentToken.Split(" ").LastOrDefault();
-                User user = _cache.Get<User>(token);
-                if (user == null)
-                    context.Result = new ForbidResult();
-                else
+                bool isInvalid = false;
+                var currentToken = _httpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
+                var currentPath = _httpContextAccessor.HttpContext.Request.Path.ToString().Split("/").ToList();
+                int index = currentPath.IndexOf("api") + 1;
+                index = index == 0 ? currentPath.IndexOf("odata") + 1 : index;
+                string currentController = currentPath[index];
+                if (string.IsNullOrEmpty(currentToken) || string.IsNullOrEmpty(currentController)
+                    || !currentToken.Contains("Bearer") || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                    isInvalid = true;
+
+                if (!isInvalid)
                 {
-                    var operations =user.Permissions.Count()==0? new List<UserOperation>() {new UserOperation() }:
-                        (_operation!= Operations.NONE?
-                        user.Permissions.Where(r => (r.Controllers.ToLower().Split(",").ToList().Contains(currentController.ToLower()) || r.Controllers=="*") && (r.OperationId==(int)_operation || r.OperationId == (int)Operations.ALL)):
-                        user.Permissions.Where(r => (r.Controllers.ToLower().Split(",").ToList().Contains(currentController.ToLower()) || r.Controllers == "*") && (_operations.ToList().FindIndex(p=>p==(Operations)r.OperationId)>=0 || _operations.ToList().FindIndex(t=>t == Operations.ALL)>=0))
-                        );
+                    string token = currentToken.Split(" ").LastOrDefault();
+                    var userOperations = !_httpContextAccessor.HttpContext.User.Claims.Any(x => x.Type == "Permissions") ? null :
+                         JsonConvert.DeserializeObject<List<UserOperation>>(_httpContextAccessor.HttpContext.User.
+                         Claims.First(x => x.Type == "Permissions").Value);
+                    if (userOperations != null)
+                    {
+                        var operations = userOperations.Count() == 0 ? new List<UserOperation>() { new UserOperation() } :
+                            (_operation != Operations.NONE ?
+                            userOperations.Where(r => (r.Controllers.ToLower().Split(",").ToList().Contains(currentController.ToLower())
+                            || r.Controllers == "*") && (r.OperationId == (int)_operation || r.OperationId == (int)Operations.ALL)) :
+                            userOperations.Where(r => (r.Controllers.ToLower().Split(",").ToList().Contains(currentController.ToLower())
+                            || r.Controllers == "*") && (_operations.ToList().FindIndex(p => p == (Operations)r.OperationId) >= 0 ||
+                            _operations.ToList().FindIndex(t => t == Operations.ALL) >= 0)));
 
-                    if (user.Permissions.Count() > 0  && (operations==null || operations.Count()==0))
-                        context.Result = new ForbidResult();
+                        if (userOperations.Count() > 0 && (operations == null || operations.Count() == 0))
+                            context.Result = new ForbidResult();
+                    }
+
                 }
-
+                else
+                    context.Result = new ForbidResult();
             }
-            else
+            catch 
+            {
                 context.Result = new ForbidResult();
+            }
+
+          
         }
     }
 }

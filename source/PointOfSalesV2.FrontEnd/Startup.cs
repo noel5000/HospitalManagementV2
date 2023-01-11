@@ -37,8 +37,12 @@ namespace PointOfSalesV2.FrontEnd
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             var connections = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
             services.AddRouting();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
          options.TokenValidationParameters = new TokenValidationParameters
          {
              ValidateIssuer = true,
@@ -51,6 +55,7 @@ namespace PointOfSalesV2.FrontEnd
              Encoding.UTF8.GetBytes(appSettings.TokenKey)),
              ClockSkew = TimeSpan.Zero
          });
+            services.AddAuthorization();
             services.AddCors(o => o.AddPolicy("AllowAllOrigins", builder =>
             {
                 
@@ -153,7 +158,8 @@ namespace PointOfSalesV2.FrontEnd
             }
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseCors("AllowAllOrigins");
             app.UseEndpoints(endpoints =>
             {
