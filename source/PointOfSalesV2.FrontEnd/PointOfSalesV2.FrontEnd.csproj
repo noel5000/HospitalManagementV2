@@ -43,32 +43,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PointOfSalesV2.Common\PointOfSalesV2.Common.csproj" />
+    <ProjectReference Include="..\PointOfSalesV2.Controllers\PointOfSalesV2.Controllers.csproj" />
     <ProjectReference Include="..\PointOfSalesV2.Entities\PointOfSalesV2.Entities.csproj" />
     <ProjectReference Include="..\PointOfSalesV2.EntityFramework\PointOfSalesV2.EntityFramework.csproj" />
     <ProjectReference Include="..\PointOfSalesV2.Repository\PointOfSalesV2.Repository.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\Views\ExpensePayment.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Views\ExpensePrint.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Views\InvoiceLeadPrint.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Views\InvoicePayment.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Views\InvoicePrint.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
@@ -98,33 +76,5 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Views\AppointmentPrint.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Views\AppointmentPrint.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Views\CheckupConsultationsPrint.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Views\CheckupLabTestsPrint.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Views\CheckupMedicationsPrint.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Views\CheckupSpecializedImagesPrint.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Views\CheckupConsultationsPrint.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Views\CheckupLabTestsPrint.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Views\CheckupMedicationsPrint.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Views\CheckupSpecializedImagesPrint.cshtml" />
-  </ItemGroup>
 
 </Project>

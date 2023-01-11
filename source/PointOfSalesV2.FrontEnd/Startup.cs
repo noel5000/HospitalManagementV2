@@ -16,6 +16,7 @@ using PointOfSalesV2.Entities;
 using PointOfSalesV2.Entities.Model;
 using PointOfSalesV2.FrontEnd.Helpers;
 using PointOfSalesV2.Repository;
+using System;
 using System.IO;
 using System.Text;
 

@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Test", "Poin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Console", "PointOfSalesV2.Console\PointOfSalesV2.Console.csproj", "{FD8E1476-5627-441A-8308-422C0D237907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointOfSalesV2.Repository.Tests", "PointOfSalesV2.Repository.Tests\PointOfSalesV2.Repository.Tests.csproj", "{AB433BB3-1AC1-40D6-8E42-9977E8796405}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PointOfSalesV2.Repository.Tests", "PointOfSalesV2.Repository.Tests\PointOfSalesV2.Repository.Tests.csproj", "{AB433BB3-1AC1-40D6-8E42-9977E8796405}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PointOfSalesV2.Controllers", "PointOfSalesV2.Controllers\PointOfSalesV2.Controllers.csproj", "{27856AC9-91C4-4B0B-A0C7-F5A761EAFC41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB433BB3-1AC1-40D6-8E42-9977E8796405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27856AC9-91C4-4B0B-A0C7-F5A761EAFC41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27856AC9-91C4-4B0B-A0C7-F5A761EAFC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27856AC9-91C4-4B0B-A0C7-F5A761EAFC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27856AC9-91C4-4B0B-A0C7-F5A761EAFC41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

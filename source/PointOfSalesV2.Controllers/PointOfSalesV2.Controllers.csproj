@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Pages\Error.cshtml" />
+	  <None Remove="Pages\_ViewImports.cshtml" />
+	  <None Remove="Views\Views\AppointmentPrint.cshtml" />
+	  <None Remove="Views\Views\CheckupConsultationsPrint.cshtml" />
+	  <None Remove="Views\Views\CheckupLabTestsPrint.cshtml" />
+	  <None Remove="Views\Views\CheckupMedicationsPrint.cshtml" />
+	  <None Remove="Views\Views\CheckupSpecializedImagesPrint.cshtml" />
+	  <None Remove="Views\Views\ExpensePayment.cshtml" />
+	  <None Remove="Views\Views\ExpensePrint.cshtml" />
+	  <None Remove="Views\Views\InvoiceLeadPrint.cshtml" />
+	  <None Remove="Views\Views\InvoicePayment.cshtml" />
+	  <None Remove="Views\Views\InvoicePrint.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Pages\Error.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Pages\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\AppointmentPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\CheckupConsultationsPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\CheckupLabTestsPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\CheckupMedicationsPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\CheckupSpecializedImagesPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\ExpensePayment.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\ExpensePrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\InvoiceLeadPrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\InvoicePayment.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Views\Views\InvoicePrint.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Cors" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.2" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.7" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\PointOfSalesV2.Common\PointOfSalesV2.Common.csproj" />
+		<ProjectReference Include="..\PointOfSalesV2.Entities\PointOfSalesV2.Entities.csproj" />
+		<ProjectReference Include="..\PointOfSalesV2.EntityFramework\PointOfSalesV2.EntityFramework.csproj" />
+		<ProjectReference Include="..\PointOfSalesV2.Repository\PointOfSalesV2.Repository.csproj" />
+	</ItemGroup>
+
+</Project>
