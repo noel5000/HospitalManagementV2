@@ -51,7 +51,9 @@ namespace PointOfSalesV2.Repository
         public async Task<Invoice> GetByInvoiceNumber(string invoiceNumber)
         {
             var invoice = await _Context.Invoices.Include(x => x.Appointment).Include(x => x.Insurance).Include(x => x.InsurancePlan)
-                .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller).Include(x => x.InvoiceDetails).Include(x => x.TRNControl).Include(x => x.Appointment)
+                .Include(x => x.Currency).Include(x => x.BranchOffice).Include(x => x.Seller)
+                .Include(x => x.InvoiceDetails).ThenInclude(d=>d.Product).ThenInclude(p=>p.Taxes).ThenInclude(t=>t.Tax)
+                .Include(x => x.TRNControl).Include(x => x.Appointment)
                 .Include(x => x.Patient).AsNoTracking().FirstOrDefaultAsync(x => x.Active == true && x.InvoiceNumber.ToLower() == invoiceNumber.ToLower());
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             return invoice;
@@ -292,13 +294,13 @@ namespace PointOfSalesV2.Repository
                     });
                     entity.InvoiceDetails = details;
                     if (entity.InventoryModified)
-                        await InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
+                        InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory).Wait();
                     entity.InvoiceDetails = null;
                     invoice.BranchOffice = tempBranchOfiice;
 
                     var branchOffice = _Context.BranchOffices.AsNoTracking().FirstOrDefault(x => x.Id == entity.BranchOfficeId && x.Active == true);
                     entity.InvoiceDetails = details;
-                    await Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
+                     Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false).Wait();
                     await CreatePayment(entity);
                     var appointmentResult = await UpdateAppointmentStatus(entity);
                     if (appointmentResult.Status < 0)
@@ -473,13 +475,13 @@ namespace PointOfSalesV2.Repository
                 });
                 entity.InvoiceDetails = details;
                 if (entity.InventoryModified)
-                    await InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory);
+                    InvoiceDetailsHelper.UpdateInvoiceTaxes(entity, dataRepositoryFactory).Wait();
                 entity.InvoiceDetails = null;
                 invoice.BranchOffice = tempBranchOfiice;
 
                 var branchOffice = await _Context.BranchOffices.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.BranchOfficeId && x.Active == true);
                 entity.InvoiceDetails = details;
-                await Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
+                Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false).Wait();
                 await CreatePayment(entity);
                 var appointmentResult = await UpdateAppointmentStatus(entity);
                 if (appointmentResult.Status < 0)
@@ -611,14 +613,14 @@ namespace PointOfSalesV2.Repository
                 entity.InvoiceDetails = oldDetails;
                 var branchOffice = _Context.BranchOffices.Find(entity.BranchOfficeId);
                 _Context.Entry<BranchOffice>(branchOffice).State = EntityState.Detached;
-                Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false);
+                Helpers.InvoiceDetailsHelper.AddDetails(entity, branchOffice, dataRepositoryFactory, false).Wait();
             }
             else
             {
 
                 var branchOffice = _Context.BranchOffices.Find(entity.BranchOfficeId);
                 _Context.Entry<BranchOffice>(branchOffice).State = EntityState.Detached;
-                Helpers.InvoiceDetailsHelper.UpdateDetails(entity, branchOffice, dataRepositoryFactory);
+                Helpers.InvoiceDetailsHelper.UpdateDetails(entity, branchOffice, dataRepositoryFactory).Wait();
             }
         }
         public override async Task<Result<Invoice>> UpdateAsync(Invoice entity, bool getFromDb = true)
@@ -657,6 +659,7 @@ namespace PointOfSalesV2.Repository
                     dbEntity.DiscountRate = newDetails.Average(x => x.DiscountRate);
                     dbEntity.TaxesAmount = newDetails.Sum(x => x.TaxesAmount);
                     dbEntity.TotalAmount = newDetails.Sum(x => x.TotalAmount);
+                    dbEntity.PatientPaymentAmount = newDetails.Sum(x => x.PatientPaymentAmount);
                     dbEntity.InsuranceCoverageAmount = newDetails.Sum(x => x.InsuranceCoverageAmount);
                     dbEntity.OwedAmount = dbEntity.TotalAmount - entity.PaidAmount - dbEntity.InsuranceCoverageAmount;
                     dbEntity.InventoryModified = entity.InventoryModified;

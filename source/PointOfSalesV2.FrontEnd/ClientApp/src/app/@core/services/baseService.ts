@@ -194,7 +194,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
 
 
-    let promise = this._httpClient.post(`${this.baseUrl}/${url ? '/' + url : ''}`,
+    let promise = this._httpClient.post(`${this.baseUrl}/${url ? url : ''}`,
       data
       , {
         responseType: 'blob',
@@ -387,7 +387,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
           }
         });
         if (inQuery.endsWith(" or '") || inQuery.endsWith(" or ")) {
-          inQuery = query.substring(0, inQuery.length - 4);
+          inQuery = inQuery.substring(0, inQuery.length - 4);
         }
         query += `${inQuery}) and `
       }

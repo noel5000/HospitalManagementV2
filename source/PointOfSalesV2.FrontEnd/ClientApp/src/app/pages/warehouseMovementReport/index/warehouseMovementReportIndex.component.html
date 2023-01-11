@@ -14,7 +14,7 @@
 
   <nb-card-body>
 <div id="filter" class="dontPrint" >
-  <form [formGroup]="itemForm" (ngSubmit)="getData()">
+  <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="getData()">
 <div class="form-row">
   <div class="form-group col-md-6 col-xs-12">
     <label>{{'branchOffice_lbl' | translate}}</label>
@@ -42,14 +42,12 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'product_lbl' | translate}}</label>
-  <select class="form-control"
-  formControlName="productId"
-  required
-  >
-  <option *ngFor="let product of products"
-   [value]="product.id"
-   >{{product.name}}</option>
-  </select>
+  <custom-auto-complete [items]="products"
+                        [externalSearch]="true"
+                        [propertyToShow]="'name'"
+                        (onSelectedItem)="selectProduct($event)"
+                        (onFilter)="getProductsByName($event)">
+  </custom-auto-complete>
 </div>
 </div>
   </form>

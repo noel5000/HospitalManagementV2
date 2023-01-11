@@ -1198,7 +1198,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     entry.amount = entry.productPrice * rate;
     entry.productId = parseInt(entry.productId.toString());
     entry.unitId = entry.product.isService || !entry.unitId ? null : parseInt(entry.unitId.toString());
-    entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit : { id: 0, name: '' };
+    entry.unit = entry.unitId ? this.productUnits.find(x => x.unitId == entry.unitId).unit :null;
     entry.id = 0;
     entry.insuranceApprovalCode = '';
     entry.medicalSpecialityId = this.product.medicalSpecialityId;

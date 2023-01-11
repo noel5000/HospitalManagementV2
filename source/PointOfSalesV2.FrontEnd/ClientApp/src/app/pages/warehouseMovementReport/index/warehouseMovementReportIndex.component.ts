@@ -37,7 +37,8 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
     movements:any[]=[];
     branchOffices:BranchOffice[]=[];
     warehouses:Warehouse[]=[];
-    products:Product[]=[];
+  products: Product[] = [];
+  selectedProduct: Product = null;
 
 
     constructor(@Inject('BASE_URL') private baseUrl: string,
@@ -58,7 +59,43 @@ export class WarehouseMovementReportIndexComponent extends BaseComponent impleme
        warehouseId:[0],
        productId:[0]
         });
+  }
+
+  selectProduct(product: any) {
+    this.selectedProduct = product;
+    this.itemForm.patchValue({
+      productId: product ? product.id : 0
+    });
+    this.products = [];
+  }
+  async getProductsByName(name: string) {
+    if (name) {
+      const filter = [
+        {
+          property: "Name",
+          value: name,
+          type: ObjectTypes.String,
+          isTranslated: true
+        } as QueryFilter,
+        {
+          property: "IsService",
+          value: "false",
+          type: ObjectTypes.Boolean,
+          isTranslated: false
+        } as QueryFilter
+      ];
+      this.productsService.getAllFiltered(filter).subscribe(r => {
+        this.products = [];
+        this.products = this.products.concat(r['value']);
+      });
     }
+    else {
+      this.itemForm.patchValue({
+        productId: 0
+      });
+    }
+
+  }
 
  
 onChanges(){

@@ -52,7 +52,7 @@ namespace PointOfSalesV2.Repository.Helpers
                 });
                 InventoryHelper.InventoryToUpdate = null;
                 if (updateTaxes)
-                 await   UpdateInvoiceTaxes(Invoice, dataRepositoryFactory);
+                   UpdateInvoiceTaxes(Invoice, dataRepositoryFactory).Wait();
             }
            
 
@@ -62,7 +62,7 @@ namespace PointOfSalesV2.Repository.Helpers
         {
             var detailsRepo = dataRepositoryFactory.GetCustomDataRepositories<IInvoiceDetailRepository>();
             var productUnitsRepo = dataRepositoryFactory.GetCustomDataRepositories<IUnitProductEquivalenceRepository>();
-            var oldDetails =(await detailsRepo.GetByInvoiceId(invoice.Id)).ToList();
+            var oldDetails =detailsRepo.GetByInvoiceId(invoice.Id).Result.ToList();
             var newDetails = invoice.InvoiceDetails.Where(x => x.Id == 0).ToList();
             var modifiedDetails = new List<InvoiceDetail>();
             var untouchedDetails = new List<InvoiceDetail>();
@@ -105,7 +105,7 @@ namespace PointOfSalesV2.Repository.Helpers
 
             Invoice newinvoice = new Invoice(invoice);
             newinvoice.InvoiceDetails = newDetails;
-            AddDetails(newinvoice, branchOffice, dataRepositoryFactory, false);
+            AddDetails(newinvoice, branchOffice, dataRepositoryFactory, false).Wait();
 
             var detailUpdate = new Result<InvoiceDetail>(-1, -1);
             modifiedDetails.ForEach( d =>
@@ -179,7 +179,7 @@ namespace PointOfSalesV2.Repository.Helpers
                     throw new Exception(detailUpdate.Message ?? "error_msg");
             });
 
-          await  UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { invoice });
         }
 
@@ -266,7 +266,7 @@ namespace PointOfSalesV2.Repository.Helpers
             //INSERTAR DETALLES NUEVOS
             Invoice newinvoice = new Invoice(invoice);
             newinvoice.InvoiceDetails = newDetails;
-        await    AddQuoteDetails(newinvoice, dataRepositoryFactory);
+           AddQuoteDetails(newinvoice, dataRepositoryFactory).Wait();
 
 
             modifiedDetails.ForEach(d =>
@@ -277,7 +277,7 @@ namespace PointOfSalesV2.Repository.Helpers
 
             });
 
-          await  UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
             return new Result<Invoice>(0, 0, "ok_msg", new List<Invoice>() { invoice });
         }
 
@@ -297,7 +297,7 @@ namespace PointOfSalesV2.Repository.Helpers
 
             });
 
-         await   UpdateInvoiceTaxes(invoice, dataRepositoryFactory);
+           UpdateInvoiceTaxes(invoice, dataRepositoryFactory).Wait();
         }
 
 

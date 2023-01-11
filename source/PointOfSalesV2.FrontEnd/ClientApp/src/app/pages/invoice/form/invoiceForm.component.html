@@ -1,6 +1,6 @@
 
 
-        <form [formGroup]="itemForm" (ngSubmit)="save()">
+        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
 
             <div class="row">
               <nb-accordion style="width: 100%;" class="my-2">

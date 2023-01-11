@@ -1,7 +1,7 @@
 <div class="card m-3">
     <h5 class="card-header">{{'inventoryIn_menu' | translate}}</h5>
     <div class="card-body">
-        <form [formGroup]="itemForm" (ngSubmit)="save()">
+        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()"  (ngSubmit)="save()">
             <div class="form-row">
                
                 <div class="form-group col-md-6 col-xs-12">
@@ -50,19 +50,14 @@
                     </div>
                 </div>
                 <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'product_lbl' | translate}}</label>
-                    <select class="form-control"
-                    [ngClass]="{ 'is-invalid': form.productId.errors }"
-                    formControlName="productId"
-                    required
-                    >
-                    <option *ngFor="let product of products"
-                     [value]="product.id"
-                     >{{product.name}}</option>
-                    </select>
-                    <div *ngIf="form.productId.errors" class="invalid-feedback">
-                        <div *ngIf="form.productId.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
+                  <label>{{'product_lbl' | translate}}</label>
+                  <custom-auto-complete [items]="products"
+                                        [externalSearch]="true"
+                                        [propertyToShow]="'name'"
+                                        (onSelectedItem)="selectProduct($event)"
+                                        (onFilter)="getProductsByName($event)"
+                                        #productSearch></custom-auto-complete>
+                
                 </div>
 
                 <div class="form-group col-md-6 col-xs-12">

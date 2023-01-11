@@ -83,6 +83,9 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
     this._items = data;
     if (this.filterString)
       this.itemsToShow = this._items.filter(x => x[this.propertyToShow].toString().toLowerCase().includes(this.filterString.toLowerCase()));
+    else
+      this.itemsToShow = [];
+
     this.changes.detectChanges();
   }
 
@@ -122,7 +125,7 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
         debounceTime(100),
         distinctUntilChanged(),
         tap((text) => {
-          if (text['key'] != 'ArrowUp' && text['key'] != 'ArrowDown')
+          if (text['key'] != 'ArrowUp' && text['key'] != 'ArrowDown' && text['key'] != 'Enter')
           this.searchItem();
         })
       )
@@ -138,10 +141,8 @@ export class AutoCompleteComponent implements OnInit, AfterViewInit {
   }
 
   searchItem() {
-    if (!this.filterString || this.filterString.length < 2)
-      this.selectedItem = null;
-    if (this.selectedItem)
-      return;
+   
+      this.selectedItem = null;   
 
     if (!this.propertyToShow) {
       alert('"propertyToShow" input needs an initial value');

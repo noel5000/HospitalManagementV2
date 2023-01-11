@@ -352,7 +352,7 @@ namespace PointOfSalesV2.Repository
                 products[i].Cost = 0;
                 products[i].CurrencyId = checkup.Appointment.CurrencyId;
                 products[i].IsCompositeProduct = false;
-                // product.IsService = false;
+                products[i].IsService = new char[] {'M' }.Contains(products[i].Type);
                 // product.MedicalSpecialityId = null;
                 products[i].Taxes = taxes;
                 products[i].ProductUnits = products[i].IsService ? null : productUnit;
