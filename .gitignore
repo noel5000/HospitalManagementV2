@@ -127,3 +127,5 @@ source/PointOfSalesV2.Controllers/bin/Debug/net6.0/PointOfSalesV2.Controllers.dl
 source/PointOfSalesV2.Controllers/bin/Debug/net6.0/PointOfSalesV2.Controllers.deps.json
 source/PointOfSalesV2.Controllers/bin/Debug/net6.0/PointOfSalesV2.Common.pdb
 source/PointOfSalesV2.Controllers/bin/Debug/net6.0/PointOfSalesV2.Common.dll
+source/PointOfSalesV2.Controllers/obj/
+source/.vs/

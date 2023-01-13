@@ -492,13 +492,11 @@ public class MainDataContext : DbContext
 
         if (auditableEntitySet != null)
         {
-
             DateTime currentDate = DateTime.Now;
 
             // Audit set the audit information foreach record
             foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
             {
-
                 if (auditableEntity.State == EntityState.Added)
                 {
                     auditableEntity.Entity.Active = true;
@@ -509,20 +507,16 @@ public class MainDataContext : DbContext
                 auditableEntity.Entity.ModifiedDate = currentDate;
                 if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-
                     if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     {
-
                         if (auditableEntity.State == EntityState.Added)
                         {
                             auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                             auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
                         auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                         auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-
-
+                        auditableEntity.Entity.TenantId = _TenantService.Tenant;
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)
@@ -550,13 +544,11 @@ public class MainDataContext : DbContext
 
         if (auditableEntitySet != null)
         {
-
             DateTime currentDate = DateTime.Now;
 
             // Audit set the audit information foreach record
             foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
             {
-
                 if (auditableEntity.State == EntityState.Added)
                 {
                     auditableEntity.Entity.Active = true;
@@ -566,19 +558,16 @@ public class MainDataContext : DbContext
                 auditableEntity.Entity.ModifiedDate = currentDate;
                 if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-
                     if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     {
                         if (auditableEntity.State == EntityState.Added)
                         {
                             auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                             auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
+                        auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                         auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-
-
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)
@@ -601,43 +590,35 @@ public class MainDataContext : DbContext
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
 
-
         // Get the entries that are auditable
         var auditableEntitySet = ChangeTracker.Entries<ICommonData>();
 
         if (auditableEntitySet != null)
         {
-
             DateTime currentDate = DateTime.Now;
 
             // Audit set the audit information foreach record
             foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
             {
-
                 if (auditableEntity.State == EntityState.Added)
                 {
                     auditableEntity.Entity.Active = true;
-                    auditableEntity.Entity.TenantId = _TenantService.Tenant;
                     auditableEntity.Entity.CreatedDate = currentDate;
                 }
 
                 auditableEntity.Entity.ModifiedDate = currentDate;
                 if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-
                     if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     {
-
                         if (auditableEntity.State == EntityState.Added)
                         {
                             auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                             auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
+                        auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
                         auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
-
-
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)

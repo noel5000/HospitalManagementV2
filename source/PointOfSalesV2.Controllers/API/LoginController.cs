@@ -52,7 +52,8 @@ namespace PointOfSalesV2.Controllers
                     Subject = new ClaimsIdentity(new[]
                     {
                 new Claim("Id", user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
+                new Claim("TenantId", MD5.Encrypt( user.TenantId, _appSettings.Value.TokenKey)),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("Permissions",JsonConvert.SerializeObject(user.Permissions)),
                 new Claim(JwtRegisteredClaimNames.Jti,
@@ -76,7 +77,6 @@ namespace PointOfSalesV2.Controllers
                     status = 1,
                     token = stringToken,
                     expiration = expiration,
-                    xApiKey=MD5.Encrypt( user.TenantId, _appSettings.Value.TokenKey),
                     user = user,
                     languageId=user.LanguageCode
                 });

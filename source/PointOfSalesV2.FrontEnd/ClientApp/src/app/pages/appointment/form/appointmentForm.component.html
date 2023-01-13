@@ -1,6 +1,6 @@
 
   
-        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+        <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
                <fieldset>
                 <div class="form-group col-md-12 col-xs-12">
@@ -96,18 +96,12 @@
                <fieldset>
                  <div class="form-group col-md-12 col-xs-12">
                    <label>{{'patient_lbl' | translate}}</label>
-                   <input type="text"
-                          class="busqueda-cliente form-control"
-                          placeholder="..."
-                          aria-label="Number"
-                          matInput
-                          formControlName="customerSearch"
-                          [matAutocomplete]="auto">
-                   <mat-autocomplete #auto="matAutocomplete">
-                     <mat-option *ngFor="let customer of customers" style="background-color:white;" (click)="selectPatient(customer)" [value]="customer.name">
-                       {{customer.name + ' - '+customer.code}}
-                     </mat-option>
-                   </mat-autocomplete>
+                   <custom-auto-complete [items]="patients"
+                        [externalSearch]="true"
+                        [propertyToShow]="'name'"
+                        (onSelectedItem)="selectPatient($event)"
+                        (onFilter)="getPatients($event)"
+                        #patientSearch></custom-auto-complete>
 
                    <div *ngIf="form.patientId.errors" class="invalid-feedback">
                      <div *ngIf="form.patientId.errors.required">{{'required_lbl' | translate}}</div>

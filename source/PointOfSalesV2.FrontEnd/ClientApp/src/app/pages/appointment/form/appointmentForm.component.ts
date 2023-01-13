@@ -145,13 +145,9 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.searchCustomerSubject$.pipe(debounceTime(400)).subscribe(x => {
-      this.getPatients(x);
-    });
     this.onChanges();
     this.verifyUser();
     this.getEspecialities();
-
     this.getHospitals();
   }
 
@@ -333,19 +329,15 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
         } as QueryFilter);
 
       this.customerService.getAllFiltered(filter).subscribe(r => {
-        this.customers = [];
-        this.customers = this.customers.concat(r["value"].sort(this.dynamicSort('name')));
+        this.patients = [];
+        this.patients = this.patients.concat(r["value"].sort(this.dynamicSort('name')));
 
       });
     }
     else {
+      this.selectedPatient=null;
       this.itemForm.patchValue({
-        patientId: null,
-        insuranceId: null,
-        insurancePlanId: null,
-        insuranceName: '',
-        insurancePlanName: '',
-        insuranceCoverageAmount: 0,
+        patientId: null
 
       });
       this.refreshAmounts(false);
@@ -354,48 +346,23 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
 
 
   }
-
+selectedPatient:any=null;
   async selectPatient(patient: any) {
     if (patient) {
-      this.itemForm.patchValue({ patientId: patient.id })
-
+      this.selectedPatient=patient;
+      this.itemForm.patchValue({ patientId: patient.id });
     }
     else {
+      this.selectedPatient=null;
       this.itemForm.patchValue({
-        patientId: null,
-        insuranceId: null,
-        insurancePlanId: null,
-        insuranceName: '',
-        insurancePlanName: '',
-        insuranceCoverageAmount: 0,
-
+        patientId: null
       });
       this.refreshAmounts(false);
     }
-
-
     this.changes.detectChanges();
   }
 
   onChanges(): void {
-
-    this.itemForm.get('customerSearch').valueChanges.subscribe(val => {
-
-      if (val && val.length >= 3) {
-        this.searchCustomerSubject$.next(val);
-      }
-      else
-        this.itemForm.patchValue({
-          patientId: null,
-          insuranceId: null,
-          insurancePlanId: null,
-          insuranceName: '',
-          insurancePlanName: '',
-          insuranceCoverageAmount: 0,
-
-        });
-
-    });
 
     this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
 
@@ -474,7 +441,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
         grandPatientPaymentAmount: 0,
       });
       if (val && val > 0) {
-        const patient = this.customers.find(x => x.id == val);
+        const patient = this.selectedPatient;
         if (patient) {
           this.itemForm.patchValue({
             insuranceId: patient.insuranceId,

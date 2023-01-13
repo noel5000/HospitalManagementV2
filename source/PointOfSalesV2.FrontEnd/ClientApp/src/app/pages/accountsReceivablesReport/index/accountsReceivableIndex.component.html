@@ -14,7 +14,7 @@
 
   <nb-card-body>
 <div id="filter" class="dontPrint" >
-  <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="getData()">
+  <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="getData()">
 <div class="form-row">
   <div class="form-group col-md-6 col-xs-12">
     <label>{{'branchOffice_lbl' | translate}}</label>

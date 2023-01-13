@@ -58,7 +58,7 @@ namespace PointOfSalesV2.Controllers
                 int index = currentPath.IndexOf("api") + 1;
                 index = index == 0 ? currentPath.IndexOf("odata") + 1 : index;
                 string currentController = currentPath[index];
-                if (string.IsNullOrEmpty(currentToken) || string.IsNullOrEmpty(currentController)
+                if (string.IsNullOrEmpty(currentToken) || string.IsNullOrEmpty(currentController) ||!_httpContextAccessor.HttpContext.User.Claims.Any(x => x.Type == "TenantId")
                     || !currentToken.Contains("Bearer") || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     isInvalid = true;
 

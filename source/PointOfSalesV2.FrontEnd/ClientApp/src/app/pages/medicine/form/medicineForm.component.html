@@ -1,7 +1,7 @@
 <div class="card m-3">
     <h5 class="card-header">{{'medicine_lbl' | translate}}</h5>
     <div class="card-body">
-        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+        <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
                
                 <div class="form-group col-md-6 col-xs-12">

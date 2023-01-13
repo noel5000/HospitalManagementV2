@@ -48,6 +48,7 @@ import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { FormBuilder, Validators } from '@angular/forms';
 import { medicalSpecialityModule } from '../../medicalSpeciality/medicalSpeciality.module';
 import { AppConfig } from '../../../@core/services/app.config';
+import { Customer } from '../../../@core/data/customer';
 
 
 declare const $: any;
@@ -145,42 +146,49 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       this.changes.detectChanges();
     })
   }
-  async getPatients(name: string) {
-
-    let filter: QueryFilter[] = [];
-
+ 
+  async getPatientsByName(name: string) {
+    
     if (name) {
-      filter.push(
+      const filter = [
+        {
+          property: "Currency",
+          value: "Id,Name,Code,ExchangeRate",
+          type: ObjectTypes.ChildObject,
+          isTranslated: false
+        } as QueryFilter,
         {
           property: "Name",
-          value: name.toString(),
+          value: name,
           type: ObjectTypes.String,
           isTranslated: false
         } as QueryFilter
-      );
+      ]
       this.patientsService.getAllFiltered(filter).subscribe(r => {
-        this.patients = (r['value']);
-        this.changes.detectChanges();
-      })
+        this.patients = [];
+        this.patients = r['value'];
+      });
     }
     else {
-      this.patients = [];
-      this.itemForm.patchValue({ patientId: 0 });
-      this.changes.detectChanges();
+      this.itemForm.patchValue({
+        patientId: 0
+      });
+      this.getMonthAppointments();
+
     }
-
-
-
 
   }
+
+  selectedCustomer:any=null;
+
   async selectPatient(patient: any) {
-    if (patient) {
-      this.itemForm.patchValue({ patientId: patient.id })
-    }
+    if (patient) 
+      this.itemForm.patchValue({ patientId: patient.id });    
     else
-      this.itemForm.patchValue({ patientId: 0 })
+      this.itemForm.patchValue({ patientId: 0 });
 
     this.selectedAppointments = [];
+    this.patients=[];
     this.changes.detectChanges();
     this.getMonthAppointments();
   }
@@ -257,9 +265,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   save() { }
 
   ngOnInit(): void {
-    this.searchCustomerSubject$.pipe(debounceTime(400)).subscribe(x => {
-      this.getPatients(x);
-    });
+  
     this.verifyUser();
     this.getHospitals();
     this.getMonthAppointments();
@@ -291,20 +297,6 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       this.selectedAppointments = [];
       this.changes.detectChanges();
       this.getMonthAppointments();
-    });
-    this.itemForm.get('customerSearch').valueChanges.subscribe(val => {
-
-
-      if (val && val.length >= 3) {
-        this.searchCustomerSubject$.next(val);
-      }
-      else {
-        this.patients = [];
-        this.itemForm.patchValue({ patientId: 0 });
-        this.getMonthAppointments();
-        this.changes.detectChanges();
-      }
-
     });
 
 

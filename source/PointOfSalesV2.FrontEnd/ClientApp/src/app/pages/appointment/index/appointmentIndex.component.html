@@ -5,7 +5,7 @@
 
     </div>
     <br>
-    <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+    <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
    <div class="row" *ngIf="visible">
     <div class="form-group col-md-6 col-xs-12">
       <label>{{'hospital_lbl' | translate}}</label>
@@ -51,18 +51,12 @@
 
 <div class="form-group col-md-6 col-xs-12">
   <label>{{'patient_lbl' | translate}}</label>
-  <input type="text"
-         class="busqueda-cliente form-control"
-         placeholder="..."
-         aria-label="Number"
-         matInput
-         formControlName="customerSearch"
-         [matAutocomplete]="auto">
-  <mat-autocomplete #auto="matAutocomplete">
-    <mat-option *ngFor="let customer of patients" style="background-color:white;" (click)="selectPatient(customer)" [value]="customer.name">
-      {{customer.name + ' - '+customer.code}}
-    </mat-option>
-  </mat-autocomplete>
+  <custom-auto-complete [items]="patients"
+                        [externalSearch]="true"
+                        [propertyToShow]="'name'"
+                        (onSelectedItem)="selectPatient($event)"
+                        (onFilter)="getPatientsByName($event)"
+                        #patientSearch></custom-auto-complete>
 </div>
 
    </div>

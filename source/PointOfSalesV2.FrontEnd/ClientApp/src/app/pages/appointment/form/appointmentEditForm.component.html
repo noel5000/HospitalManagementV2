@@ -1,6 +1,6 @@
 
   
-        <form [formGroup]="itemForm"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+        <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
                <fieldset>
                 <div class="form-group col-md-12 col-xs-12">

@@ -51,7 +51,7 @@ namespace PointOfSalesV2.Controllers
                 int index = currentPath.IndexOf("api") + 1;
                 index = index == 0 ? currentPath.IndexOf("odata") + 1 : index;
                 string[] currentController = _section == AppSections.All ? new string[1] { currentPath[index] } : Enums.SectionsControllers[_section].Split(",");
-                if (string.IsNullOrEmpty(currentToken) || currentController.Length == 0 ||
+                if (string.IsNullOrEmpty(currentToken) || currentController.Length == 0 || !_httpContextAccessor.HttpContext.User.Claims.Any(x=>x.Type=="TenantId") ||
                     !currentToken.Contains("Bearer") || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     isInvalid = true;
 

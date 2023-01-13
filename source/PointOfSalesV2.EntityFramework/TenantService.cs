@@ -32,13 +32,22 @@ namespace PointOfSalesV2.EntityFramework
         public string GetTenant()
         {
             StringValues tenantId = new StringValues();
-            this._HttpContextAccessor?.HttpContext?.Request?.Headers?.TryGetValue("x-api-key", out tenantId);
-            if (string.IsNullOrEmpty(tenantId))
+
+            if (!_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                Log.Error("Api Key required");
+                Log.Error($"Authentication required. Remote: {_HttpContextAccessor.HttpContext.Connection.RemoteIpAddress}");
                 tenantId = "";
                 // throw new Exception("Api Key required");
             }
+            if (!_HttpContextAccessor.HttpContext.User.Claims.Any(x => x.Type == "TenantId"))
+            {
+                Log.Error($"TenantId required. Remote: {_HttpContextAccessor.HttpContext.Connection.RemoteIpAddress}");
+                tenantId = "";
+                // throw new Exception("Api Key required");
+            }
+            else
+                tenantId = _HttpContextAccessor.HttpContext.User.Claims.First(x => x.Type == "TenantId").Value;
+
             return MD5.Decrypt(tenantId.ToString().Split(" ").LastOrDefault() ?? tenantId, _appSettings.Value.TokenKey);
         }
 

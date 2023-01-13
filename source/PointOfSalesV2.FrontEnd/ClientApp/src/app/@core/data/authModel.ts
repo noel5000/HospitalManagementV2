@@ -5,7 +5,6 @@ export class AuthModel {
     token: string = '';
     expiration: Date;
   email: string = '';
-  xApiKey: string = '';
     password: string = '';
     user: User = null;
     languageId: string = '';
