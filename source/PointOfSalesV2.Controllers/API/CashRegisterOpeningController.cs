@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.CashRegisterOpenings)]
+    [ControllerAuthorize(Common.Enums.Controllers.CashRegisterOpening)]
     public class CashRegisterOpeningController : BaseController<CashRegisterOpening>
     {
         private readonly ICashRegisterOpeningRepository _repo;
-        public CashRegisterOpeningController(ICashRegisterOpeningRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.CashRegisterOpenings)
+        public CashRegisterOpeningController(ICashRegisterOpeningRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Enums.Controllers.CashRegisterOpening)
         {
             this._repo = repo;
         }

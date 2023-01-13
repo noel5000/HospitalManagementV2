@@ -4,11 +4,12 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.InventoryIncomes)]
+    [ControllerAuthorize(Common.Enums.Controllers.InventoryEntry)]
     public class InventoryEntryController : BaseController<InventoryEntry>
     {
         readonly IInventoryEntryRepository repo;
-        public InventoryEntryController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IInventoryEntryRepository repo) : base(appSettings, repositoryFactory,cache, repo, AppSections.InventoryIncomes)
+        public InventoryEntryController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IInventoryEntryRepository repo) :
+            base(appSettings, repositoryFactory,cache, repo, Enums.Controllers.InventoryEntry)
         {
             this.repo = repositoryFactory.GetCustomDataRepositories<IInventoryEntryRepository>();
         }

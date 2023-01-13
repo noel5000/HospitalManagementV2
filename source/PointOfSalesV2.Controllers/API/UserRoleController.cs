@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.UserRoles)]
+    [ControllerAuthorize(Common.Enums.Controllers.UserRole)]
     public class UserRoleController : BaseController<UserRole>
     {
         protected readonly ITenantService _tenantService;
-        public UserRoleController(IOptions<AppSettings> appSettings, ITenantService tenantService, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,AppSections.UserRoles)
+        public UserRoleController(IOptions<AppSettings> appSettings, ITenantService tenantService, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.UserRole)
         {
             _tenantService = tenantService;
         }

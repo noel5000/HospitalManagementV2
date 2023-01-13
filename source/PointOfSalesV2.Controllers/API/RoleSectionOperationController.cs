@@ -3,11 +3,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Roles)]
+    [ControllerAuthorize(Common.Enums.Controllers.Role)]
     public class RoleSectionOperationController : BaseController<RoleSectionOperation>
     {
         readonly IRoleSectionOperationRepository _repo;
-        public RoleSectionOperationController(IRoleSectionOperationRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.Roles)
+        public RoleSectionOperationController(IRoleSectionOperationRepository repo, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Enums.Controllers.Role)
         {
             this._repo = repo;
         }

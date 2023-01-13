@@ -4,11 +4,12 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.ExpensesPayments)]
+    [ControllerAuthorize(Common.Enums.Controllers.ExpensePayment)]
     public class ExpensesPaymentController : BaseController<ExpensesPayment>
     {
         readonly IExpensesPaymentRepository _repo;
-        public ExpensesPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, null, AppSections.ExpensesPayments)
+        public ExpensesPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : 
+            base(appSettings, repositoryFactory, cache, null, Enums.Controllers.ExpensePayment)
         {
             this._repo = _repositoryFactory.GetCustomDataRepositories<IExpensesPaymentRepository>();
         }

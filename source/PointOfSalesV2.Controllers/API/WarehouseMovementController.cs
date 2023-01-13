@@ -5,10 +5,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.WarehouseTransfers)]
+    [ControllerAuthorize(Common.Enums.Controllers.WarehouseTransfer)]
     public class WarehouseMovementController : BaseController<WarehouseMovement>
     {
-        public WarehouseMovementController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache,null, AppSections.WarehouseTransfers)
+        public WarehouseMovementController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache,null, Enums.Controllers.WarehouseTransfer)
         {
         }
 

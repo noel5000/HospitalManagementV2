@@ -4,7 +4,7 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.ResultState)]
+    [ControllerAuthorize(Common.Enums.Controllers.CompanyState)]
     public class CompanyStateController : ControllerBase
     {
         protected readonly IDataRepositoryFactory _repositoryFactory;

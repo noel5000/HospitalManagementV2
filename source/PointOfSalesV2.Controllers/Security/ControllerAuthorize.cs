@@ -16,7 +16,7 @@ namespace PointOfSalesV2.Controllers
 {
     public class ControllerAuthorize : TypeFilterAttribute
     {
-        public ControllerAuthorize(AppSections section) : base(typeof(ClaimRequirementFilter))
+        public ControllerAuthorize(Enums.Controllers section) : base(typeof(ClaimRequirementFilter))
         {
 
             Arguments = new object[] { section };
@@ -29,11 +29,11 @@ namespace PointOfSalesV2.Controllers
 
     public class ClaimRequirementFilter : IAuthorizationFilter
     {
-        readonly AppSections _section;
+        readonly Enums.Controllers _section;
         readonly IHttpContextAccessor _httpContextAccessor;
         readonly IMemoryCache _cache;
 
-        public ClaimRequirementFilter(AppSections section, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
+        public ClaimRequirementFilter(Enums.Controllers section, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
         {
             _section = section;
             _httpContextAccessor = httpContextAccessor;
@@ -50,7 +50,7 @@ namespace PointOfSalesV2.Controllers
                 var currentPath = _httpContextAccessor.HttpContext.Request.Path.ToString().Split("/").ToList();
                 int index = currentPath.IndexOf("api") + 1;
                 index = index == 0 ? currentPath.IndexOf("odata") + 1 : index;
-                string[] currentController = _section == AppSections.All ? new string[1] { currentPath[index] } : Enums.SectionsControllers[_section].Split(",");
+                string[] currentController = _section == Enums.Controllers.All ? new string[1] { currentPath[index] } : new string[] { _section.ToString()};
                 if (string.IsNullOrEmpty(currentToken) || currentController.Length == 0 || !_httpContextAccessor.HttpContext.User.Claims.Any(x=>x.Type=="TenantId") ||
                     !currentToken.Contains("Bearer") || !_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     isInvalid = true;

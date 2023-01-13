@@ -4,12 +4,12 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Insurance)]
+    [ControllerAuthorize(Common.Enums.Controllers.Insurance)]
     public class InsuranceController : BaseController<Insurance>
     {
         
         readonly ISequenceManagerRepository sequence;
-        public InsuranceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>(), AppSections.Insurance)
+        public InsuranceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>(), Enums.Controllers.Insurance)
         {
             this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
         }

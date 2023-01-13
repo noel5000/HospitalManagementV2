@@ -142,7 +142,7 @@ export enum AppSections {
   NotSpecified=0,
   Permissions = 1,
   CustomerRates = 2,
-  Products = 3,
+  Product = 3,
   CustomerPayments = 4,
   Currencies = 5,
   Taxes = 6,

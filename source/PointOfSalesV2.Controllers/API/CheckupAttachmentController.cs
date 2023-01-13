@@ -3,11 +3,11 @@
 namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
-    [ControllerAuthorize(Common.Enums.AppSections.PatientCheckup)]
+    [ControllerAuthorize(Common.Enums.Controllers.PatientCheckup)]
     [ApiController]
     public class CheckupAttachmentController : BaseController<CheckupAttachment>
     {
-        public CheckupAttachmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.PatientCheckup)
+        public CheckupAttachmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.PatientCheckup)
         {
         }
 

@@ -4,10 +4,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.CompanyPayments)]
+    [ControllerAuthorize(Common.Enums.Controllers.CompanyPayment)]
     public class CompanyPaymentController : BaseController<CompanyPayments>
     {
-        public CompanyPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, ICompanyPaymentRepository _repo, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,_repo, AppSections.CompanyPayments)
+        public CompanyPaymentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, ICompanyPaymentRepository _repo, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,_repo, Enums.Controllers.CompanyPayment)
         {
         }
 

@@ -3,11 +3,11 @@
 namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
-    [ControllerAuthorize(Common.Enums.AppSections.Products)]
+    [ControllerAuthorize(Common.Enums.Controllers.Product)]
     [ApiController]
     public class ProductCompositeController : BaseController<CompositeProduct>
     {
-        public ProductCompositeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Common.Enums.AppSections.Products)
+        public ProductCompositeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Common.Enums.Controllers.Product)
         {
         }
 

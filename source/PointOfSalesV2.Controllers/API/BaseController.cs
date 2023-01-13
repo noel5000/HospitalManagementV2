@@ -31,8 +31,8 @@ namespace PointOfSalesV2.Controllers
         protected readonly IBase<LanguageKey> languageKeysRepo;
         protected readonly IBase<ExceptionLog> exceptionsRepo;
         protected IEnumerable<LanguageKey> languageKeys;
-        protected readonly AppSections section;
-        public BaseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBase<T> customRepo = null, AppSections appSections = AppSections.NotSpecified)
+        protected readonly Enums.Controllers section;
+        public BaseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBase<T> customRepo = null, Enums.Controllers appSections = Enums.Controllers.NotSpecified)
         {
             this._cache = cache;
             _appSettings = appSettings;

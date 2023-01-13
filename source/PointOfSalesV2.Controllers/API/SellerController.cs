@@ -4,10 +4,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Sellers)]
+    [ControllerAuthorize(Common.Enums.Controllers.Seller)]
     public class SellerController : BaseController<Seller>
     {
-        public SellerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, ISellerRepository sellerRepo) : base(appSettings, repositoryFactory,cache,sellerRepo, AppSections.Sellers)
+        public SellerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, ISellerRepository sellerRepo) : base(appSettings, repositoryFactory,cache,sellerRepo, Enums.Controllers.Seller)
         {
         }
 

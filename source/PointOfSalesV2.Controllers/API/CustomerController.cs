@@ -4,12 +4,12 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Customers)]
+    [ControllerAuthorize(Common.Enums.Controllers.Customer)]
     public class CustomerController : BaseController<Customer>
     {
         readonly ISequenceManagerRepository sequence;
         public CustomerController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) 
-            : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<ICustomerRepository>(), AppSections.Customers)
+            : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<ICustomerRepository>(), Enums.Controllers.Customer)
         {
             this.sequence = this._repositoryFactory.GetCustomDataRepositories<ISequenceManagerRepository>();
         }

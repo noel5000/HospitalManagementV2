@@ -44,8 +44,6 @@ export class AccountsReceivableIndexComponent extends BaseComponent implements O
   customers: Customer[] = [];
   constructor(@Inject('BASE_URL') private baseUrl: string,
     private config: AppConfig,
-
-
     route: Router,
     private formBuilder: FormBuilder,
     langService: LanguageService,

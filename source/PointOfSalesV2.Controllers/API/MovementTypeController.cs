@@ -6,7 +6,7 @@ namespace PointOfSalesV2.Controllers
     [ApiController]
     public class MovementTypeController : BaseController<MovementType>
     {
-        public MovementTypeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Common.Enums.AppSections.NotSpecified)
+        public MovementTypeController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Common.Enums.Controllers.NotSpecified)
         {
         }
     }

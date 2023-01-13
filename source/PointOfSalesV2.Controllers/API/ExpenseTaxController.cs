@@ -4,10 +4,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Expenses)]
+    [ControllerAuthorize(Common.Enums.Controllers.Expense)]
     public class ExpenseTaxController : BaseController<ExpenseTax>
     {
-        public ExpenseTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.Expenses)
+        public ExpenseTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.Expense)
         {
         }
 

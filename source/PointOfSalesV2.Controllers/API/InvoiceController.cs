@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Invoices)]
+    [ControllerAuthorize(Common.Enums.Controllers.Invoice)]
     public class InvoiceController : BaseController<Invoice>
     {
         IInvoiceRepository _customRepo;
-        public InvoiceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>(), AppSections.Invoices)
+        public InvoiceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>(), Enums.Controllers.Invoice)
         {
             this._customRepo = repositoryFactory.GetCustomDataRepositories<IInvoiceRepository>();
         }

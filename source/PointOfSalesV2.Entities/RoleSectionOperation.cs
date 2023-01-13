@@ -9,15 +9,12 @@ namespace PointOfSalesV2.Entities
         [NotMapped]
         [IgnoreDataMember]
         public override string TranslationData { get; set; }
-       public long SectionOperationId { get; set; }
-        [ForeignKey("SectionOperationId")]
-      public virtual SectionOperation SectionOperation { get; set; }
+       public long OperationId { get; set; }
         [ForeignKey("RoleId")]
         public virtual Role Role { get; set; }
-        [NotMapped]
-        public Section Section { get; set; }
-        [NotMapped]
+        [ForeignKey("OperationId")]
         public Operation Operation { get; set; }
+        public string Section { get; set; }
 
     }
 }

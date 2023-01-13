@@ -20,17 +20,14 @@ namespace PointOfSalesV2.Repository
                user.Permissions =
                       await  (
                         from ur in _Context.UserRoles
-                        join rs in _Context.RoleSectionOperations on ur.RoleId equals rs.RoleId
-                        join so in _Context.SectionOperations.Include(x=>x.Section).Include(x=>x.Operation) on rs.SectionOperationId equals so.Id
+                        join rs in _Context.RoleSectionOperations.Include(x=>x.Section).Include(x=>x.Operation) on ur.RoleId equals rs.RoleId
                         
                         where ur.UserId == user.UserId && ur.Active == true
                         select new UserOperation()
                         {
-                           Controllers=so.Section.Controllers,
-                           OperationId=so.OperationId,
-                           OperationName=so.Operation.Name,
-                           SectionId=so.SectionId,
-                           SectionName=so.Section.Name
+                           Controllers=rs.Section,
+                           OperationId=rs.OperationId,
+                           OperationName=rs.Operation.Name
                         }
                         ).ToListAsync();
 

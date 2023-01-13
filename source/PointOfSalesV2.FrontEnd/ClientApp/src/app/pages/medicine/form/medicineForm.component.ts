@@ -74,7 +74,7 @@ export class MedicineFormComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.Products,modalService);
+            super(route, langService, AppSections.Product,modalService);
             this._route=router;
             this.dataToBackup="productUnits,productSupplierCosts,productTaxes,baseProducts,selectedBaseProduct";
         this.itemForm = this.formBuilder.group({

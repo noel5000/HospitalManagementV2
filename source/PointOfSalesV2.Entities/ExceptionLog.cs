@@ -13,11 +13,11 @@ namespace PointOfSalesV2.Entities
         [MaxLength(50)]
         public string SectionName { get; set; }
         [NotMapped]
-        public Enums.AppSections SectionEnum 
+        public Enums.Controllers SectionEnum 
         {
             get 
             {
-                return  (Enums.AppSections)this.Section;
+                return  (Enums.Controllers)this.Section;
             }
         }
 

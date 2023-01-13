@@ -42,7 +42,7 @@ export class MedicineIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Products,modalService);
+        super(route, langService, AppSections.Product,modalService);
         let scope = this;
        
         this.tableConfig=[

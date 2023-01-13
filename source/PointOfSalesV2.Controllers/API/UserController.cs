@@ -4,7 +4,7 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Users)]
+    [ControllerAuthorize(Common.Enums.Controllers.User)]
     public class UserController :ControllerBase
     {
         protected readonly IDataRepositoryFactory _repositoryFactory;

@@ -7,11 +7,11 @@ namespace PointOfSalesV2.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowAllOrigins")]
-    [ControllerAuthorize(Common.Enums.AppSections.WarehouseTransfers)]
+    [ControllerAuthorize(Common.Enums.Controllers.WarehouseTransfer)]
     public class WarehouseTransferController : BaseController<WarehouseTransfer>
     {
         readonly IWarehouseTransferRepository repo;
-        public WarehouseTransferController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IWarehouseTransferRepository repo) : base(appSettings, repositoryFactory,cache, repo, Common.Enums.AppSections.WarehouseTransfers)
+        public WarehouseTransferController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IWarehouseTransferRepository repo) : base(appSettings, repositoryFactory,cache, repo, Common.Enums.Controllers.WarehouseTransfer)
         {
             this.repo = repositoryFactory.GetCustomDataRepositories<IWarehouseTransferRepository>();
         }

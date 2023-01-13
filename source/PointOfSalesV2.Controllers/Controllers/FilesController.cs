@@ -87,8 +87,8 @@ namespace PointOfSalesV2.Controllers
                     Code = ex.HResult.ToString(),
                     Active = true,
                     Message = ex.Message.Length > 500 ? ex.Message.Substring(0, 499) : ex.Message,
-                    Section = (int)Enums.AppSections.PatientCheckup,
-                    SectionName = Enums.AppSections.PatientCheckup.ToString()
+                    Section = (int)Enums.Controllers.PatientCheckup,
+                    SectionName = Enums.Controllers.PatientCheckup.ToString()
                 });
                 return Ok(new { status = -1, files = new List<string>(), message = ex.Message });
             }

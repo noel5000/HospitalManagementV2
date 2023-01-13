@@ -14,10 +14,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Products)]
+    [ControllerAuthorize(Common.Enums.Controllers.Product)]
     public class UnitProductEquivalenceController : BaseController<UnitProductEquivalence>
     {
-        public UnitProductEquivalenceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,Common.Enums.AppSections.Products)
+        public UnitProductEquivalenceController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,Common.Enums.Controllers.Product)
         {
         }
     }

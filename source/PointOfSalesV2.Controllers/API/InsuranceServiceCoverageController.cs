@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.InsuranceCoverage)]
+    [ControllerAuthorize(Common.Enums.Controllers.InsuranceServiceCoverage)]
     public class InsuranceServiceCoverageController : BaseController<InsuranceServiceCoverage>
     {
         readonly IInsuranceRepository _customRepo;
-        public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, AppSections.InsurancePlan)
+        public InsuranceServiceCoverageController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache, null, Enums.Controllers.InsurancePlan)
         {
             _customRepo = repositoryFactory.GetCustomDataRepositories<IInsuranceRepository>();
         }

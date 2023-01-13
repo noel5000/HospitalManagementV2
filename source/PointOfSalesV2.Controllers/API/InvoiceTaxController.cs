@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Invoices)]
+    [ControllerAuthorize(Common.Enums.Controllers.Invoice)]
     public class InvoiceTaxController : BaseController<InvoiceTax>
     {
         readonly IBusinessStateRepository businessStateRepository;
-        public InvoiceTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBusinessStateRepository businessState) : base(appSettings, repositoryFactory,cache,null, AppSections.Invoices)
+        public InvoiceTaxController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache, IBusinessStateRepository businessState) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.Invoice)
         {
             this.businessStateRepository = businessState;
         }

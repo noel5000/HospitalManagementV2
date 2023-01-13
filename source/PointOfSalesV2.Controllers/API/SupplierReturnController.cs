@@ -6,11 +6,12 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.SuppliersReturns)]
+    [ControllerAuthorize(Common.Enums.Controllers.SupplierReturn)]
     public class SupplierReturnController : BaseController<SupplierReturn>
     {
         ISupplierReturnRepository repo;
-        public SupplierReturnController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>(), AppSections.SuppliersReturns)
+        public SupplierReturnController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) :
+            base(appSettings, repositoryFactory,cache,repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>(), Enums.Controllers.SupplierReturn)
         {
             this.repo = repositoryFactory.GetCustomDataRepositories<ISupplierReturnRepository>();
         }

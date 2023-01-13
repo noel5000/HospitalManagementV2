@@ -41,7 +41,7 @@ export const menuChildren = {
         AppSections.Zones,
         AppSections.Sellers,
         AppSections.Customers,
-        AppSections.Products,
+        AppSections.Product
     ],
     cashRegister: [
         AppSections.CashRegisters,

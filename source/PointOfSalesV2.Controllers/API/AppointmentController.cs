@@ -4,11 +4,11 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Appointment)]
+    [ControllerAuthorize(Common.Enums.Controllers.Appointment)]
     public class AppointmentController : BaseController<Appointment>
     {
         protected readonly IAppointmentRepository appointmentRepository;
-        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>(), AppSections.Appointment)
+        public AppointmentController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory, cache, repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>(), Enums.Controllers.Appointment)
         {
             this.appointmentRepository = this._repositoryFactory.GetCustomDataRepositories<IAppointmentRepository>();
         }

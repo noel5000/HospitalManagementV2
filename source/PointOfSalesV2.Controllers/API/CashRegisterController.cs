@@ -4,10 +4,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.CashRegisters)]
+    [ControllerAuthorize(Common.Enums.Controllers.CashRegister)]
     public class CashRegisterController : BaseController<CashRegister>
     {
-        public CashRegisterController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, AppSections.CashRegisters)
+        public CashRegisterController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.CashRegister)
         {
         }
 

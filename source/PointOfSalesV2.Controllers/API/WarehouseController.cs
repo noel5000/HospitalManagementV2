@@ -4,10 +4,10 @@ namespace PointOfSalesV2.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ControllerAuthorize(Common.Enums.AppSections.Warehouses)]
+    [ControllerAuthorize(Common.Enums.Controllers.Warehouse)]
     public class WarehouseController : BaseController<Warehouse>
     {
-        public WarehouseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,AppSections.Warehouses)
+        public WarehouseController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null, Enums.Controllers.Warehouse)
         {
         }
 
