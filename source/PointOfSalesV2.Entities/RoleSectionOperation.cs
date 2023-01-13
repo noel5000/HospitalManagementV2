@@ -13,7 +13,7 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("RoleId")]
         public virtual Role Role { get; set; }
         [ForeignKey("OperationId")]
-        public Operation Operation { get; set; }
+        public virtual Operation Operation { get; set; }
         public string Section { get; set; }
 
     }

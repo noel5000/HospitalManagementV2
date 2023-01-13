@@ -148,9 +148,17 @@ public class MainDataContext : DbContext
         .HasOne(p => p.PatientCheckup)
         .WithMany(d => d.CheckupPrescriptions).OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<UserRole>()
+        .HasOne(p => p.User)
+        .WithMany(d => d.Roles).OnDelete(DeleteBehavior.NoAction);
+
         modelBuilder.Entity<Insurance>()
         .HasMany(p => p.Affiliates)
         .WithOne(d => d.Insurance).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+        .HasMany(p => p.Roles)
+        .WithOne(d => d.User).OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<InsurancePlan>()
       .HasMany(p => p.SubscribedPatients)

@@ -37,9 +37,11 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
     _route:ActivatedRoute;
     roleSectionOperations:any[]=[];
     sections:any[]=[];
+    operations:any[]=[];
     sectionOperations:any[]=[];
     roleService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Role`);
     sectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/SectionOperation`);
+    operationsService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/operation`);
     sectionService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/Section`);
     roleSectionOperationService:BaseService<any,number>= new BaseService<any,number>(this.http,`${this.baseUrl}api/RoleSectionOperation`);
 
@@ -60,9 +62,9 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
             this._route=router;
         this.itemForm = this.formBuilder.group({
             id: [0],
-            sectionId: [0],
-            sectionOperationId:[0],
-            name:['',[Validators.required,Validators.minLength(3),Validators.maxLength(100)]]
+            sectionId: [''],
+            name: ['',[Validators.required,Validators.minLength(1)]],
+            operationId:[0]
         });
     }
     ngOnInit(): void {
@@ -77,10 +79,14 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
      this.onChanges();
         this.verifyUser();
         this.getAllSections();
+        this.getAllOperations();
 
     }
 async getAllSections(){
     this.sectionService.getAll().subscribe(r=>{this.sections=r.sort(this.dynamicSort('name'))});
+}
+async getAllOperations(){
+  this.operationsService.getAll().subscribe(r=>{this.operations=r.sort(this.dynamicSort('name'))});
 }
 
 async getRoleSectionOperations(id:number){
@@ -91,12 +97,6 @@ async getRoleSectionOperations(id:number){
                 value: id.toString(),
                 type: ObjectTypes.Number,
                 isTranslated:false
-            } as QueryFilter,
-            {
-                property: "Section",
-                value: "Id,Name",
-                type: ObjectTypes.ChildObject,
-                isTranslated: false
             } as QueryFilter,
             {
                 property: "Operation",
@@ -110,31 +110,7 @@ async getRoleSectionOperations(id:number){
     });
 }
 
-async getSectionOperations(id:number){
-    this.sectionOperationService.getAllFiltered(
-        [
-            {
-                property: 'SectionId',
-                value: id.toString(),
-                type: ObjectTypes.Number,
-                isTranslated:false
-            } as QueryFilter,
-            {
-                property: "Operation",
-                value: "Name,Id",
-                type: ObjectTypes.ChildObject,
-                isTranslated: false
-            } as QueryFilter
-        ]
-    ).subscribe(r=>{
-        let sectionOperations=[
-            {id:0,
-            operation:{
-                id:0,
-                name:''
-            }}];
-        this.sectionOperations = sectionOperations.concat(r['value'])});
-}
+
    async getItem(id:number, refreshForm=true){
     this.roleService.getById(id).subscribe(r=>{
         if(r.status>=0){
@@ -150,14 +126,7 @@ async getSectionOperations(id:number){
     })
     }
     onChanges(): void {
-        this.itemForm.valueChanges.subscribe(val => {
 
-          if(!isNaN(val.sectionId)){
-             let section =parseInt(val.sectionId);
-              if(section>0)
-              this.getSectionOperations(section);
-          }
-        });
       }
     get form() { return this.itemForm.controls; }
     save(){
@@ -194,7 +163,8 @@ async getSectionOperations(id:number){
         const toSave ={
             id:0,
             roleId:formVal.id,
-            sectionOperationId:formVal.sectionOperationId,
+            section:formVal.sectionId,
+            operationId:formVal.operationId,
             active:true
         };
 

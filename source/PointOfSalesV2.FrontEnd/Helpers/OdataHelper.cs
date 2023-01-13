@@ -85,7 +85,6 @@ namespace PointOfSalesV2.FrontEnd.Helpers
             builder.EntitySet<Operation>("Operation");
             builder.EntitySet<Role>("Role");
             builder.EntitySet<RoleSectionOperation>("RoleSectionOperation").HasOptionalBinding(x => x.Operation, "Operation");
-            builder.EntitySet<RoleSectionOperation>("RoleSectionOperation").HasOptionalBinding(x => x.Section, "Section");
             builder.EntitySet<User>("User");
             builder.EntitySet<UserClaims>("UserClaims");
             builder.EntitySet<UserRole>("UserRole");

@@ -14,22 +14,21 @@ namespace PointOfSalesV2.Repository
 
         public async Task<User> Login(Login login,string tokenKey)
         {
-            var user = await _Context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Active == true && u.Email == login.Email && u.Password == MD5.Encrypt(login.Password, tokenKey));
+            var user = await _Context.Users
+                .Include(x=>x.Roles).ThenInclude(ur=>ur.Role).ThenInclude(r=>r.SectionOperations).ThenInclude(so=>so.Operation)
+                .AsNoTracking().FirstOrDefaultAsync(u => u.Active == true && u.Email == login.Email && u.Password == MD5.Encrypt(login.Password, tokenKey));
             if (user != null) 
             {
-               user.Permissions =
-                      await  (
-                        from ur in _Context.UserRoles
-                        join rs in _Context.RoleSectionOperations.Include(x=>x.Section).Include(x=>x.Operation) on ur.RoleId equals rs.RoleId
+                user.Roles = user.Roles.Where(x => x.Active).ToList();
+               user.Permissions =user.Roles.Select(e=>e.Role).SelectMany(t=>t.SectionOperations).Select(x=>
                         
-                        where ur.UserId == user.UserId && ur.Active == true
-                        select new UserOperation()
+                         new UserOperation()
                         {
-                           Controllers=rs.Section,
-                           OperationId=rs.OperationId,
-                           OperationName=rs.Operation.Name
+                           Controllers=x.Section,
+                           OperationId=x.OperationId,
+                           OperationName=x.Operation.Name
                         }
-                        ).ToListAsync();
+                        ).ToList();
 
             }
          await   _Context.DisposeAsync();

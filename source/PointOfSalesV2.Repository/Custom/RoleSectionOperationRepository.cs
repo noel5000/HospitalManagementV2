@@ -12,7 +12,7 @@ namespace PointOfSalesV2.Repository
         {
             return await Task.Factory.StartNew<IQueryable<RoleSectionOperation>>(() =>{
                 return (
-                    from rso in _Context.RoleSectionOperations.Include(x => x.Role).Include(x=>x.Section)
+                    from rso in _Context.RoleSectionOperations.Include(x => x.Role).Include(x=>x.Operation)
                     where rso.Active == true
                     select new RoleSectionOperation()
                     {
@@ -25,6 +25,9 @@ namespace PointOfSalesV2.Repository
                         ModifiedByName = rso.ModifiedByName,
                         ModifiedDate = rso.ModifiedDate,
                         Role = rso.Role,
+                        Operation = rso.Operation,
+                        OperationId = rso.OperationId,
+                        Section=rso.Section,
                         RoleId = rso.RoleId,
                         TranslationData = rso.TranslationData,
                     }

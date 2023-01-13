@@ -38,7 +38,7 @@ namespace PointOfSalesV2.EntityFramework
                     {
                         Id = (long)section,
                         Name = section.ToString(),
-                        Controllers=section.ToString(),
+                        Controllers = section.ToString(),
                         Active = true,
                         CreatedBy = new Guid("8A2FDD4A-E702-482C-F181-08D7015E3521"),
                         CreatedDate = new DateTime(2000, 1, 1),
@@ -48,8 +48,8 @@ namespace PointOfSalesV2.EntityFramework
                         $"{(char)34}EN{(char)34}:[{(char)123}{(char)34}PropertyName{(char)34}:{(char)34}Name{(char)34},{(char)34}Value{(char)34}:{(char)34}{section.ToString()}{(char)34}{(char)125}]{(char)125}"
                     });
             }
-            var roles = JsonConvert.DeserializeObject<List<Role>>("");
-           var roleSectionOperations = JsonConvert.DeserializeObject<List<RoleSectionOperation>>("[]");
+            
+            //    var roleSectionOperations = JsonConvert.DeserializeObject<List<RoleSectionOperation>>("[]");
 
             var paymentTypes = new List<PaymentType>();
 
@@ -168,10 +168,11 @@ namespace PointOfSalesV2.EntityFramework
             modelBuilder.Entity<MovementType>().HasData(movementTypes);
             modelBuilder.Entity<Section>().HasData(sections);
             modelBuilder.Entity<Operation>().HasData(operations);
-            modelBuilder.Entity<Role>().HasData(roles);
-            modelBuilder.Entity<RoleSectionOperation>().HasData(roleSectionOperations);
+            //  modelBuilder.Entity<Role>().HasData(roles);
+            //   modelBuilder.Entity<RoleSectionOperation>().HasData(roleSectionOperations);
 
         }
+
 
 
     }

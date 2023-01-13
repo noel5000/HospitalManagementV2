@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    partial class MainDataContextModelSnapshot : ModelSnapshot
+    [Migration("20230113132322_permissions_changes_1")]
+    partial class permissions_changes_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -6204,8 +6206,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserRoles");
                 });
 
@@ -7792,15 +7792,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PointOfSalesV2.Entities.User", "User")
-                        .WithMany("Roles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Role");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Warehouse", b =>
@@ -8040,8 +8032,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Navigation("Claims");
 
                     b.Navigation("Permissions");
-
-                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("PointOfSalesV2.Entities.Warehouse", b =>

@@ -14,6 +14,9 @@ namespace PointOfSalesV2.Entities
         [ForeignKey("RoleId")]
         public virtual Role Role { get; set; }
 
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
+
 
 
     }

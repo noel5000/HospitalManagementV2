@@ -3,7 +3,7 @@
     <div class="card-body">
         <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
             <div class="form-row">
-               
+
                 <div class="form-group col-md-6 col-xs-12">
                     <label>{{'name_lbl' | translate}}</label>
                     <input type="text" formControlName="name" maxlength="50" minlength="3" class="form-control" required [ngClass]="{ 'is-invalid': form.name.errors }" />
@@ -11,10 +11,10 @@
                         <div *ngIf="form.name.errors.required">{{'required_lbl' | translate}}</div>
                     </div>
                 </div>
-               
+
             </div>
-          
-           
+
+
             <div *ngIf="id>0"  class="scrollTableMobile">
                 <h5 class="row mx-2">{{'permissions_lbl' | translate}}</h5>
                 <div class="row">
@@ -24,26 +24,23 @@
                         [ngClass]="{ 'is-invalid': form.sectionId.errors }"
                         formControlName="sectionId"
                         >
-                        <option *ngFor="let section of sections"
-                         [value]="section.id"
-                         >{{section.name}}</option>
+                        <option *ngFor="let sec of sections"
+                         [value]="sec.name"
+                         >{{sec.name}}</option>
                         </select>
-                        <div *ngIf="form.sectionId.errors" class="invalid-feedback">
-                            <div *ngIf="form.sectionId.errors.required">{{'required_lbl' | translate}}</div>
-                        </div>
-                    </div>  
+                    </div>
                     <div class="form-group col-md-3 col-xs-12">
                         <label>{{'operations_lbl' | translate}}</label>
                         <select class="form-control"
-                        [ngClass]="{ 'is-invalid': form.sectionOperationId.errors }"
-                        formControlName="sectionOperationId"
+                        [ngClass]="{ 'is-invalid': form.operationId.errors }"
+                        formControlName="operationId"
                         >
-                        <option *ngFor="let operation of sectionOperations"
+                        <option *ngFor="let operation of operations"
                          [value]="operation.id"
-                         >{{operation.operation.name}}</option>
+                         >{{operation.name}}</option>
                         </select>
-                        <div *ngIf="form.sectionOperationId.errors" class="invalid-feedback">
-                            <div *ngIf="form.sectionOperationId.errors.required">{{'required_lbl' | translate}}</div>
+                        <div *ngIf="form.operationId.errors" class="invalid-feedback">
+                            <div *ngIf="form.operationId.errors.required">{{'required_lbl' | translate}}</div>
                         </div>
                     </div>
                       <div class="col-md-3 col-xs-12">
@@ -60,7 +57,7 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let roleSectionOperation of roleSectionOperations">
-                            <td>{{roleSectionOperation.section.name}}</td>
+                            <td>{{roleSectionOperation.section}}</td>
                             <td>{{roleSectionOperation.operation.name}}</td>
                             <td><i class="btn btn-danger" (click)="deleteSectionOperation(roleSectionOperation)">{{'delete_btn' | translate}}</i></td>
                         </tr>
