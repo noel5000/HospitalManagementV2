@@ -44,6 +44,9 @@ namespace PointOfSalesV2.Repository
         public override async Task< Result<User>> AddAsync(User entity)
         {
             entity.Password = MD5.Encrypt(entity.Password, _appSettings.Value.TokenKey);
+            if (_Context.Users.Any(x => x.Email.ToLower() == entity.Email.ToLower()))
+                return new Result<User>(-1, -1, "alreadyExists_error");
+
             return await base.AddAsync(entity);
         }
 

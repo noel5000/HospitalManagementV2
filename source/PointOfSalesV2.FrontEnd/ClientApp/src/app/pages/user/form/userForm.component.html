@@ -38,41 +38,33 @@
                 </div>
             </div>
             <div class="form-row">
-               
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'email_lbl' | translate}}</label>
-                    <input type="email" formControlName="email" maxlength="150" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.email.errors }" />
-                    <div *ngIf="form.email.errors" class="invalid-feedback">
-                        <div *ngIf="form.email.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
+
+              <div class="form-group col-md-6 col-xs-12">
+                <label>{{'email_lbl' | translate}}</label>
+                <input type="email" formControlName="email" maxlength="150" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.email.errors }" />
+                <div *ngIf="form.email.errors" class="invalid-feedback">
+                  <div *ngIf="form.email.errors.required">{{'required_lbl' | translate}}</div>
                 </div>
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'address_lbl' | translate}}</label>
-                    <textarea formControlName="address" maxlength="200" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.address.errors }">
+              </div>
+              <div class="form-group col-md-6 col-xs-12">
+                <label>{{'password_lbl' | translate}}</label>
+                <input type="password" formControlName="password" maxlength="30" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.password.errors }" />
+                <div *ngIf="form.password.errors" class="invalid-feedback">
+                  <div *ngIf="form.password.errors.required">{{'required_lbl' | translate}}</div>
+                </div>
+              </div>
+              <div class="form-group col-md-12 col-xs-12">
+                <label>{{'address_lbl' | translate}}</label>
+                <textarea formControlName="address" maxlength="200" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.address.errors }">
 
                     </textarea>
-                    <div *ngIf="form.address.errors" class="invalid-feedback">
-                        <div *ngIf="form.address.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
+                <div *ngIf="form.address.errors" class="invalid-feedback">
+                  <div *ngIf="form.address.errors.required">{{'required_lbl' | translate}}</div>
                 </div>
+              </div>
             </div>
 
             <div class="form-row">
-               
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'userName_lbl' | translate}}</label>
-                    <input type="text" formControlName="userName" maxlength="30" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.userName.errors }" />
-                    <div *ngIf="form.userName.errors" class="invalid-feedback">
-                        <div *ngIf="form.userName.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
-                <div class="form-group col-md-6 col-xs-12">
-                    <label>{{'password_lbl' | translate}}</label>
-                    <input type="password" formControlName="password" maxlength="30" minlength="3" class="form-control" [ngClass]="{ 'is-invalid': form.password.errors }" />
-                    <div *ngIf="form.password.errors" class="invalid-feedback">
-                        <div *ngIf="form.password.errors.required">{{'required_lbl' | translate}}</div>
-                    </div>
-                </div>
                 <div class="form-check col-md-2 offset-md-1 col-xs-12 my-4">
                     <input class="form-check-input" type="checkbox"  formControlName="active"   >
                     <label class="form-check-label" for="defaultCheck2">

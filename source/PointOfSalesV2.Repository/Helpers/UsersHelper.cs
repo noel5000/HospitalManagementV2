@@ -20,6 +20,7 @@ namespace PointOfSalesV2.Repository.Helpers
                     CreatedDate = DateTime.Now,
                     ContentType="",
                     CreatedByName="admin",
+                    TenantId="BaseTenant",
                     Email="admin@admin.com",
                     Gender='M',
                     LanguageCode = "ES",

@@ -10,8 +10,10 @@ namespace PointOfSalesV2.Controllers
         protected readonly IDataRepositoryFactory _repositoryFactory;
         protected readonly IOptions<AppSettings> _appSettings;
         protected readonly IUserRepository _baseRepo;
-        public UserController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory)
+        protected readonly ITenantService _tenantService;
+        public UserController(IOptions<AppSettings> appSettings, ITenantService tenantService, IDataRepositoryFactory repositoryFactory)
         {
+            _tenantService = tenantService;
             _appSettings = appSettings;
             _repositoryFactory = repositoryFactory;
             this._baseRepo = _repositoryFactory.GetCustomDataRepositories<IUserRepository>();
@@ -27,7 +29,7 @@ namespace PointOfSalesV2.Controllers
         {
             try
             {
-                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.Active==true && y.UserId.ToString()!=new Guid().ToString()));
+                var data =await _baseRepo.GetAllAsync<User>(x => x.Where(y =>y.Active==true && y.TenantId==_tenantService.Tenant && y.UserId.ToString()!=new Guid().ToString()));
                 return Ok(data);
             }
 
@@ -45,8 +47,9 @@ namespace PointOfSalesV2.Controllers
         {
             try
             {
-                var data = await _baseRepo.GetAsync(new Guid(id));
-                return Ok(data);
+                var data = await _baseRepo.GetAsync(x=>x,y=>y.Active && y.TenantId==_tenantService.Tenant && y.UserId== new Guid(id));
+                var result = data == null ? new Result<User>(-1, -1, "notFound_msg") : new Result<User>(0, 0, "ok_msg", new List<User>() { data });
+                return Ok(result);
             }
 
             catch (Exception ex)
@@ -112,7 +115,7 @@ namespace PointOfSalesV2.Controllers
         {
             try
             {
-                var model = (await _baseRepo.GetAsync(new Guid(id))).Data.FirstOrDefault() as ICommonData;
+                var model = await _baseRepo.GetAsync(x => x, y => y.Active && y.TenantId == _tenantService.Tenant && y.UserId == new Guid(id)) as ICommonData;
                 if (model != null)
                 {
                     model.Active = false;

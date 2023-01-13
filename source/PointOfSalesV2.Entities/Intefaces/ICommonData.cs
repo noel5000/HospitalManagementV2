@@ -1,7 +1,7 @@
 
 namespace PointOfSalesV2.Entities
 {
-    public interface ICommonData:IDeletedEntity,IAuditableEntity, IEntityTranslate
+    public interface ICommonData:IDeletedEntity,IAuditableEntity, IEntityTranslate,ITenantEntity
     {
 
        
@@ -12,6 +12,12 @@ namespace PointOfSalesV2.Entities
     public interface IDeletedEntity
     {
         bool Active { get; set; }
+
+    }
+
+    public interface ITenantEntity
+    {
+        string TenantId { get; set; }
 
     }
 

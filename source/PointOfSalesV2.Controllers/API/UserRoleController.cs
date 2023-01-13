@@ -7,8 +7,10 @@ namespace PointOfSalesV2.Controllers
     [ControllerAuthorize(Common.Enums.AppSections.UserRoles)]
     public class UserRoleController : BaseController<UserRole>
     {
-        public UserRoleController(IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,AppSections.UserRoles)
+        protected readonly ITenantService _tenantService;
+        public UserRoleController(IOptions<AppSettings> appSettings, ITenantService tenantService, IDataRepositoryFactory repositoryFactory, IMemoryCache cache) : base(appSettings, repositoryFactory,cache,null,AppSections.UserRoles)
         {
+            _tenantService = tenantService;
         }
 
         [HttpGet]
@@ -20,7 +22,7 @@ namespace PointOfSalesV2.Controllers
         {
             try
             {
-                var data = await _baseRepo.GetAllAsync<UserRole>(x => x.Include(r=>r.Role).Where(y => y.Active == true));
+                var data = await _baseRepo.GetAllAsync<UserRole>(x => x.Include(r=>r.Role).Where(y => y.Active == true),y=>y.Active && y.TenantId==_tenantService.Tenant);
                 return Ok(data);
             }
 

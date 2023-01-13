@@ -26,6 +26,7 @@
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
 	  <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+	  <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 	  <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
@@ -38,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\dist\" />
+    <Folder Include="logs\" />
     <Folder Include="wwwroot\Files\" />
   </ItemGroup>
 

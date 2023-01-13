@@ -12,10 +12,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using PointOfSalesV2.Common;
 using PointOfSalesV2.Entities;
 using PointOfSalesV2.Entities.Model;
+using PointOfSalesV2.EntityFramework;
 using PointOfSalesV2.FrontEnd.Helpers;
 using PointOfSalesV2.Repository;
+using Serilog;
 using System;
 using System.IO;
 using System.Text;
@@ -27,6 +30,10 @@ namespace PointOfSalesV2.FrontEnd
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            using var log = new LoggerConfiguration()
+    .WriteTo.File("logs/AlegraPOS.txt")
+    .CreateLogger();
+            Log.Logger = log;
         }
 
         public IConfiguration Configuration { get; }
@@ -99,6 +106,7 @@ namespace PointOfSalesV2.FrontEnd
             services.AddScoped<ILanguageKeyRepository, LanguageKeyRepository>();
             services.AddScoped<IBusinessStateRepository, BusinessStateRepository>();
             services.AddScoped<ICompositeProductRepository, CompositeProductRepository>();
+            services.AddScoped<ITenantService, TenantService>();
             services.AddScoped<ICreditNoteRepository, CreditNoteRepository>();
             services.AddScoped<ICustomerBalanceRepository, CustomerBalanceRepository>();
             services.AddScoped<ICustomerReturnRepository, CustomerReturnRepository>();

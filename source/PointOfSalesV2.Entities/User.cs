@@ -3,9 +3,9 @@ using System.Runtime.Serialization;
 
 namespace PointOfSalesV2.Entities
 {
-    public class User : ICommonData
+    public class User : ICommonData, ITenantEntity
     {
-        
+
         [Key]
         public Guid UserId { get; set; }
 
@@ -109,11 +109,10 @@ namespace PointOfSalesV2.Entities
         public virtual IEnumerable<CashRegisterOpening> CashRegisterOpeningClosings { get; set; }
 
         public virtual List<UserOperation> Permissions { get; set; }
-       [NotMapped]
-        public long Id { get ; set ; }
+        [NotMapped]
+        public long Id { get; set; }
         [NotMapped]
         public string TranslationData { get; set; }
-
-
-        }
+        public string TenantId { get; set; }
+    }
 }

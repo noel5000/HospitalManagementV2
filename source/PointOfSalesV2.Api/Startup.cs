@@ -25,6 +25,9 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Serialization;
 using System.Text.Json;
 using Microsoft.AspNetCore.OData;
+using PointOfSalesV2.Common;
+using PointOfSalesV2.EntityFramework;
+using Serilog;
 
 namespace PointOfSalesV2.Api
 {
@@ -33,6 +36,10 @@ namespace PointOfSalesV2.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            using var log = new LoggerConfiguration()
+   .WriteTo.File("logs/AlegraPOS.txt")
+   .CreateLogger();
+            Log.Logger = log;
         }
 
         public IConfiguration Configuration { get; }
@@ -88,6 +95,7 @@ namespace PointOfSalesV2.Api
             services.AddScoped<IInventoryEntryRepository, InventoryEntryRepository>();
             services.AddScoped<IExpenseTaxRepository, ExpenseTaxRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
+            services.AddScoped<ITenantService, TenantService>();
             services.AddScoped<IInvoiceDetailRepository, InvoiceDetailRepository>();
             services.AddScoped<IInvoiceRepository, InvoiceRepository>();
             services.AddScoped<IInvoiceTaxRepository, InvoiceTaxRepository>();

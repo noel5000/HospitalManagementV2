@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace PointOfSalesV2.EntityFramework.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20220123165742_initial")]
-    partial class initial
+    [Migration("20230112220018_TenantId")]
+    partial class TenantId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -87,6 +87,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -170,6 +174,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -238,6 +246,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -283,6 +295,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -339,6 +355,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -413,6 +433,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalClosureAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -482,6 +506,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -531,6 +559,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<long>("PatientChekupId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -600,6 +632,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<string>("Results")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -702,6 +738,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -759,6 +799,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalCost")
                         .HasColumnType("decimal(18,2)");
@@ -837,6 +881,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
@@ -887,6 +935,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("RateUpdateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -1012,6 +1064,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -1078,6 +1134,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("OwedAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -1172,6 +1232,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -1252,6 +1316,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -1334,6 +1402,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -1401,6 +1473,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<string>("SectionName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -1499,6 +1575,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -1606,6 +1686,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -1683,6 +1767,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("TaxId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
@@ -1732,6 +1820,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -1804,6 +1896,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -1847,6 +1943,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TenantId")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -1909,6 +2009,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -1964,6 +2068,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -2062,6 +2170,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("TaxAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -2232,6 +2344,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -2362,6 +2478,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -2511,6 +2631,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -2598,6 +2722,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("TaxId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CurrencyId");
@@ -2641,6 +2769,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -2661,6 +2793,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Id = 1L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"INGLES\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ENGLISH\"}]}"
                         },
                         new
@@ -2671,6 +2804,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Id = 2L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ESPANOL\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SPANISH\"}]}"
                         });
                 });
@@ -2710,6 +2844,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -11558,6 +11696,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -11611,6 +11753,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -11656,6 +11802,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<string>("Sequence")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<byte>("WeekNumber")
                         .HasColumnType("tinyint");
@@ -11730,6 +11880,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxesAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -11784,6 +11938,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -11800,6 +11958,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"IN\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"IN\"}]}"
                         },
                         new
@@ -11810,6 +11969,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"OUT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"OUT\"}]}"
                         });
                 });
@@ -11851,6 +12011,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("Order")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.ToTable("OpeningsAmounts");
@@ -11887,6 +12051,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -11902,6 +12070,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"READ\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"READ\"}]}"
                         },
                         new
@@ -11911,6 +12080,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ADD\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ADD\"}]}"
                         },
                         new
@@ -11920,6 +12090,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"UPDATE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"UPDATE\"}]}"
                         },
                         new
@@ -11929,6 +12100,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DELETE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DELETE\"}]}"
                         },
                         new
@@ -11938,6 +12110,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"READALL\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"READALL\"}]}"
                         },
                         new
@@ -11947,6 +12120,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"EXPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"EXPORT\"}]}"
                         },
                         new
@@ -11956,6 +12130,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ALL\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ALL\"}]}"
                         },
                         new
@@ -11965,6 +12140,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"NONE\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"NONE\"}]}"
                         },
                         new
@@ -11974,6 +12150,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTSTATEREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTSTATEREPORT\"}]}"
                         },
                         new
@@ -11983,6 +12160,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"RECEIPTSREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"RECEIPTSREPORT\"}]}"
                         },
                         new
@@ -11992,6 +12170,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DEBTSTOPAYREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DEBTSTOPAYREPORT\"}]}"
                         },
                         new
@@ -12001,6 +12180,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"MENU\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"MENU\"}]}"
                         },
                         new
@@ -12010,6 +12190,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"INVENTORYREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"INVENTORYREPORT\"}]}"
                         },
                         new
@@ -12019,6 +12200,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTRECEIVABLES\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ACCOUNTRECEIVABLES\"}]}"
                         },
                         new
@@ -12028,6 +12210,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SALESREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SALESREPORT\"}]}"
                         },
                         new
@@ -12037,6 +12220,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TAXREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TAXREPORT\"}]}"
                         },
                         new
@@ -12046,6 +12230,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"GENERATEDICTIONARY\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"GENERATEDICTIONARY\"}]}"
                         },
                         new
@@ -12055,6 +12240,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"COMISSIONSREPORT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"COMISSIONSREPORT\"}]}"
                         },
                         new
@@ -12064,6 +12250,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PRODUCTMOVEMENTS\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PRODUCTMOVEMENTS\"}]}"
                         },
                         new
@@ -12073,6 +12260,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PATIENSHISTORY\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PATIENSHISTORY\"}]}"
                         },
                         new
@@ -12082,6 +12270,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ATTENDPATIENT\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ATTENDPATIENT\"}]}"
                         });
                 });
@@ -12191,6 +12380,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -12286,6 +12479,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -12350,6 +12547,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("PaymentId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -12396,6 +12597,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -12412,6 +12617,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Efectivo\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Cash\"}]}"
                         },
                         new
@@ -12422,6 +12628,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Cheque\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Check\"}]}"
                         },
                         new
@@ -12432,6 +12639,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Tarjeta de Crédito\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Credit Card\"}]}"
                         },
                         new
@@ -12442,6 +12650,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Transferencia Bancaria\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Bank Transfer\"}]}"
                         });
                 });
@@ -12521,6 +12730,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -12577,6 +12790,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -12626,6 +12843,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("TaxId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
@@ -12665,6 +12886,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -13040,6 +13265,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<long>("SectionOperationId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -14968,6 +15197,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -15039,6 +15272,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("SchoolId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -15084,6 +15321,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -15100,6 +15341,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Permissions\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Permissions\"}]}"
                         },
                         new
@@ -15110,6 +15352,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerRates\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerRates\"}]}"
                         },
                         new
@@ -15120,6 +15363,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}]}"
                         },
                         new
@@ -15130,6 +15374,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}]}"
                         },
                         new
@@ -15140,6 +15385,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Currencies\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Currencies\"}]}"
                         },
                         new
@@ -15150,6 +15396,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Taxes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Taxes\"}]}"
                         },
                         new
@@ -15160,6 +15407,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}]}"
                         },
                         new
@@ -15170,6 +15418,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}]}"
                         },
                         new
@@ -15180,6 +15429,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}]}"
                         },
                         new
@@ -15190,6 +15440,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Warehouses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Warehouses\"}]}"
                         },
                         new
@@ -15200,6 +15451,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"All\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"All\"}]}"
                         },
                         new
@@ -15210,6 +15462,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Inventories\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Inventories\"}]}"
                         },
                         new
@@ -15220,6 +15473,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TRNControl\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TRNControl\"}]}"
                         },
                         new
@@ -15230,6 +15484,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}]}"
                         },
                         new
@@ -15240,6 +15495,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"BranchOffices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"BranchOffices\"}]}"
                         },
                         new
@@ -15250,6 +15506,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensesPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensesPayments\"}]}"
                         },
                         new
@@ -15260,6 +15517,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Suppliers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Suppliers\"}]}"
                         },
                         new
@@ -15270,6 +15528,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Units\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Units\"}]}"
                         },
                         new
@@ -15280,6 +15539,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Users\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Users\"}]}"
                         },
                         new
@@ -15290,6 +15550,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PaymentTypes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PaymentTypes\"}]}"
                         },
                         new
@@ -15300,6 +15561,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisters\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisters\"}]}"
                         },
                         new
@@ -15310,6 +15572,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpenings\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpenings\"}]}"
                         },
                         new
@@ -15320,6 +15583,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpeningsAmounts\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CashRegisterOpeningsAmounts\"}]}"
                         },
                         new
@@ -15330,6 +15594,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeMovements\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeMovements\"}]}"
                         },
                         new
@@ -15340,6 +15605,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}]}"
                         },
                         new
@@ -15350,6 +15616,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SuppliersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SuppliersReturns\"}]}"
                         },
                         new
@@ -15360,6 +15627,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}]}"
                         },
                         new
@@ -15370,6 +15638,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductUnits\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductUnits\"}]}"
                         },
                         new
@@ -15380,6 +15649,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Roles\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Roles\"}]}"
                         },
                         new
@@ -15390,6 +15660,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sections\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sections\"}]}"
                         },
                         new
@@ -15400,6 +15671,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Operations\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Operations\"}]}"
                         },
                         new
@@ -15410,6 +15682,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}]}"
                         },
                         new
@@ -15420,6 +15693,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Zones\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Zones\"}]}"
                         },
                         new
@@ -15430,6 +15704,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"UserRoles\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"UserRoles\"}]}"
                         },
                         new
@@ -15440,6 +15715,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DashBoard\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DashBoard\"}]}"
                         },
                         new
@@ -15450,6 +15726,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SalesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SalesReport\"}]}"
                         },
                         new
@@ -15460,6 +15737,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountsReceivable\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountsReceivable\"}]}"
                         },
                         new
@@ -15470,6 +15748,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeReceipts\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"IncomeReceipts\"}]}"
                         },
                         new
@@ -15480,6 +15759,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Commisions\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Commisions\"}]}"
                         },
                         new
@@ -15490,6 +15770,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductMovements\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ProductMovements\"}]}"
                         },
                         new
@@ -15500,6 +15781,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"DebstToPay\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"DebstToPay\"}]}"
                         },
                         new
@@ -15510,6 +15792,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PriceList\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PriceList\"}]}"
                         },
                         new
@@ -15520,6 +15803,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersList\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersList\"}]}"
                         },
                         new
@@ -15530,6 +15814,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountState\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"AccountState\"}]}"
                         },
                         new
@@ -15540,6 +15825,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ResultState\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ResultState\"}]}"
                         },
                         new
@@ -15550,6 +15836,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"TaxesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"TaxesReport\"}]}"
                         },
                         new
@@ -15560,6 +15847,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}]}"
                         },
                         new
@@ -15570,6 +15858,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}]}"
                         },
                         new
@@ -15580,6 +15869,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menu\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menu\"}]}"
                         },
                         new
@@ -15590,6 +15880,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"School\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"School\"}]}"
                         },
                         new
@@ -15600,6 +15891,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SchoolMenu\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SchoolMenu\"}]}"
                         },
                         new
@@ -15610,6 +15902,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InvoiceLeads\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InvoiceLeads\"}]}"
                         },
                         new
@@ -15620,6 +15913,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurance\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurance\"}]}"
                         },
                         new
@@ -15630,6 +15924,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancePlan\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancePlan\"}]}"
                         },
                         new
@@ -15640,6 +15935,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsuranceCoverage\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsuranceCoverage\"}]}"
                         },
                         new
@@ -15650,6 +15946,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Appointment\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Appointment\"}]}"
                         },
                         new
@@ -15660,6 +15957,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"PatientCheckup\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"PatientCheckup\"}]}"
                         },
                         new
@@ -15670,6 +15968,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"MedicalSpecialities\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"MedicalSpecialities\"}]}"
                         },
                         new
@@ -15680,6 +15979,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedBy = new Guid("8a2fdd4a-e702-482c-f181-08d7015e3521"),
                             CreatedByName = "admin",
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancesCoveragesReport\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InsurancesCoveragesReport\"}]}"
                         });
                 });
@@ -15720,6 +16020,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<long?>("SectionId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -24684,6 +24988,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -24742,6 +25050,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("NumericControl")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -24761,6 +25073,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Invoices",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Invoices\"}]}"
                         },
                         new
@@ -24774,6 +25087,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sellers",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Sellers\"}]}"
                         },
                         new
@@ -24787,6 +25101,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Customers",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Customers\"}]}"
                         },
                         new
@@ -24800,6 +25115,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Quotes",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Quotes\"}]}"
                         },
                         new
@@ -24813,6 +25129,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Expenses",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Expenses\"}]}"
                         },
                         new
@@ -24826,6 +25143,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "WarehouseTransfers",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"WarehouseTransfers\"}]}"
                         },
                         new
@@ -24839,6 +25157,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "InventoryIncomes",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"InventoryIncomes\"}]}"
                         },
                         new
@@ -24852,6 +25171,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CustomersReturns",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomersReturns\"}]}"
                         },
                         new
@@ -24865,6 +25185,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "SupplierReturns",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"SupplierReturns\"}]}"
                         },
                         new
@@ -24878,6 +25199,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CustomerPayments",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CustomerPayments\"}]}"
                         },
                         new
@@ -24891,6 +25213,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "CompanyPayments",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"CompanyPayments\"}]}"
                         },
                         new
@@ -24904,6 +25227,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Leads",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Leads\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Leads\"}]}"
                         },
                         new
@@ -24917,6 +25241,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Schools",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Schools\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Schools\"}]}"
                         },
                         new
@@ -24930,6 +25255,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "ExpensePayments",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensePayments\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"ExpensePayments\"}]}"
                         },
                         new
@@ -24943,6 +25269,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Products",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Products\"}]}"
                         },
                         new
@@ -24956,6 +25283,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Menus",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Menus\"}]}"
                         },
                         new
@@ -24969,6 +25297,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             CreatedDate = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Insurances",
                             NumericControl = 0L,
+                            TenantId = "BaseTenant",
                             TranslationData = "{\"ES\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}],\"EN\":[{\"PropertyName\":\"Name\",\"Value\":\"Insurances\"}]}"
                         });
                 });
@@ -25020,6 +25349,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -25067,6 +25400,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<long>("SupplierId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -25159,6 +25496,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("TaxAmount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -25219,6 +25560,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<decimal>("Rate")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -25271,6 +25616,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
 
@@ -25313,6 +25662,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -25370,6 +25723,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<decimal>("SellingPrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -25467,7 +25824,6 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
@@ -25476,6 +25832,9 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<double?>("Size")
                         .HasColumnType("float");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -25526,6 +25885,7 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                             Name = "admin",
                             Password = "yeLiBgtdL//mX+coUwD6bw==",
                             Phone = "8095555555",
+                            TenantId = "BaseTenant",
                             Type = "U",
                             UserName = "admin"
                         });
@@ -25568,6 +25928,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -25649,6 +26013,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<long>("RoleId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -25696,6 +26064,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");
@@ -25756,6 +26128,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                     b.Property<string>("Reference")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
@@ -25840,6 +26216,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<long>("UnitId")
                         .HasColumnType("bigint");
 
@@ -25893,6 +26273,10 @@ namespace PointOfSalesV2.EntityFramework.Migrations
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TranslationData")
                         .HasColumnType("nvarchar(max)");

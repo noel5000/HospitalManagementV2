@@ -6,6 +6,7 @@ using PointOfSalesV2.Entities;
 using PointOfSalesV2.EntityFramework;
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ public class MainDataContext : DbContext
 {
     private readonly IHttpContextAccessor _HttpContextAccessor;
     readonly IMemoryCache _cache;
+    private readonly ITenantService _TenantService;
 
     //private bool CanUseSessionContext { get; set; }
     //public ComplaintDataContext()
@@ -20,17 +22,16 @@ public class MainDataContext : DbContext
     //    CanUseSessionContext = true;
     //}
 
-    public MainDataContext()
-      : base(new DbContextOptions<MainDataContext>())
-    {
-       
-    }
 
-    public MainDataContext(DbContextOptions<MainDataContext> options, IHttpContextAccessor httpContextAccessor, IMemoryCache cache)
+    public MainDataContext(DbContextOptions<MainDataContext> options,
+        IHttpContextAccessor httpContextAccessor,
+        IMemoryCache cache,
+        ITenantService service)
         : base(options)
     {
         _HttpContextAccessor = httpContextAccessor;
         this._cache = cache;
+        _TenantService = service;
         //CanUseSessionContext = true;
     }
     #region Tables
@@ -58,7 +59,7 @@ public class MainDataContext : DbContext
     public virtual DbSet<ExpensesPayment> ExpensesPayments { get; set; }
     public virtual DbSet<InventoryEntry> InventoryEntries { get; set; }
     public virtual DbSet<Invoice> Invoices { get; set; }
-    public virtual DbSet<InvoiceLead> InvoicesLeads{ get; set; }
+    public virtual DbSet<InvoiceLead> InvoicesLeads { get; set; }
 
 
     public virtual DbSet<Menu> Menus { get; set; }
@@ -134,6 +135,7 @@ public class MainDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        this.SetTenantQuery(modelBuilder);
         modelBuilder.Entity<Insurance>()
          .HasMany(p => p.InsurancePlans)
          .WithOne(d => d.Insurance).OnDelete(DeleteBehavior.Restrict);
@@ -156,7 +158,7 @@ public class MainDataContext : DbContext
 
         modelBuilder.Entity<Invoice>()
           .HasMany(p => p.InvoiceDetails)
-          .WithOne(d=>d.Invoice).OnDelete(DeleteBehavior.Restrict);
+          .WithOne(d => d.Invoice).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<Invoice>()
           .HasMany(p => p.Taxes)
           .WithOne(d => d.Invoice).OnDelete(DeleteBehavior.Restrict);
@@ -190,8 +192,8 @@ public class MainDataContext : DbContext
        .WithOne(d => d.Role).OnDelete(DeleteBehavior.Restrict);
 
 
-        modelBuilder.Entity<Language>().HasIndex(x=>x.Code).IsUnique();
-        modelBuilder.Entity<Language>().HasKey( x => x.Code).HasName("Code");
+        modelBuilder.Entity<Language>().HasIndex(x => x.Code).IsUnique();
+        modelBuilder.Entity<Language>().HasKey(x => x.Code).HasName("Code");
         modelBuilder.Entity<Product>()
          .HasMany(p => p.Taxes)
          .WithOne(d => d.Product).OnDelete(DeleteBehavior.Restrict);
@@ -325,8 +327,8 @@ public class MainDataContext : DbContext
         modelBuilder.Entity<LanguageKey>().HasKey(o => new { o.LanguageCode, o.Key });
         modelBuilder.Entity<Section>().HasMany(x => x.Operations).WithOne(x => x.Section).OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<Operation>().HasMany(x => x.Sections).WithOne(x => x.Operation).OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<SectionOperation>().HasOne(y => y.Operation).WithMany(y=>y.Sections).OnDelete(DeleteBehavior.Cascade);
-       modelBuilder.Entity<SectionOperation>().HasOne(y => y.Section).WithMany(x => x.Operations).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<SectionOperation>().HasOne(y => y.Operation).WithMany(y => y.Sections).OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<SectionOperation>().HasOne(y => y.Section).WithMany(x => x.Operations).OnDelete(DeleteBehavior.Cascade);
 
 
         modelBuilder.Entity<PatientCheckup>()
@@ -335,7 +337,7 @@ public class MainDataContext : DbContext
        .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CheckupAttachment>().HasOne(x => x.PatientCheckup).WithMany(d => d.Attachments).OnDelete(DeleteBehavior.NoAction);
-       
+
 
 
         foreach (var property in modelBuilder.Model.GetEntityTypes()
@@ -350,8 +352,133 @@ public class MainDataContext : DbContext
 
         foreach (var fk in cascadeFKs)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
+
         ModelBuilderExtensions.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
+    }
+
+    private void SetTenantQuery(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Appointment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<AppointmentDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<BranchOffice>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CashRegisterFlowDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CashRegisterOpeningDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CashRegisterOpening>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CashRegister>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CheckupAttachment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CheckupPrescription>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CompanyPayments>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CompositeProduct>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CreditNote>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Currency>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Customer>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CustomerBalance>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CustomerPayment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CustomerReturn>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<CustomerReturnDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<ExceptionLog>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Expense>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<ExpensesPayment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<ExpenseTax>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<FileAttachment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Insurance>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InsurancePlan>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InsuranceServiceCoverage>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Inventory>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InventoryEntry>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Invoice>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InvoiceDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InvoiceLead>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<InvoiceTax>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<LeadDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<MedicalSpeciality>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Menu>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<MenuDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<PatientCheckup>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Payment>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<PaymentDetail>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Product>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<ProductSupplierCost>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<ProductTax>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<School>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<SchoolContact>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Seller>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<SequenceControl>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Supplier>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<SupplierBalance>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<SupplierReturn>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Tax>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<TRNControl>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Unit>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<UnitProductEquivalence>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        //modelBuilder.Entity<User>()
+        //         .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        //modelBuilder.Entity<UserClaims>()
+        //         .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        //modelBuilder.Entity<UserRole>()
+        //         .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Warehouse>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<WarehouseMovement>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<WarehouseTransfer>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
+        modelBuilder.Entity<Zone>()
+                 .HasQueryFilter(mt => !string.IsNullOrEmpty(_TenantService.Tenant) && mt.TenantId == _TenantService.Tenant);
     }
 
     #endregion
@@ -359,7 +486,7 @@ public class MainDataContext : DbContext
     #region Save Changes
     public override int SaveChanges()
     {
-     
+
         // Get the entries that are auditable
         var auditableEntitySet = ChangeTracker.Entries<ICommonData>();
 
@@ -371,31 +498,31 @@ public class MainDataContext : DbContext
             // Audit set the audit information foreach record
             foreach (var auditableEntity in auditableEntitySet.Where(c => c.State == EntityState.Added || c.State == EntityState.Modified || c.State == EntityState.Deleted))
             {
-                
+
                 if (auditableEntity.State == EntityState.Added)
                 {
                     auditableEntity.Entity.Active = true;
+                    auditableEntity.Entity.TenantId = _TenantService.Tenant;
                     auditableEntity.Entity.CreatedDate = currentDate;
                 }
 
                 auditableEntity.Entity.ModifiedDate = currentDate;
-                if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null) 
+                if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-                    var currentToken = _HttpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
-                    if (!string.IsNullOrEmpty(currentToken) && currentToken.Contains("Bearer")) 
+
+                    if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                     {
-                        var currentUser = _cache.Get(currentToken.Split(" ").LastOrDefault()) as User;
-                        if (currentUser != null) 
+
+                        if (auditableEntity.State == EntityState.Added)
                         {
-                            if (auditableEntity.State == EntityState.Added)
-                            {
-                                auditableEntity.Entity.CreatedBy = currentUser.UserId;
-                                auditableEntity.Entity.CreatedByName = currentUser.FullName;
-                            }
-                            auditableEntity.Entity.ModifiedBy = currentUser.UserId;
-                            auditableEntity.Entity.ModifiedByName = currentUser.FullName;
-                            
+                            auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                            auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
+                        auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                        auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+
+
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)
@@ -404,7 +531,7 @@ public class MainDataContext : DbContext
                     auditableEntity.State = EntityState.Modified;
                 }
 
-                if (auditableEntity.State == EntityState.Modified) 
+                if (auditableEntity.State == EntityState.Modified)
                 {
                     auditableEntity.Property(nameof(ICommonData.CreatedDate)).IsModified = false;
                     auditableEntity.Property(nameof(ICommonData.CreatedBy)).IsModified = false;
@@ -439,21 +566,19 @@ public class MainDataContext : DbContext
                 auditableEntity.Entity.ModifiedDate = currentDate;
                 if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-                    var currentToken = _HttpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
-                    if (!string.IsNullOrEmpty(currentToken) && currentToken.Contains("Bearer"))
-                    {
-                        var currentUser = _cache.Get(currentToken.Split(" ").LastOrDefault()) as User;
-                        if (currentUser != null)
-                        {
-                            if (auditableEntity.State == EntityState.Added)
-                            {
-                                auditableEntity.Entity.CreatedBy = currentUser.UserId;
-                                auditableEntity.Entity.CreatedByName = currentUser.FullName;
-                            }
-                            auditableEntity.Entity.ModifiedBy = currentUser.UserId;
-                            auditableEntity.Entity.ModifiedByName = currentUser.FullName;
 
+                    if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                    {
+                        if (auditableEntity.State == EntityState.Added)
+                        {
+                            auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                            auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
+                        auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                        auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+
+
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)
@@ -475,6 +600,8 @@ public class MainDataContext : DbContext
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
+
+
         // Get the entries that are auditable
         var auditableEntitySet = ChangeTracker.Entries<ICommonData>();
 
@@ -490,27 +617,27 @@ public class MainDataContext : DbContext
                 if (auditableEntity.State == EntityState.Added)
                 {
                     auditableEntity.Entity.Active = true;
+                    auditableEntity.Entity.TenantId = _TenantService.Tenant;
                     auditableEntity.Entity.CreatedDate = currentDate;
                 }
 
                 auditableEntity.Entity.ModifiedDate = currentDate;
                 if (_HttpContextAccessor != null && _HttpContextAccessor.HttpContext != null && _HttpContextAccessor.HttpContext.Request != null && _HttpContextAccessor.HttpContext.Request.Headers != null)
                 {
-                    var currentToken = _HttpContextAccessor.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value.ToString();
-                    if (!string.IsNullOrEmpty(currentToken) && currentToken.Contains("Bearer"))
-                    {
-                        var currentUser = _cache.Get(currentToken.Split(" ").LastOrDefault()) as User;
-                        if (currentUser != null)
-                        {
-                            if (auditableEntity.State == EntityState.Added)
-                            {
-                                auditableEntity.Entity.CreatedBy = currentUser.UserId;
-                                auditableEntity.Entity.CreatedByName = currentUser.FullName;
-                            }
-                            auditableEntity.Entity.ModifiedBy = currentUser.UserId;
-                            auditableEntity.Entity.ModifiedByName = currentUser.FullName;
 
+                    if (_HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                    {
+
+                        if (auditableEntity.State == EntityState.Added)
+                        {
+                            auditableEntity.Entity.CreatedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                            auditableEntity.Entity.CreatedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+                            auditableEntity.Entity.TenantId = _TenantService.Tenant;
                         }
+                        auditableEntity.Entity.ModifiedBy = new Guid(_HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+                        auditableEntity.Entity.ModifiedByName = _HttpContextAccessor.HttpContext.User.Identity.Name;
+
+
                     }
                 }
                 if (auditableEntity.State == EntityState.Deleted)
@@ -527,6 +654,7 @@ public class MainDataContext : DbContext
                 }
             }
         }
+
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 

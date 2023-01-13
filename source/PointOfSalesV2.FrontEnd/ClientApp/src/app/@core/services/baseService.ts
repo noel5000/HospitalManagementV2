@@ -63,6 +63,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
       "Content-Type": responseType ? responseType : "application/json",
       "UserId": currentUser ? currentUser.user.userId : '',
       "LanguageId": currentUser ? currentUser.languageId : 'en',
+      "x-api-key": currentUser ? currentUser.xApiKey:'',
       "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
     });
     this.httpOptions = {

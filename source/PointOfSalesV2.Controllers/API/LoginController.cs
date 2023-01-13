@@ -15,14 +15,16 @@ namespace PointOfSalesV2.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IOptions<AppSettings> _appSettings;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMemoryCache _cache;
         private readonly IBase<User> users;
         private readonly IDataRepositoryFactory dataRepositoryFactory;
         private readonly IUserRepository userRepository;
 
-        public LoginController(IMemoryCache cache, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory)
+        public LoginController(IMemoryCache cache, IOptions<AppSettings> appSettings, IDataRepositoryFactory repositoryFactory, IHttpContextAccessor httpContextAccessor)
         {
             this._appSettings = appSettings;
+            this._httpContextAccessor = httpContextAccessor;
             this._cache = cache;
             this.users = repositoryFactory.GetDataRepositories<User>();
             this.dataRepositoryFactory = repositoryFactory;
@@ -37,7 +39,7 @@ namespace PointOfSalesV2.Controllers
             {
                 UsersHelper.VerifyAdminUser(this.dataRepositoryFactory);
                 User user = await userRepository.Login(model, _appSettings.Value.TokenKey);
-                if (user == null)
+                if (user == null  || string.IsNullOrEmpty( user.TenantId))
                     return Ok(new { status = -1, message = "Invalid credentials" });
 
                 var issuer = _appSettings.Value.Domain;
@@ -68,13 +70,13 @@ namespace PointOfSalesV2.Controllers
                 var jwtToken = tokenHandler.WriteToken(token);
                 var stringToken = tokenHandler.WriteToken(token);
                 user.TokenKey = stringToken;
-                _cache.Set<User>(stringToken, user, DateTimeOffset.Now.AddHours(_appSettings.Value.TokenTimeHours));
                 return Ok(new
                 {
                     message = "OK",
                     status = 1,
                     token = stringToken,
                     expiration = expiration,
+                    xApiKey=MD5.Encrypt( user.TenantId, _appSettings.Value.TokenKey),
                     user = user,
                     languageId=user.LanguageCode
                 });
@@ -96,9 +98,8 @@ namespace PointOfSalesV2.Controllers
                     return Ok(new { status = -1, message = "error_msg" });
                 else
                 {
-                        string token = currentToken.Split(" ").LastOrDefault();
-                    User user = _cache.Get<User>(token);
-                    if (user == null)
+                       
+                    if (!_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
                         return Ok(new { status = -1, message = "error_msg" });
                     else
                         return Ok(new { status = 0, message = "ok_msg" });

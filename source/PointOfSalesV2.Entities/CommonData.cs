@@ -4,7 +4,7 @@ namespace PointOfSalesV2.Entities
 {
     public class CommonData : ICommonData
     {
-       
+
 
         private string _jsonData;
         [IgnoreDataMember]
@@ -17,10 +17,10 @@ namespace PointOfSalesV2.Entities
         [MaxLength(100)]
         [IgnoreDataMember]
         public virtual string ModifiedByName { get; set; }
-     
+
         [IgnoreDataMember]
         public virtual DateTime CreatedDate { get; set; }
-     
+
         [IgnoreDataMember]
         public virtual DateTime? ModifiedDate { get; set; }
 
@@ -29,21 +29,22 @@ namespace PointOfSalesV2.Entities
 
         public virtual bool Active { get; set; }
 
-      
-        public virtual string TranslationData 
+        [MaxLength(100)]
+        public virtual string TenantId { get; set; }
+        public virtual string TranslationData
         {
             get
             {
-                if (!string.IsNullOrEmpty(_jsonData)) 
+                if (!string.IsNullOrEmpty(_jsonData))
                 {
                     TranslateUtility.Translate(this, _jsonData);
                 }
                 return this._jsonData;
             }
-            set 
+            set
             {
-                this._jsonData = value ;
-                if (!string.IsNullOrEmpty(this._jsonData)) 
+                this._jsonData = value;
+                if (!string.IsNullOrEmpty(this._jsonData))
                 {
                     TranslateUtility.Translate(this, _jsonData);
                 }
