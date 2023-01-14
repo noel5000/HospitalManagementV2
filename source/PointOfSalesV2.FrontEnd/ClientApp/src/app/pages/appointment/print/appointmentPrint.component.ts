@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -110,7 +110,7 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
          modalService:ModalService,
       private  http: HttpClient
         ){
-      super(route, langService, AppSections.Users,modalService);       
+      super(route, langService, AppRoles.Appointments,modalService);       
     }
     ngOnInit(): void {
    

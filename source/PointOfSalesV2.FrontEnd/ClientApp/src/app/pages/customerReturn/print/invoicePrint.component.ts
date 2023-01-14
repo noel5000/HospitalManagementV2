@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -111,7 +111,7 @@ export class InvoicePrintComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
            
-            super(route, langService, AppSections.Invoices,modalService);
+            super(route, langService, AppRoles.Invoices,modalService);
             this._route=router;
             this.Id=parseInt( this._route.snapshot.paramMap.get('id'))>0?parseInt( this._route.snapshot.paramMap.get('id')):0;
             this.getCurrent();

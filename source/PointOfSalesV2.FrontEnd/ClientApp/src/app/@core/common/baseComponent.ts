@@ -1,4 +1,4 @@
-import { AppSections, Operations } from './enums';
+import { AppRoles,  Operations } from './enums';
 import { Router } from '@angular/router';
 import { AuthModel } from '../data/authModel';
 import { LanguageService } from './../services/translateService';
@@ -9,11 +9,11 @@ import { ModalService } from '../services/modal.service';
 
 export class BaseComponent  {
    
-    constructor(route: Router, langService: LanguageService, section:AppSections, modaService:ModalService) {
+    constructor(route: Router, langService: LanguageService, role:AppRoles, modaService:ModalService) {
        
         this.lang = langService;
         this.router = route;
-        this.section=section;
+        this.role=role;
         this.modalService=modaService;
         this.backupData();
     }
@@ -30,25 +30,25 @@ export class BaseComponent  {
 
 
     backupData(){
-        let scope=this;
-        const controllerUrl =window.location.href;
-        if(controllerUrl.includes("/add") || controllerUrl.includes("/edit"))
-        setInterval(function(){
-            if(scope.itemForm!=null){
-                let toSave={
-                    form:scope.itemForm.getRawValue(),
-                }
-                if(scope.dataToBackup && scope.dataToBackup.split(",").length>0){
+        // let scope=this;
+        // const controllerUrl =window.location.href;
+        // if(controllerUrl.includes("/add") || controllerUrl.includes("/edit"))
+        // setInterval(function(){
+        //     if(scope.itemForm!=null){
+        //         let toSave={
+        //             form:scope.itemForm.getRawValue(),
+        //         }
+        //         if(scope.dataToBackup && scope.dataToBackup.split(",").length>0){
                   
-                    scope.dataToBackup.split(',').forEach(data=>{
-                        toSave[data]=scope[data];
-                    });
-                }
-                localStorage.setItem(`${scope.getUser().userId} - ${scope.section.toString()}`,JSON.stringify(toSave));
-            }
+        //             scope.dataToBackup.split(',').forEach(data=>{
+        //                 toSave[data]=scope[data];
+        //             });
+        //         }
+        //         localStorage.setItem(`${scope.getUser().userId} - ${scope.role.toString()}`,JSON.stringify(toSave));
+        //     }
          
-        },90000);
-        else
+        // },90000);
+        // else
         this.clearBackupData();
   }
    dynamicSort(property) {
@@ -76,7 +76,7 @@ export class BaseComponent  {
 
     }
     validateFormData(){
-        const stringForm= this.getUser().userId?  localStorage.getItem(`${this.getUser().userId} - ${this.section.toString()}`):null;
+        const stringForm= this.getUser().userId?  localStorage.getItem(`${this.getUser().userId} - ${this.role.toString()}`):null;
     if(stringForm && JSON.parse(stringForm)!=null){
         const savedForm = JSON.parse(stringForm);
       var result =       this.modalService.confirmationModal({
@@ -97,7 +97,7 @@ export class BaseComponent  {
             this.itemForm.patchValue(savedForm.form);
             this.onChanges();
             if(this.getUser() && this.getUser().userId)
-            localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
+            localStorage.removeItem(`${this.getUser().userId} - ${this.role.toString()}`);
          
             }
       }
@@ -118,7 +118,7 @@ export class BaseComponent  {
      }
     clearBackupData(){
         if(this.getUser() && this.getUser().userId)
-        localStorage.removeItem(`${this.getUser().userId} - ${this.section.toString()}`);
+        localStorage.removeItem(`${this.getUser().userId} - ${this.role.toString()}`);
     }
 
     getUser():User{
@@ -145,7 +145,7 @@ export class BaseComponent  {
 
         return toUpdate;
     }
-    section: AppSections = null;
+    role:AppRoles=null;
     authModel: AuthModel = null;
     permits: any = {};
 
@@ -153,7 +153,7 @@ export class BaseComponent  {
     lang: LanguageService;
     getUserAuthorizations() {
         const url = window.location.href;
-        const sectionOperations = this.authModel.user.permissions.filter(x => x.sectionId === this.section);
+        const sectionOperations = this.authModel.user.permissions.filter(x => x.roleId === this.role);
         this.permits.read = sectionOperations.length==0 || sectionOperations.findIndex(x => x.operationId === Operations.READ ||
             x.operationId === Operations.READALL) >= 0;
         this.permits.add = sectionOperations.length==0 || sectionOperations.findIndex(x => x.operationId === Operations.ADD) >= 0;
@@ -176,7 +176,8 @@ export class BaseComponent  {
        try{
            this.verifyUser();
            
-           return this.authModel.user.permissions.length==0 || this.authModel.user.permissions.findIndex(x=>x.sectionId==this.section && x.operationId==operation)>=0;
+           return this.authModel.user.permissions.length==0 || this.authModel.user.permissions.findIndex(x=>x.roleId==this.role && x.operationId==operation)>=0
+           || this.authModel.user.permissions.findIndex(x=>x.roleId==this.role && x.operationId==Operations.ALL)>=0;
        }
        catch{
            return false;

@@ -1,5 +1,5 @@
 import { Injectable , Inject } from '@angular/core';
-import { AppSections, Operations } from '../common/enums';
+import { AppRoles,  Operations } from '../common/enums';
 import { AuthModel } from '../data/authModel';
 
 
@@ -12,26 +12,26 @@ export class SecurityService {
   constructor() {
         
     }
-    isUserValidInMenu(section: AppSections): boolean {
+    isUserValidInMenu(role: AppRoles): boolean {
         let result = false;
         const auth = JSON.parse(localStorage.getItem('currentUser'));
         if (auth && new Date(auth.expiration) > new Date()) {
             if (auth.user.permissions.length == 0)
                 return true;
-            if (auth.user.permissions.filter(x => x.sectionId == section && (x.operationId == Operations.READ || x.operationId == Operations.ALL)).length > 0)
+            if (auth.user.permissions.filter(x => x.roleId == role && (x.operationId == Operations.READ || x.operationId == Operations.ALL)).length > 0)
                 return true;
         }
         return result;
     }
 
-    validateMenuChildren(sections: AppSections[]): boolean {
+    validateMenuChildren(roles: AppRoles[]): boolean {
         let result = false;
         const auth = JSON.parse(localStorage.getItem('currentUser'));
         if (auth && new Date(auth.expiration) > new Date()) {
             if (auth.user.permissions.length == 0)
                 return true;
-            sections.forEach(s => {
-                if (auth.user.permissions.filter(x => x.sectionId == s && (x.operationId == Operations.READ || x.operationId == Operations.ALL)).length > 0)
+                roles.forEach(s => {
+                if (auth.user.permissions.filter(x => x.roleId == s && (x.operationId == Operations.READ || x.operationId == Operations.ALL)).length > 0)
                     result= true;
             })
         }

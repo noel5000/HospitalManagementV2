@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from './@core/common/baseComponent';
 import { Router } from '@angular/router';
 import { LanguageService } from './@core/services/translateService';
-import { AppSections } from './@core/common/enums';
+import { AppRoles } from './@core/common/enums';
 import { BaseService } from './@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointUrl } from './@core/common/constants';
@@ -29,7 +29,7 @@ export class AppComponent extends BaseComponent implements OnInit {
    modalService:ModalService,
     private  http: HttpClient,
     langService: LanguageService,) {
-    super(route, langService, AppSections.DashBoard,modalService);
+    super(route, langService, AppRoles.DashBoard,modalService);
     translate.setDefaultLang('ES');
     translate.use('ES')
   }

@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { ExpenseService } from '../../../@core/services/ExpenseService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -64,7 +64,7 @@ export class ExpenseFormComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.Expenses,modalService);
+            super(route, langService, AppRoles.Expenses_Registers,modalService);
             this._route=router;
             this.dataToBackup="expenseTaxes";
         this.itemForm = this.formBuilder.group({

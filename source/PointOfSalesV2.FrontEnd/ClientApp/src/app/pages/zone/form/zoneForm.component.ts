@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { ZoneService } from '../../../@core/services/zoneService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Zone } from '../../../@core/data/zoneModel';
@@ -37,7 +37,7 @@ export class ZoneFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService
         ){
            
-            super(route, langService, AppSections.Zones,modalService);
+            super(route, langService, AppRoles.Config_Zones,modalService);
             this._route=router;
             this.dataToBackup="sectors,tempSectors";
         this.itemForm = this.formBuilder.group({

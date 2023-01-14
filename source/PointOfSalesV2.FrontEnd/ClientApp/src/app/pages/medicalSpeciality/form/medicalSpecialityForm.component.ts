@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { HttpClient } from '@angular/common/http';
@@ -34,9 +34,8 @@ export class medicalSpecialityFormComponent extends BaseComponent implements OnI
        modalService:ModalService
         ){
            
-            super(route, langService, AppSections.Users,modalService);
+            super(route, langService, AppRoles.Medical_Specialities,modalService);
             this._route=router;
-            this.section=AppSections.Users;
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(1), Validators.maxLength(50)]],
             id: [0]

@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -61,7 +61,7 @@ export class ComissionsReportIndexComponent extends BaseComponent implements OnI
         private currencyService:CurrencyService,
         private customerService:CustomerService
     ) {
-        super(route, langService, AppSections.TaxesReport,modalService);
+        super(route, langService, AppRoles.Reports_Taxes,modalService);
         this.itemForm = this.formBuilder.group({
        startDate:[''],
        endDate:[''],

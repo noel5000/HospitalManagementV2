@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BranchOffice } from '../../../@core/data/branchOffice';
@@ -128,7 +128,7 @@ export class CashRegisterOpeningFormComponent extends BaseComponent implements O
        modalService:ModalService
         ){
 
-            super(route, langService, AppSections.CashRegisterOpenings,modalService);
+            super(route, langService, AppRoles.CashRegister_OpenClose,modalService);
             this._route=router;
             this.dataToBackup="details,cashRegisters,branchOffices,users";
         this.itemForm = this.formBuilder.group({

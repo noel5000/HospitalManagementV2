@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { UserService } from '../../../@core/services/UserService';
@@ -44,7 +44,7 @@ export class UserIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Users,modalService);
+        super(route, langService, AppRoles.Authorization_users,modalService);
         let scope = this;
        
         this.tableConfig=[

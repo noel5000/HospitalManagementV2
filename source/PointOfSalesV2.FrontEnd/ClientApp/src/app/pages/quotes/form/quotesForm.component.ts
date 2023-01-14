@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, Validator, FormControl } from '@ang
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -121,7 +121,7 @@ export class QuotesFormComponent extends BaseComponent implements OnInit {
     private warehouseService: WarehouseService
   ) {
 
-    super(route, langService, AppSections.Invoices, modalService);
+    super(route, langService, AppRoles.Quotes, modalService);
     this.verifyUser();
     this.dataToBackup = "entries,sellers,productUnits,productTaxes,inventories,warehouses,productPrices,currentProductCost,currentProductPrice,oldProductCost,oldProductPrice,selectedProductCurrency,isEditing";
     this._route = router;

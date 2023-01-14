@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { SellerService } from '../../../@core/services/SellerService';
@@ -51,7 +51,7 @@ export class SellerIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Sellers,modalService);
+        super(route, langService, AppRoles.Config_Sellers,modalService);
         let scope = this;
        
         this.tableConfig=[

@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { UserService } from '../../../@core/services/UserService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BranchOffice } from '../../../@core/data/branchOffice';
@@ -76,7 +76,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
     modalService: ModalService,
     private cashRegisterService: CashRegisterService
   ) {
-    super(route, langService, AppSections.Users, modalService);
+    super(route, langService, AppRoles.Authorization_users, modalService);
     this.dataToBackup = "warehouses,cashRegisters";
     this._route = router;
     this.itemForm = this.formBuilder.group({

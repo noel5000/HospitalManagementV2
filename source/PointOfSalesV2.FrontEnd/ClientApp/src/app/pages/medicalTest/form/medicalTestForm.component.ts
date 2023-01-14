@@ -4,7 +4,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { ProductService } from '../../../@core/services/ProductService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Product } from '../../../@core/data/product';
@@ -78,7 +78,7 @@ export class MedicalTestFormComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.Product,modalService);
+            super(route, langService, AppRoles.Config_Products,modalService);
             this._route=router;
             this.dataToBackup="productUnits,productSupplierCosts,productTaxes,baseProducts,selectedBaseProduct";
         this.itemForm = this.formBuilder.group({

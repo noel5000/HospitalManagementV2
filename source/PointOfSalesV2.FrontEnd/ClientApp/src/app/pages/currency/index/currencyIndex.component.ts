@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
@@ -42,8 +42,7 @@ export class CurrencyIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Currencies,modalService);
-        this.section=AppSections.Currencies;
+        super(route, langService, AppRoles.Config_Currencies,modalService);
         let scope = this;
        
         this.tableConfig=[

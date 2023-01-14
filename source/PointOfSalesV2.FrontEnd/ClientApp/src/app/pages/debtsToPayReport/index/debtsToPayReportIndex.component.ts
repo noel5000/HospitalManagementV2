@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -59,7 +59,7 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
         private currenciesService:CurrencyService,
         private branchOfficeService: BranchOfficeService
     ) {
-        super(route, langService, AppSections.DebstToPay,modalService);
+        super(route, langService, AppRoles.Reports_DebtsToPay,modalService);
         this.itemForm = this.formBuilder.group({
        branchOfficeId:[0],
        supplierId:[0],
@@ -71,19 +71,19 @@ export class DebtsToPayReportIndexComponent extends BaseComponent implements OnI
 
 
 onChanges(){
-    this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
+    this.itemForm.get('branchOfficeId')!.valueChanges.subscribe(val => {
             this.getData();
     });
-    this.itemForm.get('supplierId').valueChanges.subscribe(val => {
+    this.itemForm.get('supplierId')!.valueChanges.subscribe(val => {
         this.getData();
     });
-    this.itemForm.get('currencyId').valueChanges.subscribe(val => {
+    this.itemForm.get('currencyId')!.valueChanges.subscribe(val => {
         this.getData();
     });
-    this.itemForm.get('startDate').valueChanges.subscribe(val => {
+    this.itemForm.get('startDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
-    this.itemForm.get('endDate').valueChanges.subscribe(val => {
+    this.itemForm.get('endDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
 }

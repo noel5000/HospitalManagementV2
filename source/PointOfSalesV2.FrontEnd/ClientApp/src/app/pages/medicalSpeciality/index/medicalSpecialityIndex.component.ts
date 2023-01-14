@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -45,8 +45,7 @@ export class medicalSpecialityIndexComponent extends BaseComponent implements On
         private http:HttpClient,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Users,modalService);
-        this.section=AppSections.Users;
+        super(route, langService, AppRoles.Medical_Specialities,modalService);
         let scope = this;
        
         this.tableConfig=[

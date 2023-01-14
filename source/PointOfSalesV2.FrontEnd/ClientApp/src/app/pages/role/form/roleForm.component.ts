@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -58,7 +58,7 @@ export class RoleFormComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.Roles,modalService);
+            super(route, langService, AppRoles.Authorization_roles,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             id: [0],

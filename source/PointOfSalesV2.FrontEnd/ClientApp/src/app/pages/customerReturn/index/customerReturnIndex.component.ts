@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -74,7 +74,7 @@ export class CustomerReturnIndexComponent extends BaseComponent implements OnIni
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.CustomersReturns,modalService);
+        super(route, langService, AppRoles.Movements_CustomersReturns,modalService);
         let scope = this;
 
         this.tableConfig=[

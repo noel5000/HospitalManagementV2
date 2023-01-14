@@ -7,7 +7,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 
@@ -32,7 +32,7 @@ export class BranchOfficeFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService
         ){
            
-            super(route, langService, AppSections.BranchOffices,modalService);
+            super(route, langService, AppRoles.Config_Hospitals,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(100)]],

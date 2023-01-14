@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStates, Operations, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { ExpenseService } from '../../../@core/services/ExpenseService';
@@ -60,7 +60,7 @@ export class ExpensePaymentIndexComponent extends BaseComponent implements OnIni
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.ExpensesPayments,modalService);
+        super(route, langService, AppRoles.Expenses_Payments,modalService);
         let scope = this;
 
         this.tableConfig=[

@@ -20,7 +20,7 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStatesColors, BillingStates, ODataComparers } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStatesColors, BillingStates, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
@@ -123,7 +123,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
     modalService: ModalService,
     private http: HttpClient
   ) {
-    super(route, langService, AppSections.Appointment, modalService);
+    super(route, langService, AppRoles.Appointments, modalService);
     this.itemForm = this.formBuilder.group({
       branchOfficeId: [0],
       doctorId: ["null"],

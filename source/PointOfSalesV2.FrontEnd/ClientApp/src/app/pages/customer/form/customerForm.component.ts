@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Customer } from '../../../@core/data/customer';
@@ -54,7 +54,7 @@ export class CustomerFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService
         ){
 
-            super(route, langService, AppSections.Customers,modalService);
+            super(route, langService, AppRoles.Config_Patients,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],

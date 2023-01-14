@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -46,7 +46,7 @@ export class RoleIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Roles,modalService);
+        super(route, langService, AppRoles.Authorization_roles,modalService);
         let scope = this;
        
         this.tableConfig=[

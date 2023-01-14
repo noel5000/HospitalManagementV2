@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -60,7 +60,7 @@ export class insuranceCoveragesReportComponent extends BaseComponent implements 
         private customersService:CustomerService,
         private branchOfficeService: BranchOfficeService
     ) {
-        super(route, langService, AppSections.AccountsReceivable,modalService);
+        super(route, langService, AppRoles.Reports_InsuranceCoverage,modalService);
         this.itemForm = this.formBuilder.group({
        branchOfficeId:[0],
        insuranceId:[0],
@@ -73,21 +73,21 @@ export class insuranceCoveragesReportComponent extends BaseComponent implements 
 
 
 onChanges(){
-    this.itemForm.get('branchOfficeId').valueChanges.subscribe(val => {
+    this.itemForm.get('branchOfficeId')!.valueChanges.subscribe(val => {
             this.getData();
     });
-    this.itemForm.get('insuranceId').valueChanges.subscribe(val => {
+    this.itemForm.get('insuranceId')!.valueChanges.subscribe(val => {
         this.getData();
     });
 
-    this.itemForm.get('currencyId').valueChanges.subscribe(val => {
+    this.itemForm.get('currencyId')!.valueChanges.subscribe(val => {
         this.getData();
     });
 
-    this.itemForm.get('startDate').valueChanges.subscribe(val => {
+    this.itemForm.get('startDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
-    this.itemForm.get('endDate').valueChanges.subscribe(val => {
+    this.itemForm.get('endDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
 }

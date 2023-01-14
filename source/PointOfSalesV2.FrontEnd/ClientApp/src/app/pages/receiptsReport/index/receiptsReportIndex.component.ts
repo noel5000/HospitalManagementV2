@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, PaymentTypes } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, PaymentTypes, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -61,7 +61,7 @@ export class ReceiptsReportIndexComponent extends BaseComponent implements OnIni
 
     private branchOfficeService: BranchOfficeService
   ) {
-    super(route, langService, AppSections.AccountsReceivable, modalService);
+    super(route, langService, AppRoles.Reports_AccountsReceivables, modalService);
     this.itemForm = this.formBuilder.group({
       branchOfficeId: [0],
       paymentTypeId: [0],

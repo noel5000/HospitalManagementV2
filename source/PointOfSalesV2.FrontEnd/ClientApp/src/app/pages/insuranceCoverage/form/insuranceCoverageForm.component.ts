@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { HttpClient } from '@angular/common/http';
@@ -45,9 +45,8 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
        modalService:ModalService
         ){
 
-            super(route, langService, AppSections.Users,modalService);
+            super(route, langService, AppRoles.Config_Insurance,modalService);
             this._route=router;
-            this.section=AppSections.Users;
         this.itemForm = this.formBuilder.group({
             insuranceId: [null],
             id: [0],

@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { UnitService } from '../../../@core/services/UnitService';
@@ -44,8 +44,7 @@ export class UnitIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Units,modalService);
-        this.section=AppSections.Units;
+        super(route, langService, AppRoles.Config_Units,modalService);
         let scope = this;
        
         this.tableConfig=[

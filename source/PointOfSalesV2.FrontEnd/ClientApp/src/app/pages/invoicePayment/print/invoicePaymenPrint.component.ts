@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -59,7 +59,7 @@ export class InvoicePaymentPrintComponent extends BaseComponent implements OnIni
       private  http: HttpClient
         ){
            
-            super(route, langService, AppSections.CustomerPayments,modalService);
+            super(route, langService, AppRoles.Invoices_Payments,modalService);
             this._route=router;
             this.sequence= this._route.snapshot.paramMap.get('sequence');
             this.getCurrent();

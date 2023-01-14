@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import { AppRoles,  ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -51,7 +51,7 @@ export class AccountStateIndexComponent extends BaseComponent implements OnInit 
     modalService: ModalService,
     private customersService: CustomerService,
   ) {
-    super(route, langService, AppSections.AccountState, modalService);
+    super(route, langService, AppRoles.Reports_AccountState, modalService);
     this.itemForm = this.formBuilder.group({
       customerId: [0, [Validators.required, Validators.min(1)]],
     });

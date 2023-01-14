@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates, Operations } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStates, Operations, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -72,7 +72,7 @@ export class InvoiceIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Invoices,modalService);
+        super(route, langService, AppRoles.Invoices,modalService);
         let scope = this;
 
         this.tableConfig=[

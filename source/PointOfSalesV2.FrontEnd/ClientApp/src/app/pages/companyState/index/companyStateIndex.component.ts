@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -45,7 +45,7 @@ export class CompanyStateIndexComponent extends BaseComponent implements OnInit 
         private http:HttpClient,
        modalService:ModalService,
     ) {
-        super(route, langService, AppSections.ResultState,modalService);
+        super(route, langService, AppRoles.Reports_ResultState,modalService);
         this.itemForm = this.formBuilder.group({
        startDate:[''],
        endDate:['']
@@ -55,10 +55,10 @@ export class CompanyStateIndexComponent extends BaseComponent implements OnInit 
  
 onChanges(){
     
-    this.itemForm.get('startDate').valueChanges.subscribe(val => {
+    this.itemForm.get('startDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
-    this.itemForm.get('endDate').valueChanges.subscribe(val => {
+    this.itemForm.get('endDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
 }

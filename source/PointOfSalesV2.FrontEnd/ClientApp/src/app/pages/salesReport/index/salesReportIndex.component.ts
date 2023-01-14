@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -60,7 +60,7 @@ export class SalesReportIndexComponent extends BaseComponent implements OnInit {
         private customersService:CustomerService,
         private branchOfficeService: BranchOfficeService
     ) {
-        super(route, langService, AppSections.AccountsReceivable,modalService);
+        super(route, langService, AppRoles.Reports_Sales,modalService);
         this.itemForm = this.formBuilder.group({
        branchOfficeId:[0],
        customerId:[0],

@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, Validator, FormControl, AbstractCon
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -73,10 +73,10 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
       private warehouseService:WarehouseService
         ){
            
-            super(route, langService, AppSections.CustomersReturns,modalService);
+            super(route, langService, AppRoles.Movements_CustomersReturns,modalService);
             this.verifyUser();
             this.dataToBackup="invoice,details";
-            this.isEditing=this.id && this.id>0;
+            this.isEditing=(this.id && this.id>0?true:false);
            
         this.itemForm = this.formBuilder.group({
             invoiceNumber: [null,[Validators.required]],

@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Currency } from '../../../@core/data/currencyModel';
@@ -43,7 +43,7 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
     itemForm: FormGroup;
     item: any;
     medicalSpecialities:any[]=[];
-    doctorId:number=0;
+    doctorId:string='';
     hospitals:BranchOffice[]=[];
     patientId:number=0;
     customers:Customer[]=[];
@@ -99,15 +99,15 @@ export class appointmentEditFormComponent extends BaseComponent implements OnIni
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.Users,modalService);
+            super(route, langService, AppRoles.Appointments,modalService);
             this._route=router;
-            this.id =parseInt( this._route.snapshot.paramMap.get('id'))>0?parseInt( this._route.snapshot.paramMap.get('id')):0;
+            this.id =parseInt( this._route.snapshot.paramMap.get('id')!)>0?parseInt( this._route.snapshot.paramMap.get('id')!):0;
             if(this.id>0)
             this.getItem();
-            this.doctorId =parseInt( this._route.snapshot.paramMap.get('doctorid'))>0?parseInt( this._route.snapshot.paramMap.get('doctorid')):null;
-            this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid'))>0?parseInt( this._route.snapshot.paramMap.get('patientid')):0;
-            this.fromCheckup =parseInt( this._route.snapshot.paramMap.get('fromcheckup'))>0?parseInt( this._route.snapshot.paramMap.get('fromcheckup')):0;
-            const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date'));
+            this.doctorId =this._route.snapshot.paramMap.get('doctorid')? this._route.snapshot.paramMap.get('doctorid')!:'';
+            this.patientId =parseInt( this._route.snapshot.paramMap.get('patientid')!)>0?parseInt( this._route.snapshot.paramMap.get('patientid')!):0;
+            this.fromCheckup =parseInt( this._route.snapshot.paramMap.get('fromcheckup')!)>0?parseInt( this._route.snapshot.paramMap.get('fromcheckup')!):0;
+            const dateFromUrl=new Date(this._route.snapshot.paramMap.get('date')!);
             let month= (dateFromUrl.getMonth()+1).toString();
             month=month.length>1?month:`0${month}`;
             let day= (dateFromUrl.getDate()).toString();
@@ -241,9 +241,9 @@ grandPatientPaymentAmount:  [0],
 
     async GetProductCost(productId:number){
         const currentProduct = this.products.find(x=>x.id==productId);
-        this.currentProductCost.cost=currentProduct.cost;
+        this.currentProductCost.cost=currentProduct!.cost;
         const {unitId} = this.itemForm.getRawValue();
-        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice: currentProduct.price;
+        this.currentProductPrice.sellingPrice= unitId && unitId>0 && this.productUnits.length>0?this.productUnits.find(x=>x.unitId==unitId).sellingPrice: currentProduct!.price;
         this.refreshAmounts();
     }
 
@@ -330,7 +330,7 @@ grandPatientPaymentAmount:  [0],
 
     async getHospitals(){
         this.branchOfficeService.getAll().subscribe(r=>{
-            this.hospitals=[{id:null, name:""} as BranchOffice];
+            this.hospitals=[{id:0, name:""} as BranchOffice];
             this.hospitals=this.hospitals.concat(r.sort(this.dynamicSort('name')));
             if(r.length==1)
             this.itemForm.patchValue({hospitalId:r[0].id});
@@ -381,23 +381,23 @@ grandPatientPaymentAmount:  [0],
 
 
 
-        this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
+        this.itemForm.get('taxesAmount')!.valueChanges.subscribe(val => {
 
             this.refreshAmounts(true);
 
         });
-    this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
+    this.itemForm.get('beforeTaxesAmount')!.valueChanges.subscribe(val => {
 
             this.refreshAmounts(true);
 
         });
-    this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
+    this.itemForm.get('insuranceCoverageAmount')!.valueChanges.subscribe(val => {
 
             this.refreshAmounts(true);
 
         });
 
-                this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
+                this.itemForm.get('hospitalId')!.valueChanges.subscribe(val => {
 
                     const {medicalSpecialityId} = this.itemForm.getRawValue();
                     if(val && val>0 && medicalSpecialityId && medicalSpecialityId>0 )
@@ -405,7 +405,7 @@ grandPatientPaymentAmount:  [0],
 
                 });
 
-                this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+                this.itemForm.get('medicalSpecialityId')!.valueChanges.subscribe(val => {
 
                     const {hospitalId,type} = this.itemForm.getRawValue();
                     if(hospitalId && hospitalId>0 ){
@@ -414,7 +414,7 @@ grandPatientPaymentAmount:  [0],
                     }
                 });
 
-                this.itemForm.get('type').valueChanges.subscribe(val => {
+                this.itemForm.get('type')!.valueChanges.subscribe(val => {
                     this.products=[];
                     this.doctors=[];
                     const {hospitalId,medicalSpecialityId} = this.itemForm.getRawValue();
@@ -448,7 +448,7 @@ grandPatientPaymentAmount:  [0],
 
                 });
 
-                this.itemForm.get('patientId').valueChanges.subscribe(val => {
+                this.itemForm.get('patientId')!.valueChanges.subscribe(val => {
                     this.details=[];
                     this.itemForm.patchValue({
                         grandBeforeTaxesAmount:  0,
@@ -492,15 +492,15 @@ grandPatientPaymentAmount:  [0],
 
 
 
-        this.itemForm.get('productId').valueChanges.subscribe(val => {
+        this.itemForm.get('productId')!.valueChanges.subscribe(val => {
             if(val && val>0){
                 const product= this.products.find(x=>x.id==val);
                 this.itemForm.patchValue({
                     insuranceCoverageAmount:0,
-                    beforeTaxesAmount:product.price,
+                    beforeTaxesAmount:product!.price,
                     totalAmount:0,
                     taxesAmount:0,
-                    productPrice:product.price,
+                    productPrice:product!.price,
                 })
 
                 this.productTaxes=[];
@@ -517,7 +517,7 @@ grandPatientPaymentAmount:  [0],
 
 
       setMedicalSpecialityChanges(){
-        this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+        this.itemForm.get('medicalSpecialityId')!.valueChanges.subscribe(val => {
 
             const {hospitalId,type} = this.itemForm.getRawValue();
             if(hospitalId && hospitalId>0 ){
@@ -650,8 +650,8 @@ grandPatientPaymentAmount:  [0],
     }
 
     verifyTotalAmount(){
-        const calculatedAmount= this.itemForm.get('totalAmountCalc')?this.itemForm.get('totalAmountCalc').value:0;
-        const total= this.itemForm.get('totalAmount')?this.itemForm.get('totalAmount').value:0;
+        const calculatedAmount= this.itemForm.get('totalAmountCalc')?this.itemForm.get('totalAmountCalc')!.value:0;
+        const total= this.itemForm.get('totalAmount')?this.itemForm.get('totalAmount')!.value:0;
 
     }
     save(){

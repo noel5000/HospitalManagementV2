@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates, ODataComparers, Operations } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStates, ODataComparers, Operations, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -73,7 +73,7 @@ export class QuotesIndexComponent extends BaseComponent implements OnInit {
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.Quotes,modalService);
+        super(route, langService, AppRoles.Quotes,modalService);
         let scope = this;
 
         this.tableConfig=[

@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { UnitService } from '../../../@core/services/UnitService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { Unit } from '../../../@core/data/unitModel';
@@ -34,9 +34,8 @@ export class UnitFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService
         ){
            
-            super(route, langService, AppSections.Units,modalService);
+            super(route, langService, AppRoles.Config_Units,modalService);
             this._route=router;
-            this.section=AppSections.Units;
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(1), Validators.maxLength(50)]],
             id: [0]

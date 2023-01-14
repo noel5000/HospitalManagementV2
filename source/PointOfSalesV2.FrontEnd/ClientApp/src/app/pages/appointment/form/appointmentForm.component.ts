@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers, BillingStates } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, BillingStates, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -46,7 +46,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
   searchCustomerSubject$: Subject<string> = new Subject<string>();
   item: any;
   medicalSpecialities: any[] = [];
-  doctorId: number = 0;
+  doctorId: string ='';
   hospitals: BranchOffice[] = [];
   patientId: number = 0;
   customers: Customer[] = [];
@@ -101,12 +101,12 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
     private http: HttpClient
   ) {
 
-    super(route, langService, AppSections.Users, modalService);
+    super(route, langService, AppRoles.Appointments, modalService);
     this._route = router;
 
-    this.doctorId = parseInt(this._route.snapshot.paramMap.get('doctorid')) > 0 ? parseInt(this._route.snapshot.paramMap.get('doctorid')) : null;
-    this.patientId = parseInt(this._route.snapshot.paramMap.get('patientid')) > 0 ? parseInt(this._route.snapshot.paramMap.get('patientid')) : 0;
-    const dateFromUrl = new Date(this._route.snapshot.paramMap.get('date'));
+    this.doctorId = this._route.snapshot.paramMap.get('doctorid') ? this._route.snapshot.paramMap.get('doctorid') : '';
+    this.patientId = parseInt(this._route.snapshot.paramMap.get('patientid')!) > 0 ? parseInt(this._route.snapshot.paramMap.get('patientid')!) : 0;
+    const dateFromUrl = new Date(this._route.snapshot.paramMap.get('date')!);
     let month = (dateFromUrl.getMonth() + 1).toString();
     month = month.length > 1 ? month : `0${month}`;
     let day = (dateFromUrl.getDate()).toString();
@@ -201,7 +201,7 @@ export class appointmentFormComponent extends BaseComponent implements OnInit {
 
   async GetProductCost(productId: number) {
     const currentProduct = this.products.find(x => x.id == productId);
-    this.currentProductCost.cost = currentProduct.cost;
+    this.currentProductCost.cost = currentProduct!.cost;
     const { unitId } = this.itemForm.getRawValue();
     this.currentProductPrice.sellingPrice = unitId && unitId > 0 && this.productUnits.length > 0 ? this.productUnits.find(x => x.unitId == unitId).sellingPrice : currentProduct.price;
     this.refreshAmounts();
@@ -364,23 +364,23 @@ selectedPatient:any=null;
 
   onChanges(): void {
 
-    this.itemForm.get('taxesAmount').valueChanges.subscribe(val => {
+    this.itemForm.get('taxesAmount')!.valueChanges.subscribe(val => {
 
       this.refreshAmounts(true);
 
     });
-    this.itemForm.get('beforeTaxesAmount').valueChanges.subscribe(val => {
+    this.itemForm.get('beforeTaxesAmount')!.valueChanges.subscribe(val => {
 
       this.refreshAmounts(true);
 
     });
-    this.itemForm.get('insuranceCoverageAmount').valueChanges.subscribe(val => {
+    this.itemForm.get('insuranceCoverageAmount')!.valueChanges.subscribe(val => {
 
       this.refreshAmounts(true);
 
     });
 
-    this.itemForm.get('hospitalId').valueChanges.subscribe(val => {
+    this.itemForm.get('hospitalId')!.valueChanges.subscribe(val => {
 
       const { medicalSpecialityId } = this.itemForm.getRawValue();
       if (val && val > 0 && medicalSpecialityId && medicalSpecialityId > 0)
@@ -388,7 +388,7 @@ selectedPatient:any=null;
 
     });
 
-    this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+    this.itemForm.get('medicalSpecialityId')!.valueChanges.subscribe(val => {
 
       const { hospitalId, type } = this.itemForm.getRawValue();
       if (hospitalId && hospitalId > 0) {
@@ -397,7 +397,7 @@ selectedPatient:any=null;
       }
     });
 
-    this.itemForm.get('type').valueChanges.subscribe(val => {
+    this.itemForm.get('type')!.valueChanges.subscribe(val => {
       this.products = [];
       this.doctors = [];
       const { hospitalId, medicalSpecialityId } = this.itemForm.getRawValue();
@@ -431,7 +431,7 @@ selectedPatient:any=null;
 
     });
 
-    this.itemForm.get('patientId').valueChanges.subscribe(val => {
+    this.itemForm.get('patientId')!.valueChanges.subscribe(val => {
       this.details = [];
       this.itemForm.patchValue({
         grandBeforeTaxesAmount: 0,
@@ -475,7 +475,7 @@ selectedPatient:any=null;
 
 
 
-    this.itemForm.get('productId').valueChanges.subscribe(val => {
+    this.itemForm.get('productId')!.valueChanges.subscribe(val => {
       if (val && val > 0) {
         const product = this.products.find(x => x.id == val);
         this.itemForm.patchValue({
@@ -500,7 +500,7 @@ selectedPatient:any=null;
 
 
   setMedicalSpecialityChanges() {
-    this.itemForm.get('medicalSpecialityId').valueChanges.subscribe(val => {
+    this.itemForm.get('medicalSpecialityId')!.valueChanges.subscribe(val => {
 
       const { hospitalId, type } = this.itemForm.getRawValue();
       if (hospitalId && hospitalId > 0) {
@@ -632,8 +632,8 @@ selectedPatient:any=null;
   }
 
   verifyTotalAmount() {
-    const calculatedAmount = this.itemForm.get('totalAmountCalc') ? this.itemForm.get('totalAmountCalc').value : 0;
-    const total = this.itemForm.get('totalAmount') ? this.itemForm.get('totalAmount').value : 0;
+    const calculatedAmount = this.itemForm.get('totalAmountCalc') ? this.itemForm.get('totalAmountCalc')!.value : 0;
+    const total = this.itemForm.get('totalAmount') ? this.itemForm.get('totalAmount')!.value : 0;
 
   }
   save() {

@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, Operations, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
@@ -42,7 +42,7 @@ export class BranchOfficeIndexComponent extends BaseComponent implements OnInit 
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.BranchOffices,modalService);
+        super(route, langService, AppRoles.Config_Hospitals,modalService);
         let scope = this;
        
         this.tableConfig=[

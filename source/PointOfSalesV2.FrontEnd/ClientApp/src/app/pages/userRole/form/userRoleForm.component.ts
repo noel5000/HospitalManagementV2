@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, QueryFilter, ObjectTypes, ODataComparers } from '../../../@core/common/enums';
+import {  QueryFilter, ObjectTypes, ODataComparers, AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { BaseService } from '../../../@core/services/baseService';
@@ -49,7 +49,7 @@ export class UserRoleFormComponent extends BaseComponent implements OnInit {
       private  http: HttpClient
         ){
 
-            super(route, langService, AppSections.UserRoles,modalService);
+            super(route, langService, AppRoles.Authorization_users,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             userName: [''],

@@ -5,7 +5,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, ODataComparers, QueryFilter } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { ZoneService } from '../../../@core/services/zoneService';
@@ -85,7 +85,7 @@ export class patientCheckupFormComponent extends BaseComponent implements OnInit
     modalService: ModalService
   ) {
 
-    super(route, langService, AppSections.PatientCheckup, modalService);
+    super(route, langService, AppRoles.Patient_Checkup, modalService);
     this._route = router;
     this.itemForm = this.formBuilder.group({
       doctorName: [''],

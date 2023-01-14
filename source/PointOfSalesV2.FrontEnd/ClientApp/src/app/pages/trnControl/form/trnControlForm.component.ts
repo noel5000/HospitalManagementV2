@@ -6,7 +6,7 @@ import { LanguageService } from '../../../@core/services/translateService';
 import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections } from '../../../@core/common/enums';
+import { AppRoles } from '../../../@core/common/enums';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalService } from '../../../@core/services/modal.service';
 import { TRNControl } from '../../../@core/data/trnControlModel';
@@ -34,7 +34,7 @@ export class TRNControlFormComponent extends BaseComponent implements OnInit {
        modalService:ModalService
         ){
            
-            super(route, langService, AppSections.TRNControl,modalService);
+            super(route, langService, AppRoles.Config_TrnControl,modalService);
             this._route=router;
         this.itemForm = this.formBuilder.group({
             name: ['',[ Validators.required,Validators.minLength(3), Validators.maxLength(50)]],

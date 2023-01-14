@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { AppSections, Operations } from '../common/enums';
+import {  Operations } from '../common/enums';
 
 export class User {
   name: string = '';
@@ -36,10 +36,8 @@ export class User {
 
 export class UserOperation {
   operationId: number;
-  sectionId: number;
-  sectionName = (): string => {
-    return AppSections[this.sectionId];
-  }
+  controllers: string;
+  roleId:number;
   operationName = (): string => {
     return Operations[this.operationId];
   }

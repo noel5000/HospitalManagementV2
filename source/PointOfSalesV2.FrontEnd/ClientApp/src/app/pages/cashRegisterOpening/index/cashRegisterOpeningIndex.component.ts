@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates, Operations } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStates, CashRegisterOpeningStates, Operations, AppRoles } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { CashRegisterOpening } from '../../../@core/data/CashRegisterOpening';
@@ -65,7 +65,7 @@ export class CashRegisterOpeningIndexComponent extends BaseComponent implements 
         private  http: HttpClient,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.CashRegisterOpenings,modalService);
+        super(route, langService, AppRoles.CashRegister_OpenClose,modalService);
         let scope = this;
        
         this.tableConfig=[

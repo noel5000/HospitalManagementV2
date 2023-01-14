@@ -1,6 +1,6 @@
 import { Component, OnInit , Inject } from '@angular/core';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import { AppSections, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
+import {  AppRoles, ObjectTypes, QueryFilter } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { Router } from '@angular/router';
 import { basename } from 'path';
@@ -70,7 +70,7 @@ export class CustomerListIndexComponent extends BaseComponent implements OnInit 
         private modals:NgbModal,
        modalService:ModalService
     ) {
-        super(route, langService, AppSections.PriceList,modalService);
+        super(route, langService, AppRoles.Reports_Prices,modalService);
         let scope = this;
        
         this.tableConfig=[

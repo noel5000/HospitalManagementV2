@@ -24,6 +24,7 @@ namespace PointOfSalesV2.Repository
                         
                          new UserOperation()
                         {
+                             RoleId= x.RoleId,
                            Controllers=x.Section,
                            OperationId=x.OperationId,
                            OperationName=x.Operation.Name
