@@ -461,8 +461,8 @@ namespace PointOfSalesV2.Repository
 
                         _Context.UnitProductsEquivalences.RemoveRange((_Context.UnitProductsEquivalences.AsNoTracking().Where(x => x.ProductId == id)));
                         await _Context.SaveChangesAsync();
-
-                        var removeResult = await this.RemoveAsync(product);
+                        product.Active = false;
+                        var removeResult = await base.UpdateAsync(product);
                         if (removeResult.Status < 0) 
                         {
                             await tran.RollbackAsync();

@@ -38,9 +38,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\i18N\EN.json" />
+    <Content Remove="wwwroot\i18N\ES.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="ClientApp\dist\" />
     <Folder Include="logs\" />
     <Folder Include="wwwroot\Files\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\i18N\EN.json" />
+    <None Include="wwwroot\i18N\ES.json" />
   </ItemGroup>
 
   <ItemGroup>

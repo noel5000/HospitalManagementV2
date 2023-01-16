@@ -81,7 +81,7 @@ export class insuranceCoverageFormComponent extends BaseComponent implements OnI
                     const currency= this.currencies.find(x=>x.id==currencyId);
                     const rate =(principalCurrency && currency)? principalCurrency.exchangeRate/currency.exchangeRate:1;
                     if(product){
-                        this.productPrices=[product.price/rate,product.price2/rate,product.price3/rate];
+                        this.productPrices=[product.price * rate,product.price2 * rate,product.price3 * rate];
                         this.productPrices=this.productPrices.filter(x=>x && x>0);
                         if(this.productPrices.length==1)
                         this.itemForm.patchValue({consultationPrice:this.productPrices[0]})

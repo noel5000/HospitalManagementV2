@@ -50,7 +50,8 @@ export class PagesComponent {
           {
             title: this.lang.getValueByKey('patients_menu'),
             link: 'customer',
-            hidden: !this.securityService.isUserValidInMenu(AppRoles.Config_Patients)
+            hidden: !this.securityService.isUserValidInMenu(AppRoles.Appointments) &&
+            !this.securityService.isUserValidInMenu(AppRoles.Config_Patients)
           },
           {
             title: this.lang.getValueByKey('appointment_menu'),

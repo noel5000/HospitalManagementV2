@@ -5,7 +5,7 @@
 @{Invoice invoice = ViewBag.Invoice;}
 @{
     Layout = null;
-    List<LanguageKey> languageKeys = ViewBag.LanguageKeys;
+   Dictionary<string,string> languageKeys = ViewBag.LanguageKeys;
     string language = (string)(ViewBag.CurrentLanguage);
 }
 

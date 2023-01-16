@@ -4,14 +4,25 @@ import { Router } from '@angular/router';
 import { AppRoles } from '../../@core/common/enums';
 import { LanguageService } from './../../@core/services/translateService';
 import { ModalService } from '../../@core/services/modal.service';
-
+import { SecurityService } from '../../@core/services/securityService';
 @Component({
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent extends BaseComponent {
-  constructor(@Inject('BASE_URL') private baseUrl: string,route: Router, lang: LanguageService, modaService:ModalService) {
+  constructor(@Inject('BASE_URL') private baseUrl: string,
+  route: Router, 
+  lang: LanguageService,
+  private securityService: SecurityService,
+   modaService:ModalService) {
     super(route, lang, AppRoles.DashBoard,modaService);
+  }
+
+  permits:any={
+    Config_Patients:AppRoles.Config_Patients,
+    Appointments:AppRoles.Appointments,
+    Invoices:AppRoles.Invoices,
+    Invoices_Payments:AppRoles.Invoices_Payments
   }
 
   async navigate(e: string) {

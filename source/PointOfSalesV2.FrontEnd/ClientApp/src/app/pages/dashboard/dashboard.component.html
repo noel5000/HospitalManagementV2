@@ -1,18 +1,18 @@
 <div class="row">
 
-  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('patients')">
+  <div class="col-xs-4 col-md-3 text-center m-2" *ngIf="securityService.isUserValidInMenu(permits.Config_Patients) || securityService.isUserValidInMenu(permits.Appointments) " (click)="navigate('patients')">
     <img style="max-width:40%;" src="../../../../assets/images/patients.svg">
     <h3 class="">{{'patient_lbl' | translate}}</h3>
   </div>
-  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('appointments')">
+  <div class="col-xs-4 col-md-3 text-center m-2" *ngIf="securityService.isUserValidInMenu(permits.Appointments)" (click)="navigate('appointments')">
     <img style="max-width:40%;" src="../../../../assets/images/appointments.svg">
     <h3 class="">{{'appointments_lbl' | translate}}</h3>
   </div>
-  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('invoices')">
+  <div class="col-xs-4 col-md-3 text-center m-2" *ngIf="securityService.isUserValidInMenu(permits.Invoices)" (click)="navigate('invoices')">
     <img style="max-width:40%;" src="../../../../assets/images/invoice.svg">
     <h3 class="">{{'invoices_menu' | translate}}</h3>
   </div>
-  <div class="col-xs-4 col-md-3 text-center m-2" (click)="navigate('payments')">
+  <div class="col-xs-4 col-md-3 text-center m-2" *ngIf="securityService.isUserValidInMenu(permits.Invoices_Payments)" (click)="navigate('payments')">
     <img style="max-width:40%;" src="../../../../assets/images/hand_with_bills.svg">
     <h3 class="">{{'customerPayment_menu' | translate}}</h3>
   </div>

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using PointOfSalesV2.Entities;
 using PointOfSalesV2.Repository;
 using static PointOfSalesV2.Common.Enums;
@@ -15,23 +17,32 @@ namespace PointOfSalesV2.Controllers
     public class ViewsController : Controller
     {
         readonly IDataRepositoryFactory dataRepository;
+        IWebHostEnvironment hostingEnvironment;
         IHttpContextAccessor httpContextAccessor;
         IMemoryCache memoryCache;
-        List<LanguageKey> languageKeys;
+        Dictionary<string,string> languageKeys;
         
-        public ViewsController(IDataRepositoryFactory dataRepositoryFactory, IHttpContextAccessor context, IMemoryCache _cache) : base() 
+        public ViewsController(IWebHostEnvironment appEnviroment, IDataRepositoryFactory dataRepositoryFactory, IHttpContextAccessor context, IMemoryCache _cache) : base() 
         {
+            this.hostingEnvironment = appEnviroment;
             this.dataRepository = dataRepositoryFactory;
             this.httpContextAccessor = context;
             this.memoryCache = _cache;
-            languageKeys = memoryCache.Get<List<LanguageKey>>("languageKeysMem");
-            if (languageKeys == null) 
-            {
-                this.languageKeys = dataRepository.GetDataRepositories<LanguageKey>().GetAll(x => x, y => y.Active == true).Data.ToList();
-                memoryCache.Set("languageKeysMem", languageKeys);
-            }
+           
                 
            
+        }
+
+        Dictionary<string, string> GetDictionary(string language) 
+        {
+            languageKeys = (memoryCache.Get("languageKeysMem")) as Dictionary<string,string>;
+            if (languageKeys == null)
+            {
+                languageKeys = JsonConvert.DeserializeObject<Dictionary<string,string>>( System.IO.File.ReadAllText(Path.Combine(hostingEnvironment.WebRootPath, $"i18N/{language.ToUpper()}.json")));
+
+                memoryCache.Set("languageKeysMem", languageKeys,DateTimeOffset.Now.AddHours(4));
+            }
+            return languageKeys;
         }
         public IActionResult Index()
         {
@@ -48,7 +59,7 @@ namespace PointOfSalesV2.Controllers
             .Include(i => i.Seller).Include(i => i.Currency)
             .Include(i => i.InvoiceDetails).ThenInclude(d => d.Product)
             .Include(i => i.InvoiceDetails).ThenInclude(x => x.Unit), y => y.Active == true && y.Id == id) ?? new Invoice();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             invoice.InvoiceDetails = invoice.InvoiceDetails.Where(x => x.Active == true).ToList();
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Invoice = invoice;
@@ -62,14 +73,16 @@ namespace PointOfSalesV2.Controllers
 
             var appointmentRepo = dataRepository.GetDataRepositories<Appointment>();
             var appointment = await appointmentRepo.GetAsync(x =>
-            x.Include(t => t.Patient).Include(t => t.Insurance).Include(t => t.InsurancePlan).Include(t => t.Hospital)
+            x.Include(t => t.Patient)
+            .Include(t => t.Insurance)
+            .Include(t => t.InsurancePlan)
+            .Include(t => t.Hospital)
            .Include(t => t.Currency)
            .Include(t => t.Details).ThenInclude(d => d.Doctor)
            .Include(t => t.Details).ThenInclude(d => d.Product)
            .Include(t => t.Details).ThenInclude(d => d.MedicalSpeciality)
             , y => y.Active == true && y.Id == id) ?? new Appointment();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
-
+            var selectedLanguageKeys = this.GetDictionary(language);
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Appointment = appointment;
             ViewBag.CurrentLanguage = language;
@@ -88,7 +101,7 @@ namespace PointOfSalesV2.Controllers
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id) ?? new PatientCheckup();
             checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'M').ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             checkup.Appointment = checkup.Appointment != null ? checkup.Appointment : new Appointment()
             {
                 Active = true,
@@ -122,7 +135,7 @@ namespace PointOfSalesV2.Controllers
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id) ?? new PatientCheckup();
             checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'E').ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             checkup.Appointment = checkup.Appointment != null ? checkup.Appointment : new Appointment()
             {
                 Active = true,
@@ -156,7 +169,7 @@ namespace PointOfSalesV2.Controllers
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id) ?? new PatientCheckup();
             checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'C').ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             checkup.Appointment = checkup.Appointment != null ? checkup.Appointment : new Appointment()
             {
                 Active = true,
@@ -190,7 +203,7 @@ namespace PointOfSalesV2.Controllers
             .Include(t => t.CheckupPrescriptions).ThenInclude(r => r.Product)
             , y => y.Active == true && y.Id == id) ?? new PatientCheckup();
             checkup.CheckupPrescriptions = checkup.CheckupPrescriptions == null ? new List<CheckupPrescription>() : checkup.CheckupPrescriptions.Where(x => x.Active == true && x.Type == 'L').ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             checkup.Appointment = checkup.Appointment != null ? checkup.Appointment : new Appointment()
             {
                 Active = true,
@@ -218,7 +231,7 @@ namespace PointOfSalesV2.Controllers
 
             var invoiceRepo = dataRepository.GetDataRepositories<Expense>();
             var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Supplier).Include(i => i.Currency), y => y.Active == true && y.Id == id) ?? new Expense();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Expense = invoice;
             ViewBag.CurrentLanguage = language;
@@ -231,7 +244,7 @@ namespace PointOfSalesV2.Controllers
 
             var paymentsRepo = dataRepository.GetDataRepositories<CustomerPayment>();
             var payments = (await paymentsRepo.GetAllAsync(x => x.Include(p => p.Customer).Include(p => p.Currency).Include(p => p.Seller).Include(p => p.Invoice), y => y.Active == true && y.Sequence.ToLower() == sequence.ToLower() && y.State == (char)BillingStates.Paid)).Data.ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Payments = payments;
             ViewBag.CurrentLanguage = language;
@@ -246,7 +259,7 @@ namespace PointOfSalesV2.Controllers
             var invoice = await invoiceRepo.GetAsync(x => x.Include(i => i.Supplier).Include(i => i.Currency)
             .Include(i => i.Payments), y => y.Active == true && y.Id == id);
             invoice.Payments = invoice.Payments.Where(y => y.Active == true).ToList();
-            var selectedLanguageKeys = languageKeys.Where(x => x.LanguageCode.ToLower() == language.ToLower()).ToList();
+            var selectedLanguageKeys = this.GetDictionary(language);
             ViewBag.LanguageKeys = selectedLanguageKeys;
             ViewBag.Expense = invoice;
             ViewBag.CurrentLanguage = language;
