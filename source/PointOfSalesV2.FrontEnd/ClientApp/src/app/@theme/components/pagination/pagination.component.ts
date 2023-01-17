@@ -21,9 +21,10 @@ import { BaseService } from '../../../@core/services/baseService';
 import { HttpClient } from '@angular/common/http';
 import { endpointControllers, endpointUrl } from '../../../@core/common/constants';
 import { AuthModel } from '../../../@core/data/authModel';
-import {  ObjectTypes, BillingStates } from '../../../@core/common/enums';
+import { ObjectTypes, BillingStates } from '../../../@core/common/enums';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { fromEvent } from 'rxjs';
+import { isBoolean } from 'util';
 
 
 
@@ -119,6 +120,20 @@ export class PaginationCompoment implements AfterViewInit {
       )
       .subscribe();
   }
+
+  isMobileScreen(widthInPixels: number = 900) {
+    const mobileUserAgents = ["android", "iphone", "ipad", "ipod", "windows phone", 'mobile']
+    let isMobile = window.innerWidth <= widthInPixels;
+    for (let i = 0; i < mobileUserAgents.length; i++) {
+
+      if (navigator.userAgent.toLowerCase().includes(mobileUserAgents[i])) {
+        isMobile = true;
+        break;
+      }
+    }
+    return isMobile;
+  }
+
 
   getTranslation(key: string) {
     return this.lang.getValueByKey(key);
