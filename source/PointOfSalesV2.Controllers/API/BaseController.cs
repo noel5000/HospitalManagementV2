@@ -38,7 +38,7 @@ namespace PointOfSalesV2.Controllers
             _appSettings = appSettings;
             _repositoryFactory = repositoryFactory;
             this.languageKeysRepo = repositoryFactory.GetDataRepositories<LanguageKey>();
-            this.languageKeys = _cache.Get<IEnumerable<LanguageKey>>("languageKeysMem");
+            this.languageKeys = _cache.Get("languageKeysMem") as IEnumerable<LanguageKey>;
             if (this.languageKeys == null)
             {
                 this.languageKeys = this.languageKeysRepo.GetAll(x => x, y => y.Active == true).Data;

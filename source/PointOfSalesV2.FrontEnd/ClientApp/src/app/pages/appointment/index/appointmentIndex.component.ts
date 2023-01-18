@@ -20,7 +20,7 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { BaseComponent } from '../../../@core/common/baseComponent';
-import {  ObjectTypes, QueryFilter, BillingStatesColors, BillingStates, ODataComparers, AppRoles } from '../../../@core/common/enums';
+import {  ObjectTypes, QueryFilter, BillingStatesColors, BillingStates, ODataComparers, AppRoles, Operations } from '../../../@core/common/enums';
 import { LanguageService } from '../../../@core/services/translateService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BranchOfficeService } from '../../../@core/services/branchOfficeService';
@@ -81,9 +81,167 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   selectedAppointments: any[] = [];
   appointments: any[] = [];
   view: CalendarView = CalendarView.Month;
+  tableConfig:IPaginationModel[]=[
+    {
+      visible:true,
+      id:'doctorName',
+      type:'text',
+      isTranslated:false,
+      name:this.lang.getValueByKey('doctor_lbl'),
+      sorting:'desc',
+      toSort:false,
+      objectType:ObjectTypes.String,
+      filterIsActive:false
+    },
+    {
+        visible:true,
+        id:'medicalSpecialityName',
+        type:'text',
+        isTranslated:false,
+        name:this.lang.getValueByKey('medicalSpecialities_menu'),
+        sorting:'desc',
+        toSort:false,
+        objectType:ObjectTypes.String,
+        filterIsActive:false
+      },
+      {
+          visible:true,
+          id:'productName',
+          type:'text',
+          isTranslated:true,
+          name:this.lang.getValueByKey('consultation_lbl'),
+          sorting:'desc',
+          toSort:false,
+          objectType:ObjectTypes.String,
+          filterIsActive:false
+        },
+        {
+            visible:true,
+            id:'patientName',
+            type:'text',
+            isTranslated:false,
+            name:this.lang.getValueByKey('patient_lbl'),
+            sorting:'desc',
+            toSort:false,
+            objectType:ObjectTypes.String,
+            filterIsActive:false
+          },
+          {
+              visible:true,
+              id:'insuranceName',
+              type:'text',
+              isTranslated:false,
+              name:this.lang.getValueByKey('insurance_lbl'),
+              sorting:'desc',
+              toSort:false,
+              objectType:ObjectTypes.String,
+              filterIsActive:false
+            },
+            {
+                visible:true,
+                id:'insurancePlanName',
+                type:'text',
+                isTranslated:false,
+                name:this.lang.getValueByKey('insurancePlan_lbl'),
+                sorting:'desc',
+                toSort:false,
+                objectType:ObjectTypes.String,
+                filterIsActive:false
+              }
 
+              ,
+            {
+                visible:true,
+                id:'appointmentHourString',
+                type:'text',
+                isTranslated:false,
+                name:this.lang.getValueByKey('time_lbl'),
+                sorting:'desc',
+                toSort:false,
+                objectType:ObjectTypes.String,
+                filterIsActive:false
+              },
+            {
+                visible:true,
+                id:'totalAmount',
+                type:'number',
+                isTranslated:false,
+                name:this.lang.getValueByKey('totalAmount_lbl'),
+                sorting:'desc',
+                toSort:false,
+                objectType:ObjectTypes.String,
+                filterIsActive:false
+              },
+              {
+                  visible:true,
+                  id:'state',
+                  type:'text',
+                  isTranslated:false,
+                  name:this.lang.getValueByKey('state_lbl'),
+                  sorting:'desc',
+                  toSort:false,
+                  objectType:ObjectTypes.String,
+                  filterIsActive:false,
+                  customText:(item)=>{
+                    return this.lang.getValueByKey(`billingState${item.state}_lbl`);
+                }
+              }
+            ];
+            modalActions:IActionButtonModel[]=[
+              {
+                title:this.lang.getValueByKey('attend_btn'),
+                class:'btn btn-success mx-1 my-1',
+                icon:'',
+                id:'attend',
+                visible:(item)=>{
+                    return  (item.state=='S' || item.state=='F'  || item.state=='E') && item.appointmentType=='C' && this.isUserValidOperation(Operations.ATTENDPATIENT);
+                }
+            },
+              {
+                  title:this.lang.getValueByKey('edit_btn'),
+                  class:'btn btn-primary mx-1 my-1',
+                  icon:'',
+                  id:'edit',
+                  visible:(item)=>{
+                      return (item.state=='S' || item.state=='F'  || item.state=='E') && this.permits.update;
+                  }
+              },
+              {
+                  title:this.lang.getValueByKey('delete_btn'),
+                  class:'btn btn-danger mx-1 my-1',
+                  icon:'',
+                  id:'delete',
+                  visible:(item)=>{
+                      return (item.state=='S'  || item.state=='E') && this.permits.delete;
+                  }
+              },
+
+              {
+                title:this.lang.getValueByKey('print_lbl'),
+                class:'btn btn-info mx-1 my-1',
+                icon:'',
+                id:'print',
+            }
+          ];
   CalendarView = CalendarView;
-
+  rowAction(e){
+    if(e && e.action && e.item){
+        switch(e.action.id){
+            case 'edit':
+                this.editAppointment(e.item);
+                break;
+            case 'delete':
+                this.removeAppointment(e.item);
+                break;
+                case 'attend':
+                    this.attendAppointment(e.item);
+                    break;
+                    case 'print':
+                        this.printAppointment(e.item);
+                        break;
+        }
+    }
+}
 
   viewDate: Date = new Date();
 
@@ -146,9 +304,9 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
       this.changes.detectChanges();
     })
   }
- 
+
   async getPatientsByName(name: string) {
-    
+
     if (name) {
       const filter = [
         {
@@ -182,8 +340,8 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   selectedCustomer:any=null;
 
   async selectPatient(patient: any) {
-    if (patient) 
-      this.itemForm.patchValue({ patientId: patient.id });    
+    if (patient)
+      this.itemForm.patchValue({ patientId: patient.id });
     else
       this.itemForm.patchValue({ patientId: 0 });
 
@@ -265,7 +423,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   save() { }
 
   ngOnInit(): void {
-  
+
     this.verifyUser();
     this.getHospitals();
     this.getMonthAppointments();

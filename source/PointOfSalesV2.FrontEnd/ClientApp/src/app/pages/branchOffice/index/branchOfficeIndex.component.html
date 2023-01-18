@@ -6,7 +6,7 @@
         <button type="button" class="btn btn-primary" *ngIf="this.permits.add" (click)="addNew()">{{'add_btn' | translate}}</button>
     </div>
     </div>
-   
+
   </nb-card-header>
 
   <nb-card-body>
@@ -20,12 +20,9 @@
 (getPagedDataEvent)="getPagedData($event)"
 (addFilterEvent)="addFilter($event)"
 (onSortEvent)="onSort($event)"
-(actionFuncEvent)="rowAction($event)"
+(actionFuncEvent)="rowAction($event)">
 
->
-
-</custom-pagination
->
+</custom-pagination>
   </nb-card-body>
 </nb-card>
 

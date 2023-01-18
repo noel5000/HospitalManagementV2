@@ -1,7 +1,7 @@
 
-  
+
 <div class="scrollTableMobile divBody" id="accountState">
-  <div id="columnsVisibility" class="dontPrint" style="border-bottom-style: groove;">
+  <div id="columnsVisibility" class="dontPrint" *ngIf="showColumnsSelector">
     <div ngbDropdown class="d-inline-block">
       <button class="btn btn-outline-primary  my-2" id="columnsSelection" ngbDropdownToggle>{{getTranslation('selectColumns_lbl')}}</button>
       <div ngbDropdownMenu aria-labelledby="columnsSelection">
@@ -17,7 +17,7 @@
         <thead>
           <tr class="dontPrint">
             <ng-container *ngFor="let header of tableConfig">
-              <td *ngIf="header.visible">
+              <td *ngIf="header.filterIsActive">
                 <input class="form-control headersFilter" [type]="header.type" [id]="header.id">
               </td>
             </ng-container>
@@ -54,27 +54,29 @@
   </ng-template>
 
   <ng-template #mobileTable>
-    <div *ngFor="let item of data" class="row" style="border-bottom-style:groove;">
-      <ng-container *ngFor="let prop of tableConfig">
+
+    <div *ngFor="let item of data" class="">
+      <div *ngFor="let prop of tableConfig" class="row customRow">
           <div class="col-6" *ngIf="prop.visible" style="font-weight: bold;">
             {{prop.name}}
           </div>
           <div class="col-6" *ngIf="prop.visible">
             {{showValue(item,prop) }}
           </div>
-        
-       
-      </ng-container>   
+      </div>
       <ng-container>
-        <div *ngIf="showActions" class="row mx-3 text-center">
-          <div *ngFor="let action of actions" class="btn-group  btn-group-sm  btn-group-lg text-center" [hidden]=" !verifyAction(action,item)">
-            <a [class]="action.class" (click)="onActionClick(action,item)" [title]="action.title"><i [class]="action.icon"></i> <span class="option">{{action.title}}</span> </a>
+        <div *ngIf="showActions" class="row mx-3">
+          <div style="margin: auto !important;">
+            <div *ngFor="let action of actions"  class="btn-group  btn-group-sm  btn-group-lg text-center" [hidden]=" !verifyAction(action,item)">
+              <a [class]="action.class" (click)="onActionClick(action,item)" [title]="action.title"><i [class]="action.icon"></i> <span class="option">{{action.title}}</span> </a>
+            </div>
           </div>
+
         </div>
       </ng-container>
     </div>
   </ng-template>
-  
+
   <ngb-pagination class="dontPrint  "
                   *ngIf="isPaginated"
                   [(page)]="pageNumber"
@@ -83,6 +85,12 @@
                   (pageChange)="getPagedData($event)"></ngb-pagination>
 
 </div>
-      
+
+<style>
+  .customRow{
+    border-top:solid 1px black !important;
+  }
+</style>
+
 
 

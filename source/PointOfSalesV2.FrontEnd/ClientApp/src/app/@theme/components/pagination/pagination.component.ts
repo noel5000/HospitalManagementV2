@@ -95,6 +95,7 @@ export class PaginationCompoment implements AfterViewInit {
   @Input() pageSize: number = 10;
   @Input() isPaginated: boolean = true;
   @Input() showActions: boolean = true;
+  @Input() showColumnsSelector: boolean = true;
   @Input() maxCount: number = 0;
   @Input() data: any[] = [];
   @Output() getPagedDataEvent: EventEmitter<any> = new EventEmitter<any>();
