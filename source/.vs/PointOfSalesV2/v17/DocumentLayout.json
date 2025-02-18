@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\noelj\\OneDrive\\Documentos\\GitHub\\HospitalManagementV2\\source\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E11BB432-D256-4D20-8855-71ECDB3843FF}|PointOfSalesV2.Api\\PointOfSalesV2.Api.csproj|c:\\users\\noelj\\onedrive\\documentos\\github\\hospitalmanagementv2\\source\\pointofsalesv2.api\\helpers\\odatahelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E11BB432-D256-4D20-8855-71ECDB3843FF}|PointOfSalesV2.Api\\PointOfSalesV2.Api.csproj|solutionrelative:pointofsalesv2.api\\helpers\\odatahelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OdataHelper.cs",
+              "DocumentMoniker": "C:\\Users\\noelj\\OneDrive\\Documentos\\GitHub\\HospitalManagementV2\\source\\PointOfSalesV2.Api\\Helpers\\OdataHelper.cs",
+              "RelativeDocumentMoniker": "PointOfSalesV2.Api\\Helpers\\OdataHelper.cs",
+              "ToolTip": "C:\\Users\\noelj\\OneDrive\\Documentos\\GitHub\\HospitalManagementV2\\source\\PointOfSalesV2.Api\\Helpers\\OdataHelper.cs",
+              "RelativeToolTip": "PointOfSalesV2.Api\\Helpers\\OdataHelper.cs",
+              "ViewState": "AgIAAE0AAAAAAAAAAAAQwFYAAAB+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-18T12:30:15.29Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -32,3 +32,4 @@ source/PointOfSalesV2.FrontEnd/ClientApp/package-lock.json
 source/PointOfSalesV2.FrontEnd/ClientApp/package-lock.json
 source/.vs/PointOfSalesV2/v17/fileList.bin
 *.vsidx
+/source/PointOfSalesV2.Controllers/obj
