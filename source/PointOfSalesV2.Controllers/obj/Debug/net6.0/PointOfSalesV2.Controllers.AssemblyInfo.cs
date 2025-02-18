@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PointOfSalesV2.Controllers")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+10db244f90de7bd44f7ee00387480f687bbc5ec6")]
 [assembly: System.Reflection.AssemblyProductAttribute("PointOfSalesV2.Controllers")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PointOfSalesV2.Controllers")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
