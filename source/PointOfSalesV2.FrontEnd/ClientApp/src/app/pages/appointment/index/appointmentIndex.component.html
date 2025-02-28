@@ -1,0 +1,181 @@
+<nb-card>
+  <nb-card-header>
+    <div class="form-row">
+      <div class="col-md-6 col-xs-12">{{'appointments_lbl' | translate}}</div>
+
+    </div>
+    <br>
+    <form [formGroup]="itemForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="save()">
+   <div class="row" *ngIf="visible">
+    <div class="form-group col-md-6 col-xs-12">
+      <label>{{'hospital_lbl' | translate}}</label>
+      <select class="form-control"
+      formControlName="branchOfficeId"
+      >
+      <option *ngFor="let branchOffice of hospitals"
+       [value]="branchOffice.id"
+       >{{branchOffice.name}}</option>
+      </select>
+  </div>
+  <div class="form-group col-md-6 col-xs-12">
+    <label>{{'consultationType_lbl' | translate}}</label>
+    <select class="form-control"
+    formControlName="type"
+    >
+    <option *ngFor="let typeObj of types"
+     [value]="typeObj.id"
+     >{{typeObj.name}}</option>
+    </select>
+</div>
+  <div class="form-group col-md-6 col-xs-12">
+    <label>{{'medicalSpecialty_lbl' | translate}}</label>
+    <select class="form-control"
+    formControlName="medicalSpecialityId"
+    >
+    <option *ngFor="let medicalSpeciality of medicalSpecialities"
+     [value]="medicalSpeciality.id"
+     >{{medicalSpeciality.name}}</option>
+    </select>
+</div>
+
+<div class="form-group col-md-6 col-xs-12">
+  <label>{{'doctor_lbl' | translate}}</label>
+  <select class="form-control"
+  formControlName="doctorId"
+  >
+  <option *ngFor="let doctor of doctors"
+   [value]="doctor.userId"
+   >{{doctor.name}} {{doctor.lastName}}</option>
+  </select>
+</div>
+
+<div class="form-group col-md-6 col-xs-12">
+  <label>{{'patient_lbl' | translate}}</label>
+  <custom-auto-complete [items]="patients"
+                        [externalSearch]="true"
+                        [propertyToShow]="'name'"
+                        (onSelectedItem)="selectPatient($event)"
+                        (onFilter)="getPatientsByName($event)"
+                        #patientSearch></custom-auto-complete>
+</div>
+
+   </div>
+
+  </form>
+
+
+
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <div class="btn-group">
+          <div
+            class="btn btn-primary"
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            (viewDateChange)="closeOpenMonthViewDay()"
+          >
+            Previous
+          </div>
+          <div
+            class="btn btn-outline-secondary"
+            mwlCalendarToday
+            [(viewDate)]="viewDate"
+          >
+            Today
+          </div>
+          <div
+            class="btn btn-primary"
+            mwlCalendarNextView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            (viewDateChange)="closeOpenMonthViewDay()"
+          >
+            Next
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+      </div>
+
+    </div>
+    <br />
+    <div >
+      <mwl-calendar-month-view
+        [viewDate]="viewDate"
+        [events]="events"
+        [refresh]="refresh"
+        [activeDayIsOpen]="activeDayIsOpen"
+        (dayClicked)="dayClicked($event.day)"
+        (eventClicked)="handleEvent('Clicked', $event.event)"
+        (eventTimesChanged)="eventTimesChanged($event)"
+        (beforeViewRender)="beforeMonthViewRender($event)"
+      >
+      </mwl-calendar-month-view>
+    </div>
+
+    <!-- Everything you see below is just for the demo, you don't need to include it in your app -->
+
+    <br /><br /><br />
+
+
+
+
+      <div class="row" *ngIf="selectedDate && selectedDate>=today">
+        <div class=" col-md-4 col-sm-12 my-1">
+          <button type="button" class="btn btn-primary" *ngIf="this.permits.add"  (click)="addNew()"><i>{{'add_btn' |translate}}</i></button>
+        </div>
+       <div class="col-md-6 col-sm-12 my-1">
+           <div class="col-6 col-sm-12">
+            <p>{{'selectedDate_lbl' | translate}}: </p>
+           </div>
+           <div class="col-6 col-sm-12">
+            <h6>{{getSelectedDateFormatted() | date:"dd-MM-yyyy"}}</h6>
+          </div>
+
+
+       </div>
+
+      </div>
+
+      <br /><br />
+      <custom-pagination
+[tableConfig]="tableConfig"
+[isPaginated]="false"
+[showColumnsSelector]="false"
+[actions]="modalActions"
+[data]="selectedAppointments"
+(actionFuncEvent)="rowAction($event)">
+</custom-pagination>
+
+
+    <ng-template #modalContent let-close="close">
+      <div class="modal-header">
+        <h5 class="modal-title">Event action occurred</h5>
+        <button type="button" class="close" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>
+          Action:
+          <pre>{{ modalData?.action }}</pre>
+        </div>
+        <div>
+          Event:
+          <pre>{{ modalData?.event  }}</pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="close()">
+          OK
+        </button>
+      </div>
+    </ng-template>
+  </nb-card-body>
+</nb-card>
+

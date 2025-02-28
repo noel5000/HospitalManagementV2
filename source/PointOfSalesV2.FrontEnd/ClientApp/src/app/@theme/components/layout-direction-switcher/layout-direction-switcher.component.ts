@@ -1,0 +1,47 @@
+import { Component, OnDestroy, Input , Inject } from '@angular/core';
+import { NbLayoutDirectionService, NbLayoutDirection } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { SwitcherComponent } from "../switcher/switcher.component";
+
+@Component({
+  selector: 'ngx-layout-direction-switcher',
+  template: `
+    <ngx-switcher
+      [firstValue]="directions.RTL"
+      [secondValue]="directions.LTR"
+      [firstValueLabel]="'RTL'"
+      [secondValueLabel]="'LTR'"
+      [value]="currentDirection"
+      (valueChange)="toggleDirection($event)"
+      [vertical]="vertical">
+    </ngx-switcher>
+  `,
+  imports: [SwitcherComponent],
+})
+export class LayoutDirectionSwitcherComponent implements OnDestroy {
+
+  protected destroy$ = new Subject<void>();
+
+  directions = NbLayoutDirection;
+  currentDirection: NbLayoutDirection;
+
+  @Input() vertical: boolean = false;
+
+  constructor(@Inject('BASE_URL') private baseUrl: string,private directionService: NbLayoutDirectionService) {
+    this.currentDirection = this.directionService.getDirection();
+
+    this.directionService.onDirectionChange()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(newDirection => this.currentDirection = newDirection);
+  }
+
+  toggleDirection(newDirection: NbLayoutDirection) {
+    this.directionService.setDirection(newDirection);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
