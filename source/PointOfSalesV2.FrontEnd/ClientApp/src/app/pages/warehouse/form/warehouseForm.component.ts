@@ -17,6 +17,7 @@ import { Warehouse } from '../../../@core/data/warehouse';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "warehouse-form",
     templateUrl: "./warehouseForm.component.html",
     styleUrls: ["../warehouseStyles.component.scss"]

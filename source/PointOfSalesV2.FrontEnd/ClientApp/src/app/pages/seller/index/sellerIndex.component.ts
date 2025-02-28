@@ -12,6 +12,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "seller-list",
     templateUrl: "./sellerIndex.component.html",
     styleUrls: ["../sellerStyles.component.scss"]

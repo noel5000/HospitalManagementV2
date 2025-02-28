@@ -12,6 +12,7 @@ import { Customer } from '../../../@core/data/customer';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "customer-list",
     templateUrl: "./customerIndex.component.html",
     styleUrls: ["../customerStyles.component.scss"]

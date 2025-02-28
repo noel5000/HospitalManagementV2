@@ -14,6 +14,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "inventory-entry-list",
     templateUrl: "./inventoryEntryIndex.component.html",
     styleUrls: ["../inventoryEntryStyles.component.scss"]

@@ -12,6 +12,7 @@ import { Currency } from '../../../@core/data/currencyModel';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "currency-list",
     templateUrl: "./currencyIndex.component.html",
     styleUrls: ["../currencyStyles.component.scss"]

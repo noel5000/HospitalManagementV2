@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "tax-report",
     templateUrl: "./taxesReportIndex.component.html",
     styleUrls: ["../taxesReportStyles.component.scss"]

@@ -24,6 +24,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "quotes-form",
   templateUrl: "./quotesForm.component.html",
   styleUrls: ["../quotesStyles.component.scss"]

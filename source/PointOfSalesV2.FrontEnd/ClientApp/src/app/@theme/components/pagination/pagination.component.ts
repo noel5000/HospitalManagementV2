@@ -54,6 +54,7 @@ export interface SortEvent {
 }
 
 @Directive({
+  standalone:false,
   selector: 'th[sortable]',
   host: {
     '[class.asc]': 'direction === "asc"',
@@ -75,6 +76,7 @@ export class NgbdSortableHeader {
 
 
 @Component({
+  standalone:false,
   selector: 'custom-pagination',
   styleUrls: ['./pagination.component.scss'],
   templateUrl: './pagination.component.html',

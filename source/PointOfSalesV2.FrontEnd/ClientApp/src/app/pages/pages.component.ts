@@ -9,6 +9,7 @@ import { User } from './../@core/data/users';
 import { AppRoles } from '../@core/common/enums';
 
 @Component({
+  standalone:false,
   selector: 'ngx-pages',
   styleUrls: ['pages.component.scss'],
   template: `
@@ -34,7 +35,7 @@ export class PagesComponent {
         icon: 'person-outline',
         hidden: false,
         children: [
-          
+
           {
             title: this.lang.getValueByKey('logOut_btn'),
             link: '/pages/logout',
@@ -213,17 +214,17 @@ export class PagesComponent {
                 title: this.lang.getValueByKey('consultation_menu'),
                 link: 'product',
                 hidden: !this.securityService.isUserValidInMenu(AppRoles.Config_Products)
-              },  
+              },
               {
                 title: this.lang.getValueByKey('medicine_lbl'),
                 link: 'medicine',
                 hidden: !this.securityService.isUserValidInMenu(AppRoles.Config_Products)
-              },  
+              },
               {
                 title: this.lang.getValueByKey('medicalTests_menu'),
                 link: 'medical-test',
                 hidden: !this.securityService.isUserValidInMenu(AppRoles.Config_Products)
-              },  
+              },
               {
                 title: this.lang.getValueByKey('insuranceCoverage_menu'),
                 link: 'insuranceCoverage',
@@ -288,7 +289,7 @@ export class PagesComponent {
               }
             ],
           },
-         
+
           {
             title: this.lang.getValueByKey('movements_menu'),
             icon: 'car-outline',

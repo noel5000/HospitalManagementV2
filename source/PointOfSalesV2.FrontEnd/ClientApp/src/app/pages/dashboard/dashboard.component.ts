@@ -6,6 +6,7 @@ import { LanguageService } from './../../@core/services/translateService';
 import { ModalService } from '../../@core/services/modal.service';
 import { SecurityService } from '../../@core/services/securityService';
 @Component({
+  standalone:false,
   selector: 'ngx-dashboard',
   templateUrl: './dashboard.component.html',
 })

@@ -16,6 +16,7 @@ import { BranchOfficeService } from '../../../@core/services/branchOfficeService
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "cashregister-form",
     templateUrl: "./cashRegisterForm.component.html",
     styleUrls: ["../cashRegisterStyles.component.scss"]

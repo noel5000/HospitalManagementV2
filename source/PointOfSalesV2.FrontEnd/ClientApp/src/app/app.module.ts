@@ -32,7 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 import { CommonModule } from '@angular/common';
- 
+
 import { ToastrModule } from 'ngx-toastr';
 import { NotFoundComponent } from './not-found.component';
 import { httpInterceptorProviders } from './@core/services/baseService';
@@ -51,7 +51,7 @@ import { AppConfig } from './@core/services/app.config';
     BrowserModule,
     NbAccordionModule,
     CommonModule,
-    NgbPaginationModule,  
+    NgbPaginationModule,
     NgbAlertModule,
     MatAutocompleteModule,
     NgbDropdownModule,
@@ -61,23 +61,23 @@ import { AppConfig } from './@core/services/app.config';
     AppRoutingModule,
     FormsModule,
     FileUploadModule,
-    
+
     ThemeModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (HttpLoaderFactory),
-        deps: [HttpClient]
-      }
-    }),
+   TranslateModule.forRoot({
+     loader: {
+       provide: TranslateLoader,
+       useFactory: (HttpLoaderFactory),
+       deps: [HttpClient]
+     }
+   }),
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
-    NbChatModule.forRoot({
-      messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
+   NbChatModule.forRoot({
+    messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
     CoreModule.forRoot(),
   ],

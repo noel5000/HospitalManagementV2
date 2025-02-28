@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "supplier-return-list",
     templateUrl: "./supplierReturnIndex.component.html",
     styleUrls: ["../supplierReturnStyles.component.scss"]

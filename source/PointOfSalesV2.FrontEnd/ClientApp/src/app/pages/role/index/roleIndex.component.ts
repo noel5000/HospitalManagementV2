@@ -14,6 +14,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "role-list",
     templateUrl: "./roleIndex.component.html",
     styleUrls: ["../roleStyles.component.scss"]

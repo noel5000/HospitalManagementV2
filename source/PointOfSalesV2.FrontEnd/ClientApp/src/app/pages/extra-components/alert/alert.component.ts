@@ -2,6 +2,7 @@ import { Component, Input , Inject } from '@angular/core';
 import { LanguageService } from '../../../@core/services/translateService';
 
 @Component({
+  standalone:false,
   selector: 'ngx-alert',
   templateUrl: 'alert.component.html',
 })

@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { SwitcherComponent } from "../switcher/switcher.component";
 
 @Component({
+  standalone:false,
   selector: 'ngx-layout-direction-switcher',
   template: `
     <ngx-switcher

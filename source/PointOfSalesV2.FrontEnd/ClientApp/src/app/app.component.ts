@@ -17,6 +17,7 @@ import { ModalService } from './@core/services/modal.service';
 import { AppConfig } from './@core/services/app.config';
 
 @Component({
+  standalone:false,
   selector: 'ngx-app',
   template: '<router-outlet></router-outlet>',
 })

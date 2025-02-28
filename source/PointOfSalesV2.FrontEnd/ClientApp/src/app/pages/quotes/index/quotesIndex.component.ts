@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "quotes-list",
     templateUrl: "./quotesIndex.component.html",
     styleUrls: ["../quotesStyles.component.scss"]

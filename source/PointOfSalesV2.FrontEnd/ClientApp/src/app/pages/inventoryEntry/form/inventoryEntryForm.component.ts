@@ -24,6 +24,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "inventory-entry-form",
   templateUrl: "./inventoryEntryForm.component.html",
   styleUrls: ["../inventoryEntryStyles.component.scss"]

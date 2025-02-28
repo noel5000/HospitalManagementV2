@@ -18,6 +18,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "userRole-form",
     templateUrl: "./userRoleForm.component.html",
     styleUrls: ["../userRoleStyles.component.scss"]

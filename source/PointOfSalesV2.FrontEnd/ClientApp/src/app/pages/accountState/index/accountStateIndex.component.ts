@@ -15,6 +15,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "account-state",
   templateUrl: "./accountStateIndex.component.html",
   styleUrls: ["../accountStateStyles.component.scss"]

@@ -12,6 +12,7 @@ import { Product } from '../../../@core/data/product';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "medicine-list",
     templateUrl: "./medicineIndex.component.html",
     styleUrls: ["../medicine.component.scss"]

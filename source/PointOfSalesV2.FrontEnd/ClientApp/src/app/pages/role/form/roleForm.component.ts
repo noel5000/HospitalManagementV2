@@ -16,6 +16,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "role-form",
     templateUrl: "./roleForm.component.html",
     styleUrls: ["../roleStyles.component.scss"]
@@ -120,7 +121,7 @@ async getRoleSectionOperations(id:number){
         this.validateFormData();
     })
     }
-    override override onChanges(): void {
+    override onChanges(): void {
 
       }
     get form() { return this.itemForm.controls as any; }

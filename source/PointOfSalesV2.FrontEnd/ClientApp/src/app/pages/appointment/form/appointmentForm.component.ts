@@ -23,6 +23,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "invoice-lead-form",
   templateUrl: "./appointmentForm.component.html",
   styleUrls: ["../appointmentStyles.component.scss"]

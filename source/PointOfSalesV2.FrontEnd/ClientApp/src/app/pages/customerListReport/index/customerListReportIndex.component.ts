@@ -14,6 +14,7 @@ import { CustomerService } from '../../../@core/services/customerService';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "customer-list",
     templateUrl: "./customerListReportIndex.component.html",
     styleUrls: ["../customerListReportStyles.component.scss"]

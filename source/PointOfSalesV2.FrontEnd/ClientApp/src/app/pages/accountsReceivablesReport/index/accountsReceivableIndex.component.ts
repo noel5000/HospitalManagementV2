@@ -18,6 +18,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "accounst-receivable-report",
   templateUrl: "./accountsReceivableIndex.component.html",
   styleUrls: ["../accountsReceivableStyles.component.scss"]

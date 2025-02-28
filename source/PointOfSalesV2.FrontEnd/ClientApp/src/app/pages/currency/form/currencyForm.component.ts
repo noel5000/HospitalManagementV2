@@ -15,6 +15,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "currency-form",
     templateUrl: "./currencyForm.component.html",
     styleUrls: ["../currencyStyles.component.scss"]

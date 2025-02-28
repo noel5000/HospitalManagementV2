@@ -23,6 +23,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "medicine-form",
     templateUrl: "./medicineForm.component.html",
     styleUrls: ["../medicine.component.scss"]

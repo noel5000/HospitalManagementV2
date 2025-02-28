@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "medicalSpeciality-list",
     templateUrl: "./medicalSpecialityIndex.component.html",
 })

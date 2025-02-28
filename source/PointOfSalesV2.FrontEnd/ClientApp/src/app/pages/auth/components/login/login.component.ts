@@ -75,6 +75,7 @@ const defaultAuthOptions: any = {
 
 
 @Component({
+  standalone:false,
     selector: "app-login-page",
     templateUrl: "../../../../../../node_modules/@nebular/auth/components/login/login.component.html"
 })

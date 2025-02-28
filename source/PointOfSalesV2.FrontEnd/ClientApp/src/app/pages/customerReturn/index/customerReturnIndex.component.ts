@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "customerreturn-list",
     templateUrl: "./customerReturnIndex.component.html",
     styleUrls: ["../customerReturnStyles.component.scss"]

@@ -16,6 +16,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "expense-list",
     templateUrl: "./expenseIndex.component.html",
     styleUrls: ["../expenseStyles.component.scss"]

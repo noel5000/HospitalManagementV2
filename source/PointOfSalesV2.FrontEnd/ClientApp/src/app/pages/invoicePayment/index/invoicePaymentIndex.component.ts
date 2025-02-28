@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "Invoice-payment-list",
     templateUrl: "./invoicePaymentIndex.component.html",
     styleUrls: ["../invoicePaymentStyles.component.scss"]

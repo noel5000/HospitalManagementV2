@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "user-list",
     templateUrl: "./userIndex.component.html",
     styleUrls: ["../userStyles.component.scss"]

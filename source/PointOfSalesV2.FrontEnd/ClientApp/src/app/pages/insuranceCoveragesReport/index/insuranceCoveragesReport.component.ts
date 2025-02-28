@@ -19,6 +19,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "insurancecoverages-report",
     templateUrl: "./insuranceCoveragesReport.component.html",
     styleUrls: ["../insuranceCoveragesReport.component.scss"]

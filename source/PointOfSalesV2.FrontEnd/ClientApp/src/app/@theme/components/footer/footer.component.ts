@@ -1,6 +1,7 @@
 import { Component , Inject } from '@angular/core';
 
 @Component({
+  standalone:false,
   selector: 'ngx-footer',
   styleUrls: ['./footer.component.scss'],
   template: `

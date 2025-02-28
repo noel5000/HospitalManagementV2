@@ -26,6 +26,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "cash-register-opening-form",
     templateUrl: "./cashRegisterOpeningForm.component.html",
     styleUrls: ["../cashRegisterOpeningStyles.component.scss"]

@@ -14,6 +14,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "patientCheckup-list",
     templateUrl: "./patientCheckupIndex.component.html",
     styleUrls: ["../patientCheckupStyles.component.scss"]

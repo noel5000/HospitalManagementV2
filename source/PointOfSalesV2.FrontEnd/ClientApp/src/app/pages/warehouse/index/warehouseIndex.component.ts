@@ -12,6 +12,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "branch-Office-list",
     templateUrl: "./warehouseIndex.component.html",
     styleUrls: ["../warehouseStyles.component.scss"]

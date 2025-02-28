@@ -14,6 +14,7 @@ import { ModalService } from '../../../@core/services/modal.service';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "cashregister-list",
     templateUrl: "./cashRegisterIndex.component.html",
     styleUrls: ["../cashRegisterStyles.component.scss"]

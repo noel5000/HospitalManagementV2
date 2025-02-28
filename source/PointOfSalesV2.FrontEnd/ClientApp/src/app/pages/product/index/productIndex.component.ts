@@ -14,6 +14,7 @@ import { Product } from '../../../@core/data/product';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "product-list",
     templateUrl: "./productIndex.component.html",
     styleUrls: ["../productStyles.component.scss"]

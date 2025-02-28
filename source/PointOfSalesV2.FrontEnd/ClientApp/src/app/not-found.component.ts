@@ -1,6 +1,7 @@
 import { Component , Inject } from '@angular/core';
 
 @Component({
+  standalone:false,
     selector: 'app-not-found',
     template: `<div> The page you are looking for was not found! </div>`,
 })

@@ -90,8 +90,8 @@ const PIPES = [
   providers: [LanguageService]
 })
 export class ThemeModule {
-  static forRoot(): ModuleWithProviders {
-    return <ModuleWithProviders>{
+  static forRoot(): ModuleWithProviders<ThemeModule> {
+    return {
       ngModule: ThemeModule,
       providers: [
         ...NbThemeModule.forRoot(
@@ -99,7 +99,7 @@ export class ThemeModule {
             name: 'default',
           },
           [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME],
-        ).providers,
+        ).providers || [],
       ],
     };
   }

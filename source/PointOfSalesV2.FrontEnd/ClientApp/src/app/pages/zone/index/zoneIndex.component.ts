@@ -13,6 +13,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "zone-list",
     templateUrl: "./zoneIndex.component.html",
     styleUrls: ["../zoneStyles.component.scss"]

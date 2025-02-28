@@ -23,6 +23,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "warehouse-transfer-form",
     templateUrl: "./warehouseTransfersForm.component.html",
     styleUrls: ["../warehouseTransfersStyles.component.scss"]
@@ -230,7 +231,7 @@ async getBranchOffices(){
     });
 }
 
-    override override onChanges(): void {
+    override onChanges(): void {
         this.itemForm.get('originBranchOfficeId')?.valueChanges.subscribe(val => {
          if(val && val>0){
             this.itemForm.patchValue({originId:null});

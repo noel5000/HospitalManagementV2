@@ -38,6 +38,7 @@ declare const $: any;
 
 
 @Component({
+  standalone:false,
   selector: "appointments-list",
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./appointmentIndex.component.html",

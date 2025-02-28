@@ -24,6 +24,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "patienteditcheckup-form",
   templateUrl: "./patientCheckupEditForm.component.html",
   styleUrls: ["../patientCheckupStyles.component.scss"]

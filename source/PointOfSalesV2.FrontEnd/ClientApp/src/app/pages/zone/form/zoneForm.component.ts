@@ -15,6 +15,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "zone-form",
     templateUrl: "./zoneForm.component.html",
     styleUrls: ["../zoneStyles.component.scss"]

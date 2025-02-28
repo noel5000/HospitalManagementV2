@@ -20,6 +20,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "sales-report",
     templateUrl: "./salesReportIndex.component.html",
     styleUrls: ["../salesReportStyles.component.scss"]

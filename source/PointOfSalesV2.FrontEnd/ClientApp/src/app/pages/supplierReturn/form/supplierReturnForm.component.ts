@@ -24,6 +24,7 @@ import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "supplier-return-form",
   templateUrl: "./supplierReturnForm.component.html",
   styleUrls: ["../supplierReturnStyles.component.scss"]
@@ -234,7 +235,7 @@ export class SupplierReturnFormComponent extends BaseComponent implements OnInit
     this.supplierService.getAll().subscribe(r => { this.suppliers = r.sort(this.dynamicSort('name')) });
   }
 
-  override override onChanges(): void {
+  override onChanges(): void {
     this.itemForm.get('branchOfficeId')?.valueChanges.subscribe(val => {
       if (val && val > 0) {
         this.itemForm.patchValue({ warehouseId: null });

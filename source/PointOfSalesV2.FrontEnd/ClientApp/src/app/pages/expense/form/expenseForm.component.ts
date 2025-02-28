@@ -25,6 +25,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "expense-form",
     templateUrl: "./expenseForm.component.html",
     styleUrls: ["../expenseStyles.component.scss"]

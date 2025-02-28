@@ -19,6 +19,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "receipts-report",
   templateUrl: "./receiptsReportIndex.component.html",
   styleUrls: ["../receiptsReportStyles.component.scss"]

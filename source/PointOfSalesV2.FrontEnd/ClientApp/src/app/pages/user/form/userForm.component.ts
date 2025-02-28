@@ -22,6 +22,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "user-form",
   templateUrl: "./userForm.component.html",
   styleUrls: ["../userStyles.component.scss"]
@@ -115,7 +116,7 @@ export class UserFormComponent extends BaseComponent implements OnInit {
     this.getBranchOffices();
     this.getLanguages();
   }
-  override override onChanges(): void {
+  override onChanges(): void {
     this.itemForm.valueChanges.subscribe(val => {
 
       if (!isNaN(val.branchOfficeId)) {

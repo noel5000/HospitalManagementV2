@@ -14,6 +14,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
     selector: "cash-register-opening-list",
     templateUrl: "./cashRegisterOpeningIndex.component.html",
     styleUrls: ["../cashRegisterOpeningStyles.component.scss"]

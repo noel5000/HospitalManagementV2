@@ -21,6 +21,7 @@ import { AppConfig } from '../../../@core/services/app.config';
 
 declare const $: any;
 @Component({
+  standalone:false,
   selector: "invoice-payment-form",
   templateUrl: "./invoicePaymentForm.component.html",
   styleUrls: ["../invoicePaymentStyles.component.scss"]

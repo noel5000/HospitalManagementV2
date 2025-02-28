@@ -4,6 +4,7 @@ import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
+  standalone:false,
   selector: 'custom-auto-complete',
   template: `
   <div class="autoComplete">

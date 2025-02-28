@@ -13,6 +13,7 @@ import { AuthModel } from '../../../@core/data/authModel';
 import { AppConfig } from '../../../@core/services/app.config';
 
 @Component({
+  standalone:false,
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
   templateUrl: './header.component.html',

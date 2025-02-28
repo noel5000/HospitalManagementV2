@@ -16,6 +16,7 @@ import { IModalConfig, IAlertConfig } from '../../../@core/data/interfaces/iModa
 
 
 @Component({
+  standalone:false,
   selector: 'modal-confirm-autofocus',
   template: `
 
@@ -48,6 +49,7 @@ this.modal.close();
 }
 
 @Component({
+  standalone:false,
   selector: 'modal-alert-autofocus',
   template: `
 

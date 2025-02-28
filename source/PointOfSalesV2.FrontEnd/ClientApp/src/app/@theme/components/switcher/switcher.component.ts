@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter , Inject } from '@angular/core';
 
 @Component({
+  standalone:false,
   selector: 'ngx-switcher',
   styleUrls: ['./switcher.component.scss'],
   template: `
