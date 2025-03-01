@@ -10,7 +10,7 @@ export class User {
   language: any = null;
   tokenKey: string = '';
   lastName: string = '';
-  birthDay: Date;
+  birthDay: Date | null = null;
   phone: string = '';
   mobile: string = '';
   address: string = '';
@@ -21,9 +21,9 @@ export class User {
   width: number = 0;
   height: number = 0;
   size: number = 0;
-  branchOfficeId?: number;
-  cashRegisterId?: number;
-  warehouseId?: number;
+  branchOfficeId?: number = 0;
+  cashRegisterId?: number = 0;
+  warehouseId?: number = 0;
   cashRegisterOpenningTimeHours: number = 0;
   fullName = (): string => `${this.name} ${this.lastName}`;
   gender: string = '';
@@ -35,9 +35,9 @@ export class User {
 }
 
 export class UserOperation {
-  operationId: number;
-  controllers: string;
-  roleId:number;
+  operationId: number = 0;
+  controllers: string = '';
+  roleId:number =0;
   operationName = (): string => {
     return Operations[this.operationId];
   }
@@ -45,7 +45,7 @@ export class UserOperation {
 }
 export interface Contacts {
   user: User;
-  type: string;
+  type: string ;
 }
 
 export interface RecentUsers extends Contacts {

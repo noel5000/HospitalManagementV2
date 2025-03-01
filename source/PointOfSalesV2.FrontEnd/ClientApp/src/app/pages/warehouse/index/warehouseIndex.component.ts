@@ -51,7 +51,7 @@ export class WarehouseIndexComponent extends BaseComponent implements OnInit {
     ) {
         super(route, langService, AppRoles.Config_warehouse,modalService);
         let scope = this;
-       
+
         this.tableConfig=[
 {
   visible:true,
@@ -121,7 +121,7 @@ this.actions=[
         }
     }
 ];
-       
+
     }
 
     rowAction(e){
@@ -142,7 +142,7 @@ this.actions=[
 
             this.maxCount = r['@odata.count']?r['@odata.count']:0;
             this.Warehouses = r['value'];
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -178,7 +178,7 @@ else{
         else {
             this.filters.push(expandFilter);
         }
-    
+
 
         this.pageNumber = page?page:1;
         this.orderBy=this.tableConfig.find(x=>x.toSort).id;
@@ -209,12 +209,12 @@ else{
 
        this.getPagedData(1);
     }
- 
+
 
     filterData(currentValue: string, propertyName: string, propertyType: ObjectTypes, isTranslated:boolean=false) {
         const scope = this;
        // &$expand=Press($select=Name)
-      
+
         const currentFilter = {
             property: propertyName,
             value: currentValue,
@@ -229,12 +229,12 @@ else{
         else {
             this.filters.push(currentFilter);
         }
-                scope.getData();  
-       
-      
-           
-      
-        
+                scope.getData();
+
+
+
+
+
 
 
     }
@@ -257,7 +257,7 @@ else{
       if(r)
       this.delete(event.id);
   })
-   
+
     }
 
     delete(id: number) {

@@ -246,7 +246,7 @@ export class appointmentIndexComponent extends BaseComponent implements OnInit {
   viewDate: Date = new Date();
 
   modalData: {
-    action: string;
+    action: string = '';
     event: CalendarEvent;
   };
 

@@ -17,7 +17,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Customer } from '../../../@core/data/customer';
 import { CustomerService } from '../../../@core/services/CustomerService';
 import { AppConfig } from '../../../@core/services/app.config';
-import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.module';
 
 
 declare const $: any;

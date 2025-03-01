@@ -20,7 +20,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Product } from '../../../@core/data/product';
 import { FileUploader } from 'ng2-file-upload';
 import { AppConfig } from '../../../@core/services/app.config';
-import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.module';
 
 
 declare const $: any;

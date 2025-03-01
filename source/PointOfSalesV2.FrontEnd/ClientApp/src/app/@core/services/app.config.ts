@@ -6,7 +6,7 @@ import { ConfigModel } from '../data/configModel';
 @Injectable()
 export class AppConfig {
 
-    public config: ConfigModel = null;
+    public config: any = null;
 
     constructor(@Inject('BASE_URL') private baseUrl: string,private http: HttpClient) {
 
@@ -19,7 +19,7 @@ export class AppConfig {
         return this.config[key];
     }
 
-  
+
 
     /**
      * This method:
@@ -27,11 +27,11 @@ export class AppConfig {
      *   b) Loads "config.[env].json" to get all env's variables (e.g.: 'config.development.json')
      */
      public async load() {
-     
+
         let  request = await this.http.get<any>('assets/config/config.json').toPromise();
-        
+
               this.config = request;
-              
-          
+
+
       }
 }

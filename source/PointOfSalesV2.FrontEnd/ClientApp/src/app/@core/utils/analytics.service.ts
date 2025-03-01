@@ -7,7 +7,7 @@ declare const ga: any;
 
 @Injectable()
 export class AnalyticsService {
-  private enabled: boolean;
+  private enabled: boolean = false;
 
   constructor(@Inject('BASE_URL') private baseUrl: string,private location: Location, private router: Router) {
     this.enabled = false;

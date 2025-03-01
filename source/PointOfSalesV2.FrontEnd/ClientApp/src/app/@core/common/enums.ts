@@ -105,9 +105,9 @@ export const ODataOperations = {
 }
 
 export class QueryFilter {
-    property: string;
-    value: string;
-    type: ObjectTypes;
+    property: string = '';
+    value: string = '';
+    type: ObjectTypes = ObjectTypes.String;
     comparer?:ODataComparers;
     isTranslated:boolean=false;
 }

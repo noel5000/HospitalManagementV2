@@ -19,12 +19,12 @@ export class BaseComponent {
   }
 
   modalService: ModalService;
-  itemForm: FormGroup;
+  itemForm?: FormGroup;
   item: any;
   id: number = 0;
   enableBackup: boolean = false;
   dataToBackup = "";
-  getLanguageValue(value) {
+  getLanguageValue(value: string) {
     return this.lang.getValueByKey(value);
   }
 
@@ -62,14 +62,14 @@ export class BaseComponent {
     // else
     this.clearBackupData();
   }
-  dynamicSort(property) {
+  dynamicSort(property:string) {
     var sortOrder = 1;
     if (property[0] === "-") {
       sortOrder = -1;
       property = property.substr(1);
     }
-    return function (a, b) {
-      /* next line works with strings and numbers, 
+    return function (a:any, b:any) {
+      /* next line works with strings and numbers,
        * and you may want to customize it to your needs
        */
       var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
@@ -78,8 +78,8 @@ export class BaseComponent {
   }
 
   verifyUser() {
-    this.authModel = JSON.parse(localStorage.getItem('currentUser'));
-    if (this.authModel && new Date(this.authModel.expiration) > new Date()) {
+    this.authModel = JSON.parse(localStorage.getItem('currentUser') ?? '');
+    if (this.authModel && new Date(this.authModel.expiration!) > new Date()) {
       this.getUserAuthorizations();
     }
     else
@@ -87,7 +87,8 @@ export class BaseComponent {
 
   }
   validateFormData() {
-    const stringForm = this.getUser().userId ? localStorage.getItem(`${this.getUser().userId} - ${this.role.toString()}`) : null;
+    let scope = this as any;
+    const stringForm = this.getUser().userId ? localStorage.getItem(`${this.getUser().userId} - ${this.role?.toString()}`) : null;
     if (stringForm && JSON.parse(stringForm) != null) {
       const savedForm = JSON.parse(stringForm);
       var result = this.modalService.confirmationModal({
@@ -101,14 +102,14 @@ export class BaseComponent {
           if (savedForm.form && this.itemForm != null) {
             if (this.dataToBackup && this.dataToBackup.split(',').length > 0) {
               this.dataToBackup.split(',').forEach(val => {
-                this[val] = savedForm[val];
+                scope[val] = savedForm[val];
               });
             }
             this.setAdditionalBackupData();
             this.itemForm.patchValue(savedForm.form);
             this.onChanges();
             if (this.getUser() && this.getUser().userId)
-              localStorage.removeItem(`${this.getUser().userId} - ${this.role.toString()}`);
+              localStorage.removeItem(`${this.getUser().userId} - ${this.role?.toString()}`);
 
           }
         }
@@ -129,12 +130,12 @@ export class BaseComponent {
   }
   clearBackupData() {
     if (this.getUser() && this.getUser().userId)
-      localStorage.removeItem(`${this.getUser().userId} - ${this.role.toString()}`);
+      localStorage.removeItem(`${this.getUser().userId} - ${this.role?.toString()}`);
   }
 
   getUser(): User {
-    const user = (JSON.parse(localStorage.getItem('currentUser')) as AuthModel);
-    return user ? user.user : {} as User;
+    const user = (JSON.parse(localStorage.getItem('currentUser') ?? '') as AuthModel);
+    return user ? user.user! : {} as User;
   }
 
   getTotalAmount(items: any[], selector: string): number {
@@ -149,22 +150,24 @@ export class BaseComponent {
     return total;
   }
 
-  updateModel<T>(model: any, toUpdate: T): T {
+  updateModel<T>(model: any, toUpdate: any): T {
     for (var prop in model) {
       toUpdate[prop] = model[prop];
     }
 
     return toUpdate;
   }
-  role: AppRoles = null;
-  authModel: AuthModel = null;
+  role: AppRoles | null = null;
+  authModel: AuthModel | null = null;
   permits: any = {};
 
   router: Router;
   lang: LanguageService;
   getUserAuthorizations() {
     const url = window.location.href;
-    const sectionOperations = this.authModel.user.permissions.filter(x => x.roleId === this.role);
+    const sectionOperations = this.authModel && this.authModel.user && this.authModel.user.permissions ?
+     this.authModel?.user?.permissions?.filter(x => x.roleId === this.role) : [];
+
     this.permits.read = sectionOperations.length == 0 || sectionOperations.findIndex(x => x.operationId === Operations.READ ||
       x.operationId === Operations.READALL) >= 0;
     this.permits.add = sectionOperations.length == 0 || sectionOperations.findIndex(x => x.operationId === Operations.ADD) >= 0;
@@ -187,8 +190,9 @@ export class BaseComponent {
     try {
       this.verifyUser();
 
-      return this.authModel.user.permissions.length == 0 || this.authModel.user.permissions.findIndex(x => x.roleId == this.role && x.operationId == operation) >= 0
-        || this.authModel.user.permissions.findIndex(x => x.roleId == this.role && x.operationId == Operations.ALL) >= 0;
+      return (this.authModel && this.authModel.user!.permissions.length == 0 || this.authModel && this.authModel.user!.permissions
+      .findIndex(x => x.roleId == this.role && x.operationId == operation) >= 0
+        || this.authModel && this.authModel.user!.permissions.findIndex(x => x.roleId == this.role && x.operationId == Operations.ALL) >= 0) ?? false;
     }
     catch {
       return false;
@@ -197,13 +201,13 @@ export class BaseComponent {
 
 
   returnToLogin() {
-    var auth = JSON.parse(localStorage.getItem(`currentUser`)) as AuthModel;
+    var auth = JSON.parse(localStorage.getItem(`currentUser`) ?? '') as AuthModel;
     if (!auth) {
       auth = new AuthModel();
       auth.languageId = 'EN';
     }
-    localStorage.setItem(`language-${auth.languageId}`, null);
-    localStorage.setItem('currentUser', null);
+    localStorage.setItem(`language-${auth.languageId}`, '');
+    localStorage.setItem('currentUser', '');
     this.lang.setLanguageInHeaders('EN');
     this.lang.setCurrentLanguage('EN');
     this.authModel = null;

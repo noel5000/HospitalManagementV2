@@ -26,10 +26,10 @@ export class SwitcherComponent {
   @Input() firstValue: any;
   @Input() secondValue: any;
 
-  @Input() firstValueLabel: string;
-  @Input() secondValueLabel: string;
+  @Input() firstValueLabel: string = '';
+  @Input() secondValueLabel: string = '';
 
-  @Input() vertical: boolean;
+  @Input() vertical: boolean = false;
 
   @Input() value: any;
   @Output() valueChange = new EventEmitter<any>();

@@ -10,6 +10,6 @@ export class AlertComponent {
     constructor(@Inject('BASE_URL') private baseUrl: string,private lang:LanguageService){
 
     }
-   @Input() title:string;
-   @Input() message:string;
+   @Input() title:string ='';
+   @Input() message:string ='';
 }

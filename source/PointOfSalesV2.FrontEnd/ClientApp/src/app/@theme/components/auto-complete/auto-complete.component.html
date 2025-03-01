@@ -1,0 +1,18 @@
+<div class="autoComplete">
+
+
+  <input type="text"[(ngModel)]="filterString"
+   class="form-control2" placeholder="...."
+  (keyup.enter)="firstOrDefault()"
+  (keyup.arrowup)="changeSelected(-1)"
+  (keyup.arrowdown)="changeSelected(1)"
+   [ngClass]="!selectedItem?'isInvalid':''"
+    id="myInput"
+    #textInputSearch
+    >
+ <ng-container *ngFor="let item of itemsToShow; let i = index;">
+ <a  class="form-control2 selectOption" [ngClass]="i==selectedIndex?'selectedOption':''"  (click)="selectItem(item)">{{showData(item)}}</a> <br>
+ </ng-container>
+
+
+</div>

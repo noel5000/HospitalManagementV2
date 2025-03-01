@@ -26,7 +26,7 @@ import { Product } from '../../../@core/data/product';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { ProductService } from '../../../@core/services/ProductService';
 import { AppConfig } from '../../../@core/services/app.config';
-import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.module';
 
 
 

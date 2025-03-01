@@ -1,4 +1,4 @@
 export class ConfigModel{
-    endpointUrl:string;
-    endpointFilesUrl:string;
+    endpointUrl:string ='';
+    endpointFilesUrl:string ='';
 }

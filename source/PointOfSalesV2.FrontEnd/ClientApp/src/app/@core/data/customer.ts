@@ -4,30 +4,30 @@ import { TRNControl } from './trnControlModel';
 
 
 export class Customer extends BaseModel {
-    trnControlId:number;
-    name:string;
-    cardId :string;
-    phoneNumber :string;
-    address :string;
-    code :string;
-    currencyId :number;
-    warehouseId:number;
-    zoneId :number;
-    comissionRate:number; 
-    comissionByProduct :boolean;
-    fixedComission :boolean;
-    nameAndCode:string;
-    currency: Currency; 
-    invoiceDueDays:number;
-    billingAmountLimit:number;
-    creditAmountLimit:number;
-    trnType:string;
-    trnControl:TRNControl;
-    insuranceId?:number;
-    insurancePlanId?:number;
+    trnControlId:number =0;
+    name:string ='';
+    cardId :string ='';
+    phoneNumber :string ='';
+    address :string ='';
+    code :string ='';
+    currencyId :number =0;
+    warehouseId:number =0;
+    zoneId :number =0;
+    comissionRate:number =0;
+    comissionByProduct :boolean = false;
+    fixedComission :boolean = false;
+    nameAndCode:string ='';
+    currency: Currency | null = null;
+    invoiceDueDays:number =0;
+    billingAmountLimit:number =0;
+    creditAmountLimit:number =0;
+    trnType:string ='';
+    trnControl:TRNControl | null = null;
+    insuranceId?:number =0;
+    insurancePlanId?:number =0;
     insurance:any;
     insurancePlan:any;
-    insuranceCardId:string;     
-    bloodType:string;
-    
+    insuranceCardId:string ='';
+    bloodType:string ='';
+
 }

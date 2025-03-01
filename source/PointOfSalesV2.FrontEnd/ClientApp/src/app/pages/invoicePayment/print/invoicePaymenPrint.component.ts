@@ -38,9 +38,9 @@ declare const $: any;
     styleUrls: ["../invoicePaymentStyles.component.scss"]
 })
 export class InvoicePaymentPrintComponent extends BaseComponent implements OnInit {
-   
+
     item: any={customer:{},currency:{},invoiceNumber:'',sequence:''};
-  
+
     showColumns:any={};
     sequence:string='';
     paidInvoices:any[]=[];
@@ -58,30 +58,30 @@ export class InvoicePaymentPrintComponent extends BaseComponent implements OnIni
        modalService:ModalService,
       private  http: HttpClient
         ){
-           
+
             super(route, langService, AppRoles.Invoices_Payments,modalService);
             this._route=router;
             this.sequence= this._route.snapshot.paramMap.get('sequence');
             this.getCurrent();
- 
-            
+
+
 
     }
     ngOnInit(): void {
-   
+
         this.verifyUser();
-       
+
     }
 
 
- 
+
 
     getCurrent(){
         this.service.getByUrlParameters(['GetForPrint',this.sequence])
         .subscribe(r=>{
-            
+
             if(r.status>=0){
-              
+
                this.item=r.data[0];
                this.paidInvoices=this.item.paidInvoices;
             }
@@ -90,5 +90,5 @@ export class InvoicePaymentPrintComponent extends BaseComponent implements OnIni
         })
     }
 
-   
+
 }

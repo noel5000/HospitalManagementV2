@@ -50,10 +50,10 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
     defaultTaxAmountValidator:FormControl=new FormControl(0,[ Validators.required,Validators.min(0.0001)]);
     defaultUnitValidator:FormControl=new FormControl(null,[ Validators.required,Validators.min(1)]);
 
-  
+
     invoiceService:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/Invoice`);
     service:BaseService<any,number>= new BaseService<any,number>(this.http, `${this.baseUrl}api/CustomerReturn`);
-   
+
     isEditing:boolean=false;
 
 
@@ -72,12 +72,12 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
       private sellerService:SellerService,
       private warehouseService:WarehouseService
         ){
-           
+
             super(route, langService, AppRoles.Movements_CustomersReturns,modalService);
             this.verifyUser();
             this.dataToBackup="invoice,details";
             this.isEditing=(this.id && this.id>0?true:false);
-           
+
         this.itemForm = this.formBuilder.group({
             invoiceNumber: [null,[Validators.required]],
             customerName:[''],
@@ -110,8 +110,8 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                         this.setDetailFormAmount(i, null,this.invoice.invoiceDetails[i].quantity);
                       }
                 }
-                
-               
+
+
                 this.itemForm.patchValue({
                     customerName:`${this.invoice.patient.name} - ${this.invoice.patient.code}`,
                     currencyName:this.invoice.currency.code,
@@ -119,7 +119,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                     totalAmount:this.invoice.patientPaymentAmount
                 });
 
-               
+
             }
             else{
                 this.invoice=null;
@@ -130,7 +130,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
         });
     }
     ngOnInit(): void {
-   
+
      this.onChanges();
         this.verifyUser();
         this.validateFormData();
@@ -138,27 +138,27 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
 
 
 
-  
 
-  
+
+
     onChanges(): void {
-      
+
 
 
       }
 
     resetForm(deletedetails:boolean=false){
-        
+
         this.itemForm.patchValue({
-         
+
         });
-  
+
     }
     get form() { return this.itemForm.controls; }
 
     get formValues(){
         let form = this.itemForm.getRawValue();
-       
+
       let result=0;
       for(let i=0;i<this.details.length;i++){
           const selectedQuantity = this.itemForm.getRawValue()[`returnQuantity_${i}`] as number;
@@ -168,17 +168,17 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
           }
       }
       form.totalAmount=result;
-      
+
         return form;
     }
 
     verifyTotalAmount(){
         const calculatedAmount= this.itemForm.get('totalAmountCalc')?this.itemForm.get('totalAmountCalc').value:0;
         const total= this.itemForm.get('totalAmount')?this.itemForm.get('totalAmount').value:0;
-      
+
     }
 
-    
+
     save(){
         if (!this.details || this.details.length==0 || this.itemForm.invalid && !this.invoice)
             return;
@@ -219,7 +219,7 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
                 selectedDetail.id=0;
                 selectedDetail.totalAmount= this.details[i].totalAmount;
                 selectedDetail.beforeTaxesAmount=selectedQuantity* this.details[i].totalAmount/this.details[i].quantity;
-              
+
                 selectedDetail.customerId=this.invoice.customerId;
                 selectedDetail.defective = this.itemForm.getRawValue()[`defectiveDetail_${i}`] as boolean;
                 selectedDetail.defective = selectedDetail.defective==null?false:selectedDetail.defective;
@@ -253,8 +253,8 @@ export class CustomerReturnFormComponent extends BaseComponent implements OnInit
         this.itemForm.addControl(`defectiveDetail_${index}`,new FormControl({value:selected , disabled:(this.isEditing || (this.details[index].type=='C' && !this.details[index].noCoverage))}));
     }
     refreshAmounts(fromForm:boolean=false){
-    
-   
-      
+
+
+
     }
 }

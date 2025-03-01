@@ -1,7 +1,7 @@
 
 import { Observable } from "rxjs";
 import { finalize, tap } from "rxjs/operators";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { HttpHeaders, HttpClient, HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse } from "@angular/common/http";
 import { BaseResultModel } from '../data/baseResultModel';
 import { AuthModel } from './../data/authModel';
@@ -12,7 +12,7 @@ import { QueryFilter, ObjectTypes } from '../common/enums';
 
 export interface IService<TEntity, TKey> {
   baseUrl: string;
-  get();
+  get():any;
   getAll(): Observable<TEntity[]>;
   getById(id: TKey): Observable<BaseResultModel<TEntity>>;
   post(entity: TEntity): Observable<BaseResultModel<TEntity>>;
@@ -32,7 +32,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
   public set baseUrl(value: string) {
     this._baseUrl = value;
   }
-  _headers: HttpHeaders;
+  _headers?: HttpHeaders ;
   httpOptions = {};
   public get headers() {
     return this._headers;
@@ -41,15 +41,15 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
   tempHttpOptions = {};
 
   constructor(protected _httpClient: HttpClient,
-    private _baseUrl: string) {
+   @Inject('') private _baseUrl: string) {
     this.setHttpOptions();
-    this._httpClient.request.bind(x => {
+    this._httpClient.request.bind((x:any) => {
 
     });
   }
 
   setHttpOptions(responseType: string = "") {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")?? '') as AuthModel;
     this.tempHttpOptions = {
       headers: this._headers,
       params: null,
@@ -61,7 +61,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
     this._headers = new HttpHeaders({
       "Content-Type": responseType ? responseType : "application/json",
-      "UserId": currentUser ? currentUser.user.userId : '',
+      "UserId": currentUser ? currentUser.user!.userId : '',
       "LanguageId": currentUser ? currentUser.languageId : 'en',
       "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
     });
@@ -169,14 +169,14 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     languageId: string = ""
   ): Observable<Blob> {
 
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")?? '') as AuthModel;
     const url = `${this.baseUrl.replace('/api/', '/odata/')}/exporttoexcel?${this.getODataQueryAll(filters)}`
     let data = this._httpClient.post(url,
       {}
       , {
         responseType: 'blob',
         headers: new HttpHeaders({
-          "UserId": currentUser ? currentUser.user.userId : '',
+          "UserId": currentUser ? currentUser.user!.userId : '',
           "LanguageId": currentUser ? currentUser.languageId : 'en',
           "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
         })
@@ -191,7 +191,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     languageId: string = "",
   ): Observable<Blob> {
 
-    const currentUser = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")?? '') as AuthModel;
 
 
     let promise = this._httpClient.post(`${this.baseUrl}/${url ? url : ''}`,
@@ -199,7 +199,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
       , {
         responseType: 'blob',
         headers: new HttpHeaders({
-          "UserId": currentUser ? currentUser.user.userId : '',
+          "UserId": currentUser ? currentUser.user!.userId : '',
           "LanguageId": currentUser ? currentUser.languageId : 'en',
           "Authorization": currentUser ? `Bearer ${currentUser.token}` : ''
         })
@@ -237,14 +237,6 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
             case ObjectTypes.String:
               switch (comparer) {
-                case 'eq':
-                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
-                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
-                  break;
-                case 'ne':
-                  inQuery = !f.isTranslated ? `${inQuery}(not contains(toLower(${propertyDef}), '${val}')) or ` :
-                    `${inQuery}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
-                  break;
                 default:
                   inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
                     `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
@@ -315,7 +307,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     return result;
   }
 
-  groupBy(list, keyGetter) {
+  groupBy(list: any[], keyGetter: (arg0: any) => any) {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
@@ -359,14 +351,6 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
             case ObjectTypes.String:
               switch (comparer) {
-                case 'eq':
-                  inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
-                    `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
-                  break;
-                case 'ne':
-                  inQuery = !f.isTranslated ? `${inQuery}(not contains(toLower(${propertyDef}), '${val}')) or ` :
-                    `${inQuery}(not contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
-                  break;
                 default:
                   inQuery = !f.isTranslated ? `${inQuery}(contains(toLower(${propertyDef}), '${val}')) or ` :
                     `${inQuery}(contains(toLower(${newSearch.length > 1 ? newSearch.join('/') : 'TranslationData'}), '${val}')) or `;
@@ -453,13 +437,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
   }
   public setLanguageInHeaders(languageId: string) {
     if (languageId) {
-      let tempHeader = this._headers;
-      let headers = languageId
-        ? tempHeader.set("LanguageId", languageId)
-        : tempHeader;
 
-      this.tempHttpOptions['headers'] = headers;
-      this.tempHttpOptions['params'] = this.httpOptions['params'];
     }
   }
 
@@ -567,7 +545,7 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
     return promise;
   }
 
-  SetTranslationData(data: TEntity): TEntity {
+  SetTranslationData(data: any): TEntity {
     if (data['translationData'])
       data['translationData'] = null;
     return data;
@@ -623,12 +601,12 @@ export class BaseService<TEntity, TKey> implements IService<TEntity, TKey> {
 
   showSpinner() {
     let spinnerObj = document.getElementById("nb-global-spinner");
-    spinnerObj.style.display = "block";
+    spinnerObj!.style.display = "block";
   }
 
   hideSpinner() {
     let spinnerObj = document.getElementById("nb-global-spinner");
-    spinnerObj.style.display = "none";
+    spinnerObj!.style.display = "none";
   }
 }
 @Injectable()
@@ -642,7 +620,7 @@ export class NoopInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler):
     Observable<HttpEvent<any>> {
     const started = Date.now();
-    let ok: string;
+    let ok: string = '';
     this.showSpinner();
     return next.handle(req).pipe(
       tap(
@@ -671,19 +649,19 @@ export class NoopInterceptor implements HttpInterceptor {
   }
 
   showSpinner() {
-    let spinnerObj = document.getElementById("nb-global-spinner");
+    let spinnerObj = document.getElementById("nb-global-spinner")!;
     spinnerObj.style.display = "block";
   }
 
   hideSpinner() {
-    let spinnerObj = document.getElementById("nb-global-spinner");
+    let spinnerObj = document.getElementById("nb-global-spinner")!;
     spinnerObj.style.display = "none";
   }
 
   logout() {
-    var auth = JSON.parse(localStorage.getItem(`currentUser`)) as AuthModel;
+    var auth = JSON.parse(localStorage.getItem(`currentUser`) ?? '') as AuthModel;
     if (auth) {
-      localStorage.setItem(`language-${auth.languageId}`, null);
+      localStorage.setItem(`language-${auth.languageId}`, '');
     }
     localStorage.removeItem('currentUser');
     this.hideSpinner();

@@ -25,13 +25,13 @@ export class LanguageService extends BaseService<any, string> {
     }
 
     setCurrentLanguage(lang: string = '', reloadPage: boolean = false) {
-        const auth = JSON.parse(localStorage.getItem("currentUser")) as AuthModel;
+        const auth = JSON.parse(localStorage.getItem("currentUser")?? '') as AuthModel;
 
         if (auth) {
-            const language = lang ? lang : auth.user.languageCode;
+            const language = lang ? lang : auth.user!.languageCode;
             auth.languageId = language;
-            auth.user.languageCode = language;
-            localStorage.setItem('currentUser', null);
+            auth.user!.languageCode = language;
+            localStorage.setItem('currentUser', '');
             localStorage.setItem('currentUser', JSON.stringify(auth));
             const baseService = new BaseService<any, any>(this.http, `assets/i18n/${language}.json`);
             baseService.getGeneral().subscribe(r => {
@@ -63,12 +63,12 @@ export class LanguageService extends BaseService<any, string> {
     }
 
     getValueByKey(key: string) {
-        var auth = JSON.parse(localStorage.getItem('currentUser')) as AuthModel;
+        var auth = JSON.parse(localStorage.getItem('currentUser') ?? '') as AuthModel;
         const currentLanguage = auth ? auth.languageId : 'EN';
         if (this.translate.translations[currentLanguage])
             return this.translate.translations[currentLanguage][key] || key;
         else {
-            const currentDictionary = JSON.parse(localStorage.getItem(`language-${currentLanguage}`));
+            const currentDictionary = JSON.parse(localStorage.getItem(`language-${currentLanguage}`) ?? '');
             return currentDictionary ? currentDictionary[key] : key;
         }
     }

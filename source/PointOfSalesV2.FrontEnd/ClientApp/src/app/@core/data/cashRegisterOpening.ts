@@ -6,31 +6,31 @@ import { CashRegister } from './cashRegister';
 
 
 export class CashRegisterOpening extends BaseModel {
-      userId :string;
-      currencyId :number;
-      cashRegisterId :number;
-      branchOfficeId :number;
-      openingDate :Date;
-      maxClosureDate :Date;
-      closureDate :Date;
-      totalPaymentsAmount :number;
-      openingClosureDifference :number;
-      userName :string;
-      details:OpeningType[];
-      state :string;
-      totalOpeningAmount :number;
-      totalClosureAmount :number;
-      cashRegister :CashRegister;
+      userId :string = '';
+      currencyId :number=0;
+      cashRegisterId :number=0;
+      branchOfficeId :number=0;
+      openingDate :Date | null = null;
+      maxClosureDate :Date | null = null;
+      closureDate :Date | null = null;
+      totalPaymentsAmount :number=0;
+      openingClosureDifference :number=0;
+      userName :string='';
+      details:OpeningType[]=[];
+      state :string = '';
+      totalOpeningAmount :number=0;
+      totalClosureAmount :number=0;
+      cashRegister :CashRegister | null = null;
       isClosing:boolean=false;
-      user: User;
-      currency :Currency;
-      branchOffice: BranchOffice; 
+      user: User | null = null;
+      currency :Currency | null = null;
+      branchOffice: BranchOffice | null = null;
 }
 export class OpeningType extends BaseModel{
-      type:string;
-      cashRegisterOpeningId:number;
-      details:string;
-      isClosing:boolean;
+      type:string = '';
+      cashRegisterOpeningId:number=0;
+      details:string='';
+      isClosing:boolean = false;
       totalAmount:number=0;
 
   }

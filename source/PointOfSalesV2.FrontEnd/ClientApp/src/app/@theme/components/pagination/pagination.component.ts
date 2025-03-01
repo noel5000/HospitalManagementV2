@@ -31,7 +31,7 @@ import { isBoolean } from 'util';
 export interface IPaginationModel {
   visible: boolean;
   filterIsActive: boolean;
-  id: string;
+  id: string ;
   type: string;
   isTranslated: boolean,
   isSortable?: boolean,
@@ -45,7 +45,7 @@ export interface IPaginationModel {
 }
 export interface IActionButtonModel {
   title: string;
-  class: string;
+  class: string ;
   icon: string;
   id: string;
   visible?(item: any): boolean
@@ -53,7 +53,7 @@ export interface IActionButtonModel {
 
 export type SortDirection = 'asc' | 'desc' | '';
 const rotate: { [key: string]: SortDirection } = { 'asc': 'desc', 'desc': '', '': 'asc' };
-export const compare = (v1, v2) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
+export const compare = (v1: number, v2: number) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
 
 export interface SortEvent {
   column: string;
@@ -61,6 +61,7 @@ export interface SortEvent {
 }
 
 @Directive({
+  standalone:false,
   selector: 'th[sortable]',
   host: {
     '[class.asc]': 'direction === "asc"',
@@ -70,7 +71,7 @@ export interface SortEvent {
 })
 export class NgbdSortableHeader {
 
-  @Input() sortable: string;
+  @Input() sortable: string = '';
   @Input() direction: SortDirection = '';
   @Output() sort = new EventEmitter<SortEvent>();
 
@@ -102,7 +103,7 @@ export class PaginationCompoment implements AfterViewInit {
   @Output() addFilterEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() onSortEvent: EventEmitter<any> = new EventEmitter<any>();
   @Output() actionFuncEvent: EventEmitter<any> = new EventEmitter<any>();
-  @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
+  @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader> | null = null;
 
   constructor(@Inject('BASE_URL') private baseUrl: string, private lang: LanguageService) { }
   ngAfterViewInit(): void {
@@ -113,10 +114,10 @@ export class PaginationCompoment implements AfterViewInit {
 
         debounceTime(400),
         distinctUntilChanged(),
-        tap((el) => {
+        tap((el:any) => {
           const id = el['path'][0].id
           const value = el['path'][0].value
-          this.addFilter(this.tableConfig.find(x => x.id == id), value);
+          this.addFilter(this.tableConfig.find(x => x.id == id)!, value);
         })
       )
       .subscribe();
@@ -140,7 +141,7 @@ export class PaginationCompoment implements AfterViewInit {
     return this.lang.getValueByKey(key);
   }
 
-  getPagedData(e) {
+  getPagedData(e:any) {
     this.getPagedDataEvent.emit(e);
   }
   addFilter(config: IPaginationModel, val: any) {
@@ -176,13 +177,13 @@ export class PaginationCompoment implements AfterViewInit {
         result = result ? this.lang.getValueByKey('yes_lbl') : this.lang.getValueByKey('no_lbl');
         break;
       case 'date':
-        result = result ? this.datePipe.transform(new Date(result), 'shortDate') : '';
+        result = result ? this.datePipe.transform(new Date(result), 'shortDate') ?? '' : '';
         break;
       case 'dateTime':
-        result = result ? this.datePipe.transform(new Date(result), 'short') : '';
+        result = result ? this.datePipe.transform(new Date(result), 'short') ?? '' : '';
         break;
       case 'currency':
-        result = result ? this.currencyPipe.transform(result, '') : '';
+        result = result ? this.currencyPipe.transform(result, '') ?? '' : '';
         break;
 
     }

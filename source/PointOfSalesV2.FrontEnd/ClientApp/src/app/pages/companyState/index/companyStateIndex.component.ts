@@ -52,9 +52,9 @@ export class CompanyStateIndexComponent extends BaseComponent implements OnInit 
         });
     }
 
- 
+
 onChanges(){
-    
+
     this.itemForm.get('startDate')!.valueChanges.subscribe(val => {
         this.getData();
     });
@@ -74,16 +74,16 @@ onChanges(){
     }
 
 
-  
 
 
-    
+
+
     getDataToExport() {
         const filter = this.itemForm.getRawValue();
         this.service.exportToExcel(filter,`ExportState/${filter.startDate? filter.startDate.toString():'0'}/${filter.endDate?filter.endDate.toString():'0'}`).subscribe(r => {
 
           this.service.downLoadFile(r,"application/ms-excel",`${this.lang.getValueByKey('resultState_menu')}`);
-          
+
         },
             error => {
                  this.modalService.showError(`${this.lang.getValueByKey(error.message)}`);
@@ -98,7 +98,7 @@ onChanges(){
 }
 
 exportToCSV(){
-   this.getDataToExport(); 
+   this.getDataToExport();
 }
 
 }

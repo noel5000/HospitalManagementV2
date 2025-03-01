@@ -38,7 +38,7 @@ declare const $: any;
     styleUrls: ["../appointmentStyles.component.scss"]
 })
 export class appointmentPrintComponent extends BaseComponent implements OnInit {
-   
+
     item: any={leadDetails:[],customer:{},currency:{},invoiceNumber:''};
     menuId:number=0;
     schoolId:number=0;
@@ -110,23 +110,23 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
          modalService:ModalService,
       private  http: HttpClient
         ){
-      super(route, langService, AppRoles.Appointments,modalService);       
+      super(route, langService, AppRoles.Appointments,modalService);
     }
     ngOnInit(): void {
-   
+
         this.verifyUser();
-       
+
     }
 
 
- 
+
 
     getCurrentLead(){
         this.appointmentsService.getByUrlParameters(['GetLeadForPrint',this.leadId.toString(),this.menuId.toString(),this.schoolId.toString(),this.sequence])
         .subscribe(r=>{
-            
+
             if(r.status>=0){
-              
+
                this.item=r.data[0];
             }
             else
@@ -134,5 +134,5 @@ export class appointmentPrintComponent extends BaseComponent implements OnInit {
         })
     }
 
-   
+
 }

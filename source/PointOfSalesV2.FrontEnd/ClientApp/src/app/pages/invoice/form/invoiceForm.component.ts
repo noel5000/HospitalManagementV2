@@ -34,7 +34,7 @@ import { TRNControlService } from '../../../@core/services/TRNControlService';
 import { SellerService } from '../../../@core/services/SellerService';
 import { WarehouseService } from '../../../@core/services/WarehouseService';
 import { AppConfig } from '../../../@core/services/app.config';
-import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.module';
 
 declare const $: any;
 @Component({

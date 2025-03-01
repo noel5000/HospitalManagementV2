@@ -2,7 +2,7 @@ import { BaseService } from './baseService';
 import { endpointUrl, endpointControllers } from '../common/constants';
 import { HttpClient } from '@angular/common/http';
 import { Injectable , Inject } from '@angular/core';
-import { Warehouse } from '../data/warehouse';
+import { Warehouse } from '../data/Warehouse';
 import { AppConfig } from './app.config';
 
 @Injectable({

@@ -19,7 +19,7 @@ import { CustomerService } from '../../../@core/services/CustomerService';
 import { Currency } from '../../../@core/data/currencyModel';
 import { CurrencyService } from '../../../@core/services/CurrencyService';
 import { AppConfig } from '../../../@core/services/app.config';
-import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.component';
+import { AutoCompleteComponent } from '../../../@theme/components/auto-complete/auto-complete.module';
 
 
 declare const $: any;

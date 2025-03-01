@@ -6,6 +6,6 @@ export class Role extends Unit {
 }
 
 export class UserRole extends BaseModel{
-    userId:string;
-    roleId:number;
+    userId:string ='';
+    roleId:number =0;
 }
