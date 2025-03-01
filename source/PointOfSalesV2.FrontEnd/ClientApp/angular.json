@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "hospital-management": {
+    "hosptal": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/hospital-management",
+            "outputPath": "dist/hosptal",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -34,12 +34,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -69,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hospital-management:build:production"
+              "buildTarget": "hosptal:build:production"
             },
             "development": {
-              "buildTarget": "hospital-management:build:development"
+              "buildTarget": "hosptal:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -105,6 +100,6 @@
     }
   },
   "cli": {
-    "analytics": "ecf9a9e5-6dce-46f5-a719-6aa27d08f94a"
+    "analytics": "65a27abd-5908-4819-ab3d-26cf498f9c29"
   }
 }
