@@ -1,0 +1,20 @@
+@import "../../@theme/styles/themes";
+
+@include nb-install-component() {
+  nb-card {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.checkupsHistory {
+  background-color: ghostwhite;
+  border-style: groove;
+  border-radius: 12px;
+}
+
+.patientInfo{
+  font-weight: bold;
+}
+.buttonCurson{
+  cursor: pointer;
+}
