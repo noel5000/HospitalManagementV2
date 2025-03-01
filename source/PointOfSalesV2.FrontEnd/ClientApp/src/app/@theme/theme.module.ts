@@ -13,7 +13,6 @@ import {
   NbIconModule,
   NbThemeModule,
 } from '@nebular/theme';
-import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
 
 import {
@@ -60,7 +59,6 @@ const NB_MODULES = [
   NbButtonModule,
   NbSelectModule,
   NbIconModule,
-  NbEvaIconsModule,
 ];
 const COMPONENTS = [
   SwitcherComponent,
@@ -84,7 +82,7 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES,TranslateModule,NgbPaginationModule, NgbDropdownModule, NgbModalModule, FormsModule],
+  imports: [CommonModule, ...NB_MODULES,NgbPaginationModule, NgbDropdownModule, NgbModalModule, FormsModule],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES,NgbdSortableHeader],
   providers: [LanguageService]
